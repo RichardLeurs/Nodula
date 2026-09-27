@@ -1,5 +1,7 @@
 node_modules
 
+api/
+
 dist/
 .DS_Store
 .env
