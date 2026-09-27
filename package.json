@@ -90,7 +90,7 @@
     "test": "npm run typecheck && node --test && npm run test:api",
     "test:api": "python3 -m unittest discover -s api -p 'test_*.py'",
     "typecheck": "npm run build:framework && tsc -p tsconfig.types.json",
-    "typecheck:bundle": "tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM,DOM.Iterable --types node type-tests/bundle.typecheck.ts"
+    "typecheck:bundle": "tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM,DOM.Iterable --types node tests/types/bundle.typecheck.ts"
   },
   "devDependencies": {
     "happy-dom": "^20.14.5",

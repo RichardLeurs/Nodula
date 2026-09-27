@@ -1,14 +1,14 @@
-import { h, signal } from '../dist/framework/nodula-framework.js';
-import { createStore } from '../dist/framework/nodula-store.js';
-import { createForm } from '../dist/framework/nodula-form.js';
-import { createRouter } from '../dist/framework/nodula-router.js';
-import { animate, createTransition } from '../dist/framework/nodula-animation.js';
-import { showDialog } from '../dist/framework/nodula-dialog.js';
-import { openModal } from '../dist/framework/nodula-modal.js';
-import { openDrawer } from '../dist/framework/nodula-drawer.js';
-import { mountNavigation } from '../dist/framework/nodula-navigation.js';
-import { createIndexedDBSignal, createStorageSignal, deleteCookie, getCookie, setCookie } from '../dist/framework/nodula-localstorage.js';
-import { createDataClient, DataError } from '../dist/framework/nodula-data.js';
+import { h, signal } from '../../dist/framework/nodula-framework.js';
+import { createStore } from '../../dist/framework/nodula-store.js';
+import { createForm } from '../../dist/framework/nodula-form.js';
+import { createRouter } from '../../dist/framework/nodula-router.js';
+import { animate, createTransition } from '../../dist/framework/nodula-animation.js';
+import { showDialog } from '../../dist/framework/nodula-dialog.js';
+import { openModal } from '../../dist/framework/nodula-modal.js';
+import { openDrawer } from '../../dist/framework/nodula-drawer.js';
+import { mountNavigation } from '../../dist/framework/nodula-navigation.js';
+import { createIndexedDBSignal, createStorageSignal, deleteCookie, getCookie, setCookie } from '../../dist/framework/nodula-localstorage.js';
+import { createDataClient, DataError } from '../../dist/framework/nodula-data.js';
 
 const [count, setCount] = signal(0);
 const state = createStore({ message: 'ready' });

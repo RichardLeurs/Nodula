@@ -23,6 +23,6 @@
     "src framework/addons/data.d.ts",
     "src framework/addons/store.d.ts",
     "src framework/addons/pwa.d.ts",
-    "type-tests/framework.typecheck.ts"
+    "tests/types/framework.typecheck.ts"
   ]
 }
