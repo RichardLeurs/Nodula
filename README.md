@@ -8,8 +8,9 @@ The Nodula framework is in early alpha status, the framework is working (see the
 
 Nodula has a small core runtime, with optional add-ons for extra features. Import only the add-on modules your app needs.
 
-| Framework      | Reactivity, DOM rendering, Helpers                                                                  |
+| Module         | Contents                                                                    |
 | -------------- | --------------------------------------------------------------------------------------------------- |
+| Framework      | Reactivity, DOM rendering, Helpers                                                                  |
 | Router         | Hash or History API navigation, route views, and lazy file-based pages and layouts                  |
 | Localstorage   | Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies              |
 | Data           | Fetch data from a server with method helpers, query parameters, and readable HTTP errors            |
