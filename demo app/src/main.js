@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import AppShell from './AppShell.comp';
+import AppShell from './AppShell.page';
 import { mount } from 'nodula-framework';
 //import 'nodula-framework/nodula-framework.css';
 import './assets/app.css';
