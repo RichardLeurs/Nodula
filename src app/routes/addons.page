@@ -1,0 +1,91 @@
+<template>
+  <main class="page-shell addons-page">
+    <p class="eyebrow">Optional package entries</p>
+    <h1>Add-ons for the parts you need.</h1>
+    <p class="guide-intro">Nodula keeps its core small. Import an add-on from its own package entry only when your app needs it.</p>
+
+    <section class="addons-grid" aria-label="Available Nodula add-ons">
+  
+      <article class="addon-card">
+        <h2>Router</h2>
+        <p>Hash or History API navigation, route views, and lazy file-based pages and layouts.</p>
+        <div class="guide-code">
+        <code data-highlight>import { createRouter, createFileRouter } from 'nodula-framework/router';</code>
+        </div>
+      </article>
+        <article class="addon-card">
+        <h2>Local storage and cookies</h2>
+        
+        <p>Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies.</p>
+         <div class="guide-code">
+        <code data-highlight>import { createStorageSignal, createIndexedDBSignal, getCookie, setCookie } from 'nodula-framework/localstorage';</code>
+        </div>
+      </article>
+      <article class="addon-card">
+        <h2>Data</h2>
+        <p>Fetch data from a server with method helpers, query parameters, and readable HTTP errors. Try the live request on the data demo page.</p>
+         <div class="guide-code">
+        <code data-highlight>import { createDataClient } from 'nodula-framework/data';</code>
+        </div>
+        <a class="addon-card__link" href="/data">Open data demo <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="addon-card">
+        <h2>Stores</h2>
+        <p>Deeply reactive proxies for plain objects and arrays, including nested values.</p>
+         <div class="guide-code">
+        <code data-highlight>import { createStore } from 'nodula-framework/store';</code>
+        </div>
+      </article>
+      <article class="addon-card">
+        <h2>Animation</h2>
+        <p>Web Animations helpers and opt-in enter/leave transitions for routes, conditionals, and keyed lists.</p>
+         <div class="guide-code">
+        <code data-highlight>import { animate, enableLifecycleTransitions } from 'nodula-framework/animation';</code>
+        </div>
+      </article>
+          <article class="addon-card">
+        <h2>Forms</h2>
+        <p>Reactive form values, validation, touched and dirty state, async submission, and reset helpers.</p>
+         <div class="guide-code">
+        <code data-highlight>import { createForm } from 'nodula-framework/form';</code>
+        </div>
+         <a class="addon-card__link" href="/forms">Open forms demo <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="addon-card">
+        <h2>Dialogs</h2>
+        <p>Native confirmation dialogs with configurable labels and owner cleanup.</p>
+         <div class="guide-code">
+        <code data-highlight>import { showDialog } from 'nodula-framework/dialog';</code>
+        </div>
+         <a class="addon-card__link" href="/forms">Open forms demo (see reset button) <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="addon-card">
+        <h2>Modals</h2>
+        <p>Native modal windows with safe content, close controls, and configurable backdrop dismissal.</p>
+         <div class="guide-code">
+        <code data-highlight>import { openModal } from 'nodula-framework/modal';</code>
+        </div>
+         <a class="addon-card__link" href="/forms">Open forms demo (see modal button) <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="addon-card">
+        <h2>Drawers</h2>
+        <p>Accessible modal side panels that open from the left or right.</p>
+         <div class="guide-code">
+        <code data-highlight>import { openDrawer } from 'nodula-framework/drawer';</code>
+        </div>
+         <a class="addon-card__link" href="/forms">Open forms demo (see drawer button) <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="addon-card">
+        <h2>Navigation</h2>
+        <p>Accessible router-aware internal links and explicitly external HTTP(S) links.</p>
+         <div class="guide-code">
+        <code data-highlight>import { mountNavigation } from 'nodula-framework/navigation';</code>
+        </div>
+        
+      </article>
+    
+    </section>
+
+    <!-- <a class="button button--dark" href="/">Back to the playground</a> -->
+  </main>
+</template>

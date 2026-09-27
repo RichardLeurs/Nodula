@@ -1,0 +1,95 @@
+<script setup>
+import { effect, signal } from 'nodula-framework';
+import { createForm } from 'nodula-framework/form';
+import { animate } from 'nodula-framework/animation';
+import { showDialog } from 'nodula-framework/dialog';
+import { showNotification } from 'nodula-framework/notifications';
+
+const [submissionMessage, setSubmissionMessage] = signal('');
+let successMessageElement = null;
+
+function setSuccessMessageElement(element) {
+  successMessageElement = element;
+}
+
+effect(() => {
+  if (submissionMessage() && successMessageElement) {
+    animate(successMessageElement, [
+      { opacity: 0, transform: 'translateY(6px)' },
+      { opacity: 1, transform: 'translateY(0)' },
+    ], { duration: 220, easing: 'ease-out', fill: 'both' });
+  }
+});
+
+const form = createForm({ name: '', email: '', updates: false }, {
+  validate: (values) => ({
+    ...(!values.name.trim() ? { name: 'Enter your name.' } : {}),
+    ...(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) ? { email: 'Enter a valid email address.' } : {}),
+  }),
+  onSubmit: async (values) => {
+    await Promise.resolve();
+    const name = values.name.trim();
+    setSubmissionMessage(`Thanks, ${name}! Your form was submitted.`);
+    showNotification({
+      type: 'success',
+      title: 'Form submitted',
+      message: `Thanks, ${name}! Your form was submitted successfully.`,
+    });
+  },
+});
+
+async function resetForm() {
+  const confirmed = await showDialog('Reset this form? Your changes will be cleared.', {
+    title: 'Reset form?',
+    cancelText: 'Keep editing',
+    okText: 'Reset form',
+  });
+  if (!confirmed) return;
+
+  form.reset();
+  setSubmissionMessage('');
+}
+</script>
+
+<template>
+  <main class="page-shell form-page">
+    <p class="eyebrow">Reactive form state</p>
+    <h1>A form, with the state included.</h1>
+    <p class="guide-intro">This example uses Nodula's <code>createForm</code> for values, validation, touched fields, submission state, and reset—without adding a form library.</p>
+
+    <form class="form-example" @submit="form.handleSubmit($event)" novalidate>
+      <div class="form-field">
+        <label for="form-name">Name</label>
+        <input id="form-name" name="name" type="text" autocomplete="name" :value="form.values.name" @input="form.handleChange('name')($event)" @blur="form.handleBlur('name')()" :aria-invalid="form.errors.name ? 'true' : 'false'" aria-describedby="form-name-error" />
+        <p id="form-name-error" class="form-error" role="alert" @show="Boolean(form.errors.name)">{{ form.errors.name ?? '' }}</p>
+      </div>
+
+      <div class="form-field">
+        <label for="form-email">Email</label>
+        <input id="form-email" name="email" type="email" autocomplete="email" :value="form.values.email" @input="form.handleChange('email')($event)" @blur="form.handleBlur('email')()" :aria-invalid="form.errors.email ? 'true' : 'false'" aria-describedby="form-email-error" />
+        <p id="form-email-error" class="form-error" role="alert" @show="Boolean(form.errors.email)">{{ form.errors.email ?? '' }}</p>
+      </div>
+
+      <label class="form-checkbox">
+        <input name="updates" type="checkbox" :checked="form.values.updates" @change="form.handleChange('updates')($event)" />
+        <span>Send me occasional Nodula updates</span>
+      </label>
+
+      <div class="form-actions">
+        <button class="button button--primary" type="submit" :disabled="form.submitting()">{{ form.submitting() ? 'Submitting…' : 'Submit example' }}</button>
+        <button class="button button--secondary" type="button" @click="resetForm()">Reset</button>
+        <span class="form-dirty" role="status">{{ form.dirty() ? 'Unsaved changes' : 'No changes yet' }}</span>
+      </div>
+
+      <p class="form-success" role="status" @ref="setSuccessMessageElement" @show="Boolean(submissionMessage())">{{ submissionMessage() }}</p>
+    </form>
+
+    <div class="guide-code">
+      <pre><code>const form = createForm(initialValues, {
+  validate: (values) =&gt; errors,
+  onSubmit: async (values) =&gt; save(values),
+});</code></pre>
+    </div>
+    <!-- <a class="button button--dark" href="/guide">Back to the guide</a> -->
+  </main>
+</template>

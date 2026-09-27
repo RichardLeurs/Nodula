@@ -1,0 +1,19 @@
+node_modules
+
+dist/
+.DS_Store
+.env
+.env.*
+!.env.example
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+vitepress/
+
+package-lock.json
+
+README framework.md
+
+SPECS.md

@@ -1,0 +1,51 @@
+<script setup>
+import { signal } from 'nodula-framework';
+import { openModal } from 'nodula-framework/modal';
+import { openDrawer } from 'nodula-framework/drawer';
+
+const [count, setCount] = signal(0);
+
+function showExampleModal() {
+  const content = document.createElement('p');
+  content.textContent = 'This modal is provided by the optional Nodula modal add-on.';
+  openModal(content, { title: 'A modal window', closeText: 'Got it', closeOnBackdrop: false });
+}
+
+function showExampleDrawer() {
+  const content = document.createElement('p');
+  content.textContent = 'This side panel is a modal drawer. Click outside to dismiss it, or use the close button.';
+  openDrawer(content, { title: 'A side drawer', closeText: 'Close panel', closeOnBackdrop: false, position: 'left' });
+}
+</script>
+
+<template>
+  <main class="page-shell guide-page">
+    <p class="eyebrow">The short version</p>
+    <h1>A small toolkit,<br />not a big ceremony.</h1>
+    <p class="guide-intro">Nodula keeps the useful parts close: fine-grained state, tiny DOM helpers, and a router you can understand at a glance.</p>
+    <div class="guide-code">
+      <pre><code data-highlight>const [count, setCount] = signal(0); effect(() =&gt; console.log(count()));</code></pre>
+    </div>
+    <!-- <div class="template-demo">
+      <p>This button is rendered from an HTML template. Count: <strong>{{ count() }}</strong></p>
+      <button class="button button--dark" type="button" @click="setCount(count() + 1)">Add one</button>
+    </div> -->
+    <div class="template-demo modal-demo">
+      <p>The optional modal add-on can display interactive DOM content.</p>
+      <button class="button button--primary" type="button" @click="showExampleModal()">Open example modal</button>
+    </div>
+    <div class="template-demo modal-demo">
+      <p>The optional drawer add-on opens a side panel with configurable backdrop dismissal.</p>
+      <button class="button button--primary" type="button" @click="showExampleDrawer()">Open example side drawer</button>
+    </div>
+    <!-- <a class="button button--primary" href="/">Back to the playground <span aria-hidden="true"> ↗</span></a> -->
+    <a class="button button--primary" href="/ideas/1">Try a nested idea route <span aria-hidden="true"> ↗</span></a>
+  </main>
+</template>
+
+<style>
+.template-demo { display: flex; align-items: center; gap: 16px; margin: 24px 0; color: #a7b2b0; font-size: .875rem; }
+.template-demo p { margin: 0; }
+.template-demo strong { color: #b7d89a; font-family: 'DM Mono', monospace; }
+@media (max-width: 520px) { .template-demo { align-items: flex-start; flex-direction: column; } }
+</style>

@@ -1,0 +1,14 @@
+<template>
+  <section class="scoped-panel">
+    <p class="scoped-copy">Scoped component content</p>
+  </section>
+</template>
+
+<style scoped>
+.scoped-panel { border: 1px solid currentColor; }
+.scoped-copy, .scoped-panel > strong { color: rgb(183, 216, 154); }
+@media (min-width: 1px) {
+  .scoped-panel .scoped-copy { font-weight: 700; }
+}
+@keyframes scoped-pulse { from { opacity: 0; } to { opacity: 1; } }
+</style>

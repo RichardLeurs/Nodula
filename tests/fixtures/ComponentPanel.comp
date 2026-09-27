@@ -1,0 +1,14 @@
+<script setup>
+import { signal } from 'nodula-framework';
+
+const [message, setMessage] = signal('Child state');
+</script>
+
+<template>
+  <section class="component-panel">
+    <h2>{{ props.title }} · {{ message() }}</h2>
+    <button type="button" @click="props.onSave(message())">Save child state</button>
+    <header><slot @slot="heading"><strong>Fallback heading</strong></slot></header>
+    <main><slot><p>Fallback body</p></slot></main>
+  </section>
+</template>

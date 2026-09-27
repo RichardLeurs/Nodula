@@ -1,0 +1,20 @@
+<script setup>
+import { signal } from 'nodula-framework';
+import ComponentPanel from './ComponentPanel.comp';
+
+const [title, setTitle] = signal('First title');
+const [saved, setSaved] = signal('Nothing saved');
+const saveMessage = (message) => setSaved(message);
+</script>
+
+<template>
+  <div>
+    <ComponentPanel :title="title()" @save="saveMessage($event)">
+      <p>Default body content</p>
+      <template #heading><strong>{{ title() }} from slot</strong></template>
+    </ComponentPanel>
+    <ComponentPanel title="Fallback example"></ComponentPanel>
+    <button type="button" @click="setTitle('Updated title')">Update prop</button>
+    <output>{{ saved() }}</output>
+  </div>
+</template>

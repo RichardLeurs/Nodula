@@ -1,0 +1,33 @@
+{
+  "name": "nodula-language",
+  "displayName": "Nodula Language Support",
+  "description": "Syntax highlighting for Nodula single-file components.",
+  "version": "0.1.0",
+  "publisher": "nodula-framework",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "nodula",
+        "aliases": ["Nodula", "nodula"],
+        "extensions": [".page", ".comp"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "nodula",
+        "scopeName": "source.nodula",
+        "path": "./syntaxes/nodula.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.javascript": "javascript",
+          "meta.embedded.block.html": "html",
+          "meta.embedded.block.css": "css"
+        }
+      }
+    ]
+  }
+}

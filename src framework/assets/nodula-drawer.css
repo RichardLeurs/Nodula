@@ -1,0 +1,37 @@
+/* Drawer add-on styles. */
+.nodula-drawer {
+  position: fixed;
+  width: min(28rem, 100vw);
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  color: #000;
+  background: #fff;
+  font: 400 1rem/1.6 'DM Sans', system-ui, sans-serif;
+  animation: nodula-drawer-enter .2s ease-out both;
+}
+.nodula-drawer--left { inset: 0 auto 0 0; border-right: 1px solid #000; box-shadow: 24px 0 80px rgba(0, 0, 0, .28); }
+.nodula-drawer--right { inset: 0 0 0 auto; border-left: 1px solid #000; box-shadow: -24px 0 80px rgba(0, 0, 0, .28); }
+.nodula-drawer::backdrop { background: rgba(0, 0, 0, .55); backdrop-filter: blur(3px); }
+.nodula-drawer__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid #000; }
+.nodula-drawer__title { margin: 0; font: 600 1.2rem/1.35 'DM Sans', system-ui, sans-serif; }
+.nodula-drawer__close { min-width: 2.5rem; min-height: 2.5rem; border: 1px solid #000; border-radius: 5px; color: #fff; background: #000; font: inherit; cursor: pointer; }
+.nodula-drawer__close:hover { background: #666; }
+.nodula-drawer__close:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
+.nodula-drawer__body { padding: 1.25rem; }
+@keyframes nodula-drawer-enter-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes nodula-drawer-enter-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.nodula-drawer--left { animation-name: nodula-drawer-enter-left; }
+.nodula-drawer--right { animation-name: nodula-drawer-enter-right; }
+@media (prefers-reduced-motion: reduce) { .nodula-drawer { animation: none; } }
+@media (prefers-color-scheme: light) {
+  .nodula-drawer--left, .nodula-drawer--right { border-color: #000; }
+  .nodula-drawer { color: #000; background: #fff; }
+  .nodula-drawer__header { border-color: #000; }
+  .nodula-drawer__close { border-color: #000; color: #fff; background: #000; }
+  .nodula-drawer__close:hover { background: #666; }
+}

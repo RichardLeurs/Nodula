@@ -1,0 +1,94 @@
+<script setup>
+import { effect, onCleanup } from 'nodula-framework';
+import { createFileRouter } from 'nodula-framework/router';
+import { mountNavigation } from 'nodula-framework/navigation';
+import { enableLifecycleTransitions } from 'nodula-framework/animation';
+import { createStorageSignal } from 'nodula-framework/localstorage';
+
+const router = createFileRouter(import.meta.glob('./routes/**/*.page'), undefined, { mode: 'history' });
+enableLifecycleTransitions({ options: { duration: 500, easing: 'ease-out' } });
+let disposeNavigation;
+
+function setNavigationElement(element) {
+  disposeNavigation?.();
+  disposeNavigation = element ? mountNavigation(element, router, [
+    { label: 'Home', href: '/' },
+    { label: 'Add-ons', href: '/addons' },
+    { label: 'Data', href: '/data' },
+    { label: 'Forms', href: '/forms' },
+      { label: 'Modal windows', href: '/modal' },
+    { label: 'Web Components', href: '/web-components' },
+    { label: 'Guide', href: 'https://nodula-docs.richardleurs.nl/', external: true },
+  ], {
+    label: 'Main navigation',
+    linkClassName: 'nav-link',
+    activeClassName: 'nav-link--active',
+  }) : undefined;
+}
+onCleanup(() => disposeNavigation?.());
+const [theme, setTheme] = createStorageSignal('nodula-theme', 'dark');
+
+effect(() => {
+  document.documentElement.dataset.theme = theme();
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme() === 'light' ? '#f5f8f1' : '#101b25');
+});
+
+function toggleTheme() {
+  const next = theme() === 'dark' ? 'light' : 'dark';
+  setTheme(next);
+}
+
+function setThemeToggleIcons(element) {
+  if (!element) return;
+
+  const svgNamespace = 'http://www.w3.org/2000/svg';
+  const sun = document.createElementNS(svgNamespace, 'svg');
+  sun.setAttribute('width', '16');
+  sun.setAttribute('height', '16');
+  sun.setAttribute('fill', 'currentColor');
+  sun.setAttribute('class', 'bi bi-sun-fill theme-toggle__sun');
+  sun.setAttribute('viewBox', '0 0 16 16');
+  sun.setAttribute('aria-hidden', 'true');
+  const sunPath = document.createElementNS(svgNamespace, 'path');
+  sunPath.setAttribute('d', 'M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708');
+  sun.append(sunPath);
+
+  const moon = document.createElementNS(svgNamespace, 'svg');
+  moon.setAttribute('width', '16');
+  moon.setAttribute('height', '16');
+  moon.setAttribute('fill', 'currentColor');
+  moon.setAttribute('class', 'bi bi-moon-fill theme-toggle__moon');
+  moon.setAttribute('viewBox', '0 0 16 16');
+  moon.setAttribute('aria-hidden', 'true');
+  const moonPath = document.createElementNS(svgNamespace, 'path');
+  moonPath.setAttribute('d', 'M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278');
+  moon.append(moonPath);
+
+  element.replaceChildren(sun, moon);
+}
+</script>
+
+<template>
+  <div class="app">
+
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Nodula home">
+        <!-- <span class="brand-mark" aria-hidden="true">s</span> -->
+        <span class="brand-logo" aria-hidden="true"></span>
+        <span class="brand-name"><b>nodula</b></span>
+        <span class="brand-version">0.1</span>
+      </a>
+      <nav class="site-nav" @ref="setNavigationElement"></nav>
+      <button class="theme-toggle" type="button" @click="toggleTheme()" @ref="setThemeToggleIcons" :aria-label="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" :aria-pressed="theme() === 'light' ? 'true' : 'false'"></button>
+      <!-- <a class="github-link" href="https://vite.dev/" target="_blank" rel="noreferrer">Made for the web <span aria-hidden="true"> ↗</span></a> -->
+    </header>
+    <div class="route-view">
+      <outlet :view="router.view()" />
+    </div>
+    <footer class="site-footer">
+      <span>A small framework for big ideas </span>
+       <span>This site is build with nodulaJS</span>
+      <span>Copyright © Richard Leurs 2026 | GNU General Public License v3 </span>
+    </footer>
+  </div>
+</template>

@@ -1,0 +1,9 @@
+<template>
+  <div class="extra-card">
+    <span class="extra-icon" aria-hidden="true">✳</span>
+    <div>
+      <strong>A little extra, right on time</strong>
+      <p>This card was loaded only when you scrolled it into view.</p>
+    </div>
+  </div>
+</template>

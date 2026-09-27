@@ -1,0 +1,117 @@
+{
+  "name": "nodula-framework",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "private": false,
+  "files": [
+    "dist/framework"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "type": "module",
+  "types": "dist/framework/nodula-framework.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/framework/nodula-framework.d.ts",
+      "import": "./dist/framework/nodula-framework.js"
+    },
+    "./nodula-framework.css": "./dist/framework/nodula-framework.css",
+    "./dialog": {
+      "types": "./dist/framework/nodula-dialog.d.ts",
+      "import": "./dist/framework/nodula-dialog.js"
+    },
+    "./notifications": {
+      "types": "./dist/framework/nodula-notifications.d.ts",
+      "import": "./dist/framework/nodula-notifications.js"
+    },
+    "./form": {
+      "types": "./dist/framework/nodula-form.d.ts",
+      "import": "./dist/framework/nodula-form.js"
+    },
+    "./router": {
+      "types": "./dist/framework/nodula-router.d.ts",
+      "import": "./dist/framework/nodula-router.js"
+    },
+    "./animation": {
+      "types": "./dist/framework/nodula-animation.d.ts",
+      "import": "./dist/framework/nodula-animation.js"
+    },
+    "./modal": {
+      "types": "./dist/framework/nodula-modal.d.ts",
+      "import": "./dist/framework/nodula-modal.js"
+    },
+    "./drawer": {
+      "types": "./dist/framework/nodula-drawer.d.ts",
+      "import": "./dist/framework/nodula-drawer.js"
+    },
+    "./navigation": {
+      "types": "./dist/framework/nodula-navigation.d.ts",
+      "import": "./dist/framework/nodula-navigation.js"
+    },
+    "./localstorage": {
+      "types": "./dist/framework/nodula-localstorage.d.ts",
+      "import": "./dist/framework/nodula-localstorage.js"
+    },
+    "./data": {
+      "types": "./dist/framework/nodula-data.d.ts",
+      "import": "./dist/framework/nodula-data.js"
+    },
+    "./store": {
+      "types": "./dist/framework/nodula-store.d.ts",
+      "import": "./dist/framework/nodula-store.js"
+    },
+    "./pwa": {
+      "types": "./dist/framework/nodula-pwa.d.ts",
+      "import": "./dist/framework/nodula-pwa.js"
+    }
+  },
+  "scripts": {
+    "dev": "npm run build:framework && vite --config vite.config.js",
+    "dev:api": "python3 api/server.py",
+    "build": "npm run build:framework && npm run build:app && npm run typecheck:bundle && npm run pack:framework",
+    "package:framework": "npm run build:framework && npm run pack:framework",
+    "pack:framework": "npm pack --pack-destination dist",
+    "build:app": "vite build --config vite.config.js",
+    "build:form": "vite build --config config/vite.form.config.js",
+    "build:router": "vite build --config config/vite.router.config.js",
+    "build:animation": "vite build --config config/vite.animation.config.js",
+    "build:dialog": "vite build --config config/vite.dialog.config.js",
+    "build:notifications": "vite build --config config/vite.notifications.config.js",
+    "build:modal": "vite build --config config/vite.modal.config.js",
+    "build:drawer": "vite build --config config/vite.drawer.config.js",
+    "build:navigation": "vite build --config config/vite.navigation.config.js",
+    "build:localstorage": "vite build --config config/vite.localstorage.config.js",
+    "build:data": "vite build --config config/vite.data.config.js",
+    "build:pwa": "vite build --config config/vite.pwa.config.js",
+    "build:store": "vite build --config config/vite.store.config.js",
+    "build:framework": "vite build --config config/vite.framework.config.js && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notifications && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:localstorage && npm run build:data && npm run build:pwa",
+    "preview": "vite preview",
+    "test": "npm run typecheck && node --test && npm run test:api",
+    "test:api": "python3 -m unittest discover -s api -p 'test_*.py'",
+    "typecheck": "npm run build:framework && tsc -p tsconfig.types.json",
+    "typecheck:bundle": "tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM,DOM.Iterable --types node type-tests/bundle.typecheck.ts"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.14.5",
+    "highlight.js": "^11.12.0",
+    "lightningcss": "^1.33.0",
+    "parse5": "^7.3.0",
+    "postcss": "^8.5.28",
+    "postcss-selector-parser": "^7.1.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1",
+    "vite-plugin-pwa": "^1.3.0"
+  },
+  "peerDependenciesMeta": {
+    "vite-plugin-pwa": {
+      "optional": true
+    }
+  },
+  "peerDependencies": {
+    "vite-plugin-pwa": "^1.3.0"
+  },
+  "dependencies": {
+    "iconify-icon": "^3.0.3"
+  }
+}

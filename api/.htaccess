@@ -1,0 +1,12 @@
+# Route /api/* requests to the PHP API and keep directory contents private.
+Options -Indexes
+DirectoryIndex index.php
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [END,QSA]
+
+<FilesMatch "\.(sqlite3?|db)(-(shm|wal))?$">
+    Require all denied
+</FilesMatch>

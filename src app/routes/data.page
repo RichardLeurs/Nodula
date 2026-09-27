@@ -1,0 +1,75 @@
+<script setup>
+import { onCleanup, signal } from 'nodula-framework';
+import { createDataClient, DataError } from 'nodula-framework/data';
+
+const sampleUrl = 'https://jsonplaceholder.typicode.com/posts/1';
+const dataClient = createDataClient();
+const [endpoint, setEndpoint] = signal(sampleUrl);
+const [record, setRecord] = signal(null);
+const [loading, setLoading] = signal(false);
+const [errorMessage, setErrorMessage] = signal('');
+let activeRequest;
+
+async function loadJson(event) {
+  event?.preventDefault?.();
+  activeRequest?.abort();
+  const controller = new AbortController();
+  activeRequest = controller;
+  setLoading(true);
+  setRecord(null);
+  setErrorMessage('');
+
+  try {
+    const result = await dataClient.get(endpoint().trim(), { signal: controller.signal });
+    setRecord(result);
+  } catch (error) {
+    if (error?.name === 'AbortError') return;
+    setErrorMessage(error instanceof DataError
+      ? `The server returned HTTP ${error.status}: ${error.message}`
+      : error?.message || 'Could not load JSON from that address.');
+  } finally {
+    if (activeRequest === controller) {
+      activeRequest = undefined;
+      setLoading(false);
+    }
+  }
+}
+
+onCleanup(() => activeRequest?.abort());
+void loadJson();
+</script>
+
+<template>
+  <main class="page-shell data-page">
+    <p class="eyebrow">Optional data add-on</p>
+    <h1>Load Data from a server.</h1>
+    <p class="guide-intro">This page uses <code>nodula-framework/data</code> to request a JSON resource with Fetch, then renders the response and handles loading or HTTP errors.</p>
+
+    <form class="data-demo" @submit="loadJson($event)">
+      <label class="data-demo__label" for="data-endpoint">JSON server address</label>
+      <div class="data-demo__controls">
+        <input id="data-endpoint" class="data-demo__input" type="url" autocomplete="url" required :value="endpoint()" @input="setEndpoint($event.currentTarget.value)" />
+        <button class="button button--primary" type="submit" :disabled="loading()">{{ loading() ? 'Loading…' : 'Load JSON' }}</button>
+      </div>
+      <p class="data-demo__hint">Example server: JSONPlaceholder. Change the address to load another CORS-enabled JSON endpoint.</p>
+    </form>
+
+    <p class="data-demo__status" role="status" aria-live="polite" @show="loading()">Loading JSON…</p>
+    <p class="data-demo__error" role="alert" @show="Boolean(errorMessage())">{{ errorMessage() }}</p>
+
+    <section class="data-demo__response" aria-labelledby="data-response-heading" @show="record() !== null">
+      <div class="data-demo__response-heading">
+        <h2 id="data-response-heading">Server response</h2>
+        <span>JSON</span>
+      </div>
+      <pre><code>{{ JSON.stringify(record(), null, 2) }}</code></pre>
+    </section>
+
+    <div class="guide-code">
+      <pre><code>import { createDataClient } from 'nodula-framework/data';
+
+const api = createDataClient();
+const post = await api.get('https://jsonplaceholder.typicode.com/posts/1');</code></pre>
+    </div>
+  </main>
+</template>

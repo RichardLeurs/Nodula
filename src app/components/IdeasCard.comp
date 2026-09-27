@@ -1,0 +1,64 @@
+<script setup>
+import { signal } from 'nodula-framework';
+import { createIndexedDBSignal } from 'nodula-framework/localstorage';
+
+const initialIdeas = [
+  { id: 1, text: 'Sketch out a weekend garden', done: false },
+  { id: 2, text: 'Make a tiny thing that feels good', done: true },
+  { id: 3, text: 'Share an idea with a friend', done: false },
+];
+
+const storedIdeas = createIndexedDBSignal('nodula-ideas', initialIdeas);
+const [ideas, setIdeas] = storedIdeas;
+const [draft, setDraft] = signal('');
+const [ready, setReady] = signal(false);
+const [status, setStatus] = signal('Loading saved ideas…');
+const doneCount = () => ideas().filter((idea) => idea.done).length;
+
+void storedIdeas.ready.then(() => {
+  setReady(true);
+  setStatus(storedIdeas.available ? 'IndexedDB available.' : 'IndexedDB not available.');
+});
+
+function toggleIdea(id, checked) {
+  setIdeas((current) => current.map((idea) => idea.id === id ? { ...idea, done: checked } : idea));
+}
+
+function removeIdea(id) {
+  setIdeas((current) => current.filter((idea) => idea.id !== id));
+}
+
+function addIdea(event) {
+  event.preventDefault();
+  const text = draft().trim();
+  if (!text || !ready()) return;
+
+  const id = ideas().reduce((largest, idea) => Math.max(largest, Number(idea.id) || 0), 0) + 1;
+  setIdeas((current) => [...current, { id, text, done: false }]);
+  setDraft('');
+}
+</script>
+
+<template>
+  <article class="demo-card ideas-card">
+    <div class="card-topline"><span class="mini-icon mini-icon--leaf">↗</span><span class="card-label">A keyed little list</span></div>
+    <div class="ideas-heading">
+      <p class="card-title">Things worth doing</p>
+      <span class="progress-pill">{{ doneCount() }} / {{ ideas().length }} done</span>
+    </div>
+    <p class="ideas-status" role="status">{{ status() }}</p>
+    <ul class="idea-list">
+      <li class="idea" @for="idea of ideas()" :key="idea.id" :class="idea().done ? 'idea idea--done' : 'idea'">
+        <label class="idea-label">
+          <input type="checkbox" :checked="idea().done" @change="toggleIdea(idea().id, $event.currentTarget.checked)" />
+          <span>{{ idea().text }}</span>
+        </label>
+        <button class="icon-button" type="button" :aria-label="'Remove ' + idea().text" @click="removeIdea(idea().id)">×</button>
+      </li>
+    </ul>
+    <form class="add-form" @submit="addIdea($event)">
+      <input class="add-input" type="text" placeholder="Add a small idea…" @bind:value="draft, setDraft" aria-label="New idea" :disabled="!ready()" />
+      <button class="add-button" type="submit" aria-label="Add idea" :disabled="!ready()">+</button>
+    </form>
+  </article>
+</template>

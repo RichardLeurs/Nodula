@@ -1,0 +1,14 @@
+<template>
+  <article>
+    <h1>Idea {{ params.id }}</h1>
+    <p class="guide-intro">This page is loaded from a parameterized file route.</p>
+     <p class="guide-intro">Styled with &lt; style scoped &gt; css </p>
+    <a class="button button--primary" href="/modal">Back to Modal</a>
+  </article>
+</template>
+<style scoped>
+.button {
+
+  background-color: blue;
+}
+</style>

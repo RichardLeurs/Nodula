@@ -1,0 +1,32 @@
+import type { Accessor } from 'nodula-framework';
+
+export interface NavigationRouter {
+  current: Accessor<string>;
+  navigate(path: string): void;
+  mode: 'hash' | 'history';
+}
+
+export interface NavigationItem {
+  label: string;
+  /** Internal router path, for example "/guide"; must begin with `/` unless `external` is true. */
+  href: string;
+  /** Treat href as an absolute HTTP(S) URL and leave it to the browser instead of the router. */
+  external?: boolean;
+  /** External-link browsing context. Defaults to `_blank`; `_self` opens in the current tab. */
+  target?: '_blank' | '_self';
+}
+
+export interface NavigationOptions {
+  label?: string;
+  className?: string;
+  linkClassName?: string;
+  activeClassName?: string;
+}
+
+/** Mount accessible router-aware navigation links into a target element. */
+export function mountNavigation(
+  target: Element,
+  router: NavigationRouter,
+  items: NavigationItem[],
+  options?: NavigationOptions,
+): () => void;
