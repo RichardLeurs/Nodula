@@ -17,7 +17,7 @@ it('lists available add-ons on the page linked from shared navigation', async ()
   let dispose;
   try {
     const { default: AppShell } = await server.ssrLoadModule('/src/AppShell.comp');
-    const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
+    const { mount } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, AppShell);
 
     const addonsLink = [...document.querySelectorAll('.site-nav a')]

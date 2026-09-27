@@ -12,7 +12,7 @@ it('runs show, ref, on and both binding spellings in a compiled component', asyn
   let dispose;
   try {
     const { default: DirectiveForm } = await server.ssrLoadModule('/tests/fixtures/DirectiveForm.comp');
-    const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
+    const { mount } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, DirectiveForm);
     const [text, checkbox] = document.querySelectorAll('input');
     const paragraph = document.querySelector('p');
@@ -48,7 +48,7 @@ it('renders supplied named and default slots or their fallback in a compiled com
   let dispose;
   try {
     const { default: SlotPanel } = await server.ssrLoadModule('/tests/fixtures/SlotPanel.comp');
-    const { mount, h } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
+    const { mount, h } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, () => h('div', {},
       SlotPanel({ slots: { heading: () => h('strong', {}, 'Custom heading'), default: () => h('p', {}, 'Custom body') } }),
       SlotPanel()));
@@ -73,7 +73,7 @@ it('renders imported .comp component tags with reactive props, events, children,
   let dispose;
   try {
     const { default: ComponentConsumer } = await server.ssrLoadModule('/tests/fixtures/ComponentConsumer.comp');
-    const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
+    const { mount } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, ComponentConsumer);
 
     const panels = document.querySelectorAll('.component-panel');
@@ -105,7 +105,7 @@ it('disposes imported component state and event listeners when a conditional bra
   let dispose;
   try {
     const { default: ComponentPanel } = await server.ssrLoadModule('/tests/fixtures/ComponentPanel.comp');
-    const { mount, signal, h, when, component } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
+    const { mount, signal, h, when, component } = await server.ssrLoadModule('nodula-framework');
     const [visible, setVisible] = signal(true);
     let saved = 0;
     dispose = mount(document.body, () => h('main', {}, when(visible, () => component(
@@ -137,7 +137,7 @@ it('scopes scoped component styles to its rendered elements', async () => {
   let dispose;
   try {
     const { default: ScopedPanel } = await server.ssrLoadModule('/tests/fixtures/ScopedPanel.comp');
-    const { mount, h } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
+    const { mount, h } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, () => h('div', {}, ScopedPanel(), ScopedPanel(), h('p', { className: 'scoped-copy' }, 'Outside component')));
 
     const panels = document.querySelectorAll('.scoped-panel');

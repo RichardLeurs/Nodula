@@ -2,13 +2,13 @@
 
 Nodula is a lightweight JavaScript framework built for simplicity and speed around modular architecture. Build your application from small, focused pieces that work together naturally.
 
-The Nodula framework is in early alpha status, the framework is working (see the demo app) but it is not a user friendly npm install yet.
+The Nodula framework is in early alpha status, the framework is working (see the demo app) but it is a work in progress and not a user friendly npm install yet.
 
 ## Design
 
-Nodula has a small core runtime, with optional add-ons for extra features. Import only the add-on modules your app needs.
+Nodula has a small core runtime, with optional add-on modules for extra features. Import only the add-on modules your app needs.
 
-| Module         | Contents                                                                    |
+| Module         | Contents                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------------- |
 | Framework      | Reactivity, DOM rendering, Helpers                                                                  |
 | Router         | Hash or History API navigation, route views, and lazy file-based pages and layouts                  |
@@ -36,7 +36,7 @@ npm install
 npm run dev
 ```
 
-For a production build, run `npm run build` from the root directory. This will build the framework and the demo app to the /dist directory.
+For a production build, run `npm run build`. This will build the framework and the demo app to the /dist directory.
 
 ## VS Code language extension
 
@@ -47,11 +47,15 @@ The extension recognizes:
 
 It highlights JavaScript inside `<script>` blocks, HTML inside `<template>` blocks, and CSS inside `<style>` blocks. Nodula template directives such as `@if`, `@for`, `@click`, `:value`, and `{{ expressions }}` receive Nodula-specific highlighting. Embedded code uses the colors from the active VS Code theme.
 
-See the README.md file in /vscode-nodula installation guidelines.
+See the README.md file in /vscode-nodula for installation guidelines.
+
+## Nodula Documentation
+
+You can find the documentation at https://nodula-docs.richardleurs.nl.
 
 ## License
 
 Nodula is free software licensed under the
 [GNU General Public License v3.0 or later](https://www.gnu.org/licenses/gpl-3.0.html).
 
-Copyright © 2026 Richard Leurs.
+Copyright © 2026 Richard Leurs

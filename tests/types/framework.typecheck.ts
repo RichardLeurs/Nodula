@@ -9,6 +9,8 @@ import {
   list,
   mount,
   onCleanup,
+  onMount,
+  onUnmount,
   signal,
   Nodula,
   slot,
@@ -109,6 +111,8 @@ const content = slot({ default: () => h('span', {}, 'content') }, 'default', () 
 
 const [rootResult, dispose] = createRoot(() => {
   onCleanup(() => console.log('disposed'));
+  onMount(() => console.log('mounted'));
+  onUnmount(() => console.log('unmounted'));
   const mounted = h('main', {}, fragmentNode, keyedRows, condition, content);
   return [mounted, 'owned'] as const;
 });

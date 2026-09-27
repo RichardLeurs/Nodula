@@ -23,9 +23,9 @@ it('demonstrates createForm validation, submission, and reset on the form route'
   const server = await createServer({ server: { middlewareMode: true, hmr: false }, appType: 'custom' });
   let dispose;
   try {
-    await server.ssrLoadModule('/dist/framework/nodula-animation.js');
+    await server.ssrLoadModule('nodula-framework/animation');
     const { default: FormPage } = await server.ssrLoadModule('/src/routes/forms.page');
-    const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
+    const { mount } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, FormPage);
 
     const name = document.querySelector('#form-name');

@@ -6,6 +6,6 @@ dist/
 .env.*
 .vscode/
 vitepress/
-package-lock.json
+/package-lock.json
 README framework.md
 SPECS.md

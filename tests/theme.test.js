@@ -19,7 +19,7 @@ it('switches between dark and light modes and restores the saved choice', async 
   let dispose;
   try {
     const { default: AppShell } = await server.ssrLoadModule('/src/AppShell.comp');
-    const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
+    const { mount } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, AppShell);
     const logo = document.querySelector('.brand-logo');
     assert.ok(logo);

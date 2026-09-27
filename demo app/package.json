@@ -1,0 +1,19 @@
+{
+  "name": "nodula-demo-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config ../vite.config.js --mode app",
+    "build": "vite build --config ../vite.config.js --mode app",
+    "preview": "vite preview --config ../vite.config.js"
+  },
+  "dependencies": {
+    "iconify-icon": "^3.0.3",
+    "nodula-framework": "file:../dist/npm/nodula-framework-0.1.0.tgz"
+  },
+  "devDependencies": {
+    "highlight.js": "^11.12.0",
+    "vite": "^8.3.1"
+  }
+}

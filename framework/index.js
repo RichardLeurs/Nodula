@@ -1,6 +1,6 @@
 console.log('This app is built with nodulaJS | See https://sprigjs.richardleurs.nl for more info | Copyright © Richard Leurs 2026');
 
-export { signal, computed, effect, createRoot, onCleanup, batch } from './reactivity.js';
+export { signal, computed, effect, createRoot, onCleanup, onMount, onUnmount, batch } from './reactivity.js';
 import { defineCustomElement } from './dom.js';
 export { h, fragment, mount, list, each, when, slot, component, outlet, defineCustomElement, registerLifecycleTransition } from './dom.js';
 export { visibleIsland } from './island.js';

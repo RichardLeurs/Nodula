@@ -40,8 +40,8 @@ export function batch(fn) {
   }
 }
 
-function createScope() {
-  return { cleanups: [], disposed: false };
+function createScope(type = 'root') {
+  return { cleanups: [], disposed: false, type };
 }
 
 function dispose(scope) {
@@ -52,7 +52,7 @@ function dispose(scope) {
 
 export function createRoot(fn, { detached = false } = {}) {
   const parent = owner;
-  const root = createScope();
+  const root = createScope('root');
   if (parent && !detached) parent.cleanups.push(() => dispose(root));
 
   const previousOwner = owner;
@@ -69,6 +69,23 @@ export function createRoot(fn, { detached = false } = {}) {
 
 export function onCleanup(fn) {
   if (!owner) throw new Error('onCleanup must be called inside a root or effect.');
+  owner.cleanups.push(fn);
+}
+
+/** Run once after the current reactive scope has completed its synchronous mount. */
+export function onMount(fn) {
+  if (!owner) throw new Error('onMount must be called inside a root or effect.');
+  const scope = owner;
+  if (scope.type !== 'root') throw new Error('onMount must be called inside a root scope, not an effect.');
+  queueMicrotask(() => {
+    if (!scope.disposed) fn();
+  });
+}
+
+/** Run when the current reactive scope is disposed. */
+export function onUnmount(fn) {
+  if (!owner) throw new Error('onUnmount must be called inside a root or effect.');
+  if (owner.type !== 'root') throw new Error('onUnmount must be called inside a root scope, not an effect.');
   owner.cleanups.push(fn);
 }
 
@@ -113,7 +130,7 @@ export function effect(fn) {
       for (const dependency of this.dependencies) dependency.delete(this);
       this.dependencies.clear();
       dispose(this.runScope);
-      this.runScope = createScope();
+      this.runScope = createScope('effect');
 
       const previousObserver = observer;
       const previousOwner = owner;

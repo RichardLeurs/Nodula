@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { computed, createRoot, effect, onCleanup, signal } from '../framework/reactivity.js';
+import { computed, createRoot, effect, onCleanup, onMount, onUnmount, signal } from '../framework/reactivity.js';
 import { createStore } from '../framework/addons/store.js';
 import { createForm } from '../dist/framework/nodula-form.js';
 
@@ -52,6 +52,34 @@ describe('Nodula reactivity', () => {
     assert.deepEqual(values, [2, 3]);
     assert.equal(doubled(), 8);
     assert.equal(cleanups, 2);
+  });
+
+  it('runs mount hooks after the current turn and unmount hooks when their scope is disposed', async () => {
+    const lifecycle = [];
+    const [, dispose] = createRoot(() => {
+      onMount(() => lifecycle.push('mounted'));
+      onUnmount(() => lifecycle.push('unmounted'));
+    });
+
+    assert.deepEqual(lifecycle, []);
+    await Promise.resolve();
+    assert.deepEqual(lifecycle, ['mounted']);
+
+    dispose();
+    assert.deepEqual(lifecycle, ['mounted', 'unmounted']);
+  });
+
+  it('skips the mount hook when its scope is disposed before the mount microtask', async () => {
+    const lifecycle = [];
+    const [, dispose] = createRoot(() => {
+      onMount(() => lifecycle.push('mounted'));
+      onUnmount(() => lifecycle.push('unmounted'));
+    });
+
+    dispose();
+    await Promise.resolve();
+
+    assert.deepEqual(lifecycle, ['unmounted']);
   });
 
   it('tracks store properties independently and reacts to nested writes and replacements', () => {

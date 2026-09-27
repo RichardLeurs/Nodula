@@ -106,6 +106,10 @@ export function effect(fn: Effect): Dispose;
 export function createRoot<T>(fn: () => T, options?: RootOptions): [value: T, dispose: Dispose];
 /** Register cleanup with the current root or effect execution. */
 export function onCleanup(fn: Cleanup): void;
+/** Run once after the current reactive scope has completed its synchronous mount. */
+export function onMount(fn: () => void): void;
+/** Run when the current reactive scope is disposed. */
+export function onUnmount(fn: Cleanup): void;
 /** Batch reactive notifications until the callback completes. */
 export function batch<T>(fn: () => T): T;
 

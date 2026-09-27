@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
 const runtimeEntry = fileURLToPath(new URL('../dist/framework/nodula-framework.js', import.meta.url));
+const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 
 export function nodulaPlugin() {
   return {
@@ -13,10 +14,10 @@ export function nodulaPlugin() {
       if (source === 'nodula:runtime') return runtimeEntry;
       const decodedSource = decodeURIComponent(source);
       if (decodedSource.startsWith('/dist/') || decodedSource.startsWith('/tests/')) {
-        return resolve(process.cwd(), decodedSource.slice(1));
+        return resolve(projectRoot, decodedSource.slice(1));
       }
       if (decodedSource.startsWith('/src/')) {
-        return resolve(process.cwd(), 'demo app', decodedSource.slice(1));
+        return resolve(projectRoot, 'demo app', decodedSource.slice(1));
       }
       return null;
     },

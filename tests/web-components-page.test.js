@@ -13,7 +13,7 @@ it('renders the external custom element and reactively updates its icon property
   let dispose;
   try {
     const { default: WebComponentsPage } = await server.ssrLoadModule('/src/routes/web-components.page');
-    const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
+    const { mount } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, WebComponentsPage);
 
     const icons = [...document.querySelectorAll('iconify-icon')];

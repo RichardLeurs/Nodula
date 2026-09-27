@@ -1,0 +1,2 @@
+You can test an npm package locally using npm pack to create a tarball (npm rub build does this for you, see /dist/npm directory), 
+then install it in your project with npm install /path/to/package.tgz.
