@@ -1,44 +1,158 @@
 import { effect, onCleanup, signal } from 'nodula-framework';
 
-export function createRouter(routes, fallback = () => document.createTextNode('Page not found'), { mode = 'hash' } = {}) {
+export function createRouter(routes, fallback = () => document.createTextNode('Page not found'), options = {}) {
+  const { mode = 'hash', beforeEach } = options;
   if (mode !== 'hash' && mode !== 'history') throw new Error(`Unsupported router mode: ${mode}`);
+  if (beforeEach !== undefined && typeof beforeEach !== 'function') throw new TypeError('Router beforeEach must be a function.');
+
   const readPath = () => mode === 'history' ? window.location.pathname : window.location.hash.slice(1) || '/';
-  const [current, setCurrent] = signal(readPath());
-  const syncPath = () => setCurrent(readPath());
+  const initialPath = readPath();
+  const [current, setCurrent] = signal(initialPath);
+  const [navigationPending, setNavigationPending] = signal(Boolean(beforeEach));
+  const [canRender, setCanRender] = signal(!beforeEach);
+  let active = true;
+  let navigationId = 0;
+  let acceptedLocation = window.location.href;
 
-  const eventName = mode === 'history' ? 'popstate' : 'hashchange';
-  window.addEventListener(eventName, syncPath);
-  onCleanup(() => window.removeEventListener(eventName, syncPath));
+  function parseTarget(path) {
+    if (typeof path !== 'string' || !path.trim()) throw new TypeError('Router paths must be non-empty strings.');
+    const url = new URL(path, window.location.href);
+    if (url.origin !== window.location.origin || !['http:', 'https:'].includes(url.protocol)) {
+      throw new Error(`Cannot navigate outside this origin: ${path}`);
+    }
+    if (mode === 'hash') {
+      if (path.startsWith('#')) url.hash = path;
+      else if (path.startsWith('/')) url.hash = path;
+      return { path: url.hash.slice(1) || '/', href: url.href };
+    }
+    return { path: url.pathname, href: url.href };
+  }
 
-  if (mode === 'history') {
-    const interceptLink = (event) => {
-      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      const link = event.target instanceof window.Element ? event.target.closest('a[href]') : null;
-      if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
-      const url = new URL(link.href, window.location.href);
-      if (url.origin !== window.location.origin || !['http:', 'https:'].includes(url.protocol) || (url.pathname === current() && url.search === window.location.search && url.hash)) return;
-      event.preventDefault();
-      navigate(url.pathname + url.search + url.hash);
-    };
-    document.addEventListener('click', interceptLink, true);
-    onCleanup(() => document.removeEventListener('click', interceptLink, true));
+  function syncPath() {
+    const path = readPath();
+    if (!beforeEach) {
+      setCurrent(path);
+      return;
+    }
+    const target = parseTarget(window.location.href);
+    if (target.href === acceptedLocation) return;
+    requestGuard(target, { fromBrowser: true });
+  }
+
+  function commit(target, { fromBrowser = false, replace = false } = {}) {
+    setCurrent(target.path);
+    setCanRender(true);
+    setNavigationPending(false);
+    acceptedLocation = target.href;
+
+    if (fromBrowser) {
+      if (window.location.href !== target.href) window.history.replaceState(null, '', target.href);
+      return;
+    }
+    if (window.location.href === target.href) return;
+    if (replace) window.history.replaceState(null, '', target.href);
+    else if (mode === 'history') window.history.pushState(null, '', target.href);
+    else window.location.hash = new URL(target.href).hash;
+  }
+
+  async function runGuards(initialTarget, from, id, optionsForNavigation = {}) {
+    let target = initialTarget;
+    const visited = new Set();
+    setNavigationPending(true);
+
+    try {
+      while (active && id === navigationId) {
+        if (visited.has(target.href)) throw new Error(`Router guard redirect loop at ${target.path}.`);
+        visited.add(target.href);
+        const result = await beforeEach({ to: target.path, from });
+        if (!active || id !== navigationId) return;
+
+        if (result === false) {
+          setNavigationPending(false);
+          if (optionsForNavigation.fromBrowser && canRender()) {
+            window.history.replaceState(null, '', acceptedLocation);
+          }
+          return;
+        }
+        if (typeof result === 'string') {
+          const redirect = parseTarget(result);
+          if (redirect.path === target.path) {
+            commit(target, optionsForNavigation);
+            return;
+          }
+          target = redirect;
+          continue;
+        }
+        if (result !== undefined && result !== true) {
+          throw new TypeError('Router beforeEach must return true, false, a redirect path, or void.');
+        }
+
+        commit(target, optionsForNavigation);
+        return;
+      }
+    } catch (error) {
+      if (active && id === navigationId) {
+        setNavigationPending(false);
+        if (optionsForNavigation.fromBrowser && canRender()) {
+          window.history.replaceState(null, '', acceptedLocation);
+        }
+        console.error('Router navigation guard failed:', error);
+      }
+    }
+  }
+
+  function requestGuard(target, optionsForNavigation = {}) {
+    const id = ++navigationId;
+    void runGuards(target, current(), id, optionsForNavigation);
   }
 
   function navigate(path) {
-    if (mode === 'hash') {
-      window.location.hash = path;
-    } else {
-      const url = new URL(path, window.location.href);
-      if (url.origin !== window.location.origin || !['http:', 'https:'].includes(url.protocol)) throw new Error(`Cannot navigate outside this origin: ${path}`);
-      if (url.href !== window.location.href) window.history.pushState(null, '', url.href);
-      syncPath();
+    const target = parseTarget(path);
+    if (!beforeEach) {
+      if (mode === 'hash') window.location.hash = path;
+      else {
+        if (window.location.href !== target.href) window.history.pushState(null, '', target.href);
+        setCurrent(target.path);
+      }
+      return;
     }
+    if (target.href === acceptedLocation && canRender() && !navigationPending()) return;
+    requestGuard(target);
   }
+
+  const eventName = mode === 'history' ? 'popstate' : 'hashchange';
+  window.addEventListener(eventName, syncPath);
+
+  function interceptLink(event) {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const link = event.target instanceof window.Element ? event.target.closest('a[href]') : null;
+    if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+    const url = new URL(link.href, window.location.href);
+    if (url.origin !== window.location.origin || !['http:', 'https:'].includes(url.protocol)
+      || (url.pathname === current() && url.search === window.location.search && url.hash)) return;
+    event.preventDefault();
+    navigate(url.pathname + url.search + url.hash);
+  }
+
+  if (mode === 'history') document.addEventListener('click', interceptLink, true);
+  onCleanup(() => {
+    active = false;
+    navigationId += 1;
+    window.removeEventListener(eventName, syncPath);
+    if (mode === 'history') document.removeEventListener('click', interceptLink, true);
+  });
+
+  if (beforeEach) requestGuard(parseTarget(window.location.href), { fromBrowser: true });
 
   return {
     mode,
     current,
-    view: () => (routes[current()] ?? fallback)(),
+    navigationPending,
+    canRender,
+    view: () => {
+      if (!canRender()) return document.createTextNode(navigationPending() ? 'Checking route…' : 'Navigation blocked.');
+      return (routes[current()] ?? fallback)();
+    },
     navigate,
   };
 }
@@ -149,6 +263,7 @@ export function createFileRouter(files, fallback, options) {
   } });
   const router = createRouter(routeMap, fallback, options);
   effect(() => {
+    if (!router.canRender()) return;
     const matched = matchRoute(router.current());
     if (matched) for (const item of [matched.page.page, ...matched.chain]) item.load();
   });

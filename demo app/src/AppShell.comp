@@ -4,28 +4,84 @@ import { createFileRouter } from 'nodula-framework/router';
 import { mountNavigation } from 'nodula-framework/navigation';
 import { enableLifecycleTransitions } from 'nodula-framework/animation';
 import { createStorageSignal } from 'nodula-framework/localstorage';
+import { demoAuth, initializeDemoAuth, protectDemoAdminRoute, signOutDemoAdmin } from './demo-auth.js';
 
-const router = createFileRouter(import.meta.glob('./routes/**/*.page'), undefined, { mode: 'history' });
+const router = createFileRouter(import.meta.glob('./routes/**/*.page'), undefined, {
+  mode: 'history',
+  beforeEach: protectDemoAdminRoute,
+});
 enableLifecycleTransitions({ options: { duration: 500, easing: 'ease-out' } });
 let disposeNavigation;
+let disposeNavigationEffect;
+let navigationElement;
+let authButtonElement;
+let disposeAuthButtonEffect;
+
+function setAuthButtonElement(element) {
+  disposeAuthButtonEffect?.();
+  authButtonElement = element;
+  if (!element) return;
+
+  disposeAuthButtonEffect = effect(() => {
+    const status = demoAuth.status();
+    const signedIn = status === 'authenticated';
+    const busy = status === 'idle' || status === 'loading';
+    element.textContent = busy ? 'Checking session…' : signedIn ? 'Sign out' : 'Sign in';
+    element.disabled = busy;
+    element.setAttribute('aria-label', busy ? 'Checking demo authentication status' : signedIn ? 'Sign out of the demo administrator account' : 'Sign in as the demo administrator');
+    element.setAttribute('aria-busy', busy ? 'true' : 'false');
+  });
+}
+
+async function toggleDemoSignIn() {
+  try {
+    await initializeDemoAuth();
+    if (demoAuth.isAuthenticated()) {
+      await signOutDemoAdmin();
+      router.navigate('/login');
+      return;
+    }
+
+    await demoAuth.signIn({ demoAdmin: true });
+    router.navigate('/admin');
+  } catch (error) {
+    console.error('Demo authentication action failed:', error);
+  }
+}
 
 function setNavigationElement(element) {
+  disposeNavigationEffect?.();
   disposeNavigation?.();
-  disposeNavigation = element ? mountNavigation(element, router, [
-    { label: 'Home', href: '/' },
-    { label: 'Add-ons', href: '/addons' },
-    { label: 'Data', href: '/data' },
-    { label: 'Forms', href: '/forms' },
-      { label: 'Modal windows', href: '/modal' },
-    { label: 'Web Components', href: '/web-components' },
-    { label: 'Guide', href: 'https://nodula-docs.richardleurs.nl/', external: true },
-  ], {
-    label: 'Main navigation',
-    linkClassName: 'nav-link',
-    activeClassName: 'nav-link--active',
-  }) : undefined;
+  navigationElement = element;
+  if (!element) return;
+
+  disposeNavigationEffect = effect(() => {
+    const isAdmin = demoAuth.status() === 'authenticated' && demoAuth.user()?.role === 'admin';
+    const items = [
+      { label: 'Home', href: '/' },
+      { label: 'Add-ons', href: '/addons' },
+      { label: 'Data', href: '/data' },
+      { label: 'Forms', href: '/forms' },
+        { label: 'Modal windows', href: '/modal' },
+      { label: 'Web Components', href: '/web-components' },
+      ...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
+      // { label: 'Demo login', href: '/login' },
+      { label: 'Guide', href: 'https://nodula-docs.richardleurs.nl/', external: true },
+    ];
+
+    disposeNavigation?.();
+    disposeNavigation = mountNavigation(element, router, items, {
+      label: 'Main navigation',
+      linkClassName: 'nav-link',
+      activeClassName: 'nav-link--active',
+    });
+  });
 }
-onCleanup(() => disposeNavigation?.());
+onCleanup(() => {
+  disposeNavigation?.();
+  disposeNavigationEffect?.();
+  disposeAuthButtonEffect?.();
+});
 const [theme, setTheme] = createStorageSignal('nodula-theme', 'dark');
 
 effect(() => {
@@ -79,6 +135,7 @@ function setThemeToggleIcons(element) {
         <span class="brand-version">0.1</span>
       </a>
       <nav class="site-nav" @ref="setNavigationElement"></nav>
+      <button class="auth-toggle" type="button" @click="toggleDemoSignIn()" @ref="setAuthButtonElement" aria-busy="true">Checking session…</button>
       <button class="theme-toggle" type="button" @click="toggleTheme()" @ref="setThemeToggleIcons" :aria-label="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" :aria-pressed="theme() === 'light' ? 'true' : 'false'"></button>
       <!-- <a class="github-link" href="https://vite.dev/" target="_blank" rel="noreferrer">Made for the web <span aria-hidden="true"> ↗</span></a> -->
     </header>

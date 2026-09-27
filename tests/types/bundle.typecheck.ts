@@ -1,7 +1,7 @@
 import { h, signal } from '../../dist/framework/nodula-framework.js';
 import { createStore } from '../../dist/framework/nodula-store.js';
 import { createForm } from '../../dist/framework/nodula-form.js';
-import { createRouter } from '../../dist/framework/nodula-router.js';
+import { createRouter, type NavigationGuard } from '../../dist/framework/nodula-router.js';
 import { animate, createTransition } from '../../dist/framework/nodula-animation.js';
 import { showDialog } from '../../dist/framework/nodula-dialog.js';
 import { openModal } from '../../dist/framework/nodula-modal.js';
@@ -9,6 +9,7 @@ import { openDrawer } from '../../dist/framework/nodula-drawer.js';
 import { mountNavigation } from '../../dist/framework/nodula-navigation.js';
 import { createIndexedDBSignal, createStorageSignal, deleteCookie, getCookie, setCookie } from '../../dist/framework/nodula-localstorage.js';
 import { createDataClient, DataError } from '../../dist/framework/nodula-data.js';
+import { createAuth } from '../../dist/framework/nodula-auth.js';
 
 const [count, setCount] = signal(0);
 const state = createStore({ message: 'ready' });
@@ -45,6 +46,15 @@ dataClient.get<Array<{ id: number }>>('/ideas', { params: { limit: 10 } }).then(
 dataClient.post('/ideas', { text: 'Test' }).catch((error) => {
   if (error instanceof DataError) console.log(error.status, error.data);
 });
+const auth = createAuth<{ email: string; password: string }, { id: string }, { token: string }>({
+  async getSession() { return null; },
+  async signIn(credentials) { return { user: { id: credentials.email }, session: { token: 'opaque' } }; },
+  async signOut(session) { console.log(session?.token); },
+});
+auth.initialize().then(() => console.log(auth.status(), auth.isAuthenticated(), auth.user()?.id));
+const requireSession: NavigationGuard = ({ to }) => to === '/account' && !auth.isAuthenticated() ? '/login' : true;
+const guardedRouter = createRouter({}, undefined, { beforeEach: requireSession });
+console.log(guardedRouter.navigationPending(), guardedRouter.canRender());
 
 // @ts-expect-error built declarations must preserve signal value types.
 setCount('incorrect');

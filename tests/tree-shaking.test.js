@@ -86,4 +86,9 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   assert.match(navigation, /treeShakingResult/);
   assert.match(navigation, /aria-current/);
   assert.doesNotMatch(navigation, /Unsupported router mode/);
+
+  const auth = await bundleConsumer('auth.js');
+  assert.match(auth, /treeShakingResult/);
+  assert.match(auth, /getSession/);
+  assert.doesNotMatch(auth, /createDataClient/);
 });

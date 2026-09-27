@@ -1,4 +1,4 @@
-console.log('This app is built with nodulaJS | See https://sprigjs.richardleurs.nl for more info | Copyright © Richard Leurs 2026');
+console.log('This app is built with th nodula javascript framework | See https://nodula.richardleurs.nl for more info | Copyright © Richard Leurs 2026');
 
 export { signal, computed, effect, createRoot, onCleanup, onMount, onUnmount, batch } from './reactivity.js';
 import { defineCustomElement } from './dom.js';

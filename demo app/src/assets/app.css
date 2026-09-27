@@ -142,6 +142,11 @@ code { color: var(--green); }
 .nav-link--active { color: var(--green); font-weight: bold;}
 .nav-link:hover { color: var(--green); text-decoration: underline;}
 
+.auth-toggle { min-height: 34px; padding: 0 11px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted-nav); background: var(--surface-overlay); font-size: .875rem; cursor: pointer; }
+.auth-toggle:hover:not(:disabled) { border-color: var(--green); color: var(--green); }
+.auth-toggle:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+.auth-toggle:disabled { opacity: .7; cursor: wait; }
+
 .github-link { font-size: .875rem; }
 .page-shell { width: min(100% - 72px, 1128px); margin: 0 auto; }
 

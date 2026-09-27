@@ -5,6 +5,100 @@ import { createRoot, h, mount } from '../dist/framework/nodula-framework.js';
 import { createFileRouter, createRouter } from '../dist/framework/nodula-router.js';
 
 describe('Nodula file-based routes', () => {
+  it('waits for the initial route guard before requesting a lazy protected page', async () => {
+    const window = new Window({ url: 'http://localhost/#/private' });
+    globalThis.window = window;
+    globalThis.document = window.document;
+    globalThis.Node = window.Node;
+    let allowNavigation;
+    const loads = [];
+    let router;
+    const dispose = mount(document.body, () => {
+      router = createFileRouter({
+        './routes/private.page': () => {
+          loads.push('private');
+          return Promise.resolve({ default: () => h('p', {}, 'Private page') });
+        },
+      }, undefined, {
+        beforeEach: () => new Promise((resolve) => { allowNavigation = resolve; }),
+      });
+      return h('main', {}, router.view);
+    });
+
+    assert.equal(router.canRender(), false);
+    assert.equal(document.body.textContent, 'Checking route…');
+    assert.deepEqual(loads, []);
+    allowNavigation(true);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(router.canRender(), true);
+    assert.deepEqual(loads, ['private']);
+    assert.equal(document.body.textContent, 'Private page');
+
+    dispose();
+    window.close();
+  });
+
+  it('redirects an initially denied file route before loading its module', async () => {
+    const window = new Window({ url: 'http://localhost/#/private' });
+    globalThis.window = window;
+    globalThis.document = window.document;
+    globalThis.Node = window.Node;
+    const loads = [];
+    let router;
+    const dispose = mount(document.body, () => {
+      router = createFileRouter({
+        './routes/login.page': { default: () => h('p', {}, 'Login') },
+        './routes/private.page': () => {
+          loads.push('private');
+          return Promise.resolve({ default: () => h('p', {}, 'Private page') });
+        },
+      }, undefined, {
+        beforeEach: ({ to }) => to === '/private' ? '/login' : true,
+      });
+      return h('main', {}, router.view);
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(router.current(), '/login');
+    assert.equal(window.location.hash, '#/login');
+    assert.equal(document.body.textContent, 'Login');
+    assert.deepEqual(loads, []);
+
+    dispose();
+    window.close();
+  });
+
+  it('cancels guarded navigation and preserves the current route', async () => {
+    const window = new Window({ url: 'http://localhost/#/' });
+    globalThis.window = window;
+    globalThis.document = window.document;
+    let denyNavigation;
+    const [router, dispose] = createRoot(() => createRouter({
+      '/': () => document.createTextNode('Home'),
+      '/private': () => document.createTextNode('Private'),
+    }, undefined, {
+      beforeEach: ({ to }) => to === '/private'
+        ? new Promise((resolve) => { denyNavigation = resolve; })
+        : true,
+    }));
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(router.canRender(), true);
+
+    router.navigate('/private');
+    assert.equal(router.navigationPending(), true);
+    assert.equal(router.current(), '/');
+    denyNavigation(false);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(router.navigationPending(), false);
+    assert.equal(router.current(), '/');
+    assert.equal(router.view().textContent, 'Home');
+    assert.equal(window.location.hash, '#/');
+
+    dispose();
+    window.close();
+  });
+
   it('discovers index and nested page files without explicit registration', () => {
     const window = new Window({ url: 'http://localhost/#/' });
     globalThis.window = window;

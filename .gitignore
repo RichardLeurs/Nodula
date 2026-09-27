@@ -1,6 +1,8 @@
 node_modules
 api/
 dist/
+demo app/src/assets/*.af
+demo app/src/assets/*.af-lock-
 .DS_Store
 .env
 .env.*

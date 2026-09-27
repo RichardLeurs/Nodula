@@ -23,6 +23,7 @@
     "framework/addons/data.d.ts",
     "framework/addons/store.d.ts",
     "framework/addons/pwa.d.ts",
+    "framework/addons/auth.d.ts",
     "tests/types/framework.typecheck.ts"
   ]
 }

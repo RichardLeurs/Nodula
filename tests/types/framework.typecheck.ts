@@ -20,7 +20,7 @@ import {
 import { signal as packageSignal, h as packageH } from 'nodula-framework';
 import { createStore as packageStore } from 'nodula-framework/store';
 import { createForm as packageForm } from 'nodula-framework/form';
-import { createFileRouter, createRouter } from 'nodula-framework/router';
+import { createFileRouter, createRouter, type NavigationGuard } from 'nodula-framework/router';
 import { animate, createTransition } from 'nodula-framework/animation';
 import { showDialog } from 'nodula-framework/dialog';
 import { showNotification } from 'nodula-framework/notifications';
@@ -30,6 +30,7 @@ import { mountNavigation } from 'nodula-framework/navigation';
 import { createIndexedDBSignal, createStorageSignal, deleteCookie, getCookie, setCookie } from 'nodula-framework/localstorage';
 import { nodulaPWA } from 'nodula-framework/pwa';
 import { createDataClient, DataError } from 'nodula-framework/data';
+import { createAuth } from 'nodula-framework/auth';
 import type { Plugin } from 'vite';
 
 const [count, setCount] = signal(0);
@@ -87,6 +88,19 @@ const typedResponse: Promise<{ id: number }> = dataClient.get('/items/1');
 const typedCreation: Promise<{ id: number }> = dataClient.post('/items', { name: 'Leaf' });
 const typedDataError: typeof DataError = DataError;
 console.log(typedResponse, typedCreation, typedDataError);
+const typedAuth = createAuth<{ code: string }, { id: number }, { sessionId: string }>({
+  async getSession() { return null; },
+  async signIn(credentials) { return { user: { id: credentials.code.length }, session: { sessionId: 'opaque' } }; },
+  async signOut(session) { console.log(session?.sessionId); },
+  async refreshSession() { return null; },
+});
+typedAuth.initialize().then(() => console.log(typedAuth.status(), typedAuth.isAuthenticated(), typedAuth.user()?.id));
+const requireSession: NavigationGuard = async ({ to }) => {
+  if (to === '/account' && !typedAuth.isAuthenticated()) return '/login';
+  return true;
+};
+const guardedRouter = createRouter({}, undefined, { mode: 'history', beforeEach: requireSession });
+console.log(guardedRouter.navigationPending(), guardedRouter.canRender());
 const doubled = computed(() => count() * 2);
 setCount((current) => current + 1);
 effect(() => { console.log(doubled()); });

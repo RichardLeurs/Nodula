@@ -21,6 +21,7 @@ const frameworkStyles = [
 
 const addonBuilds = {
   store: { entry: 'framework/addons/store.js', output: 'nodula-store.js', types: 'store.d.ts', externals: [reactivityEntry], paths: [[reactivityEntry, './nodula-framework.js']] },
+  auth: { entry: 'framework/addons/auth.js', output: 'nodula-auth.js', types: 'auth.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-framework.js'], ['nodula-framework', './nodula-framework.js']] },
   form: { entry: 'framework/addons/form.js', output: 'nodula-form.js', types: 'form.d.ts', externals: [runtimeEntry, storeEntry, 'nodula-framework', 'nodula-framework/store'], paths: [[runtimeEntry, './nodula-framework.js'], ['nodula-framework', './nodula-framework.js'], [storeEntry, './nodula-store.js'], ['nodula-framework/store', './nodula-store.js']] },
   router: { entry: 'framework/addons/router.js', output: 'nodula-router.js', types: 'router.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-framework.js'], ['nodula-framework', './nodula-framework.js']] },
   animation: { entry: 'framework/addons/animation.js', output: 'nodula-animation.js', types: 'animation.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-framework.js'], ['nodula-framework', './nodula-framework.js']] },
@@ -127,11 +128,19 @@ function appBuildConfig() {
     ...Object.entries(addonBuilds).map(([name, addon]) => [fileURLToPath(new URL(`./dist/framework/${addon.output}`, import.meta.url)), `/framework/${addon.output}`]),
     ...Object.entries(addonBuilds).map(([name, addon]) => [`nodula-framework/${name}`, `/framework/${addon.output}`]),
   ]);
+  const packageAliases = [
+    { find: /^nodula-framework$/, replacement: runtimeEntry },
+    ...Object.entries(addonBuilds).map(([name, addon]) => ({
+      find: `nodula-framework/${name}`,
+      replacement: fileURLToPath(new URL(`./dist/framework/${addon.output}`, import.meta.url)),
+    })),
+  ];
 
   return {
     root: appRoot,
     resolve: {
       dedupe: ['nodula-framework'],
+      alias: packageAliases,
     },
     plugins: [
       nodulaPlugin(),

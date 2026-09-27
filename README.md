@@ -23,6 +23,7 @@ Nodula has a small core runtime, with optional add-on modules for extra features
 | Drawers        | Accessible modal side panels that open from the left or right                                       |
 | Navigation     | Accessible router-aware internal links and explicitly external HTTP(S) links                        |
 | PWA            | Build installable, offline-capable applications                                                     |
+| Auth           | Reactive client authentication state connected to an app-provided auth service                      |
 
 
 ## Install and run
