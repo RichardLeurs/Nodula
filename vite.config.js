@@ -18,6 +18,7 @@ const dataEntry = fileURLToPath(new URL('./dist/framework/nodula-data.js', impor
 const storeEntry = fileURLToPath(new URL('./dist/framework/nodula-store.js', import.meta.url));
 
 export default defineConfig({
+  root: fileURLToPath(new URL('./demo app', import.meta.url)),
   plugins: [
     nodulaPlugin(),
     ...nodulaPWA(),
@@ -34,11 +35,12 @@ export default defineConfig({
       name: 'nodula-copy-app-icon',
       async closeBundle() {
         await mkdir('dist/assets', { recursive: true });
-        await copyFile('src app/assets/logo-64x64.png', 'dist/assets/logo-64x64.png');
+        await copyFile('demo app/src/assets/logo-64x64.png', 'dist/assets/logo-64x64.png');
       },
     },
   ],
   build: {
+    outDir: fileURLToPath(new URL('./dist', import.meta.url)),
     emptyOutDir: false,
     minify: 'oxc',
     cssMinify: 'lightningcss',

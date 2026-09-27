@@ -9,7 +9,7 @@ globalThis.Element = window.Element;
 globalThis.Node = window.Node;
 globalThis.MutationObserver = window.MutationObserver;
 
-const { installDemoCodeHighlighting } = await import('../src app/highlight-demo-code.js');
+const { installDemoCodeHighlighting } = await import('../demo app/src/highlight-demo-code.js');
 
 after(() => window.close());
 

@@ -16,7 +16,7 @@ it('lists available add-ons on the page linked from shared navigation', async ()
 
   let dispose;
   try {
-    const { default: AppShell } = await server.ssrLoadModule('/src%20app/AppShell.comp');
+    const { default: AppShell } = await server.ssrLoadModule('/src/AppShell.comp');
     const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
     dispose = mount(document.body, AppShell);
 

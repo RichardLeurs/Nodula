@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": false,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": []
+  },
+  "files": [
+    "../src framework/index.d.ts",
+    "../src framework/addons/form.d.ts",
+    "../src framework/addons/router.d.ts",
+    "../src framework/addons/animation.d.ts",
+    "../src framework/addons/dialog.d.ts",
+    "../src framework/addons/notifications.d.ts",
+    "../src framework/addons/modal.d.ts",
+    "../src framework/addons/drawer.d.ts",
+    "../src framework/addons/navigation.d.ts",
+    "../src framework/addons/localstorage.d.ts",
+    "../src framework/addons/data.d.ts",
+    "../src framework/addons/store.d.ts",
+    "../src framework/addons/pwa.d.ts",
+    "../tests/types/framework.typecheck.ts"
+  ]
+}

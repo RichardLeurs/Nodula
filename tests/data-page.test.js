@@ -21,7 +21,7 @@ it('loads and displays JSON from the editable server address', async () => {
   const server = await createServer({ server: { middlewareMode: true, hmr: false }, appType: 'custom' });
   let dispose;
   try {
-    const { default: DataPage } = await server.ssrLoadModule('/src%20app/routes/data.page');
+    const { default: DataPage } = await server.ssrLoadModule('/src/routes/data.page');
     const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
     dispose = mount(document.body, DataPage);
     await window.happyDOM.whenAsyncComplete();

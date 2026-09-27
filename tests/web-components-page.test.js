@@ -12,7 +12,7 @@ it('renders the external custom element and reactively updates its icon property
   const server = await createServer({ server: { middlewareMode: true, hmr: false }, appType: 'custom' });
   let dispose;
   try {
-    const { default: WebComponentsPage } = await server.ssrLoadModule('/src%20app/routes/web-components.page');
+    const { default: WebComponentsPage } = await server.ssrLoadModule('/src/routes/web-components.page');
     const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
     dispose = mount(document.body, WebComponentsPage);
 

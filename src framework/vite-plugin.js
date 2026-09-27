@@ -12,8 +12,11 @@ export function nodulaPlugin() {
     resolveId(source) {
       if (source === 'nodula:runtime') return runtimeEntry;
       const decodedSource = decodeURIComponent(source);
-      if (decodedSource.startsWith('/src app/')) {
+      if (decodedSource.startsWith('/dist/') || decodedSource.startsWith('/tests/')) {
         return resolve(process.cwd(), decodedSource.slice(1));
+      }
+      if (decodedSource.startsWith('/src/')) {
+        return resolve(process.cwd(), 'demo app', decodedSource.slice(1));
       }
       return null;
     },

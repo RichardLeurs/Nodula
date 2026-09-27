@@ -90,7 +90,7 @@ it('renders the counter and IndexedDB-backed ideas card with local CRUD and pers
 
   let dispose;
   try {
-    const { default: HomePage } = await server.ssrLoadModule('/src%20app/routes/index.page');
+    const { default: HomePage } = await server.ssrLoadModule('/src/routes/index.page');
     const { mount } = await server.ssrLoadModule('/dist/framework/nodula-framework.js');
     dispose = mount(document.body, HomePage);
 
