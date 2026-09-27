@@ -12,11 +12,11 @@ export default defineConfig({
         'nodula-modal.css',
         'nodula-drawer.css',
         'nodula-notifications.css',
-      ].map((file) => readFile(`src framework/assets/${file}`, 'utf8')));
+      ].map((file) => readFile(`framework/assets/${file}`, 'utf8')));
       const css = Buffer.from(cssParts.join('\n'));
       const minified = transform({ filename: 'nodula-framework.css', code: css, minify: true });
       await Promise.all([
-        copyFile('src framework/index.d.ts', 'dist/framework/nodula-framework.d.ts'),
+        copyFile('framework/index.d.ts', 'dist/framework/nodula-framework.d.ts'),
         writeFile('dist/framework/nodula-framework.css', minified.code),
         rm('dist/framework/nodula.js', { force: true }),
         rm('dist/framework/nodula.d.ts', { force: true }),
@@ -34,7 +34,7 @@ export default defineConfig({
       },
     },
     lib: {
-      entry: 'src framework/index.js',
+      entry: 'framework/index.js',
       formats: ['es'],
       fileName: () => 'nodula-framework.js',
     },

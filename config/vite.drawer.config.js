@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-drawer-types',
     async closeBundle() {
-      await copyFile('src framework/addons/drawer.d.ts', 'dist/framework/nodula-drawer.d.ts');
+      await copyFile('framework/addons/drawer.d.ts', 'dist/framework/nodula-drawer.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/drawer.js',
+      entry: 'framework/addons/drawer.js',
       formats: ['es'],
       fileName: () => 'nodula-drawer.js',
     },

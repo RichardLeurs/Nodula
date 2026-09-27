@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-modal-types',
     async closeBundle() {
-      await copyFile('src framework/addons/modal.d.ts', 'dist/framework/nodula-modal.d.ts');
+      await copyFile('framework/addons/modal.d.ts', 'dist/framework/nodula-modal.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/modal.js',
+      entry: 'framework/addons/modal.js',
       formats: ['es'],
       fileName: () => 'nodula-modal.js',
     },

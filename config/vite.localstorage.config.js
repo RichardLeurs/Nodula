@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-localstorage-types',
     async closeBundle() {
-      await copyFile('src framework/addons/localstorage.d.ts', 'dist/framework/nodula-localstorage.d.ts');
+      await copyFile('framework/addons/localstorage.d.ts', 'dist/framework/nodula-localstorage.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/localstorage.js',
+      entry: 'framework/addons/localstorage.js',
       formats: ['es'],
       fileName: () => 'nodula-localstorage.js',
     },

@@ -25,10 +25,10 @@ before(async () => {
   globalThis.window = window;
   globalThis.document = document;
   globalThis.Node = window.Node;
-  ({ signal, effect, onCleanup } = await import('../src framework/reactivity.js'));
-  ({ createStore } = await import('../src framework/addons/store.js'));
-  ({ h, list, each, mount, when, fragment, slot, defineCustomElement } = await import('../src framework/dom.js'));
-  ({ Nodula } = await import('../src framework/index.js'));
+  ({ signal, effect, onCleanup } = await import('../framework/reactivity.js'));
+  ({ createStore } = await import('../framework/addons/store.js'));
+  ({ h, list, each, mount, when, fragment, slot, defineCustomElement } = await import('../framework/dom.js'));
+  ({ Nodula } = await import('../framework/index.js'));
 });
 
 describe('Nodula DOM helpers', () => {

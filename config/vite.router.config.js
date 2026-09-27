@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-router-types',
     async closeBundle() {
-      await copyFile('src framework/addons/router.d.ts', 'dist/framework/nodula-router.d.ts');
+      await copyFile('framework/addons/router.d.ts', 'dist/framework/nodula-router.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/router.js',
+      entry: 'framework/addons/router.js',
       formats: ['es'],
       fileName: () => 'nodula-router.js',
     },

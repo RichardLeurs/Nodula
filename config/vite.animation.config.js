@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-animation-types',
     async closeBundle() {
-      await copyFile('src framework/addons/animation.d.ts', 'dist/framework/nodula-animation.d.ts');
+      await copyFile('framework/addons/animation.d.ts', 'dist/framework/nodula-animation.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/animation.js',
+      entry: 'framework/addons/animation.js',
       formats: ['es'],
       fileName: () => 'nodula-animation.js',
     },

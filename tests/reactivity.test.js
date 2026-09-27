@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { computed, createRoot, effect, onCleanup, signal } from '../src framework/reactivity.js';
-import { createStore } from '../src framework/addons/store.js';
+import { computed, createRoot, effect, onCleanup, signal } from '../framework/reactivity.js';
+import { createStore } from '../framework/addons/store.js';
 import { createForm } from '../dist/framework/nodula-form.js';
 
 describe('Nodula reactivity', () => {

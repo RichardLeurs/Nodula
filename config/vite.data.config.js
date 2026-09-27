@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-data-types',
     async closeBundle() {
-      await copyFile('src framework/addons/data.d.ts', 'dist/framework/nodula-data.d.ts');
+      await copyFile('framework/addons/data.d.ts', 'dist/framework/nodula-data.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/data.js',
+      entry: 'framework/addons/data.js',
       formats: ['es'],
       fileName: () => 'nodula-data.js',
     },

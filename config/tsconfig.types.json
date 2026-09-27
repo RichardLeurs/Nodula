@@ -10,19 +10,19 @@
     "types": []
   },
   "files": [
-    "../src framework/index.d.ts",
-    "../src framework/addons/form.d.ts",
-    "../src framework/addons/router.d.ts",
-    "../src framework/addons/animation.d.ts",
-    "../src framework/addons/dialog.d.ts",
-    "../src framework/addons/notifications.d.ts",
-    "../src framework/addons/modal.d.ts",
-    "../src framework/addons/drawer.d.ts",
-    "../src framework/addons/navigation.d.ts",
-    "../src framework/addons/localstorage.d.ts",
-    "../src framework/addons/data.d.ts",
-    "../src framework/addons/store.d.ts",
-    "../src framework/addons/pwa.d.ts",
+    "../framework/index.d.ts",
+    "../framework/addons/form.d.ts",
+    "../framework/addons/router.d.ts",
+    "../framework/addons/animation.d.ts",
+    "../framework/addons/dialog.d.ts",
+    "../framework/addons/notifications.d.ts",
+    "../framework/addons/modal.d.ts",
+    "../framework/addons/drawer.d.ts",
+    "../framework/addons/navigation.d.ts",
+    "../framework/addons/localstorage.d.ts",
+    "../framework/addons/data.d.ts",
+    "../framework/addons/store.d.ts",
+    "../framework/addons/pwa.d.ts",
     "../tests/types/framework.typecheck.ts"
   ]
 }

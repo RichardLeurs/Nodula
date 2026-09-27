@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-notifications-types',
     async closeBundle() {
-      await copyFile('src framework/addons/notifications.d.ts', 'dist/framework/nodula-notifications.d.ts');
+      await copyFile('framework/addons/notifications.d.ts', 'dist/framework/nodula-notifications.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/notifications.js',
+      entry: 'framework/addons/notifications.js',
       formats: ['es'],
       fileName: () => 'nodula-notifications.js',
     },

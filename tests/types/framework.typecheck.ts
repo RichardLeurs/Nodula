@@ -14,7 +14,7 @@ import {
   slot,
   visibleIsland,
   when,
-} from '../../src framework/index.js';
+} from '../../framework/index.js';
 import { signal as packageSignal, h as packageH } from 'nodula-framework';
 import { createStore as packageStore } from 'nodula-framework/store';
 import { createForm as packageForm } from 'nodula-framework/form';

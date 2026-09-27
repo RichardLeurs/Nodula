@@ -1,7 +1,7 @@
 import { copyFile, mkdir, rm } from 'node:fs/promises';
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
-import { nodulaPlugin } from './src framework/vite-plugin.js';
+import { nodulaPlugin } from './framework/vite-plugin.js';
 import { nodulaPWA } from 'nodula-framework/pwa';
 
 const runtimeEntry = fileURLToPath(new URL('./dist/framework/nodula-framework.js', import.meta.url));

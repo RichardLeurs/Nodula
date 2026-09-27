@@ -2,13 +2,13 @@ import { copyFile } from 'node:fs/promises';
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
 
-const runtimeEntry = fileURLToPath(new URL('../src framework/reactivity.js', import.meta.url));
+const runtimeEntry = fileURLToPath(new URL('../framework/reactivity.js', import.meta.url));
 
 export default defineConfig({
   plugins: [{
     name: 'nodula-store-types',
     async closeBundle() {
-      await copyFile('src framework/addons/store.d.ts', 'dist/framework/nodula-store.d.ts');
+      await copyFile('framework/addons/store.d.ts', 'dist/framework/nodula-store.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/store.js',
+      entry: 'framework/addons/store.js',
       formats: ['es'],
       fileName: () => 'nodula-store.js',
     },

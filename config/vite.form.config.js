@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-form-types',
     async closeBundle() {
-      await copyFile('src framework/addons/form.d.ts', 'dist/framework/nodula-form.d.ts');
+      await copyFile('framework/addons/form.d.ts', 'dist/framework/nodula-form.d.ts');
     },
   }],
   build: {
@@ -17,7 +17,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/form.js',
+      entry: 'framework/addons/form.js',
       formats: ['es'],
       fileName: () => 'nodula-form.js',
     },

@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-dialog-types',
     async closeBundle() {
-      await copyFile('src framework/addons/dialog.d.ts', 'dist/framework/nodula-dialog.d.ts');
+      await copyFile('framework/addons/dialog.d.ts', 'dist/framework/nodula-dialog.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/dialog.js',
+      entry: 'framework/addons/dialog.js',
       formats: ['es'],
       fileName: () => 'nodula-dialog.js',
     },

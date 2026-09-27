@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-pwa-types',
     async closeBundle() {
-      await copyFile('src framework/addons/pwa.d.ts', 'dist/framework/nodula-pwa.d.ts');
+      await copyFile('framework/addons/pwa.d.ts', 'dist/framework/nodula-pwa.d.ts');
     },
   }],
   build: {
@@ -13,7 +13,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/pwa.js',
+      entry: 'framework/addons/pwa.js',
       formats: ['es'],
       fileName: () => 'nodula-pwa.js',
     },

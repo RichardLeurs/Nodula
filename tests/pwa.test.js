@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 import { build } from 'vite';
-import { nodulaPWA } from '../src framework/addons/pwa.js';
+import { nodulaPWA } from '../framework/addons/pwa.js';
 
 describe('Nodula PWA add-on', () => {
   it('returns vite-plugin-pwa plugins with prompt updates by default', () => {

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { compileNodulaComponent, compileNodulaStyle } from '../src framework/compiler.js';
+import { compileNodulaComponent, compileNodulaStyle } from '../framework/compiler.js';
 
 describe('Nodula single-file component compiler', () => {
   it('compiles conditional elements and adjacent else branches without treating them as events', () => {

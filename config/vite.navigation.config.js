@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [{
     name: 'nodula-navigation-types',
     async closeBundle() {
-      await copyFile('src framework/addons/navigation.d.ts', 'dist/framework/nodula-navigation.d.ts');
+      await copyFile('framework/addons/navigation.d.ts', 'dist/framework/nodula-navigation.d.ts');
     },
   }],
   build: {
@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: false,
     minify: 'oxc',
     lib: {
-      entry: 'src framework/addons/navigation.js',
+      entry: 'framework/addons/navigation.js',
       formats: ['es'],
       fileName: () => 'nodula-navigation.js',
     },
