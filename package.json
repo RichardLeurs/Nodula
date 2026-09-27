@@ -91,7 +91,7 @@
     "pack:framework": "npm pack --pack-destination dist/npm",
     "install:framework": "npm run package:framework && npm install --prefix 'demo app' ./dist/npm/nodula-framework-0.1.0.tgz",
     "test": "npm run typecheck && npm run install:framework && node --test && npm run test:api",
-    "typecheck": "npm run build:framework && tsc -p config/tsconfig.types.json",
+    "typecheck": "npm run build:framework && tsc -p tsconfig.types.json",
     "typecheck:bundle": "tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM,DOM.Iterable --types node tests/types/bundle.typecheck.ts"
   },
   "devDependencies": {
