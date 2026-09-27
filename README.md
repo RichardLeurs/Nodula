@@ -1,7 +1,52 @@
 # Nodula
 
-Meet Nodula: A lightweight JavaScript framework built around modular architecture, simplicity and speed. Build your application from small, focused pieces that work together naturally.
+Nodula is a lightweight JavaScript framework built for simplicity and speed around modular architecture. Build your application from small, focused pieces that work together naturally.
 
+The Nodula framework is in early alpha status, the framework is working (see the demo app) but it is not a user friendly npm install yet.
+
+## Design
+
+Nodula has a small core runtime, with optional add-ons for extra features. Import only the add-on modules your app needs.
+
+| Framework      | Reactivity, DOM rendering, Helpers                                                                  |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| Router         | Hash or History API navigation, route views, and lazy file-based pages and layouts                  |
+| Localstorage   | Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies              |
+| Data           | Fetch data from a server with method helpers, query parameters, and readable HTTP errors            |
+| Stores         | Deeply reactive proxies for plain objects and arrays, including nested values                       |
+| Web Components | Use framework independ, native Web Components                                                       |
+| Animation      | Web Animations helpers and opt-in enter/leave transitions for routes, conditionals, and keyed lists |
+| Forms          | Reactive form values, validation, touched and dirty state, async submission, and reset helpers      |
+| Dialogs        | Native confirmation dialogs with configurable labels and owner cleanup                              |
+| Modals         | Native modal windows with safe content, close controls, and configurable backdrop dismissal         |
+| Drawers        | Accessible modal side panels that open from the left or right                                       |
+| Navigation     | Accessible router-aware internal links and explicitly external HTTP(S) links                        |
+| PWA            | Build installable, offline-capable applications                                                     |
+
+
+## Install and run
+
+This repository contains the code for the Nodula framework and a demo app. This demo app is the website for Nodula, see https://nodula.richardleurs.nl.
+
+To install this repository's dependencies and run the demo locally:
+
+```sh
+npm install
+npm run dev
+```
+
+For a production build, run `npm run build` from the root directory. This will build the framework and the demo app to the /dist directory.
+
+## VS Code language extension
+
+The extension recognizes:
+
+- `.page` — Nodula route pages
+- `.comp` — Reusable Nodula components
+
+It highlights JavaScript inside `<script>` blocks, HTML inside `<template>` blocks, and CSS inside `<style>` blocks. Nodula template directives such as `@if`, `@for`, `@click`, `:value`, and `{{ expressions }}` receive Nodula-specific highlighting. Embedded code uses the colors from the active VS Code theme.
+
+See the README.md file in /vscode-nodula installation guidelines.
 
 ## License
 
