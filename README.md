@@ -40,6 +40,18 @@ npm run dev
 For a production build, run `npm run build`. This will build the framework and the demo app to the /dist directory.
 It also builds the npm package to the /dist/npm directory. The demo app loads that file as the framework package.
 
+To compile `.page` and `.comp` files in your own Vite app, install Nodula and Vite, then add the package's build-time plugin:
+
+```js
+import { defineConfig } from 'vite';
+import { nodulaPlugin } from 'nodula-framework/vite';
+
+export default defineConfig({
+  plugins: [nodulaPlugin()],
+});
+```
+
+
 ## VS Code language extension
 
 The extension recognizes:

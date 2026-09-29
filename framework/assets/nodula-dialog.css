@@ -1,35 +1,35 @@
 /* Dialog add-on styles. */
-/* :root {
-  --ui-color-background: #101b25;
-  --ui-color-surface: #14232b;
-  --ui-color-surface-raised: #1a2c35;
-  --ui-color-border: rgba(223, 234, 225, .16);
-  --ui-color-border-strong: rgba(223, 234, 225, .3);
-  --ui-color-text: #edf2eb;
-  --ui-color-text-muted: #a5b0ab;
-  --ui-color-text-inverse: #132019;
-  --ui-color-primary: #68b9e8;
-  --ui-color-primary-hover: #91d0f3;
-  --ui-color-focus: #68b9e8;
-  --ui-color-overlay: rgba(0, 0, 0, .55);
+
+:root {
+  --ui-color-background: #111111;
+  --ui-color-surface: #181818;
+  --ui-color-surface-raised: #222222;
+  --ui-color-border: rgba(255, 255, 255, .16);
+  --ui-color-border-strong: rgba(255, 255, 255, .32);
+  --ui-color-text: #f5f5f5;
+  --ui-color-text-muted: #c2c2c2;
+  --ui-color-text-inverse: #111111;
+  --ui-color-primary: #f5f5f5;
+  --ui-color-primary-hover: #dddddd;
+  --ui-color-focus: #ffffff;
+  --ui-color-overlay: rgba(0, 0, 0, .72);
 }
 
 :root[data-theme="light"] {
-  --ui-color-background: #f2f7f3;
+  --ui-color-background: #ffffff;
   --ui-color-surface: #ffffff;
-  --ui-color-surface-raised: #ffffff;
-  --ui-color-border: rgba(32, 51, 47, .16);
-  --ui-color-border-strong: rgba(32, 51, 47, .3);
-  --ui-color-text: #20332f;
-  --ui-color-text-muted: #526760;
+  --ui-color-surface-raised: #f5f5f5;
+  --ui-color-border: rgba(0, 0, 0, .14);
+  --ui-color-border-strong: rgba(0, 0, 0, .3);
+  --ui-color-text: #111111;
+  --ui-color-text-muted: #555555;
   --ui-color-text-inverse: #ffffff;
-  --ui-color-primary: #38633b;
-  --ui-color-primary-hover: #2c5031;
-  --ui-color-focus: #38633b;
-  --ui-color-overlay: rgba(20, 35, 43, .38);
-} */
-/* :root { --ui-color-primary: #68b9e8; --ui-color-primary-hover: #91d0f3; --ui-color-focus: #68b9e8; }
-:root[data-theme="light"] { --ui-color-primary: #38633b; --ui-color-primary-hover: #2c5031; --ui-color-focus: #38633b; } */
+  --ui-color-primary: #111111;
+  --ui-color-primary-hover: #333333;
+  --ui-color-focus: #111111;
+  --ui-color-overlay: rgba(0, 0, 0, .38);
+}
+
 
 .ui-dialog {
   width: min(28rem, calc(100vw - 2rem));

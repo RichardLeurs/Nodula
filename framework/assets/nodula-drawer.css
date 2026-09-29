@@ -26,6 +26,32 @@
 } */
 /* :root { --ui-color-primary: #68b9e8; --ui-color-primary-hover: #91d0f3; --ui-color-focus: #68b9e8; }
 :root[data-theme="light"] { --ui-color-primary: #38633b; --ui-color-primary-hover: #2c5031; --ui-color-focus: #38633b; } */
+:root {
+  --ui-color-background: #111111;
+  --ui-color-surface: #181818;
+  --ui-color-border: rgba(255, 255, 255, .16);
+  --ui-color-border-strong: rgba(255, 255, 255, .32);
+  --ui-color-text: #f5f5f5;
+  --ui-color-text-inverse: #111111;
+  --ui-color-primary: #f5f5f5;
+  --ui-color-primary-hover: #dddddd;
+  --ui-color-focus: #ffffff;
+  --ui-color-overlay: rgba(0, 0, 0, .72);
+}
+
+:root[data-theme="light"] {
+  --ui-color-background: #ffffff;
+  --ui-color-surface: #ffffff;
+  --ui-color-border: rgba(0, 0, 0, .14);
+  --ui-color-border-strong: rgba(0, 0, 0, .3);
+  --ui-color-text: #111111;
+  --ui-color-text-inverse: #ffffff;
+  --ui-color-primary: #111111;
+  --ui-color-primary-hover: #333333;
+  --ui-color-focus: #111111;
+  --ui-color-overlay: rgba(0, 0, 0, .38);
+}
+
 
 .ui-drawer {
   position: fixed;

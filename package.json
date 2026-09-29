@@ -21,6 +21,10 @@
     "./modal.css": "./dist/framework/nodula-modal.css",
     "./drawer.css": "./dist/framework/nodula-drawer.css",
     "./notifications.css": "./dist/framework/nodula-notifications.css",
+    "./vite": {
+      "types": "./dist/framework/nodula-vite.d.ts",
+      "import": "./dist/framework/nodula-vite.js"
+    },
     "./dialog": {
       "types": "./dist/framework/nodula-dialog.d.ts",
       "import": "./dist/framework/nodula-dialog.js"
@@ -78,6 +82,7 @@
     "dev": "npm run install:framework && npm --prefix 'demo app' run dev",
     "build": "npm run install:framework && npm run build:app && npm run typecheck:bundle && npm run pack:framework",
     "build:app": "npm --prefix 'demo app' run build",
+    "build:compiler": "vite build --config vite.config.js --mode compiler",
     "build:form": "vite build --config vite.config.js --mode addon-form",
     "build:router": "vite build --config vite.config.js --mode addon-router",
     "build:animation": "vite build --config vite.config.js --mode addon-animation",
@@ -91,7 +96,7 @@
     "build:pwa": "vite build --config vite.config.js --mode addon-pwa",
     "build:store": "vite build --config vite.config.js --mode addon-store",
     "build:auth": "vite build --config vite.config.js --mode addon-auth",
-    "build:framework": "vite build --config vite.config.js --mode framework && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notifications && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:localstorage && npm run build:data && npm run build:pwa && npm run build:auth",
+    "build:framework": "vite build --config vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notifications && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:localstorage && npm run build:data && npm run build:pwa && npm run build:auth",
     "package:framework": "npm run build:framework && npm run pack:framework",
     "pack:framework": "npm pack --pack-destination dist/npm",
     "install:framework": "npm run package:framework && npm install --prefix 'demo app' ./dist/npm/nodula-framework-0.1.0.tgz",
@@ -112,9 +117,13 @@
   "peerDependenciesMeta": {
     "vite-plugin-pwa": {
       "optional": true
+    },
+    "vite": {
+      "optional": true
     }
   },
   "peerDependencies": {
-    "vite-plugin-pwa": "^1.3.0"
+    "vite-plugin-pwa": "^1.3.0",
+    "vite": "^8.3.1"
   }
 }

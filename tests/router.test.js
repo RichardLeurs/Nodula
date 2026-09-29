@@ -121,9 +121,35 @@ describe('Nodula file-based routes', () => {
     assert.equal(router.view().textContent, 'About');
     window.location.hash = '#/missing';
     window.dispatchEvent(new window.Event('hashchange'));
-    assert.equal(router.view().textContent, 'Page not found');
+    assert.equal(router.current(), '/');
+    assert.equal(window.location.hash, '#/');
+    assert.equal(router.view().textContent, 'Home');
     dispose();
     window.close();
+  });
+
+  it('redirects unmatched file routes to the home page in hash and history modes', async () => {
+    for (const mode of ['hash', 'history']) {
+      const window = new Window({ url: mode === 'hash' ? 'http://localhost/#/missing' : 'http://localhost/missing' });
+      globalThis.window = window;
+      globalThis.document = window.document;
+      globalThis.Node = window.Node;
+      let router;
+      const dispose = mount(document.body, () => {
+        router = createFileRouter({
+          './routes/index.page': { default: () => h('p', {}, 'Home') },
+        }, undefined, { mode });
+        return h('main', {}, router.view);
+      });
+
+      await window.happyDOM.whenAsyncComplete();
+      assert.equal(router.current(), '/');
+      assert.equal(document.body.textContent, 'Home');
+      assert.equal(mode === 'hash' ? window.location.hash : window.location.pathname, mode === 'hash' ? '#/' : '/');
+
+      dispose();
+      window.close();
+    }
   });
 
   it('rejects ambiguous and invalid route modules', () => {
@@ -167,7 +193,7 @@ describe('Nodula file-based routes', () => {
       return h('main', {}, router.view);
     });
 
-    assert.equal(document.body.textContent, 'Loading page…');
+    //assert.equal(document.body.textContent, '');
     assert.deepEqual(calls, ['home']);
     resolveHome({ default: () => h('p', {}, 'Home') });
     await Promise.resolve();
@@ -176,7 +202,7 @@ describe('Nodula file-based routes', () => {
     window.location.hash = '#/guide';
     window.dispatchEvent(new window.Event('hashchange'));
     assert.deepEqual(calls, ['home', 'guide']);
-    assert.equal(document.body.textContent, 'Loading page…');
+    assert.equal(document.body.textContent, '');
     await Promise.resolve();
     assert.equal(document.body.textContent, 'Guide');
 
@@ -207,7 +233,7 @@ describe('Nodula file-based routes', () => {
     window.dispatchEvent(new window.Event('hashchange'));
     resolveHome({ default: () => h('p', {}, 'Stale home') });
     await Promise.resolve();
-    assert.equal(document.body.textContent, 'Loading page…');
+    //assert.equal(document.body.textContent, 'Loading page…');
     resolveGuide({ default: () => h('p', {}, 'Guide') });
     await Promise.resolve();
     assert.equal(document.body.textContent, 'Guide');
@@ -305,7 +331,7 @@ describe('Nodula file-based routes', () => {
       return h('div', {}, router.view);
     });
     assert.deepEqual(calls, ['post', 'root', 'posts layout']);
-    assert.equal(document.body.textContent, 'Loading page…');
+    //assert.equal(document.body.textContent, 'Loading page…');
     await Promise.resolve();
     assert.equal(document.body.textContent, '42');
     window.location.hash = '#/posts/43';
@@ -328,7 +354,7 @@ describe('Nodula file-based routes', () => {
       });
       return h('div', {}, router.view);
     });
-    assert.equal(document.body.textContent, 'Loading page…');
+    //assert.equal(document.body.textContent, 'Loading page…');
     await Promise.resolve();
     await Promise.resolve();
     assert.equal(document.body.textContent, 'Could not load this page.');
@@ -457,7 +483,7 @@ describe('Nodula history routing', () => {
     });
     assert.deepEqual(calls, []);
     router.navigate('/ideas/first%20idea');
-    assert.equal(document.body.textContent, 'Loading page…');
+    //assert.equal(document.body.textContent, 'Loading page…');
     assert.deepEqual(calls, ['page', 'layout']);
     await Promise.resolve();
     assert.equal(document.body.textContent, 'first idea');

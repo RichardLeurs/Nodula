@@ -2,7 +2,7 @@ import { copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { transform } from 'lightningcss';
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
-import { nodulaPlugin } from './framework/vite-plugin.js';
+import { nodulaPlugin } from 'nodula-framework/vite';
 import { nodulaPWA } from 'nodula-framework/pwa';
 
 const projectRoot = fileURLToPath(new URL('.', import.meta.url));
@@ -105,6 +105,32 @@ function frameworkBuildConfig() {
   };
 }
 
+function compilerPluginBuildConfig() {
+  return {
+    configFile: false,
+    root: projectRoot,
+    plugins: [{
+      name: 'nodula-vite-plugin-types',
+      async closeBundle() {
+        await copyFile('framework/vite-plugin.d.ts', 'dist/framework/nodula-vite.d.ts');
+      },
+    }],
+    build: {
+      outDir: frameworkOutputDirectory,
+      emptyOutDir: false,
+      minify: 'oxc',
+      lib: {
+        entry: 'framework/vite-plugin.js',
+        formats: ['es'],
+        fileName: () => 'nodula-vite.js',
+      },
+      rolldownOptions: {
+        external: (id) => id.startsWith('node:'),
+      },
+    },
+  };
+}
+
 function appBuildConfig() {
   const appEntries = Object.values(addonBuilds).map(({ output }) => fileURLToPath(new URL(`./dist/framework/${output}`, import.meta.url)));
   const externalEntries = new Set([
@@ -182,6 +208,7 @@ function appBuildConfig() {
 
 export default defineConfig(({ mode }) => {
   if (mode === 'framework') return frameworkBuildConfig();
+  if (mode === 'compiler') return compilerPluginBuildConfig();
   if (mode.startsWith('addon-')) return addonBuildConfig(mode.slice('addon-'.length));
   return appBuildConfig();
 });

@@ -7,10 +7,40 @@ function requireIdentity(identity, methodName) {
   return identity;
 }
 
+function getUserRoles(identityUser) {
+  const roles = new Set();
+  if (typeof identityUser?.role === 'string') roles.add(identityUser.role);
+  if (Array.isArray(identityUser?.roles)) {
+    for (const role of identityUser.roles) {
+      if (typeof role === 'string') roles.add(role);
+    }
+  }
+  return roles;
+}
+
+function getUserPermissions(identityUser) {
+  if (!Array.isArray(identityUser?.permissions)) return new Set();
+  return new Set(identityUser.permissions.filter((permission) => typeof permission === 'string'));
+}
+
 /** Create reactive client-side auth state backed by authentication methods supplied by the app. */
-export function createAuth(adapter) {
+export function createAuth(adapter, options = {}) {
   if (!adapter || typeof adapter !== 'object') {
     throw new TypeError('createAuth expects an adapter object.');
+  }
+  if (!options || typeof options !== 'object' || Array.isArray(options)) {
+    throw new TypeError('createAuth expects an options object.');
+  }
+  const configuredRolePermissions = options.rolePermissions ?? {};
+  if (!configuredRolePermissions || typeof configuredRolePermissions !== 'object' || Array.isArray(configuredRolePermissions)) {
+    throw new TypeError('createAuth options.rolePermissions must be a role-to-permissions object.');
+  }
+  const rolePermissions = new Map();
+  for (const [role, permissions] of Object.entries(configuredRolePermissions)) {
+    if (!Array.isArray(permissions) || permissions.some((permission) => typeof permission !== 'string')) {
+      throw new TypeError(`createAuth options.rolePermissions.${role} must be an array of permission strings.`);
+    }
+    rolePermissions.set(role, new Set(permissions));
   }
   for (const method of ['getSession', 'signIn', 'signOut']) {
     if (typeof adapter[method] !== 'function') {
@@ -23,6 +53,21 @@ export function createAuth(adapter) {
   const [session, setSession] = signal(undefined);
   const [error, setError] = signal(null);
   let operationId = 0;
+
+  function hasRole(role) {
+    if (typeof role !== 'string' || user() === null || status() !== 'authenticated') return false;
+    return getUserRoles(user()).has(role);
+  }
+
+  function hasPermission(permission) {
+    if (typeof permission !== 'string' || user() === null || status() !== 'authenticated') return false;
+    const identityUser = user();
+    if (getUserPermissions(identityUser).has(permission)) return true;
+    for (const role of getUserRoles(identityUser)) {
+      if (rolePermissions.get(role)?.has(permission)) return true;
+    }
+    return false;
+  }
 
   function setIdentity(identity) {
     if (identity === null) {
@@ -86,6 +131,8 @@ export function createAuth(adapter) {
   return {
     status,
     isAuthenticated: () => status() === 'authenticated',
+    hasRole,
+    hasPermission,
     user,
     session,
     error,

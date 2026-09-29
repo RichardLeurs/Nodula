@@ -90,11 +90,17 @@ const typedDataError: typeof DataError = DataError;
 console.log(typedResponse, typedCreation, typedDataError);
 const typedAuth = createAuth<{ code: string }, { id: number }, { sessionId: string }>({
   async getSession() { return null; },
-  async signIn(credentials) { return { user: { id: credentials.code.length }, session: { sessionId: 'opaque' } }; },
+  async signIn(credentials) { return { user: { id: credentials.code.length, roles: ['editor'], permissions: ['profile:read'] }, session: { sessionId: 'opaque' } }; },
   async signOut(session) { console.log(session?.sessionId); },
   async refreshSession() { return null; },
+}, {
+  rolePermissions: { editor: ['articles:write'] },
 });
 typedAuth.initialize().then(() => console.log(typedAuth.status(), typedAuth.isAuthenticated(), typedAuth.user()?.id));
+const isEditor: boolean = typedAuth.hasRole('editor');
+const canWriteArticles: boolean = typedAuth.hasPermission('articles:write');
+const canReadProfile: boolean = typedAuth.hasPermission('profile:read');
+console.log(isEditor, canWriteArticles, canReadProfile);
 const requireSession: NavigationGuard = async ({ to }) => {
   if (to === '/account' && !typedAuth.isAuthenticated()) return '/login';
   return true;

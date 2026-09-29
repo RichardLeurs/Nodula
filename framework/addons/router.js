@@ -264,7 +264,12 @@ export function createFileRouter(files, fallback, options) {
   const router = createRouter(routeMap, fallback, options);
   effect(() => {
     if (!router.canRender()) return;
-    const matched = matchRoute(router.current());
+    const path = router.current();
+    const matched = matchRoute(path);
+    if (!matched && path !== '/') {
+      router.navigate('/');
+      return;
+    }
     if (matched) for (const item of [matched.page.page, ...matched.chain]) item.load();
   });
   onCleanup(() => { active = false; });

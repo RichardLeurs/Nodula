@@ -63,7 +63,7 @@ effect(() => {
           <div class="ui-home-specs__item"><dt>Web Components</dt><dd>Use framework independent, native Web Components</dd></div>
           <div class="ui-home-specs__item"><dt>PWA</dt><dd>Build installable, offline-capable applications</dd></div>
           <div class="ui-home-specs__item"><dt>Runtime deps</dt><dd>Zero browser-runtime dependencies</dd></div>
-          <div class="ui-home-specs__item"><dt>Size</dt><dd>&lt; 5 kB gzipped</dd></div>
+          <div class="ui-home-specs__item"><dt>Size framework core</dt><dd>&lt; 5 kB gzipped</dd></div>
         </dl>
       </aside>
     </section>

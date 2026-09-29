@@ -41,6 +41,47 @@ describe('Nodula auth add-on', () => {
     assert.equal(auth.isAuthenticated(), false);
     assert.equal(auth.user(), null);
     assert.equal(auth.session(), undefined);
+    assert.equal(auth.hasRole('admin'), false);
+    assert.equal(auth.hasPermission('users:read'), false);
+  });
+
+  it('checks user roles and direct or role-derived permissions reactively', async () => {
+    let identity = {
+      user: { id: 'user-1', roles: ['editor'], permissions: ['profile:read'] },
+      session: 'session-1',
+    };
+    const auth = createAuth({
+      async getSession() { return identity; },
+      async signIn() { return identity; },
+      async signOut() {},
+      async refreshSession() { return identity; },
+    }, {
+      rolePermissions: {
+        admin: ['users:read', 'users:write'],
+        editor: ['articles:write'],
+      },
+    });
+
+    assert.equal(auth.hasRole('editor'), false);
+    assert.equal(auth.hasPermission('profile:read'), false);
+    await auth.initialize();
+
+    assert.equal(auth.hasRole('editor'), true);
+    assert.equal(auth.hasRole('admin'), false);
+    assert.equal(auth.hasPermission('profile:read'), true);
+    assert.equal(auth.hasPermission('articles:write'), true);
+    assert.equal(auth.hasPermission('users:read'), false);
+
+    identity = { user: { id: 'user-1', role: 'admin' }, session: 'session-2' };
+    await auth.refresh();
+    assert.equal(auth.hasRole('editor'), false);
+    assert.equal(auth.hasRole('admin'), true);
+    assert.equal(auth.hasPermission('users:write'), true);
+    assert.equal(auth.hasPermission('profile:read'), false);
+
+    await auth.signOut();
+    assert.equal(auth.hasRole('admin'), false);
+    assert.equal(auth.hasPermission('users:write'), false);
   });
 
   it('supports optional adapter-driven session refresh', async () => {
@@ -81,6 +122,10 @@ describe('Nodula auth add-on', () => {
   it('validates the adapter contract and rejects malformed identities', async () => {
     assert.throws(() => createAuth(), /adapter object/);
     assert.throws(() => createAuth({}), /adapter.getSession/);
+    assert.throws(() => createAuth({ getSession() {}, signIn() {}, signOut() {} }, null), /options object/);
+    assert.throws(() => createAuth({ getSession() {}, signIn() {}, signOut() {} }, {
+      rolePermissions: { admin: 'users:read' },
+    }), /array of permission strings/);
 
     const auth = createAuth({
       async getSession() { return { session: 'missing-user' }; },

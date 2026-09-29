@@ -46,12 +46,15 @@ dataClient.get<Array<{ id: number }>>('/ideas', { params: { limit: 10 } }).then(
 dataClient.post('/ideas', { text: 'Test' }).catch((error) => {
   if (error instanceof DataError) console.log(error.status, error.data);
 });
-const auth = createAuth<{ email: string; password: string }, { id: string }, { token: string }>({
+const auth = createAuth<{ email: string; password: string }, { id: string; role?: string; permissions?: string[] }, { token: string }>({
   async getSession() { return null; },
-  async signIn(credentials) { return { user: { id: credentials.email }, session: { token: 'opaque' } }; },
+  async signIn(credentials) { return { user: { id: credentials.email, role: 'admin', permissions: ['profile:read'] }, session: { token: 'opaque' } }; },
   async signOut(session) { console.log(session?.token); },
+}, {
+  rolePermissions: { admin: ['users:read'] },
 });
 auth.initialize().then(() => console.log(auth.status(), auth.isAuthenticated(), auth.user()?.id));
+console.log(auth.hasRole('admin'), auth.hasPermission('users:read'), auth.hasPermission('profile:read'));
 const requireSession: NavigationGuard = ({ to }) => to === '/account' && !auth.isAuthenticated() ? '/login' : true;
 const guardedRouter = createRouter({}, undefined, { beforeEach: requireSession });
 console.log(guardedRouter.navigationPending(), guardedRouter.canRender());
