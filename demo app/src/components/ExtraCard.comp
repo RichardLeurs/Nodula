@@ -1,9 +1,9 @@
 <template>
-  <div class="extra-card">
-    <span class="extra-icon" aria-hidden="true">✳</span>
-    <div>
-      <strong>A little extra, right on time</strong>
-      <p>This card was loaded only when you scrolled it into view.</p>
+  <article class="ui-card ui-extra-card">
+    <span class="ui-extra-card__icon" aria-hidden="true">✳</span>
+    <div class="ui-stack ui-stack--tight">
+      <h3 class="ui-card__title">A little extra, right on time</h3>
+      <p class="ui-card__description">This card was loaded only when you scrolled it into view.</p>
     </div>
-  </div>
+  </article>
 </template>

@@ -25,24 +25,24 @@ describe('Nodula notification add-on', () => {
       duration: 0,
     }));
 
-    assert.equal(document.querySelectorAll('.nodula-notifications').length, 1);
-    assert.equal(document.querySelectorAll('.nodula-notification').length, 4);
+    assert.equal(document.querySelectorAll('.ui-notifications').length, 1);
+    assert.equal(document.querySelectorAll('.ui-notification').length, 4);
     const styles = document.querySelectorAll('style[data-nodula-notifications-styles]');
     assert.equal(styles.length, 1);
     assert.match(styles[0].textContent, /@layer nodula-addons/);
-    assert.match(styles[0].textContent, /\.nodula-notification/);
+    assert.match(styles[0].textContent, /\.ui-notification/);
     for (const [index, type] of types.entries()) {
       const { element } = handles[index];
-      assert.ok(element.classList.contains(`nodula-notification--${type}`));
-      assert.equal(element.querySelector('.nodula-notification__title').textContent, `${type} title`);
-      assert.equal(element.querySelector('.nodula-notification__message').textContent, `${type} message`);
+      assert.ok(element.classList.contains(`ui-notification--${type}`));
+      assert.equal(element.querySelector('.ui-notification__title').textContent, `${type} title`);
+      assert.equal(element.querySelector('.ui-notification__message').textContent, `${type} message`);
       assert.equal(element.getAttribute('role'), type === 'error' ? 'alert' : 'status');
-      assert.equal(element.getAttribute('aria-labelledby'), element.querySelector('.nodula-notification__title').id);
-      assert.equal(element.getAttribute('aria-describedby'), element.querySelector('.nodula-notification__message').id);
+      assert.equal(element.getAttribute('aria-labelledby'), element.querySelector('.ui-notification__title').id);
+      assert.equal(element.getAttribute('aria-describedby'), element.querySelector('.ui-notification__message').id);
     }
 
     handles[0].element.querySelector('button').click();
-    assert.ok(handles[0].element.classList.contains('nodula-notification--closing'));
+    assert.ok(handles[0].element.classList.contains('ui-notification--closing'));
     finishClose(handles[0].element);
     await handles[0].closed;
     assert.equal(handles[0].element.isConnected, false);
@@ -52,7 +52,7 @@ describe('Nodula notification add-on', () => {
       finishClose(handle.element);
       await handle.closed;
     }
-    assert.equal(document.querySelector('.nodula-notifications'), null);
+    assert.equal(document.querySelector('.ui-notifications'), null);
   });
 
   it('supports screen positioning and auto-dismissal', async () => {
@@ -63,11 +63,11 @@ describe('Nodula notification add-on', () => {
       position: 'bottom-center',
       duration: 1,
     });
-    const container = document.querySelector('.nodula-notifications');
-    assert.ok(container.classList.contains('nodula-notifications--bottom-center'));
+    const container = document.querySelector('.ui-notifications');
+    assert.ok(container.classList.contains('ui-notifications--bottom-center'));
 
     await new Promise((resolve) => setTimeout(resolve, 20));
-    assert.ok(handle.element.classList.contains('nodula-notification--closing'));
+    assert.ok(handle.element.classList.contains('ui-notification--closing'));
     finishClose(handle.element);
     await handle.closed;
   });
@@ -79,10 +79,10 @@ describe('Nodula notification add-on', () => {
     });
 
     dispose();
-    assert.ok(handle.element.classList.contains('nodula-notification--closing'));
+    assert.ok(handle.element.classList.contains('ui-notification--closing'));
     finishClose(handle.element);
     await handle.closed;
-    assert.equal(document.querySelector('.nodula-notifications'), null);
+    assert.equal(document.querySelector('.ui-notifications'), null);
   });
 
   it('validates notification options', () => {

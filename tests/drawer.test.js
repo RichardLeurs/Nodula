@@ -22,30 +22,30 @@ describe('Nodula drawer add-on', () => {
     const styles = document.querySelectorAll('style[data-nodula-drawer-styles]');
     assert.equal(styles.length, 1);
     assert.match(styles[0].textContent, /@layer nodula-addons/);
-    assert.match(styles[0].textContent, /\.nodula-drawer/);
+    assert.match(styles[0].textContent, /\.ui-drawer/);
     assert.equal(handle.element.getAttribute('role'), 'dialog');
     assert.equal(handle.element.getAttribute('aria-modal'), 'true');
-    assert.equal(handle.element.querySelector('.nodula-drawer__title').textContent, 'Account details');
-    assert.equal(handle.element.getAttribute('aria-labelledby'), handle.element.querySelector('.nodula-drawer__title').id);
-    assert.equal(handle.element.querySelector('.nodula-drawer__body').textContent, '<strong>Plain text</strong>');
+    assert.equal(handle.element.querySelector('.ui-drawer__title').textContent, 'Account details');
+    assert.equal(handle.element.getAttribute('aria-labelledby'), handle.element.querySelector('.ui-drawer__title').id);
+    assert.equal(handle.element.querySelector('.ui-drawer__body').textContent, '<strong>Plain text</strong>');
     assert.equal(handle.element.querySelector('strong'), null);
     assert.equal(document.activeElement.textContent, 'Close');
 
-    handle.element.querySelector('.nodula-drawer__close').click();
+    handle.element.querySelector('.ui-drawer__close').click();
     await handle.closed;
-    assert.equal(document.querySelector('.nodula-drawer'), null);
+    assert.equal(document.querySelector('.ui-drawer'), null);
     assert.equal(document.querySelectorAll('style[data-nodula-drawer-styles]').length, 1);
     assert.equal(document.activeElement, opener);
   });
 
   it('opens from the requested edge and defaults to the right', async () => {
     const rightDrawer = openDrawer('Right edge');
-    assert.ok(rightDrawer.element.classList.contains('nodula-drawer--right'));
+    assert.ok(rightDrawer.element.classList.contains('ui-drawer--right'));
     rightDrawer.close();
     await rightDrawer.closed;
 
     const leftDrawer = openDrawer('Left edge', { position: 'left' });
-    assert.ok(leftDrawer.element.classList.contains('nodula-drawer--left'));
+    assert.ok(leftDrawer.element.classList.contains('ui-drawer--left'));
     leftDrawer.close();
     await leftDrawer.closed;
   });
@@ -58,14 +58,14 @@ describe('Nodula drawer add-on', () => {
       clientX: 250,
       clientY: 100,
     }));
-    assert.ok(document.querySelector('.nodula-drawer'), 'clicking inside the drawer should not close it');
+    assert.ok(document.querySelector('.ui-drawer'), 'clicking inside the drawer should not close it');
     defaultDrawer.element.dispatchEvent(new window.MouseEvent('click', {
       bubbles: true,
       clientX: 50,
       clientY: 100,
     }));
     await defaultDrawer.closed;
-    assert.equal(document.querySelector('.nodula-drawer'), null);
+    assert.equal(document.querySelector('.ui-drawer'), null);
 
     const persistentDrawer = openDrawer('Explicit close only', { closeOnBackdrop: false, closeText: 'Done' });
     persistentDrawer.element.getBoundingClientRect = () => ({ left: 100, right: 500, top: 0, bottom: 600 });
@@ -74,11 +74,11 @@ describe('Nodula drawer add-on', () => {
       clientX: 50,
       clientY: 100,
     }));
-    assert.ok(document.querySelector('.nodula-drawer'));
+    assert.ok(document.querySelector('.ui-drawer'));
     persistentDrawer.element.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
     persistentDrawer.element.dispatchEvent(new window.Event('cancel', { cancelable: true }));
     await persistentDrawer.closed;
-    assert.equal(document.querySelector('.nodula-drawer'), null);
+    assert.equal(document.querySelector('.ui-drawer'), null);
   });
 
   it('closes and resolves its handle when its Nodula owner is disposed', async () => {
@@ -86,10 +86,10 @@ describe('Nodula drawer add-on', () => {
     const [, dispose] = createRoot(() => {
       handle = openDrawer('Owned drawer');
     });
-    assert.ok(document.querySelector('.nodula-drawer'));
+    assert.ok(document.querySelector('.ui-drawer'));
     dispose();
     await handle.closed;
-    assert.equal(document.querySelector('.nodula-drawer'), null);
+    assert.equal(document.querySelector('.ui-drawer'), null);
   });
 
   it('validates content and options and requires a browser document', () => {

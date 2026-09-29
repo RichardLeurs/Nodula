@@ -31,97 +31,66 @@ effect(() => {
 </script>
 
 <template>
-  <main class="page-shell">
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot"></span></span>A modular JavaScript application framework</p>
-        <div :class="carouselIndex() % 2 === 0 ? 'textcarrousel textcarrousel--fade-a' : 'textcarrousel textcarrousel--fade-b'">
-          <h1 aria-live="polite" aria-atomic="true">
-            <span class="textcarrousel-line"><b>{{ displayCarouselText(carouselItems[carouselIndex()][0]) }}</b></span>
-            <span class="textcarrousel-line"><b>{{ displayCarouselText(carouselItems[carouselIndex()][1]) }}</b></span>
+  <main class="ui-page page ui-home">
+    <section class="ui-home-hero" aria-labelledby="home-title">
+      <div class="ui-home-hero__copy">
+        <p class="ui-page__eyebrow"><span class="ui-status-dot" aria-hidden="true"></span> A modular JavaScript application framework</p>
+        <div :class="carouselIndex() % 2 === 0 ? 'ui-home-carousel ui-home-carousel--fade-a' : 'ui-home-carousel ui-home-carousel--fade-b'">
+          <h1 id="home-title" class="ui-home-hero__title" aria-live="polite" aria-atomic="true">
+            <span class="ui-home-carousel__line"><b>{{ displayCarouselText(carouselItems[carouselIndex()][0]) }}</b></span>
+            <span class="ui-home-carousel__line"><b>{{ displayCarouselText(carouselItems[carouselIndex()][1]) }}</b></span>
             
           </h1>
         </div>
-        <p class="hero-description">Meet Nodula: A lightweight JavaScript framework built around modular architecture, simplicity and speed. Build your application from small, focused pieces that work together naturally.</p>
-        <div class="hero-actions">
-          <a class="button button--primary" href="https://sprigjs-docs.richardleurs.nl/" target="_blank">Explore the guide <span aria-hidden="true"> ↗</span></a>
-          <span class="hero-note">HTML-first. No JSX required.</span>
+        <p class="ui-page__description ui-home-hero__description">Meet Nodula: A lightweight JavaScript framework built around modular architecture, simplicity and speed. Build your application from small, focused pieces that work together naturally.</p>
+        <div class="ui-cluster ui-cluster--wrap">
+          <a class="ui-button ui-button--primary" href="https://sprigjs-docs.richardleurs.nl/" target="_blank" rel="noreferrer">Explore the guide <span aria-hidden="true">↗</span></a>
+          <a class="ui-button ui-button--outline" href="https://github.com/RichardLeurs/nodula" target="_blank" rel="noreferrer">View on GitHub <span aria-hidden="true">↗</span></a>
+          <!-- <span class="ui-home-hero__note">HTML-first. No JSX required.</span> -->
         </div>
       </div>
-      <aside class="framework-specs" aria-labelledby="framework-specs-heading">
-        <div class="framework-specs__topline">
-          <span class="status-dot"></span>
-          <span class="framework-specs__eyebrow">Built to stay lightweight</span>
-        </div>
-        <h2 id="framework-specs-heading">Framework specs</h2>
-        <dl class="framework-specs__list">
-           <div class="framework-specs__item">
-            <dt>Modular</dt>
-            <dd>Only add the framework add-ons you need</dd>
-          </div>
-           <div class="framework-specs__item">
-            <dt>Routing</dt>
-            <dd>Lazy file-based pages and layouts</dd>
-          </div>
-          <div class="framework-specs__item">
-            <dt>Rendering</dt>
-            <dd>Fine-grained reactive DOM</dd>
-          </div>
-          <div class="framework-specs__item">
-            <dt>State</dt>
-            <dd>Signals and reactive stores</dd>
-          </div>
-          <div class="framework-specs__item">
-            <dt>Components</dt>
-            <dd>HTML-first <code>.page</code>, no JSX</dd>
-          </div>
-          <div class="framework-specs__item">
-            <dt>Web Components</dt>
-            <dd>Use framework independ, native Web Components</dd>
-          </div>
-         
-         
-         
-         
-            <div class="framework-specs__item">
-            <dt>PWA</dt>
-            <dd>Build installable, offline-capable applications</dd>
-          </div>
-           <div class="framework-specs__item">
-            <dt>Runtime deps</dt>
-            <dd>Zero browser-runtime dependencies</dd>
-          </div>
-           <div class="framework-specs__item">
-            <dt>Size</dt>
-            <dd>< 5 kB gzipped</dd>
-          </div>
+      <aside class="ui-panel ui-panel--raised ui-home-specs" aria-labelledby="framework-specs-heading">
+        <header class="ui-panel__header ui-home-specs__header">
+          <div class="ui-cluster"><span class="ui-status-dot" aria-hidden="true"></span><p class="ui-page__eyebrow">Built to stay lightweight</p></div>
+          <h2 id="framework-specs-heading" class="ui-panel__title">Framework specs</h2>
+        </header>
+        <dl class="ui-home-specs__list">
+          <div class="ui-home-specs__item"><dt>Modular</dt><dd>Only add the framework add-ons you need</dd></div>
+          <div class="ui-home-specs__item"><dt>Routing</dt><dd>Lazy file-based pages and layouts</dd></div>
+          <div class="ui-home-specs__item"><dt>Rendering</dt><dd>Fine-grained reactive DOM</dd></div>
+          <div class="ui-home-specs__item"><dt>State</dt><dd>Signals and reactive stores</dd></div>
+          <div class="ui-home-specs__item"><dt>Components</dt><dd>HTML-first <code>.page</code>, no JSX</dd></div>
+          <div class="ui-home-specs__item"><dt>Web Components</dt><dd>Use framework independent, native Web Components</dd></div>
+          <div class="ui-home-specs__item"><dt>PWA</dt><dd>Build installable, offline-capable applications</dd></div>
+          <div class="ui-home-specs__item"><dt>Runtime deps</dt><dd>Zero browser-runtime dependencies</dd></div>
+          <div class="ui-home-specs__item"><dt>Size</dt><dd>&lt; 5 kB gzipped</dd></div>
         </dl>
       </aside>
     </section>
 
-    <section class="demo-section" aria-labelledby="demo-heading">
-      <div class="section-heading">
+    <section class="ui-section ui-home-examples" aria-labelledby="home-examples-title">
+      <div class="ui-section__header">
         <div>
-          <p class="eyebrow">Try it out</p>
-          <h2 id="demo-heading">Composable modules. Powerful applications.</h2>
+          <p class="ui-page__eyebrow">Try it out</p>
+          <h2 class="ui-section__title" id="home-examples-title">Composable modules. Powerful applications.</h2>
         </div>
-        <p class="section-aside">State updates. The page stays out of your way.</p>
+        <!-- <p class="ui-section__description">State updates. The page stays out of your way.</p> -->
       </div>
-      <div class="demo-grid">
+      <div class="ui-grid ui-grid--2 ui-home-examples__grid">
         <DemoCounter></DemoCounter>
         <IdeasCard></IdeasCard>
       </div>
     </section>
 
-    <section class="feature-strip" aria-label="Framework highlights">
-      <div class="feature-item"><span class="feature-number">01</span><div><strong>Signals, not snapshots</strong><p>Update just what changed.</p></div></div>
-      <div class="feature-item"><span class="feature-number">02</span><div><strong>Plain JavaScript</strong><p>HTML templates, no JSX.</p></div></div>
-      <div class="feature-item"><span class="feature-number">03</span><div><strong>Built with Vite</strong><p>A quick loop from idea to app.</p></div></div>
+    <section class="ui-grid ui-grid--3 ui-home-highlights" aria-label="Framework highlights">
+      <article class="ui-home-highlight"><span class="ui-home-highlight__number">01</span><div><h3 class="ui-card__title">Signals, not snapshots</h3><p class="ui-card__description">Update just what changed.</p></div></article>
+      <article class="ui-home-highlight"><span class="ui-home-highlight__number">02</span><div><h3 class="ui-card__title">Plain JavaScript</h3><p class="ui-card__description">HTML templates, no JSX.</p></div></article>
+      <article class="ui-home-highlight"><span class="ui-home-highlight__number">03</span><div><h3 class="ui-card__title">Built with Vite</h3><p class="ui-card__description">A quick loop from idea to app.</p></div></article>
     </section>
-
-    <section class="island-section">
-      <div class="island-label"><span class="status-dot"></span>A little something further down</div>
-      <div class="extra-island" use:visibleIsland="visibleIsland(loadExtraCard)"></div>
+</br>
+    <section class="ui-panel ui-panel--flat ui-home-island">
+      <!-- <div class="ui-cluster ui-home-island__label"><span class="ui-status-dot" aria-hidden="true"></span>A little something further down</div> -->
+      <div class="ui-home-island__content" use:visibleIsland="visibleIsland(loadExtraCard)"></div>
     </section>
   </main>
 </template>

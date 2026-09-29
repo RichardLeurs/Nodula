@@ -21,18 +21,18 @@ export function showDialog(message, options = {}) {
   return new Promise((resolve, reject) => {
     const previousFocus = document.activeElement;
     const dialog = document.createElement('dialog');
-    dialog.className = 'nodula-dialog';
+    dialog.className = 'ui-dialog';
     dialog.setAttribute('aria-modal', 'true');
     dialog.setAttribute('role', 'alertdialog');
     const content = document.createElement('div');
-    content.className = 'nodula-dialog__content';
+    content.className = 'ui-dialog__content';
 
     if (title) {
       const header = document.createElement('header');
-      header.className = 'nodula-dialog__header';
+      header.className = 'ui-dialog__header';
       const titleElement = document.createElement('h2');
-      titleElement.className = 'nodula-dialog__title';
-      titleElement.id = `nodula-dialog-title-${nextDialogId++}`;
+      titleElement.className = 'ui-dialog__title';
+      titleElement.id = `ui-dialog-title-${nextDialogId++}`;
       titleElement.textContent = title;
       dialog.setAttribute('aria-labelledby', titleElement.id);
       header.append(titleElement);
@@ -42,19 +42,19 @@ export function showDialog(message, options = {}) {
     }
 
     const messageElement = document.createElement('p');
-    messageElement.className = 'nodula-dialog__message';
-    messageElement.id = `nodula-dialog-message-${nextDialogId++}`;
+    messageElement.className = 'ui-dialog__message';
+    messageElement.id = `ui-dialog-message-${nextDialogId++}`;
     dialog.setAttribute('aria-describedby', messageElement.id);
     messageElement.textContent = message;
 
     const actions = document.createElement('div');
-    actions.className = 'nodula-dialog__actions';
+    actions.className = 'ui-dialog__actions';
     const cancelButton = document.createElement('button');
-    cancelButton.className = 'nodula-dialog__button nodula-dialog__button--cancel';
+    cancelButton.className = 'ui-dialog__button ui-dialog__button--cancel';
     cancelButton.type = 'button';
     cancelButton.textContent = cancelText;
     const okButton = document.createElement('button');
-    okButton.className = 'nodula-dialog__button nodula-dialog__button--ok';
+    okButton.className = 'ui-dialog__button ui-dialog__button--ok';
     okButton.type = 'button';
     okButton.textContent = okText;
     okButton.autofocus = true;

@@ -52,44 +52,61 @@ async function resetForm() {
 </script>
 
 <template>
-  <main class="page-shell form-page">
-    <p class="eyebrow">Reactive form state</p>
-    <h1>A form, with the state included.</h1>
-    <p class="guide-intro">This example uses Nodula's <code>createForm</code> for values, validation, touched fields, submission state, and reset—without adding a form library.</p>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Reactive form state</p>
+      <h1 class="ui-page__title">A form, with the state included.</h1>
+      <p class="ui-page__description">This example uses Nodula's <code>createForm</code> for values, validation, touched fields, submission state, and reset—without adding a form library.</p>
+    </header>
 
-    <form class="form-example" @submit="form.handleSubmit($event)" novalidate>
-      <div class="form-field">
-        <label for="form-name">Name</label>
-        <input id="form-name" name="name" type="text" autocomplete="name" :value="form.values.name" @input="form.handleChange('name')($event)" @blur="form.handleBlur('name')()" :aria-invalid="form.errors.name ? 'true' : 'false'" aria-describedby="form-name-error" />
-        <p id="form-name-error" class="form-error" role="alert" @show="Boolean(form.errors.name)">{{ form.errors.name ?? '' }}</p>
-      </div>
+    <section class="ui-section" aria-labelledby="form-example-title">
+      <form class="ui-panel ui-panel--raised" @submit="form.handleSubmit($event)" novalidate>
+        <header class="ui-panel__header">
+          <div>
+            <h2 id="form-example-title" class="ui-panel__title">Contact details</h2>
+            <p class="ui-panel__description">Fields marked required must be completed before submission.</p>
+          </div>
+        </header>
+        <div class="ui-form__body">
+          <div class="ui-field" :class="form.errors.name ? 'ui-field--invalid' : ''">
+            <label class="ui-field__label" for="form-name">Name <span class="ui-field__required" aria-label="required">*</span></label>
+            <input class="ui-input" id="form-name" name="name" type="text" autocomplete="name" placeholder="Jane Smith" :value="form.values.name" @input="form.handleChange('name')($event)" @blur="form.handleBlur('name')()" :aria-invalid="form.errors.name ? 'true' : 'false'" aria-describedby="form-name-error" />
+            <p id="form-name-error" class="ui-field__error" role="alert" @show="Boolean(form.errors.name)">{{ form.errors.name ?? '' }}</p>
+          </div>
 
-      <div class="form-field">
-        <label for="form-email">Email</label>
-        <input id="form-email" name="email" type="email" autocomplete="email" :value="form.values.email" @input="form.handleChange('email')($event)" @blur="form.handleBlur('email')()" :aria-invalid="form.errors.email ? 'true' : 'false'" aria-describedby="form-email-error" />
-        <p id="form-email-error" class="form-error" role="alert" @show="Boolean(form.errors.email)">{{ form.errors.email ?? '' }}</p>
-      </div>
+          <div class="ui-field" :class="form.errors.email ? 'ui-field--invalid' : ''">
+            <label class="ui-field__label" for="form-email">Email <span class="ui-field__required" aria-label="required">*</span></label>
+            <input class="ui-input" id="form-email" name="email" type="email" autocomplete="email" placeholder="jane@example.com" :value="form.values.email" @input="form.handleChange('email')($event)" @blur="form.handleBlur('email')()" :aria-invalid="form.errors.email ? 'true' : 'false'" aria-describedby="form-email-error" />
+            <p id="form-email-error" class="ui-field__error" role="alert" @show="Boolean(form.errors.email)">{{ form.errors.email ?? '' }}</p>
+          </div>
 
-      <label class="form-checkbox">
-        <input name="updates" type="checkbox" :checked="form.values.updates" @change="form.handleChange('updates')($event)" />
-        <span>Send me occasional Nodula updates</span>
-      </label>
+          <label class="ui-checkbox">
+            <input class="ui-checkbox__control" name="updates" type="checkbox" :checked="form.values.updates" @change="form.handleChange('updates')($event)" />
+            <span>Send me occasional Nodula updates</span>
+          </label>
 
-      <div class="form-actions">
-        <button class="button button--primary" type="submit" :disabled="form.submitting()">{{ form.submitting() ? 'Submitting…' : 'Submit example' }}</button>
-        <button class="button button--secondary" type="button" @click="resetForm()">Reset</button>
-        <span class="form-dirty" role="status">{{ form.dirty() ? 'Unsaved changes' : 'No changes yet' }}</span>
-      </div>
+          <div class="ui-cluster ui-cluster--wrap">
+            <button class="ui-button ui-button--primary" type="submit" :disabled="form.submitting()">{{ form.submitting() ? 'Submitting…' : 'Submit example' }}</button>
+            <button class="ui-button ui-button--secondary" type="button" @click="resetForm()">Reset</button>
+            <span class="ui-form__dirty" role="status">{{ form.dirty() ? 'Unsaved changes' : 'No changes yet' }}</span>
+          </div>
 
-      <p class="form-success" role="status" @ref="setSuccessMessageElement" @show="Boolean(submissionMessage())">{{ submissionMessage() }}</p>
-    </form>
+          <div class="ui-alert ui-alert--success ui-form__success" role="status" @ref="setSuccessMessageElement" @show="Boolean(submissionMessage())">
+            <span class="ui-alert__icon" aria-hidden="true">✓</span>
+            <p class="ui-alert__text">{{ submissionMessage() }}</p>
+          </div>
+        </div>
+      </form>
+    </section>
 
-    <div class="guide-code">
-      <pre><code>const form = createForm(initialValues, {
+    <section class="ui-section" aria-labelledby="form-code-title">
+      <h2 id="form-code-title" class="ui-section__title">Form setup</h2>
+      <p class="ui-section__description">Create a form with initial values, validation, and an async submit handler.</p>
+      <pre class="ui-code-block"><code data-highlight>const form = createForm(initialValues, {
   validate: (values) =&gt; errors,
   onSubmit: async (values) =&gt; save(values),
 });</code></pre>
-    </div>
+    </section>
     <!-- <a class="button button--dark" href="/guide">Back to the guide</a> -->
   </main>
 </template>

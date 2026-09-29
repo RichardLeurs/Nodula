@@ -4,12 +4,13 @@ import { createFileRouter } from 'nodula-framework/router';
 import { mountNavigation } from 'nodula-framework/navigation';
 import { enableLifecycleTransitions } from 'nodula-framework/animation';
 import { createStorageSignal } from 'nodula-framework/localstorage';
-import { demoAuth, initializeDemoAuth, protectDemoAdminRoute, signOutDemoAdmin } from './demo-auth.js';
+import { demoAuth, initializeDemoAuth, navigateDemoRoute, protectDemoAdminRoute, setDemoRouter, signOutDemoAdmin } from './demo-auth.js';
 
 const router = createFileRouter(import.meta.glob('./routes/**/*.page'), undefined, {
   mode: 'history',
   beforeEach: protectDemoAdminRoute,
 });
+setDemoRouter(router);
 enableLifecycleTransitions({ options: { duration: 500, easing: 'ease-out' } });
 let disposeNavigation;
 let disposeNavigationEffect;
@@ -22,11 +23,36 @@ function setAuthButtonElement(element) {
   authButtonElement = element;
   if (!element) return;
 
+  const svgNamespace = 'http://www.w3.org/2000/svg';
+  const signOutIcon = document.createElementNS(svgNamespace, 'svg');
+  signOutIcon.setAttribute('xmlns', svgNamespace);
+  signOutIcon.setAttribute('width', '16');
+  signOutIcon.setAttribute('height', '16');
+  signOutIcon.setAttribute('fill', 'currentColor');
+  signOutIcon.setAttribute('class', 'bi bi-person-fill');
+  signOutIcon.setAttribute('viewBox', '0 0 16 16');
+  signOutIcon.setAttribute('aria-hidden', 'true');
+  const signOutPath = document.createElementNS(svgNamespace, 'path');
+  signOutPath.setAttribute('d', 'M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6');
+  signOutIcon.append(signOutPath);
+
+  const signInIcon = document.createElementNS(svgNamespace, 'svg');
+  signInIcon.setAttribute('xmlns', svgNamespace);
+  signInIcon.setAttribute('width', '16');
+  signInIcon.setAttribute('height', '16');
+  signInIcon.setAttribute('fill', 'currentColor');
+  signInIcon.setAttribute('class', 'bi bi-person-fill-lock');
+  signInIcon.setAttribute('viewBox', '0 0 16 16');
+  signInIcon.setAttribute('aria-hidden', 'true');
+  const signInPath = document.createElementNS(svgNamespace, 'path');
+  signInPath.setAttribute('d', 'M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5v-1a2 2 0 0 1 .01-.2 4.49 4.49 0 0 1 1.534-3.693Q8.844 9.002 8 9c-5 0-6 3-6 4m7 0a1 1 0 0 1 1-1v-1a2 2 0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1');
+  signInIcon.append(signInPath);
+
   disposeAuthButtonEffect = effect(() => {
     const status = demoAuth.status();
     const signedIn = status === 'authenticated';
     const busy = status === 'idle' || status === 'loading';
-    element.textContent = busy ? 'Checking session…' : signedIn ? 'Sign out' : 'Sign in';
+    element.replaceChildren(signedIn ? signOutIcon.cloneNode(true) : signInIcon.cloneNode(true));
     element.disabled = busy;
     element.setAttribute('aria-label', busy ? 'Checking demo authentication status' : signedIn ? 'Sign out of the demo administrator account' : 'Sign in as the demo administrator');
     element.setAttribute('aria-busy', busy ? 'true' : 'false');
@@ -38,12 +64,11 @@ async function toggleDemoSignIn() {
     await initializeDemoAuth();
     if (demoAuth.isAuthenticated()) {
       await signOutDemoAdmin();
-      router.navigate('/login');
+      router.navigate('/');
       return;
     }
 
-    await demoAuth.signIn({ demoAdmin: true });
-    router.navigate('/admin');
+    router.navigate('/login');
   } catch (error) {
     console.error('Demo authentication action failed:', error);
   }
@@ -59,11 +84,13 @@ function setNavigationElement(element) {
     const isAdmin = demoAuth.status() === 'authenticated' && demoAuth.user()?.role === 'admin';
     const items = [
       { label: 'Home', href: '/' },
+
       { label: 'Add-ons', href: '/addons' },
       { label: 'Data', href: '/data' },
       { label: 'Forms', href: '/forms' },
-        { label: 'Modal windows', href: '/modal' },
+        { label: 'Modal', href: '/modal' },
       { label: 'Web Components', href: '/web-components' },
+      { label: 'NodulaUI', href: '/democss' },
       ...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
       // { label: 'Demo login', href: '/login' },
       { label: 'Guide', href: 'https://nodula-docs.richardleurs.nl/', external: true },
@@ -72,8 +99,8 @@ function setNavigationElement(element) {
     disposeNavigation?.();
     disposeNavigation = mountNavigation(element, router, items, {
       label: 'Main navigation',
-      linkClassName: 'nav-link',
-      activeClassName: 'nav-link--active',
+      linkClassName: 'ui-nav-link',
+      activeClassName: 'ui-nav-link--active',
     });
   });
 }
@@ -102,7 +129,7 @@ function setThemeToggleIcons(element) {
   sun.setAttribute('width', '16');
   sun.setAttribute('height', '16');
   sun.setAttribute('fill', 'currentColor');
-  sun.setAttribute('class', 'bi bi-sun-fill theme-toggle__sun');
+  sun.setAttribute('class', 'bi bi-sun-fill ui-theme-toggle__sun');
   sun.setAttribute('viewBox', '0 0 16 16');
   sun.setAttribute('aria-hidden', 'true');
   const sunPath = document.createElementNS(svgNamespace, 'path');
@@ -113,7 +140,7 @@ function setThemeToggleIcons(element) {
   moon.setAttribute('width', '16');
   moon.setAttribute('height', '16');
   moon.setAttribute('fill', 'currentColor');
-  moon.setAttribute('class', 'bi bi-moon-fill theme-toggle__moon');
+  moon.setAttribute('class', 'bi bi-moon-fill ui-theme-toggle__moon');
   moon.setAttribute('viewBox', '0 0 16 16');
   moon.setAttribute('aria-hidden', 'true');
   const moonPath = document.createElementNS(svgNamespace, 'path');
@@ -125,24 +152,26 @@ function setThemeToggleIcons(element) {
 </script>
 
 <template>
-  <div class="app">
+  <div class="ui-app">
 
-    <header class="site-header">
-      <a class="brand" href="/" aria-label="Nodula home">
-        <!-- <span class="brand-mark" aria-hidden="true">s</span> -->
-        <span class="brand-logo" aria-hidden="true"></span>
-        <span class="brand-name"><b>nodula</b></span>
-        <span class="brand-version">0.1</span>
+    <header class="ui-site-header">
+      <a class="ui-brand" href="/" aria-label="Nodula home">
+        <!-- <span class="ui-brand__mark" aria-hidden="true">s</span> -->
+        <span class="ui-brand__logo" aria-hidden="true"></span>
+        <span class="ui-brand__name"><b>nodula</b></span>
+        <span class="ui-brand__version">0.1</span>
       </a>
-      <nav class="site-nav" @ref="setNavigationElement"></nav>
-      <button class="auth-toggle" type="button" @click="toggleDemoSignIn()" @ref="setAuthButtonElement" aria-busy="true">Checking session…</button>
-      <button class="theme-toggle" type="button" @click="toggleTheme()" @ref="setThemeToggleIcons" :aria-label="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" :aria-pressed="theme() === 'light' ? 'true' : 'false'"></button>
-      <!-- <a class="github-link" href="https://vite.dev/" target="_blank" rel="noreferrer">Made for the web <span aria-hidden="true"> ↗</span></a> -->
+      <nav class="ui-site-nav" @ref="setNavigationElement"></nav>
+      <div class="ui-header-actions">
+        <button class="ui-auth-toggle" type="button" @click="toggleDemoSignIn()" @ref="setAuthButtonElement" aria-label="Checking demo authentication status" aria-busy="true"><span class="ui-auth-toggle__loading" aria-hidden="true">…</span></button>
+        <button class="ui-theme-toggle" type="button" @click="toggleTheme()" @ref="setThemeToggleIcons" :aria-label="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" :aria-pressed="theme() === 'light' ? 'true' : 'false'"></button>
+      </div>
+      <!-- <a class="ui-github-link" href="https://vite.dev/" target="_blank" rel="noreferrer">Made for the web <span aria-hidden="true"> ↗</span></a> -->
     </header>
     <div class="route-view">
       <outlet :view="router.view()" />
     </div>
-    <footer class="site-footer">
+    <footer class="ui-site-footer">
       <span>A small framework for big ideas </span>
        <span>This site is build with nodulaJS</span>
       <span>Copyright © Richard Leurs 2026 | GNU General Public License v3 </span>

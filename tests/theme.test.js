@@ -18,14 +18,14 @@ it('switches between dark and light modes and restores the saved choice', async 
   const server = await createServer({ server: { middlewareMode: true, hmr: false }, appType: 'custom' });
   let dispose;
   try {
-    const { default: AppShell } = await server.ssrLoadModule('/src/AppShell.comp');
+    const { default: AppShell } = await server.ssrLoadModule('/src/AppShell.page');
     const { mount } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, AppShell);
-    const logo = document.querySelector('.brand-logo');
+    const logo = document.querySelector('.ui-brand__logo');
     assert.ok(logo);
     assert.equal(logo.tagName, 'SPAN');
     assert.equal(logo.getAttribute('aria-hidden'), 'true');
-    const button = document.querySelector('.theme-toggle');
+    const button = document.querySelector('.ui-theme-toggle');
     assert.equal(document.documentElement.dataset.theme, 'dark');
     assert.equal(meta.content, '#101b25');
     assert.equal(button.getAttribute('aria-label'), 'Switch to light mode');
@@ -38,7 +38,7 @@ it('switches between dark and light modes and restores the saved choice', async 
     dispose();
     dispose = mount(document.body, AppShell);
     assert.equal(document.documentElement.dataset.theme, 'light');
-    document.querySelector('.theme-toggle').click();
+    document.querySelector('.ui-theme-toggle').click();
     assert.equal(document.documentElement.dataset.theme, 'dark');
     assert.equal(window.localStorage.getItem('nodula-theme'), '"dark"');
   } finally {

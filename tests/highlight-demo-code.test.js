@@ -15,13 +15,13 @@ after(() => window.close());
 
 it('detects JavaScript, HTML, and CSS snippets and highlights lazy-added code', async () => {
   document.body.innerHTML = `
-    <main class="app">
+    <main class="ui-app">
       <div class="guide-code"><pre><code>const answer = await fetch('/api');</code></pre></div>
       <div class="guide-code"><pre><code>&lt;section class="card"&gt;Hello&lt;/section&gt;</code></pre></div>
       <div class="guide-code"><pre><code>.card { color: red; display: grid; }</code></pre></div>
     </main>
   `;
-  const app = document.querySelector('.app');
+  const app = document.querySelector('.ui-app');
   const dispose = installDemoCodeHighlighting(app);
   const initialCode = [...app.querySelectorAll('.guide-code code')];
 
@@ -43,7 +43,7 @@ it('detects JavaScript, HTML, and CSS snippets and highlights lazy-added code', 
 
 it('keeps code blocks for unsupported explicit languages unmodified', () => {
   const app = document.createElement('main');
-  app.className = 'app';
+  app.className = 'ui-app';
   app.innerHTML = '<div class="guide-code"><pre><code data-language="python">print("hello")</code></pre></div>';
   document.body.append(app);
 
@@ -57,7 +57,7 @@ it('keeps code blocks for unsupported explicit languages unmodified', () => {
 
 it('waits for dynamically appended code text before highlighting', async () => {
   const app = document.createElement('main');
-  app.className = 'app';
+  app.className = 'ui-app';
   document.body.append(app);
   const dispose = installDemoCodeHighlighting(app);
 

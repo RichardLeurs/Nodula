@@ -26,22 +26,23 @@ it('loads and displays JSON from the editable server address', async () => {
     dispose = mount(document.body, DataPage);
     await window.happyDOM.whenAsyncComplete();
 
-    for (let attempt = 0; attempt < 50 && !document.querySelector('.data-demo__response code')?.textContent.includes('Nodula data demo'); attempt += 1) {
+    for (let attempt = 0; attempt < 50 && !document.querySelector('.ui-data-response code')?.textContent.includes('Nodula data demo'); attempt += 1) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
 
     assert.equal(requests[0].url, 'https://jsonplaceholder.typicode.com/posts/1');
-    assert.match(document.querySelector('.data-demo__response code')?.textContent ?? '', /Nodula data demo/);
-    assert.equal(document.querySelector('.data-demo__error')?.textContent, '');
+    assert.match(document.querySelector('.ui-data-response code')?.textContent ?? '', /Nodula data demo/);
+    assert.equal(document.querySelector('.ui-data-error')?.style.display, 'none');
 
     const endpoint = document.querySelector('#data-endpoint');
+    assert.equal(endpoint.placeholder, 'https://api.example.com/data');
     endpoint.value = 'https://jsonplaceholder.typicode.com/posts/2';
     endpoint.dispatchEvent(new window.Event('input', { bubbles: true }));
-    document.querySelector('.data-demo [type="submit"]').click();
+    document.querySelector('.ui-data-form [type="submit"]').click();
     await window.happyDOM.whenAsyncComplete();
 
     assert.equal(requests[1].url, endpoint.value);
-    assert.match(document.querySelector('.data-demo__response code')?.textContent ?? '', /"id": 2/);
+    assert.match(document.querySelector('.ui-data-response code')?.textContent ?? '', /"id": 2/);
   } finally {
     dispose?.();
     globalThis.fetch = originalFetch;

@@ -22,17 +22,17 @@ describe('Nodula modal add-on', () => {
     const styles = document.querySelectorAll('style[data-nodula-modal-styles]');
     assert.equal(styles.length, 1);
     assert.match(styles[0].textContent, /@layer nodula-addons/);
-    assert.match(styles[0].textContent, /\.nodula-modal/);
+    assert.match(styles[0].textContent, /\.ui-modal/);
     assert.equal(handle.element.getAttribute('role'), 'dialog');
     assert.equal(handle.element.getAttribute('aria-modal'), 'true');
-    assert.equal(handle.element.querySelector('.nodula-modal__title').textContent, 'Example modal');
-    assert.equal(handle.element.querySelector('.nodula-modal__body').textContent, '<strong>Plain text</strong>');
+    assert.equal(handle.element.querySelector('.ui-modal__title').textContent, 'Example modal');
+    assert.equal(handle.element.querySelector('.ui-modal__body').textContent, '<strong>Plain text</strong>');
     assert.equal(handle.element.querySelector('strong'), null);
     assert.equal(document.activeElement.textContent, 'Close');
 
-    handle.element.querySelector('.nodula-modal__close').click();
+    handle.element.querySelector('.ui-modal__close').click();
     await handle.closed;
-    assert.equal(document.querySelector('.nodula-modal'), null);
+    assert.equal(document.querySelector('.ui-modal'), null);
     assert.equal(document.activeElement, opener);
   });
 
@@ -40,7 +40,7 @@ describe('Nodula modal add-on', () => {
     const content = document.createElement('p');
     content.textContent = 'Interactive modal content';
     const first = openModal(content, { closeText: 'Done' });
-    assert.equal(first.element.querySelector('.nodula-modal__body > p'), content);
+    assert.equal(first.element.querySelector('.ui-modal__body > p'), content);
     first.element.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
     first.element.dispatchEvent(new window.Event('cancel', { cancelable: true }));
     await first.closed;
@@ -48,18 +48,18 @@ describe('Nodula modal add-on', () => {
     const second = openModal('Dismiss with backdrop');
     second.element.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
     await second.closed;
-    assert.equal(document.querySelector('.nodula-modal'), null);
+    assert.equal(document.querySelector('.ui-modal'), null);
   });
 
   it('keeps the modal open on backdrop clicks when closeOnBackdrop is false', async () => {
     const handle = openModal('Stay open', { closeOnBackdrop: false });
     assert.equal(document.querySelectorAll('style[data-nodula-modal-styles]').length, 1);
     handle.element.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
-    assert.ok(document.querySelector('.nodula-modal'));
+    assert.ok(document.querySelector('.ui-modal'));
 
     handle.close();
     await handle.closed;
-    assert.equal(document.querySelector('.nodula-modal'), null);
+    assert.equal(document.querySelector('.ui-modal'), null);
   });
 
   it('closes and resolves its handle when the owning Nodula root is disposed', async () => {
@@ -67,10 +67,10 @@ describe('Nodula modal add-on', () => {
     const [, dispose] = createRoot(() => {
       handle = openModal('Owned modal');
     });
-    assert.ok(document.querySelector('.nodula-modal'));
+    assert.ok(document.querySelector('.ui-modal'));
     dispose();
     await handle.closed;
-    assert.equal(document.querySelector('.nodula-modal'), null);
+    assert.equal(document.querySelector('.ui-modal'), null);
   });
 
   it('validates content and options and requires a browser document', () => {

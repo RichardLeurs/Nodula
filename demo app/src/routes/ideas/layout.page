@@ -1,6 +1,8 @@
 <template>
-  <section class="page-shell guide-page">
-    <p class="eyebrow">A shared ideas layout</p>
+  <section class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">A shared ideas layout</p>
+    </header>
     <outlet :view="children" />
   </section>
 </template>

@@ -7,12 +7,13 @@ test('demo font sizes scale from the root font size', () => {
   const guide = readFileSync(new URL('../demo app/src/routes/modal.page', import.meta.url), 'utf8');
 
   assert.match(css, /:root\s*\{[^}]*font-size:\s*100%\s*;/);
-  assert.match(css, /\.hero-description\s*\{[^}]*font-size:\s*1rem\s*;/);
-  assert.match(css, /\.idea\s*\{[^}]*font-size:\s*\.875rem\s*;/);
-  assert.match(css, /\.eyebrow\s*\{[^}]*font:\s*\.875rem\s+var\(--mono\)/);
-  assert.match(css, /\.nav-link, \.github-link\s*\{[^}]*font-size:\s*1rem\s*;/);
-  assert.match(guide, /\.template-demo\s*\{[^}]*font-size:\s*\.875rem\s*;/);
-  assert.doesNotMatch(css, /(?<![\d.])\.(?:75|8125)rem\b/);
+  assert.match(css, /\.ui-page__description\s*\{[^}]*font-size:\s*1\.05rem\s*;/);
+  assert.match(css, /\.ui-ideas-list__item\s*\{[^}]*font-size:\s*\.84rem\s*;/);
+  assert.match(css, /\.ui-page__eyebrow\s*\{[^}]*font:\s*600\s+\.78rem\/1\.4\s+var\(--mono/);
+  assert.match(css, /\.ui-nav-link, \.ui-github-link\s*\{[^}]*font-size:\s*1rem\s*;/);
+  assert.match(guide, /class="ui-card(?:\s|"|\.)/);
+  assert.match(guide, /class="ui-code-block"/);
+  assert.doesNotMatch(css, /(?<![\d.])\.8125rem\b/);
   assert.doesNotMatch(css, /(?:font-size\s*:|\bfont\s*:)[^;}]*\d+(?:\.\d+)?px\b/);
   assert.doesNotMatch(guide, /font-size\s*:\s*\d+(?:\.\d+)?px\b/);
 });

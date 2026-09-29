@@ -19,9 +19,11 @@ it('renders the external custom element and reactively updates its icon property
     const icons = [...document.querySelectorAll('iconify-icon')];
     assert.equal(icons.length, 4);
     assert.equal(icons.at(-1).icon, 'mdi:cursor-default-click-outline');
+    assert.ok(document.querySelector('.ui-page__title'));
+    assert.equal(document.querySelectorAll('.ui-icon-picker__button').length, 3);
 
     document.querySelector('[aria-label="Select rocket icon"]').click();
-    assert.equal(document.querySelector('.web-component-selection code').textContent, 'mdi:rocket-launch');
+    assert.equal(document.querySelector('.ui-icon-picker__selection code').textContent, 'mdi:rocket-launch');
     assert.equal(icons.at(-1).icon, 'mdi:rocket-launch');
   } finally {
     dispose?.();

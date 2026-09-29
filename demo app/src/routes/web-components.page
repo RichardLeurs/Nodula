@@ -9,57 +9,53 @@ function selectIcon(icon) {
 </script>
 
 <template>
-   <main class="page-shell form-page">
-    <p class="eyebrow">Nodula + Web Components</p>
-    <h1>Bring a custom Web Component into the page.</h1>
-    <p class="guide-intro">This page uses Iconify’s external <code>&lt;iconify-icon&gt;</code> custom element inside a Nodula template. Nodula creates the tag and reactively passes its icon property; the buttons below update that property through a signal.</p>
+   <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Nodula + Web Components</p>
+      <h1 class="ui-page__title">Bring a custom Web Component into the page.</h1>
+      <p class="ui-page__description">This page uses Iconify’s external <code>&lt;iconify-icon&gt;</code> custom element inside a Nodula template. Nodula creates the tag and reactively passes its icon property; the buttons below update that property through a signal.</p>
+    </header>
 
-    <section class="web-components-panel" aria-labelledby="iconify-heading">
-      <div>
-        <p class="eyebrow">External web component</p>
-        <h2 id="iconify-heading">Choose an icon</h2>
-        <p class="web-components-copy">Iconify loads each icon on demand. The icon name below is passed to the custom element as a property.</p>
-      </div>
+    <section class="ui-section" aria-labelledby="iconify-heading">
+      <article class="ui-card ui-card--interactive ui-icon-picker">
+        <header class="ui-card__header">
+          <div class="ui-stack ui-stack--tight">
+            <h2 id="iconify-heading" class="ui-card__title">Choose an icon</h2>
+            <p class="ui-card__description">Iconify loads each icon on demand. The icon name below is passed to the custom element as a property.</p>
+          </div>
+          <span class="ui-badge ui-badge--primary">External element</span>
+        </header>
 
-      <div class="web-component-icon-row" aria-label="Choose an icon">
-        <button class="web-component-icon-button" type="button" aria-label="Select rocket icon" @click="selectIcon('mdi:rocket-launch')">
-          <iconify-icon icon="mdi:rocket-launch" aria-hidden="true"></iconify-icon>
-        </button>
-        <button class="web-component-icon-button" type="button" aria-label="Select leaf icon" @click="selectIcon('mdi:leaf')">
-          <iconify-icon icon="mdi:leaf" aria-hidden="true"></iconify-icon>
-        </button>
-        <button class="web-component-icon-button" type="button" aria-label="Select heart icon" @click="selectIcon('mdi:heart')">
-          <iconify-icon icon="mdi:heart" aria-hidden="true"></iconify-icon>
-        </button>
-      </div>
+        <div class="ui-card__body ui-stack">
+          <div class="ui-cluster ui-cluster--wrap" aria-label="Choose an icon">
+            <button class="ui-icon-picker__button" type="button" aria-label="Select rocket icon" @click="selectIcon('mdi:rocket-launch')">
+              <iconify-icon icon="mdi:rocket-launch" aria-hidden="true"></iconify-icon>
+            </button>
+            <button class="ui-icon-picker__button" type="button" aria-label="Select leaf icon" @click="selectIcon('mdi:leaf')">
+              <iconify-icon icon="mdi:leaf" aria-hidden="true"></iconify-icon>
+            </button>
+            <button class="ui-icon-picker__button" type="button" aria-label="Select heart icon" @click="selectIcon('mdi:heart')">
+              <iconify-icon icon="mdi:heart" aria-hidden="true"></iconify-icon>
+            </button>
+          </div>
 
-      <div class="web-component-selection" role="status" aria-live="polite">
-        <span>Selected icon:</span>
-        <code>{{ selectedIcon() || 'Choose one above' }}</code>
-        <iconify-icon :icon="selectedIcon() || 'mdi:cursor-default-click-outline'" aria-hidden="true"></iconify-icon>
-      </div>
+          <div class="ui-icon-picker__selection" role="status" aria-live="polite">
+            <span>Selected icon:</span>
+            <code>{{ selectedIcon() || 'Choose one above' }}</code>
+            <iconify-icon :icon="selectedIcon() || 'mdi:cursor-default-click-outline'" aria-hidden="true"></iconify-icon>
+          </div>
+        </div>
+      </article>
     </section>
 
-    <div class="guide-code">
-      <pre><code>&lt;!-- Register the element once from your app entry --&gt;
+    <section class="ui-section" aria-labelledby="web-component-code-title">
+      <h2 id="web-component-code-title" class="ui-section__title">Use a custom element</h2>
+      <p class="ui-section__description">Register the element once, then use its reactive properties directly in your template.</p>
+      <pre class="ui-code-block"><code data-highlight>&lt;!-- Register the element once from your app entry --&gt;
 import 'iconify-icon';
 
 &lt;!-- Use it directly in a .page template --&gt;
 &lt;iconify-icon :icon="selectedIcon()"&gt;&lt;/iconify-icon&gt;</code></pre>
-    </div>
+    </section>
   </main>
 </template>
-
-<style>
-.web-components-panel { display: grid; gap: 24px; margin: 32px 0; padding: 28px; border: 1px solid rgba(183, 216, 154, .2); border-radius: 20px; background: rgba(255, 255, 255, .025); }
-.web-components-panel h2 { margin: 0; color: #f0f5ee; font-size: 1.4rem; }
-.web-components-copy { max-width: 54ch; margin: 10px 0 0; color: #a7b2b0; line-height: 1.6; }
-.web-component-icon-row { display: flex; flex-wrap: wrap; gap: 12px; }
-.web-component-icon-button { display: grid; width: 64px; height: 64px; place-items: center; border: 1px solid rgba(183, 216, 154, .25); border-radius: 16px; background: rgba(183, 216, 154, .08); color: #b7d89a; cursor: pointer; transition: background .18s ease, transform .18s ease; }
-.web-component-icon-button:hover { transform: translateY(-2px); background: rgba(183, 216, 154, .16); }
-.web-component-icon-button:focus-visible { outline: 2px solid #b7d89a; outline-offset: 3px; }
-.web-component-icon-button iconify-icon { width: 30px; height: 30px; }
-.web-component-selection { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; color: #a7b2b0; }
-.web-component-selection iconify-icon { width: 28px; height: 28px; color: #b7d89a; }
-@media (max-width: 520px) { .web-components-panel { padding: 20px; } }
-</style>

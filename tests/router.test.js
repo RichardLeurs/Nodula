@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { Window } from 'happy-dom';
+import { createServer } from 'vite';
 import { createRoot, h, mount } from '../dist/framework/nodula-framework.js';
 import { createFileRouter, createRouter } from '../dist/framework/nodula-router.js';
 
@@ -465,6 +466,36 @@ describe('Nodula history routing', () => {
     assert.deepEqual(calls, ['page', 'layout']);
     dispose();
     window.close();
+  });
+
+  it('renders the shared UI layout and parameterized idea route with a decoded id', async () => {
+    const window = new Window({ url: 'http://localhost/ideas/first%20idea' });
+    globalThis.window = window;
+    globalThis.document = window.document;
+    globalThis.Node = window.Node;
+    const server = await createServer({ server: { middlewareMode: true, hmr: false }, appType: 'custom' });
+    let dispose;
+    try {
+      const { default: AppShell } = await server.ssrLoadModule('/src/AppShell.page');
+      const { mount } = await server.ssrLoadModule('nodula-framework');
+      dispose = mount(document.body, AppShell);
+
+      for (let attempt = 0; attempt < 100 && !document.querySelector('.ui-idea-detail h1'); attempt += 1) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+
+      assert.equal(new URL(window.location.href).pathname, '/ideas/first%20idea');
+      assert.equal(document.querySelector('.ui-page__eyebrow')?.textContent, 'A shared ideas layout');
+      assert.equal(document.querySelector('.ui-idea-detail h1')?.textContent, 'Idea first idea');
+      assert.equal(document.querySelector('.ui-idea-detail a[href="/modal"]')?.textContent.trim(), 'Back to Modal');
+    } finally {
+      dispose?.();
+      await server.close();
+      window.close();
+      delete globalThis.window;
+      delete globalThis.document;
+      delete globalThis.Node;
+    }
   });
 
   it('keeps hash routing as the default and rejects unknown router modes', () => {

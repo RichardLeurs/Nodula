@@ -70,17 +70,18 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   const notifications = await bundleConsumer('notifications.js');
   assert.match(notifications, /treeShakingResult/);
   assert.match(notifications, /showNotification expects an options object/);
+  assert.match(notifications, /ui-notification/);
   assert.doesNotMatch(notifications, /createTransition/);
 
   const modal = await bundleConsumer('modal.js');
   assert.match(modal, /treeShakingResult/);
-  assert.match(modal, /nodula-modal/);
+  assert.match(modal, /ui-modal/);
   assert.doesNotMatch(modal, /createTransition/);
 
   const drawer = await bundleConsumer('drawer.js');
   assert.match(drawer, /treeShakingResult/);
-  assert.match(drawer, /nodula-drawer/);
-  assert.doesNotMatch(drawer, /nodula-modal/);
+  assert.match(dialog, /ui-dialog/);
+  assert.doesNotMatch(drawer, /ui-modal/);
 
   const navigation = await bundleConsumer('navigation.js');
   assert.match(navigation, /treeShakingResult/);

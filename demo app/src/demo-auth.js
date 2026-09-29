@@ -1,5 +1,16 @@
 import { createAuth } from 'nodula-framework/auth';
 
+let demoRouter;
+
+export function setDemoRouter(router) {
+  demoRouter = router;
+}
+
+export function navigateDemoRoute(path) {
+  if (!demoRouter) throw new Error('The demo router is not ready yet.');
+  demoRouter.navigate(path);
+}
+
 /* Demo-only adapter: this deliberately demonstrates client state, not real authentication. */
 export const demoAuth = createAuth({
   async getSession() {

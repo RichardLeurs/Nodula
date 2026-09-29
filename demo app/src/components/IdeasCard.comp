@@ -40,25 +40,25 @@ function addIdea(event) {
 </script>
 
 <template>
-  <article class="demo-card ideas-card">
-    <div class="card-topline"><span class="mini-icon mini-icon--leaf">↗</span><span class="card-label">A keyed little list</span></div>
-    <div class="ideas-heading">
-      <p class="card-title">Things worth doing</p>
-      <span class="progress-pill">{{ doneCount() }} / {{ ideas().length }} done</span>
+  <article class="ui-card ui-ideas-card">
+    <div class="ui-cluster"><span class="ui-ideas-card__icon" aria-hidden="true">↗</span><span class="ui-counter-card__label">A keyed little list</span></div>
+    <div class="ui-ideas-card__heading">
+      <h3 class="ui-card__title">Things worth doing</h3>
+      <span class="ui-badge ui-badge--success">{{ doneCount() }} / {{ ideas().length }} done</span>
     </div>
-    <p class="ideas-status" role="status">{{ status() }}</p>
-    <ul class="idea-list">
-      <li class="idea" @for="idea of ideas()" :key="idea.id" :class="idea().done ? 'idea idea--done' : 'idea'">
-        <label class="idea-label">
-          <input type="checkbox" :checked="idea().done" @change="toggleIdea(idea().id, $event.currentTarget.checked)" />
+    <p class="ui-ideas-card__status" role="status">{{ status() }}</p>
+    <ul class="ui-ideas-list">
+      <li class="ui-ideas-list__item" @for="idea of ideas()" :key="idea.id" :class="idea().done ? 'ui-ideas-list__item ui-ideas-list__item--done' : 'ui-ideas-list__item'">
+        <label class="ui-checkbox ui-ideas-list__label">
+          <input class="ui-checkbox__control" type="checkbox" :checked="idea().done" @change="toggleIdea(idea().id, $event.currentTarget.checked)" />
           <span>{{ idea().text }}</span>
         </label>
-        <button class="icon-button" type="button" :aria-label="'Remove ' + idea().text" @click="removeIdea(idea().id)">×</button>
+        <button class="ui-ideas-list__remove" type="button" :aria-label="'Remove ' + idea().text" @click="removeIdea(idea().id)">×</button>
       </li>
     </ul>
-    <form class="add-form" @submit="addIdea($event)">
-      <input class="add-input" type="text" placeholder="Add a small idea…" @bind:value="draft, setDraft" aria-label="New idea" :disabled="!ready()" />
-      <button class="add-button" type="submit" aria-label="Add idea" :disabled="!ready()">+</button>
+    <form class="ui-cluster ui-ideas-card__add" @submit="addIdea($event)">
+      <input class="ui-input" type="text" placeholder="Add a small idea…" @bind:value="draft, setDraft" aria-label="New idea" :disabled="!ready()" />
+      <button class="ui-button ui-button--primary ui-ideas-card__add-button" type="submit" aria-label="Add idea" :disabled="!ready()">+</button>
     </form>
   </article>
 </template>

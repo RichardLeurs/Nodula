@@ -19,7 +19,7 @@ function getContainer(position) {
   if (container?.isConnected) return container;
 
   container = document.createElement('div');
-  container.className = `nodula-notifications nodula-notifications--${position}`;
+  container.className = `ui-notifications ui-notifications--${position}`;
   container.setAttribute('role', 'region');
   container.setAttribute('aria-label', 'Notifications');
   container.setAttribute('aria-live', 'polite');
@@ -67,24 +67,24 @@ export function showNotification(options = {}) {
   const id = nextNotificationId++;
   const container = getContainer(position);
   const element = document.createElement('div');
-  element.className = `nodula-notification nodula-notification--${type}`;
+  element.className = `ui-notification ui-notification--${type}`;
   element.setAttribute('role', type === 'error' ? 'alert' : 'status');
-  element.setAttribute('aria-labelledby', `nodula-notification-title-${id}`);
-  element.setAttribute('aria-describedby', `nodula-notification-message-${id}`);
+  element.setAttribute('aria-labelledby', `ui-notification-title-${id}`);
+  element.setAttribute('aria-describedby', `ui-notification-message-${id}`);
 
   const content = document.createElement('div');
-  content.className = 'nodula-notification__content';
+  content.className = 'ui-notification__content';
   const heading = document.createElement('h2');
-  heading.className = 'nodula-notification__title';
-  heading.id = `nodula-notification-title-${id}`;
+  heading.className = 'ui-notification__title';
+  heading.id = `ui-notification-title-${id}`;
   heading.textContent = title;
   const body = document.createElement('p');
-  body.className = 'nodula-notification__message';
-  body.id = `nodula-notification-message-${id}`;
+  body.className = 'ui-notification__message';
+  body.id = `ui-notification-message-${id}`;
   body.textContent = message;
 
   const closeButton = document.createElement('button');
-  closeButton.className = 'nodula-notification__close';
+  closeButton.className = 'ui-notification__close';
   closeButton.type = 'button';
   closeButton.setAttribute('aria-label', closeText);
   closeButton.textContent = '×';
@@ -123,7 +123,7 @@ export function showNotification(options = {}) {
     if (isClosing || closedResolved) return;
     isClosing = true;
     view.clearTimeout(dismissalTimer);
-    element.classList.add('nodula-notification--closing');
+    element.classList.add('ui-notification--closing');
     // Keep cleanup deterministic if CSS animations are disabled or unavailable.
     removalTimer = view.setTimeout(remove, 250);
   };

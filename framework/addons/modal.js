@@ -19,16 +19,16 @@ export function openModal(content, options = {}) {
   injectAddonStyles('modal', modalStyles);
 
   const modal = document.createElement('dialog');
-  modal.className = 'nodula-modal';
+  modal.className = 'ui-modal';
   modal.setAttribute('aria-modal', 'true');
   modal.setAttribute('role', 'dialog');
 
-  const id = `nodula-modal-title-${nextModalId++}`;
+  const id = `ui-modal-title-${nextModalId++}`;
   const header = document.createElement('header');
-  header.className = 'nodula-modal__header';
+  header.className = 'ui-modal__header';
   if (title) {
     const heading = document.createElement('h2');
-    heading.className = 'nodula-modal__title';
+    heading.className = 'ui-modal__title';
     heading.id = id;
     heading.textContent = title;
     modal.setAttribute('aria-labelledby', id);
@@ -38,14 +38,14 @@ export function openModal(content, options = {}) {
   }
 
   const closeButton = document.createElement('button');
-  closeButton.className = 'nodula-modal__close';
+  closeButton.className = 'ui-modal__close';
   closeButton.type = 'button';
   closeButton.textContent = closeText;
   closeButton.setAttribute('aria-label', closeText);
   header.append(closeButton);
 
   const body = document.createElement('div');
-  body.className = 'nodula-modal__body';
+  body.className = 'ui-modal__body';
   if (typeof content === 'string') body.textContent = content;
   else body.append(content);
   modal.append(header, body);

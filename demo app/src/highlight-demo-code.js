@@ -9,7 +9,7 @@ hljs.registerLanguage('html', xml);
 hljs.registerLanguage('css', css);
 
 const supportedLanguages = ['javascript', 'html', 'css'];
-const candidateSelector = '.guide-code pre code, .addon-card code[data-highlight]';
+const candidateSelector = '.guide-code pre code, .addon-card code[data-highlight], .ui-code-block code[data-highlight]';
 
 function highlightCodeElement(element) {
   if (element.dataset.highlighted === 'yes') return;
@@ -34,7 +34,7 @@ function highlightWithin(root) {
   root.querySelectorAll?.(candidateSelector).forEach(highlightCodeElement);
 }
 
-export function installDemoCodeHighlighting(root = document.querySelector('.app')) {
+export function installDemoCodeHighlighting(root = document.querySelector('.ui-app')) {
   if (!root) return () => {};
 
   highlightWithin(root);

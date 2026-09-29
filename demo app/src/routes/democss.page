@@ -1,0 +1,183 @@
+<script setup>
+const tokenExamples = [
+  { name: 'Primary', variable: '--ui-color-primary', className: 'ui-token-swatch--primary' },
+  { name: 'Surface', variable: '--ui-color-surface', className: 'ui-token-swatch--surface' },
+  { name: 'Success', variable: '--ui-color-success', className: 'ui-token-swatch--success' },
+  { name: 'Warning', variable: '--ui-color-warning', className: 'ui-token-swatch--warning' },
+  { name: 'Danger', variable: '--ui-color-danger', className: 'ui-token-swatch--danger' },
+];
+
+const people = [
+  { name: 'Maya Chen', role: 'Designer', status: 'Active', statusClass: 'ui-badge--success' },
+  { name: 'Theo Martin', role: 'Developer', status: 'Invited', statusClass: 'ui-badge--warning' },
+  { name: 'Ari Patel', role: 'Administrator', status: 'Active', statusClass: 'ui-badge--primary' },
+];
+
+function preventSubmit(event) {
+  event.preventDefault();
+}
+</script>
+
+<template>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Nodula UI · architecture demo</p>
+      <h1 class="ui-page__title">A small, composable UI vocabulary.</h1>
+      <p class="ui-page__description">A working visual tour of the tokens, layout primitives, components, modifiers, and states described in the CSS architecture.</p>
+      <div class="ui-cluster ui-cluster--wrap" aria-label="Page actions">
+        <a class="ui-button ui-button--primary" href="#components">Explore components <span aria-hidden="true">↓</span></a>
+        <a class="ui-button ui-button--outline" href="/addons">Browse framework add-ons</a>
+      </div>
+    </header>
+
+    <section class="ui-section" aria-labelledby="tokens-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="tokens-title" class="ui-section__title">Foundation tokens</h2>
+          <p class="ui-section__description">Components use semantic variables instead of hard-coded theme colors.</p>
+        </div>
+        <span class="ui-badge ui-badge--neutral">Foundation</span>
+      </div>
+      <div class="ui-grid ui-grid--auto">
+        <article @for="token of tokenExamples" :key="token.name" class="ui-card ui-card--compact">
+          <div :class="'ui-token-swatch ' + token.className" aria-hidden="true"></div>
+          <div class="ui-stack ui-stack--tight">
+            <h3 class="ui-card__title">{{ token.name }}</h3>
+            <code class="ui-code">{{ token.variable }}</code>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="components" class="ui-section" aria-labelledby="components-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="components-title" class="ui-section__title">Actions and feedback</h2>
+          <p class="ui-section__description">Variants and states share consistent names across components.</p>
+        </div>
+      </div>
+      <div class="ui-grid ui-grid--2">
+        <article class="ui-panel ui-panel--raised">
+          <header class="ui-panel__header">
+            <div>
+              <h3 class="ui-panel__title">Buttons</h3>
+              <p class="ui-panel__description">Primary, secondary, outline, and ghost actions.</p>
+            </div>
+          </header>
+          <div class="ui-panel__body ui-stack">
+            <div class="ui-cluster ui-cluster--wrap" aria-label="Button variants">
+              <button class="ui-button ui-button--primary" type="button">Primary</button>
+              <button class="ui-button ui-button--secondary" type="button">Secondary</button>
+              <button class="ui-button ui-button--outline" type="button">Outline</button>
+              <button class="ui-button ui-button--ghost" type="button">Ghost</button>
+            </div>
+            <div class="ui-cluster ui-cluster--wrap" aria-label="Button states">
+              <button class="ui-button ui-button--primary ui-button--small" type="button">Small</button>
+              <button class="ui-button ui-button--primary" type="button">Medium</button>
+              <button class="ui-button ui-button--primary ui-button--large" type="button">Large</button>
+              <button class="ui-button ui-button--secondary" type="button" disabled>Disabled</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="ui-panel ui-panel--bordered">
+          <header class="ui-panel__header">
+            <div>
+              <h3 class="ui-panel__title">Alerts and badges</h3>
+              <p class="ui-panel__description">Color communicates status; text carries the meaning.</p>
+            </div>
+          </header>
+          <div class="ui-panel__body ui-stack">
+            <div class="ui-alert ui-alert--info" role="status">
+              <span class="ui-alert__icon" aria-hidden="true">i</span>
+              <div class="ui-alert__content"><strong class="ui-alert__title">Info</strong><p class="ui-alert__text">Your workspace is up to date.</p></div>
+            </div>
+            <div class="ui-cluster ui-cluster--wrap" aria-label="Status badges">
+              <span class="ui-badge ui-badge--neutral">Neutral</span>
+              <span class="ui-badge ui-badge--primary">Primary</span>
+              <span class="ui-badge ui-badge--success">Success</span>
+              <span class="ui-badge ui-badge--warning">Warning</span>
+              <span class="ui-badge ui-badge--danger">Danger</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="ui-section" aria-labelledby="forms-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="forms-title" class="ui-section__title">Form building blocks</h2>
+          <p class="ui-section__description">Semantic labels, controls, descriptions, and visible focus states.</p>
+        </div>
+      </div>
+      <form class="ui-panel ui-panel--flat" @submit="preventSubmit($event)">
+        <div class="ui-form__body">
+          <div class="ui-field">
+            <label class="ui-field__label" for="ui-name">Name <span class="ui-field__required" aria-label="required">*</span></label>
+            <input class="ui-input" id="ui-name" name="name" type="text" autocomplete="name" placeholder="e.g. Alex Morgan" aria-describedby="ui-name-help" />
+            <p id="ui-name-help" class="ui-field__description">This name will appear in your workspace.</p>
+          </div>
+          <div class="ui-field ui-field--invalid">
+            <label class="ui-field__label" for="ui-email">Email address</label>
+            <input class="ui-input ui-input--invalid" id="ui-email" name="email" type="email" value="not-an-email" placeholder="alex@example.com" aria-invalid="true" aria-describedby="ui-email-error" />
+            <p id="ui-email-error" class="ui-field__error">Enter a valid email address.</p>
+          </div>
+          <div class="ui-field">
+            <label class="ui-field__label" for="ui-role">Role</label>
+            <select class="ui-select" id="ui-role" name="role"><option>Member</option><option>Administrator</option><option>Viewer</option></select>
+          </div>
+          <div class="ui-field">
+            <label class="ui-field__label" for="ui-notes">Notes</label>
+            <textarea class="ui-textarea" id="ui-notes" name="notes" rows="3" placeholder="Add an optional note"></textarea>
+          </div>
+          <label class="ui-checkbox"><input class="ui-checkbox__control" type="checkbox" checked /><span>Send the user an email invitation</span></label>
+        </div>
+        <footer class="ui-panel__footer ui-cluster ui-cluster--end">
+          <button class="ui-button ui-button--secondary" type="reset">Reset</button>
+          <button class="ui-button ui-button--primary" type="submit">Save changes</button>
+        </footer>
+      </form>
+    </section>
+
+    <section class="ui-section" aria-labelledby="data-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="data-title" class="ui-section__title">Cards and data</h2>
+          <p class="ui-section__description">Compose a compact summary card with a responsive table.</p>
+        </div>
+        <span class="ui-badge ui-badge--success">3 members</span>
+      </div>
+      <div class="ui-grid ui-grid--3">
+        <article class="ui-card ui-card--interactive">
+          <div class="ui-card__header"><span class="ui-avatar ui-avatar--primary" aria-hidden="true">MC</span><span class="ui-badge ui-badge--success">Active</span></div>
+          <div class="ui-card__body ui-stack ui-stack--tight"><h3 class="ui-card__title">Maya Chen</h3><p class="ui-card__description">Product designer</p></div>
+          <footer class="ui-card__footer"><a class="ui-link" href="#members">View profile <span aria-hidden="true">→</span></a></footer>
+        </article>
+        <article class="ui-card ui-card--interactive">
+          <div class="ui-card__header"><span class="ui-avatar ui-avatar--success" aria-hidden="true">TP</span><span class="ui-badge ui-badge--warning">Invited</span></div>
+          <div class="ui-card__body ui-stack ui-stack--tight"><h3 class="ui-card__title">Theo Park</h3><p class="ui-card__description">Frontend developer</p></div>
+          <footer class="ui-card__footer"><a class="ui-link" href="#members">View profile <span aria-hidden="true">→</span></a></footer>
+        </article>
+        <article class="ui-card ui-card--interactive">
+          <div class="ui-card__header"><span class="ui-avatar ui-avatar--info" aria-hidden="true">AP</span><span class="ui-badge ui-badge--primary">Admin</span></div>
+          <div class="ui-card__body ui-stack ui-stack--tight"><h3 class="ui-card__title">Ari Patel</h3><p class="ui-card__description">Workspace administrator</p></div>
+          <footer class="ui-card__footer"><a class="ui-link" href="#members">View profile <span aria-hidden="true">→</span></a></footer>
+        </article>
+      </div>
+      <div id="members" class="ui-panel ui-panel--bordered ui-table-panel">
+        <div class="ui-table-wrap">
+          <table class="ui-table">
+            <caption class="ui-table__caption">Workspace members</caption>
+            <thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Status</th></tr></thead>
+            <tbody>
+              <tr @for="person of people" :key="person.name">
+                <th scope="row">{{ person.name }}</th><td>{{ person.role }}</td><td><span :class="'ui-badge ' + person.statusClass">{{ person.status }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</template>

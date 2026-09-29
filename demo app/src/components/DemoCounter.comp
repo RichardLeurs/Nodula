@@ -5,10 +5,10 @@ const [count, setCount] = signal(0);
 </script>
 
 <template>
-  <article class="demo-card counter-card">
-    <div class="card-topline"><span class="mini-icon mini-icon--sun">✳</span><span class="card-label">Fine-grained state</span></div>
-    <p class="card-title">Every click adds a little momentum.</p>
-    <div class="counter-display"><span>Nodula points</span><strong>{{ String(count()).padStart(2, '0') }}</strong></div>
-    <button class="button button--dark" type="button" @on:click="setCount(count() + 1)">Add a point <span aria-hidden="true"> +</span></button>
+  <article class="ui-card ui-counter-card">
+    <div class="ui-cluster"><span class="ui-counter-card__icon" aria-hidden="true">✳</span><span class="ui-counter-card__label">Fine-grained state</span></div>
+    <h3 class="ui-card__title">Every click adds a little momentum.</h3>
+    <div class="ui-counter-card__display"><span>Nodula points</span><strong>{{ String(count()).padStart(2, '0') }}</strong></div>
+    <button class="ui-button ui-button--primary" type="button" @on:click="setCount(count() + 1)">Add a point <span aria-hidden="true">+</span></button>
   </article>
 </template>

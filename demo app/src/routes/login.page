@@ -1,6 +1,6 @@
 <script setup>
 import { signal } from 'nodula-framework';
-import { demoAuth, initializeDemoAuth } from '../demo-auth.js';
+import { demoAuth, initializeDemoAuth, navigateDemoRoute } from '../demo-auth.js';
 
 const [message, setMessage] = signal('');
 
@@ -9,7 +9,7 @@ async function signInAsDemoAdmin() {
   try {
     await initializeDemoAuth();
     await demoAuth.signIn({ demoAdmin: true });
-    message('Signed in for this demo. Continue to the Admin page.');
+    navigateDemoRoute('/admin');
   } catch (error) {
     message(error instanceof Error ? error.message : 'Demo sign-in failed.');
   }
@@ -17,14 +17,30 @@ async function signInAsDemoAdmin() {
 </script>
 
 <template>
-  <main class="page-shell auth-demo-page">
-    <p class="eyebrow">Nodula Auth demo</p>
-    <h1>Demo sign-in</h1>
-    <p class="guide-intro">This button creates an in-memory demo identity so you can try the protected Admin route. It is not real authentication and does not protect server data.</p>
-    <div class="form-example">
-      <p role="status">{{ message() }}</p>
-      <button class="button button--primary" type="button" @click="signInAsDemoAdmin()">Sign in as demo administrator</button>
-      <!-- <a class="button button--secondary" href="/admin">Continue to Admin</a> -->
-    </div>
+  <main class="ui-page page auth-demo-page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Nodula Auth demo</p>
+      <h1 class="ui-page__title">Demo sign-in</h1>
+      <p class="ui-page__description">This sign-in creates an in-memory demo identity so you can try the protected Admin route. It isn’t real authentication and does not protect server data.</p>
+    </header>
+
+    <section class="ui-section" aria-labelledby="demo-signin-title">
+      <div class="ui-panel ui-panel--raised auth-demo-panel">
+        <header class="ui-panel__header">
+          <div>
+            <h2 id="demo-signin-title" class="ui-panel__title">Demo administrator</h2>
+            <p class="ui-panel__description">Continue with the local demo identity.</p>
+          </div>
+          <span class="ui-badge ui-badge--warning">Demo only</span>
+        </header>
+        <div class="ui-panel__body ui-stack">
+          <p class="ui-field__error auth-demo-message" role="status" @show="Boolean(message())">{{ message() }}</p>
+          <div class="ui-cluster ui-cluster--wrap">
+            <button class="ui-button ui-button--primary" type="button" @click="signInAsDemoAdmin()">Sign in as demo administrator</button>
+          </div>
+          <!-- <a class="button button--secondary" href="/admin">Continue to Admin</a> -->
+        </div>
+      </div>
+    </section>
   </main>
 </template>

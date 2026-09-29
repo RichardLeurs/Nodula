@@ -40,36 +40,61 @@ void loadJson();
 </script>
 
 <template>
-  <main class="page-shell data-page">
-    <p class="eyebrow">Optional data add-on</p>
-    <h1>Load Data from a server.</h1>
-    <p class="guide-intro">This page uses <code>nodula-framework/data</code> to request a JSON resource with Fetch, then renders the response and handles loading or HTTP errors.</p>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Optional data add-on</p>
+      <h1 class="ui-page__title">Load data from a server.</h1>
+      <p class="ui-page__description">This page uses <code>nodula-framework/data</code> to request a JSON resource with Fetch, then renders the response and handles loading or HTTP errors.</p>
+    </header>
 
-    <form class="data-demo" @submit="loadJson($event)">
-      <label class="data-demo__label" for="data-endpoint">JSON server address</label>
-      <div class="data-demo__controls">
-        <input id="data-endpoint" class="data-demo__input" type="url" autocomplete="url" required :value="endpoint()" @input="setEndpoint($event.currentTarget.value)" />
-        <button class="button button--primary" type="submit" :disabled="loading()">{{ loading() ? 'Loading…' : 'Load JSON' }}</button>
+    <section class="ui-section" aria-labelledby="data-request-title">
+      <form class="ui-panel ui-panel--raised ui-data-form" @submit="loadJson($event)">
+        <header class="ui-panel__header">
+          <div>
+            <h2 id="data-request-title" class="ui-panel__title">Request a JSON resource</h2>
+            <p class="ui-panel__description">Enter a public endpoint that allows cross-origin requests.</p>
+          </div>
+        </header>
+        <div class="ui-form__body">
+          <div class="ui-field">
+            <label class="ui-field__label" for="data-endpoint">JSON server address</label>
+            <input id="data-endpoint" class="ui-input" type="url" autocomplete="url" placeholder="https://api.example.com/data" required :value="endpoint()" @input="setEndpoint($event.currentTarget.value)" />
+            <p class="ui-field__description">Example server: JSONPlaceholder. Change the address to load another CORS-enabled JSON endpoint.</p>
+          </div>
+        </div>
+        <footer class="ui-panel__footer ui-cluster ui-cluster--end">
+          <button class="ui-button ui-button--primary" type="submit" :disabled="loading()">{{ loading() ? 'Loading…' : 'Load JSON' }}</button>
+        </footer>
+      </form>
+
+      <div class="ui-alert ui-alert--info ui-data-status" role="status" aria-live="polite" @show="loading()">
+        <span class="ui-alert__icon" aria-hidden="true">i</span>
+        <p class="ui-alert__text">Loading JSON…</p>
       </div>
-      <p class="data-demo__hint">Example server: JSONPlaceholder. Change the address to load another CORS-enabled JSON endpoint.</p>
-    </form>
 
-    <p class="data-demo__status" role="status" aria-live="polite" @show="loading()">Loading JSON…</p>
-    <p class="data-demo__error" role="alert" @show="Boolean(errorMessage())">{{ errorMessage() }}</p>
-
-    <section class="data-demo__response" aria-labelledby="data-response-heading" @show="record() !== null">
-      <div class="data-demo__response-heading">
-        <h2 id="data-response-heading">Server response</h2>
-        <span>JSON</span>
+      <div class="ui-alert ui-alert--danger ui-data-error" role="alert" @show="Boolean(errorMessage())">
+        <span class="ui-alert__icon" aria-hidden="true">!</span>
+        <p class="ui-alert__text">{{ errorMessage() }}</p>
       </div>
-      <pre><code>{{ JSON.stringify(record(), null, 2) }}</code></pre>
+
+      <section class="ui-panel ui-panel--bordered ui-data-response" aria-labelledby="data-response-heading" @show="record() !== null">
+        <header class="ui-panel__header">
+          <h2 id="data-response-heading" class="ui-panel__title">Server response</h2>
+          <span class="ui-badge ui-badge--primary">JSON</span>
+        </header>
+        <div class="ui-panel__body ui-data-response__body">
+          <pre class="ui-data-response__code"><code>{{ JSON.stringify(record(), null, 2) }}</code></pre>
+        </div>
+      </section>
     </section>
 
-    <div class="guide-code">
-      <pre><code>import { createDataClient } from 'nodula-framework/data';
+    <section class="ui-section" aria-labelledby="data-example-title">
+      <h2 id="data-example-title" class="ui-section__title">Use the data client</h2>
+      <p class="ui-section__description">The same request can be made directly from your application code.</p>
+      <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';
 
 const api = createDataClient();
 const post = await api.get('https://jsonplaceholder.typicode.com/posts/1');</code></pre>
-    </div>
+    </section>
   </main>
 </template>

@@ -255,7 +255,7 @@ export function createFileRouter(files, fallback, options) {
     return () => {
       const entries = [matched.page.page, ...matched.chain];
       if (entries.some((item) => item.error())) return document.createTextNode('Could not load this page.');
-      if (entries.some((item) => !item.component())) return document.createTextNode('Loading page…');
+      if (entries.some((item) => !item.component())) return document.createTextNode(' ');
       let node = matched.page.page.component()({ params: matched.params });
       for (const layout of [...matched.chain].reverse()) node = layout.component()({ params: matched.params, children: node });
       return node;

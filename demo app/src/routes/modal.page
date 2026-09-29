@@ -19,33 +19,53 @@ function showExampleDrawer() {
 </script>
 
 <template>
-  <main class="page-shell guide-page">
-    <p class="eyebrow">The short version</p>
-    <h1>A small toolkit,<br />not a big ceremony.</h1>
-    <p class="guide-intro">Nodula keeps the useful parts close: fine-grained state, tiny DOM helpers, and a router you can understand at a glance.</p>
-    <div class="guide-code">
-      <pre><code data-highlight>const [count, setCount] = signal(0); effect(() =&gt; console.log(count()));</code></pre>
-    </div>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Optional overlay add-ons</p>
+      <h1 class="ui-page__title">Dialogs that fit your interface.</h1>
+      <p class="ui-page__description">Explore Nodula's native modal and drawer add-ons. Both examples keep content safe and provide accessible dismissal controls.</p>
+    </header>
+
     <!-- <div class="template-demo">
       <p>This button is rendered from an HTML template. Count: <strong>{{ count() }}</strong></p>
       <button class="button button--dark" type="button" @click="setCount(count() + 1)">Add one</button>
     </div> -->
-    <div class="template-demo modal-demo">
-      <p>The optional modal add-on can display interactive DOM content.</p>
-      <button class="button button--primary" type="button" @click="showExampleModal()">Open example modal</button>
-    </div>
-    <div class="template-demo modal-demo">
-      <p>The optional drawer add-on opens a side panel with configurable backdrop dismissal.</p>
-      <button class="button button--primary" type="button" @click="showExampleDrawer()">Open example side drawer</button>
-    </div>
+
+    <section class="ui-section" aria-label="Modal and drawer examples">
+      <div class="ui-grid ui-grid--2">
+        <article class="ui-card">
+          <header class="ui-card__header">
+            <h2 class="ui-card__title">Modal window</h2>
+            <!-- <span class="ui-badge ui-badge--primary">Modal</span> -->
+          </header>
+          <div class="ui-card__body ui-stack ui-stack--tight">
+            <p class="ui-card__description">The optional modal add-on can display interactive DOM content in a centered dialog.</p>
+            <pre class="ui-code-block"><code data-highlight>openModal(content, { title: 'A modal window', closeOnBackdrop: false });</code></pre>
+          </div>
+          <footer class="ui-card__footer">
+            <button class="ui-button ui-button--primary" type="button" @click="showExampleModal()">Open example modal</button>
+          </footer>
+        </article>
+
+        <article class="ui-card">
+          <header class="ui-card__header">
+            <h2 class="ui-card__title">Side drawer</h2>
+            <!-- <span class="ui-badge ui-badge--info">Drawer</span> -->
+          </header>
+          <div class="ui-card__body ui-stack ui-stack--tight">
+            <p class="ui-card__description">Open a side panel with configurable placement and backdrop dismissal.</p>
+            <pre class="ui-code-block"><code data-highlight>openDrawer(content, { title: 'A side drawer', position: 'left' });</code></pre>
+          </div>
+          <footer class="ui-card__footer">
+            <button class="ui-button ui-button--primary" type="button" @click="showExampleDrawer()">Open example side drawer</button>
+          </footer>
+        </article>
+      </div>
+    </section>
+
     <!-- <a class="button button--primary" href="/">Back to the playground <span aria-hidden="true"> ↗</span></a> -->
-    <a class="button button--primary" href="/ideas/1">Try a nested idea route <span aria-hidden="true"> ↗</span></a>
+    <div class="ui-section">
+      <a class="ui-button ui-button--outline" href="/ideas/1">Try a nested idea route <span aria-hidden="true">↗</span></a>
+    </div>
   </main>
 </template>
-
-<style>
-.template-demo { display: flex; align-items: center; gap: 16px; margin: 24px 0; color: #a7b2b0; font-size: .875rem; }
-.template-demo p { margin: 0; }
-.template-demo strong { color: #b7d89a; font-family: 'DM Mono', monospace; }
-@media (max-width: 520px) { .template-demo { align-items: flex-start; flex-direction: column; } }
-</style>

@@ -19,16 +19,16 @@ export function openDrawer(content, options = {}) {
   injectAddonStyles('drawer', drawerStyles);
 
   const drawer = document.createElement('dialog');
-  drawer.className = `nodula-drawer nodula-drawer--${position}`;
+  drawer.className = `ui-drawer ui-drawer--${position}`;
   drawer.setAttribute('role', 'dialog');
   drawer.setAttribute('aria-modal', 'true');
 
   const header = document.createElement('header');
-  header.className = 'nodula-drawer__header';
+  header.className = 'ui-drawer__header';
   if (title) {
     const heading = document.createElement('h2');
-    heading.className = 'nodula-drawer__title';
-    heading.id = `nodula-drawer-title-${nextDrawerId++}`;
+    heading.className = 'ui-drawer__title';
+    heading.id = `ui-drawer-title-${nextDrawerId++}`;
     heading.textContent = title;
     drawer.setAttribute('aria-labelledby', heading.id);
     header.append(heading);
@@ -37,14 +37,14 @@ export function openDrawer(content, options = {}) {
   }
 
   const closeButton = document.createElement('button');
-  closeButton.className = 'nodula-drawer__close';
+  closeButton.className = 'ui-drawer__close';
   closeButton.type = 'button';
   closeButton.textContent = closeText;
   closeButton.setAttribute('aria-label', closeText);
   header.append(closeButton);
 
   const body = document.createElement('div');
-  body.className = 'nodula-drawer__body';
+  body.className = 'ui-drawer__body';
   if (typeof content === 'string') body.textContent = content;
   else body.append(content);
   drawer.append(header, body);

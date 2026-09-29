@@ -94,12 +94,12 @@ it('renders the counter and IndexedDB-backed ideas card with local CRUD and pers
     const { mount } = await server.ssrLoadModule('nodula-framework');
     dispose = mount(document.body, HomePage);
 
-    const frameworkSpecs = document.querySelector('.framework-specs');
+    const frameworkSpecs = document.querySelector('.ui-home-specs');
     assert.ok(frameworkSpecs);
     assert.match(frameworkSpecs.textContent, /Fine-grained reactive DOM/);
     assert.match(frameworkSpecs.textContent, /Signals and reactive stores/);
     assert.match(frameworkSpecs.textContent, /Lazy file-based pages and layouts/);
-    const carousel = document.querySelector('.textcarrousel');
+    const carousel = document.querySelector('.ui-home-carousel');
     const carouselPairs = [
       ['Small pieces.', 'Big ideas.'],
       ['Everything you need.', "Nothing you don't"],
@@ -113,10 +113,10 @@ it('renders the counter and IndexedDB-backed ideas card with local CRUD and pers
     ];
     for (let index = 0; index < carouselPairs.length; index += 1) {
       assert.deepEqual(
-        [...carousel.querySelectorAll('.textcarrousel-line')].map((line) => line.textContent),
+        [...carousel.querySelectorAll('.ui-home-carousel__line')].map((line) => line.textContent),
         carouselPairs[index],
       );
-      assert.equal(carousel.classList.contains(index % 2 === 0 ? 'textcarrousel--fade-a' : 'textcarrousel--fade-b'), true);
+      assert.equal(carousel.classList.contains(index % 2 === 0 ? 'ui-home-carousel--fade-a' : 'ui-home-carousel--fade-b'), true);
       if (index < carouselPairs.length - 1) {
         assert.equal(typeof advanceCarousel, 'function');
         advanceCarousel();
@@ -124,57 +124,57 @@ it('renders the counter and IndexedDB-backed ideas card with local CRUD and pers
     }
     assert.doesNotMatch(document.body.textContent, /Illustration of a growing sprout/);
 
-    const demoGrid = document.querySelector('.demo-grid');
-    const counterCard = demoGrid.querySelector('.counter-card');
-    const ideasCard = demoGrid.querySelector('.ideas-card');
+    const demoGrid = document.querySelector('.ui-home-examples__grid');
+    const counterCard = demoGrid.querySelector('.ui-counter-card');
+    const ideasCard = demoGrid.querySelector('.ui-ideas-card');
     assert.ok(counterCard);
     assert.ok(ideasCard);
-    assert.equal(counterCard.querySelector('.counter-display strong').textContent, '00');
+    assert.equal(counterCard.querySelector('.ui-counter-card__display strong').textContent, '00');
     assert.deepEqual([...demoGrid.children].map((element) => element.className),
-      ['demo-card counter-card', 'demo-card ideas-card']);
+      ['ui-card ui-counter-card', 'ui-card ui-ideas-card']);
 
     counterCard.querySelector('button').click();
     counterCard.querySelector('button').click();
-    assert.equal(counterCard.querySelector('.counter-display strong').textContent, '02');
+    assert.equal(counterCard.querySelector('.ui-counter-card__display strong').textContent, '02');
 
     await window.happyDOM.whenAsyncComplete();
     await new Promise((resolve) => setTimeout(resolve, 20));
-    assert.equal(document.querySelectorAll('.idea').length, 3);
-    assert.match(ideasCard.querySelector('.ideas-status').textContent, /IndexedDB available\./);
+    assert.equal(document.querySelectorAll('.ui-ideas-list__item').length, 3);
+    assert.match(ideasCard.querySelector('.ui-ideas-card__status').textContent, /IndexedDB available\./);
     assert.equal(mock.records.get('nodula-ideas').length, 3);
 
-    const firstIdea = document.querySelector('.idea');
-    const draft = document.querySelector('.add-input');
+    const firstIdea = document.querySelector('.ui-ideas-list__item');
+    const draft = document.querySelector('.ui-ideas-card__add .ui-input');
     draft.value = 'Persistent idea';
     draft.dispatchEvent(new window.Event('input', { bubbles: true }));
-    document.querySelector('.add-form').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+    document.querySelector('.ui-ideas-card__add').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
     await window.happyDOM.whenAsyncComplete();
     await new Promise((resolve) => setTimeout(resolve, 20));
-    assert.equal(document.querySelectorAll('.idea').length, 4);
+    assert.equal(document.querySelectorAll('.ui-ideas-list__item').length, 4);
     assert.equal(mock.records.get('nodula-ideas').at(-1).text, 'Persistent idea');
 
-    const checkbox = document.querySelector('.idea input');
+    const checkbox = document.querySelector('.ui-ideas-list__item input');
     checkbox.checked = true;
     checkbox.dispatchEvent(new window.Event('change', { bubbles: true }));
     await window.happyDOM.whenAsyncComplete();
     await new Promise((resolve) => setTimeout(resolve, 20));
     assert.equal(mock.records.get('nodula-ideas')[0].done, true);
-    assert.equal(document.querySelector('.idea'), firstIdea);
-    assert.match(firstIdea.className, /idea--done/);
+    assert.equal(document.querySelector('.ui-ideas-list__item'), firstIdea);
+    assert.match(firstIdea.className, /ui-ideas-list__item--done/);
 
-    document.querySelector('.idea .icon-button').click();
+    document.querySelector('.ui-ideas-list__remove').click();
     await window.happyDOM.whenAsyncComplete();
     await new Promise((resolve) => setTimeout(resolve, 20));
-    assert.equal(document.querySelectorAll('.idea').length, 3);
+    assert.equal(document.querySelectorAll('.ui-ideas-list__item').length, 3);
     assert.equal(mock.records.get('nodula-ideas').some((idea) => idea.id === 1), false);
 
     dispose();
     dispose = mount(document.body, HomePage);
     await window.happyDOM.whenAsyncComplete();
     await new Promise((resolve) => setTimeout(resolve, 20));
-    assert.equal(document.querySelectorAll('.idea').length, 3);
-    assert.equal(document.querySelector('.idea-label span').textContent, 'Make a tiny thing that feels good');
-    assert.equal(document.querySelector('.idea input').checked, true);
+    assert.equal(document.querySelectorAll('.ui-ideas-list__item').length, 3);
+    assert.equal(document.querySelector('.ui-ideas-list__label span').textContent, 'Make a tiny thing that feels good');
+    assert.equal(document.querySelector('.ui-ideas-list__item input').checked, true);
   } finally {
     dispose?.();
     delete globalThis.IntersectionObserver;
