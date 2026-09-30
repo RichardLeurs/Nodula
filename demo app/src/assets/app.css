@@ -3,6 +3,39 @@
  * Component styles are scoped to ui-* classes and use semantic tokens.
  */
 
+
+ /* CSS reset */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+img,
+picture,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
 :root {
   font-family: 'DM Sans', sans-serif;
   font-size: 100%;

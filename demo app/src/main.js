@@ -28,4 +28,4 @@ import 'iconify-icon';
 mount('#app', AppShell);
 installDemoCodeHighlighting();
 
-console.log("NodulaJS demo app | Copyright © Richard Leurs 2026");
+console.log("Nodula demo app | Copyright © Richard Leurs 2026");
