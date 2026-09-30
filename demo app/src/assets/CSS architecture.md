@@ -222,6 +222,32 @@ Data, display, and demo patterns
 
 ---
 
+## CSS file layer architecture
+
+`src/assets/app.css` is organized in this order. Keep new rules in the earliest
+layer that fits; use later layers only when a rule intentionally builds on or
+overrides earlier styles.
+
+| Layer | Purpose | Typical contents in `app.css` |
+| --- | --- | --- |
+| `01-settings` | Build-time settings that do not emit CSS directly. | Preprocessor variables or configuration; currently empty because the app uses plain CSS. |
+| `02-tokens` | Global design values and theme-specific custom properties. | `:root` color, typography, spacing, radius, shadow, and transition tokens; light-theme token overrides. |
+| `03-tools` | Reusable authoring helpers that do not represent UI output by themselves. | Mixins, functions, or generated helpers in a preprocessor; currently empty in plain CSS. |
+| `04-reset` | Normalize browser defaults before app styling. | Box sizing, document sizing, reset margins, responsive media defaults, and inherited form-control fonts. |
+| `05-base` | Baseline document and native-element styling. | App shell background and broad element defaults such as links. |
+| `06-layout` | Page-level structure and navigation chrome. | Site header, brand, navigation, header actions, theme/auth controls, footer, page, and section layout. |
+| `07-objects` | Reusable, mostly visual-neutral layout and content structures. | Stack, cluster, grid, panels, and cards. |
+| `08-components` | Reusable UI controls and individually styled components. | Buttons, forms, fields, alerts, badges, inputs, tables, icon picker, code blocks, and syntax highlighting. |
+| `09-patterns` | App-specific compositions built from layouts, objects, and components. | Home hero, specs, examples, highlights, counter, ideas, and other demo patterns. |
+| `10-utilities` | Small, single-purpose helper classes. | Utility overrides such as visually-hidden or display helpers; currently no standalone utility classes are defined. |
+| `11-overrides` | Intentional exceptions and responsive/state adjustments. | Theme-specific selector overrides, media queries, reduced-motion rules, and other targeted overrides. |
+
+The numbered comment at each section boundary in `app.css` is the source-of-truth
+marker for the layer. Keep the same order when adding or moving rules. An empty
+layer should remain documented so its place in the architecture stays clear.
+
+---
+
 # 2. Foundation
 
 Foundation defines the visual language used by every component.
