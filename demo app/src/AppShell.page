@@ -173,7 +173,7 @@ function setThemeToggleIcons(element) {
     </div>
     <footer class="ui-site-footer">
       <span>A small framework for big ideas </span>
-       <span>This site is build with nodulaJS</span>
+       <span>This site is build with Nodula</span>
       <span>Copyright © Richard Leurs 2026 | GNU General Public License v3 </span>
     </footer>
   </div>

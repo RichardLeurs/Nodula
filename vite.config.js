@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { copyFile, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { transform } from 'lightningcss';
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
@@ -7,7 +7,8 @@ import { nodulaPWA } from 'nodula-framework/pwa';
 
 const projectRoot = fileURLToPath(new URL('.', import.meta.url));
 const appRoot = fileURLToPath(new URL('./demo app', import.meta.url));
-const outputDirectory = fileURLToPath(new URL('./dist', import.meta.url));
+const appOutputDirectory = fileURLToPath(new URL('./dist/app', import.meta.url));
+const appFrameworkOutputDirectory = fileURLToPath(new URL('./dist/app/framework', import.meta.url));
 const frameworkOutputDirectory = fileURLToPath(new URL('./dist/framework', import.meta.url));
 const runtimeEntry = fileURLToPath(new URL('./dist/framework/nodula-framework.js', import.meta.url));
 const reactivityEntry = fileURLToPath(new URL('./framework/reactivity.js', import.meta.url));
@@ -44,8 +45,11 @@ function frameworkBuildPlugins() {
       const minified = transform({ filename: 'nodula-framework.css', code: Buffer.from(cssParts.join('\n')), minify: true });
       await Promise.all([
         copyFile('framework/index.d.ts', 'dist/framework/nodula-framework.d.ts'),
+        copyFile('README.md', 'dist/framework/README.md'),
+        copyFile('LICENSE.md', 'dist/framework/LICENSE.md'),
         writeFile('dist/framework/nodula-framework.css', minified.code),
         ...frameworkStyles.map((file) => copyFile(`framework/assets/${file}`, `dist/framework/${file}`)),
+        copyFile('framework/assets/vite.config.js', 'dist/framework/vite.config.js'),
         rm('dist/framework/nodula.js', { force: true }),
         rm('dist/framework/nodula.d.ts', { force: true }),
       ]);
@@ -175,25 +179,31 @@ function appBuildConfig() {
         name: 'nodula-clean-app-output',
         async buildStart() {
           await Promise.all([
-            rm(new URL('./dist/assets', import.meta.url), { recursive: true, force: true }),
-            rm(new URL('./dist/index.html', import.meta.url), { force: true }),
+            rm(appFrameworkOutputDirectory, { recursive: true, force: true }),
+            rm(new URL('./dist/app/assets', import.meta.url), { recursive: true, force: true }),
+            rm(new URL('./dist/app/index.html', import.meta.url), { force: true }),
           ]);
         },
       },
       {
         name: 'nodula-copy-app-icon',
         async closeBundle() {
-          const assetsDirectory = new URL('./dist/assets/', import.meta.url);
-          await mkdir(assetsDirectory, { recursive: true });
-          await copyFile(
-            new URL('./demo app/src/assets/logo-64x64.png', import.meta.url),
-            new URL('./dist/assets/logo-64x64.png', import.meta.url),
-          );
+          await Promise.all([
+            mkdir(new URL('./dist/app/assets/', import.meta.url), { recursive: true }),
+            mkdir(appFrameworkOutputDirectory, { recursive: true }),
+          ]);
+          await Promise.all([
+            copyFile(
+              new URL('./demo app/src/assets/logo-64x64.png', import.meta.url),
+              new URL('./dist/app/assets/logo-64x64.png', import.meta.url),
+            ),
+            cp(frameworkOutputDirectory, appFrameworkOutputDirectory, { recursive: true }),
+          ]);
         },
       },
     ],
     build: {
-      outDir: outputDirectory,
+      outDir: appOutputDirectory,
       emptyOutDir: false,
       minify: 'oxc',
       cssMinify: 'lightningcss',
