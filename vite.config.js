@@ -6,7 +6,7 @@ import { nodulaPlugin } from 'nodula-framework/vite';
 import { nodulaPWA } from 'nodula-framework/pwa';
 
 const projectRoot = fileURLToPath(new URL('.', import.meta.url));
-const appRoot = fileURLToPath(new URL('./demo app', import.meta.url));
+const appRoot = fileURLToPath(new URL('./demo_app', import.meta.url));
 const appOutputDirectory = fileURLToPath(new URL('./dist/app', import.meta.url));
 const appFrameworkOutputDirectory = fileURLToPath(new URL('./dist/app/framework', import.meta.url));
 const frameworkOutputDirectory = fileURLToPath(new URL('./dist/framework', import.meta.url));
@@ -194,7 +194,7 @@ function appBuildConfig() {
           ]);
           await Promise.all([
             copyFile(
-              new URL('./demo app/src/assets/logo-64x64.png', import.meta.url),
+              new URL('./demo_app/src/assets/logo-64x64.png', import.meta.url),
               new URL('./dist/app/assets/logo-64x64.png', import.meta.url),
             ),
             cp(frameworkOutputDirectory, appFrameworkOutputDirectory, { recursive: true }),
