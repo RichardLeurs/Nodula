@@ -40,7 +40,7 @@ npm run dev
 For a production build, run `npm run build`. This will build the framework and the demo app to the /dist directory.
 It also builds the npm package to the /dist/npm directory. The demo app loads that file as the framework package.
 
-To compile `.page` and `.comp` files in your own Vite app, install Nodula and Vite, then add the package's build-time plugin:
+To compile `.page` (Nodula route pages) and `.comp` (Reusable Nodula components) files in your own Vite app, install Nodula and Vite, then add the package's build-time plugin:
 
 ```js
 import { defineConfig } from 'vite';
