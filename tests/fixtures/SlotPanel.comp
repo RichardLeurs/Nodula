@@ -1,6 +1,0 @@
-<template>
-  <section>
-    <header><slot @slot="heading"><b>Fallback heading</b></slot></header>
-    <main><slot><span>Fallback body</span></slot></main>
-  </section>
-</template>
