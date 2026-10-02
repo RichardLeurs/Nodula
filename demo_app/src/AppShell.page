@@ -91,7 +91,7 @@ function setNavigationElement(element) {
         { label: 'Modal', href: '/modal' },
       { label: 'Web Components', href: '/web-components' },
       { label: 'NodulaUI', href: '/democss' },
-      ...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
+      //...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
       // { label: 'Demo login', href: '/login' },
       { label: 'Guide', href: 'https://nodula-docs.richardleurs.nl/', external: true },
     ];
@@ -163,8 +163,12 @@ function setThemeToggleIcons(element) {
       </a>
       <nav class="ui-site-nav" @ref="setNavigationElement"></nav>
       <div class="ui-header-actions">
-        <button class="ui-auth-toggle" type="button" @click="toggleDemoSignIn()" @ref="setAuthButtonElement" aria-label="Checking demo authentication status" aria-busy="true"> <span class="tooltiptext">Tooltip text</span></button>
-        <button class="ui-theme-toggle" type="button" @click="toggleTheme()" @ref="setThemeToggleIcons" :aria-label="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" :aria-pressed="theme() === 'light' ? 'true' : 'false'"></button>
+        <div class="ui-tooltip">
+  <span class="ui-tooltip-text">Tooltip text</span>
+
+        <button class="ui-auth-toggle" type="button" @click="toggleDemoSignIn()" @ref="setAuthButtonElement" aria-label="Checking demo authentication status" aria-busy="true"> </button>
+     </div>
+     <button class="ui-theme-toggle" type="button" @click="toggleTheme()" @ref="setThemeToggleIcons" :aria-label="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" :aria-pressed="theme() === 'light' ? 'true' : 'false'"></button>
       </div>
       <!-- <a class="ui-github-link" href="https://vite.dev/" target="_blank" rel="noreferrer">Made for the web <span aria-hidden="true"> ↗</span></a> -->
     </header>

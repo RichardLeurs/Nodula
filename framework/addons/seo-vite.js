@@ -14,6 +14,7 @@ function validateOptions(options) {
   if (typeof options.siteUrl !== 'string') throw new TypeError('nodulaSEO siteUrl must be a URL string.');
   const site = new URL(options.siteUrl);
   if (!['http:', 'https:'].includes(site.protocol)) throw new TypeError('nodulaSEO siteUrl must use HTTP or HTTPS.');
+  if (site.pathname !== '/' || site.search || site.hash) throw new TypeError('nodulaSEO siteUrl must be an origin without a path, query, or fragment.');
   if (!Array.isArray(options.routes)) throw new TypeError('nodulaSEO routes must be an array.');
   for (const route of options.routes) {
     const path = typeof route === 'string' ? route : route?.path;
@@ -27,6 +28,13 @@ function validateOptions(options) {
     if (typeof route === 'object' && route.lastmod !== undefined && Number.isNaN(new Date(route.lastmod).valueOf())) {
       throw new TypeError(`Sitemap lastmod for ${path} must be a valid date.`);
     }
+    if (typeof route === 'object' && route.changefreq !== undefined
+      && !['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never'].includes(route.changefreq)) {
+      throw new TypeError(`Sitemap changefreq for ${path} is invalid.`);
+    }
+    if (new URL(routeURL(site, path)).origin !== site.origin) {
+      throw new TypeError(`Sitemap route ${path} must stay on the configured site origin.`);
+    }
   }
   for (const filename of [options.sitemapFilename, options.robotsFilename]) {
     if (filename !== undefined && (typeof filename !== 'string' || !filename || filename.includes('/') || filename.includes('\\'))) {
@@ -37,6 +45,7 @@ function validateOptions(options) {
 
 function routeURL(site, path) {
   const url = new URL(path, site);
+  url.search = '';
   url.hash = '';
   return url.href;
 }
@@ -60,7 +69,7 @@ function createRobots(siteUrl, sitemapFilename, robots) {
   if (robots === false) return null;
   const rules = robots ?? 'User-agent: *\nAllow: /';
   if (typeof rules !== 'string') throw new TypeError('nodulaSEO robots must be a string or false.');
-  const lines = rules.trimEnd().split(/\r?\n/);
+  const lines = rules.trimEnd().split(/\r?\n/).filter((line) => !/^\s*sitemap\s*:/i.test(line));
   lines.push(`Sitemap: ${new URL(sitemapFilename, siteUrl.endsWith('/') ? siteUrl : `${siteUrl}/`).href}`);
   return `${lines.join('\n')}\n`;
 }

@@ -43,23 +43,35 @@
   --logo-filter: invert(1);
 
   --ui-color-background: #0a1424;
+
   --ui-color-surface: #101f33;
   --ui-color-surface-raised: #152944;
   --ui-color-surface-sunken: #081322;
+
   --ui-color-border: rgba(196, 216, 240, 0.16);
   --ui-color-border-strong: rgba(196, 216, 240, 0.3);
+
   --ui-color-text: #edf2eb;
   --ui-color-text-muted: #a9bfd2;
   --ui-color-text-subtle: #8199ad;
   --ui-color-text-inverse: #102332;
   --ui-color-primary: #68b9e8;
   --ui-color-primary-hover: #91d0f3;
-  --ui-color-success: #82c7ed;
-  --ui-color-warning: #efd99d;
-  --ui-color-danger: #f0a08d;
-  --ui-color-info: #82c7ed;
+
+  --ui-color-success: #198754;
+ --ui-color-warning: #ffc107;
+  --ui-color-danger: #dc3545;
+  --ui-color-info: #0d6efd;
+
+  /* --message-red: #dc3545;
+  --message-green: #198754;
+  --message-blue: #0d6efd;
+  --message-yellow: #ffc107;
+  --message-orange: #ff7107; */
+
   --ui-color-focus: #68b9e8;
   --ui-color-disabled: #778681;
+
   --ui-syntax-keyword: #d58de8;
   --ui-syntax-string: #91d0f3;
   --ui-syntax-tag: #82c7ed;
@@ -68,6 +80,7 @@
   --ui-syntax-literal: #79d1c3;
   --ui-syntax-default: #d9e7d8;
   --ui-syntax-function: #82c7ed;
+
   --ui-shadow-raised: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
@@ -80,15 +93,11 @@
   --muted-footer: #526760;
   --logo-filter: none;
 
-  /* --ui-color-background: #f2f7f3;
-  --ui-color-surface: #ffffff;
-  --ui-color-surface-raised: #ffffff;
-  --ui-color-surface-sunken: #e0f0f5; */
-
-   --ui-color-background: hsl(132, 24%, 96%);
+  --ui-color-background: hsl(132, 24%, 96%);
   --ui-color-surface: hsl(0, 0%, 98%);
   --ui-color-surface-raised: #ffffff;
-  --ui-color-surface-sunken: #e0f0f5;
+  /* --ui-color-surface-sunken: #e0f0f5; */
+ --ui-color-surface-sunken: hsl(132, 24%, 97%);
 
   --ui-color-border: rgba(32, 51, 47, 0.16);
   --ui-color-border-strong: rgba(32, 51, 47, 0.3);
@@ -100,10 +109,10 @@
   --ui-color-primary: #38633b;
   --ui-color-primary-hover: #2c5031;
 
-  --ui-color-success: #267044;
-  --ui-color-warning: #805b13;
-  --ui-color-danger: #a33f30;
-  --ui-color-info: #286486;
+--ui-color-success: #198754;
+ --ui-color-warning: #ffc107;
+  --ui-color-danger: #dc3545;
+  --ui-color-info:  #0d6efd;
 
   --ui-color-focus: #38633b;
   --ui-color-disabled: #7b8980;
@@ -1446,11 +1455,11 @@ a {
   cursor: pointer; /* Changes cursor to indicate hoverable text */
 }
 
-.ui-tooltiptext {
+.ui-tooltip-text {
   visibility: hidden; /* Hidden by default */
   width: 130px; /* Width of the tooltip */
-  background-color: black; /* Background color */
-  color: #ffffff; /* Text color */
+  background-color: #eee; /* Background color */
+  color: #333; /* Text color */
   text-align: center; /* Center text */
   padding: 5px 0; /* Padding around text */
   border-radius: 6px; /* Rounded corners */
@@ -1458,18 +1467,18 @@ a {
   z-index: 1; /* Ensure tooltip appears above other content */
 }
 
-.ui-tooltip:hover .tooltiptext {
+.ui-tooltip:hover .tooltip-text {
   visibility: visible; /* Show tooltip on hover */
 }
 
-.ui-tooltiptext {
-  opacity: 0; /* Start invisible */
-  transition: opacity 0.3s; /* Transition effect */
+/* .ui-tooltiptext {
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 .ui-tooltip:hover .tooltiptext {
-  opacity: 1; /* Fade in on hover */
-}
+  opacity: 1;
+} */
 
 /* Highlight.js token colors for JavaScript and HTML examples. */
 

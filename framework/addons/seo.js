@@ -1,4 +1,4 @@
-import { createRoot, effect, signal } from 'nodula-framework';
+import { effect, signal } from 'nodula-framework';
 
 const HTTP_PROTOCOLS = new Set(['http:', 'https:']);
 
@@ -146,17 +146,16 @@ function makeHeadManager(head) {
       record.element.remove();
       return;
     }
-    for (const attribute of [...record.element.attributes]) record.element.removeAttribute(attribute.name);
-    for (const [name, value] of record.originals[0].attributes) record.element.setAttribute(name, value);
-    record.element.textContent = record.originals[0].text;
-    const first = record.originals[0];
-    if (first.parent && record.element.parentNode !== first.parent) {
-      first.parent.insertBefore(record.element, first.nextSibling?.parentNode === first.parent ? first.nextSibling : null);
+    for (const original of record.originals) {
+      if (original.element !== record.element) continue;
+      for (const attribute of [...record.element.attributes]) record.element.removeAttribute(attribute.name);
+      for (const [name, value] of original.attributes) record.element.setAttribute(name, value);
+      record.element.textContent = original.text;
     }
-    for (const duplicate of record.originals.slice(1)) {
-      if (duplicate.parent) {
-        duplicate.parent.insertBefore(duplicate.element, duplicate.nextSibling?.parentNode === duplicate.parent ? duplicate.nextSibling : null);
-      }
+    for (const original of [...record.originals].reverse()) {
+      if (!original.parent) continue;
+      const before = original.nextSibling?.parentNode === original.parent ? original.nextSibling : null;
+      original.parent.insertBefore(original.element, before);
     }
   }
 
@@ -177,10 +176,7 @@ function validateMetadata(metadata, name) {
   }
 }
 
-/**
- * Keep document metadata synchronized with a Nodula router. Call update() for
- * page-local metadata changes and dispose() when the owning application ends.
- */
+/** Keep client-rendered document metadata synchronized with a Nodula router. */
 export function createSEO(router, options = {}) {
   if (!router || typeof router.current !== 'function' || typeof router.navigate !== 'function') {
     throw new TypeError('createSEO expects a Nodula router.');
@@ -292,7 +288,7 @@ export function createSEO(router, options = {}) {
     manager.deactivateExcept(activeKeys);
   }
 
-  const [stopEffect, disposeScope] = createRoot(() => effect(applyMetadata), { detached: true });
+  const stopEffect = effect(applyMetadata);
 
   return {
     /** Replace the current route metadata with additional page-local metadata. */
@@ -306,7 +302,7 @@ export function createSEO(router, options = {}) {
     dispose() {
       if (disposed) return;
       disposed = true;
-      disposeScope();
+      stopEffect();
       manager.restore();
     },
   };

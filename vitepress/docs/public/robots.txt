@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nodula-docs.richardleurs.nl/sitemap.xml

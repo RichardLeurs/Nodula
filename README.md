@@ -24,6 +24,7 @@ Nodula has a small core runtime, with optional add-on modules for extra features
 | Navigation     | Accessible router-aware internal links and explicitly external HTTP(S) links                        |
 | PWA            | Build installable, offline-capable applications                                                     |
 | Auth           | Reactive client authentication state connected to an app-provided auth service                      |
+| SEO            | Route-aware title, descriptions, canonical, Open Graph, hreflang, sitemap, and robots metadata      |
 
 
 ## Install and run
@@ -50,6 +51,52 @@ export default defineConfig({
   plugins: [nodulaPlugin()],
 });
 ```
+### SEO add-on
+
+Use `createSEO()` with your Nodula router for client-side title, description, canonical, Open Graph, robots, and `hreflang` metadata. Route patterns accept `:param` or `[param]` segments. Dynamic route resolvers receive decoded parameters; metadata fields may also be reactive accessors.
+
+```js
+import { createSEO } from 'nodula-framework/seo';
+
+const seo = createSEO(router, {
+  siteUrl: 'https://example.com',
+  defaults: {
+    title: 'Example',
+    description: 'A short site description.',
+    openGraph: { siteName: 'Example' },
+  },
+  routes: {
+    '/': { title: 'Home' },
+    '/articles/:id': ({ params }) => ({
+      title: () => `Article ${params.id}`,
+      description: 'Read this article.',
+      openGraph: { type: 'article', image: 'https://example.com/social/article.png' },
+      hreflang: [{ lang: 'en', href: `https://example.com/articles/${params.id}` }],
+    }),
+  },
+});
+
+// Optionally merge page-local metadata, and dispose when the app is torn down.
+seo.update({ title: currentTitle() });
+seo.dispose();
+```
+
+Generate `sitemap.xml` and `robots.txt` in a Vite production build with the separate build-time entry:
+
+```js
+import { nodulaSEO } from 'nodula-framework/seo-vite';
+
+export default defineConfig({
+  plugins: [nodulaSEO({
+    siteUrl: 'https://example.com',
+    routes: ['/', '/articles', { path: '/about', priority: 0.8, changefreq: 'monthly' }],
+  })],
+});
+```
+
+The runtime updates `<head>` after client JavaScript starts. Nodula currently has no server rendering or prerendering, so route-specific metadata is not guaranteed in the initial HTML for crawlers that do not execute JavaScript. Add concrete public paths to the sitemap; dynamic router patterns are not expanded automatically.
+
+
 
 
 ## VS Code language extension

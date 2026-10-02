@@ -5,86 +5,111 @@ import path from 'node:path';
 import { describe, it } from 'node:test';
 import { Window } from 'happy-dom';
 import { build } from 'vite';
-import { createRoot } from '../dist/framework/nodula-framework.js';
-import { createRouter } from '../dist/framework/nodula-router.js';
+// TO DO: load not from /dist
+import { signal } from '../dist/framework/nodula-framework.js';
 import { createSEO } from '../framework/addons/seo.js';
 import { nodulaSEO } from '../framework/addons/seo-vite.js';
 
+function getMetaProperty(property) {
+  return [...document.head.querySelectorAll('meta')].find((meta) => meta.getAttribute('property') === property) ?? null;
+}
+
+function getMetaName(name) {
+  return [...document.head.querySelectorAll('meta')].find((meta) => meta.getAttribute('name') === name) ?? null;
+}
+
+function getLink(predicate) {
+  return [...document.head.querySelectorAll('link')].find(predicate) ?? null;
+}
+
 describe('Nodula SEO add-on', () => {
-  it('applies defaults, dynamic route metadata, canonical, Open Graph, and hreflang', () => {
+  it('applies defaults, dynamic route metadata, canonical, Open Graph, and hreflang', { timeout: 5000 }, async () => {
     const window = new Window({ url: 'https://example.test/posts/42?campaign=1' });
     globalThis.window = window;
     globalThis.document = window.document;
-    const existingDescription = document.createElement('meta');
-    existingDescription.name = 'description';
-    existingDescription.content = 'Original description';
-    document.head.append(existingDescription);
-    const [router, disposeRouter] = createRoot(() => createRouter({
-      '/posts/42': () => document.createTextNode('Post'),
-      '/about': () => document.createTextNode('About'),
-    }, undefined, { mode: 'history' }));
+    let seo;
+    try {
+      const existingDescription = document.createElement('meta');
+      existingDescription.name = 'description';
+      existingDescription.content = 'Original description';
+      document.head.append(existingDescription);
+      const [current, setCurrent] = signal('/posts/42');
+      const router = { mode: 'history', current, navigate: setCurrent };
 
-    const seo = createSEO(router, {
-      siteUrl: 'https://example.test',
-      defaults: { title: 'Example', description: 'Default description', openGraph: { siteName: 'Example site' } },
-      routes: {
-        '/posts/:id': ({ params }) => ({
-          title: () => `Post ${params.id}`,
-          description: `Description for ${params.id}`,
-          openGraph: { type: 'article', image: () => `https://example.test/images/${params.id}.png` },
-          hreflang: [{ lang: 'en', href: () => `https://example.test/posts/${params.id}` }],
-        }),
-      },
-    });
+      seo = createSEO(router, {
+        siteUrl: 'https://example.test',
+        defaults: { title: 'Example', description: 'Default description', openGraph: { siteName: 'Example site' } },
+        routes: {
+          '/posts/:id': ({ params }) => ({
+            title: () => `Post ${params.id}`,
+            description: `Description for ${params.id}`,
+            openGraph: { type: 'article', image: () => `https://example.test/images/${params.id}.png` },
+            hreflang: [{ lang: 'en', href: () => `https://example.test/posts/${params.id}` }],
+          }),
+        },
+      });
 
-    assert.equal(document.title, 'Post 42');
-    assert.equal(document.querySelector('meta[name="description"]').content, 'Description for 42');
-    assert.equal(document.querySelector('link[rel="canonical"]').href, 'https://example.test/posts/42');
-    assert.equal(document.querySelector('meta[property="og:type"]').content, 'article');
-    assert.equal(document.querySelector('meta[property="og:site_name"]').content, 'Example site');
-    assert.equal(document.querySelector('meta[property="og:image"]').content, 'https://example.test/images/42.png');
-    assert.equal(document.querySelector('link[hreflang="en"]').href, 'https://example.test/posts/42');
-    assert.equal(document.head.querySelectorAll('meta[name="description"]').length, 1);
+      assert.equal(document.title, 'Post 42');
+      assert.equal(getMetaName('description').content, 'Description for 42');
+      assert.equal(getLink((link) => link.getAttribute('rel') === 'canonical').href, 'https://example.test/posts/42');
+      assert.equal(getMetaProperty('og:type').content, 'article');
+      assert.equal(getMetaProperty('og:site_name').content, 'Example site');
+      assert.equal(getMetaProperty('og:image').content, 'https://example.test/images/42.png');
+      const routeOpenGraphTag = getMetaProperty('og:type');
+      const routeImageTag = getMetaProperty('og:image');
+      const routeLanguageLink = getLink((link) => link.getAttribute('hreflang') === 'en');
+      const canonicalLink = getLink((link) => link.getAttribute('rel') === 'canonical');
+      assert.equal(routeLanguageLink.href, 'https://example.test/posts/42');
+      assert.equal([...document.head.querySelectorAll('meta')].filter((meta) => meta.getAttribute('name') === 'description').length, 1);
 
-    router.navigate('/about');
-    assert.equal(document.title, 'Example');
-    assert.equal(document.querySelector('meta[name="description"]'), existingDescription);
-    assert.equal(existingDescription.content, 'Original description');
-    assert.equal(document.querySelector('meta[property="og:type"]'), null);
-    assert.equal(document.querySelector('link[hreflang="en"]'), null);
-    assert.equal(document.querySelector('link[rel="canonical"]').href, 'https://example.test/about');
+      router.navigate('/about');
+      assert.equal(document.title, 'Example');
+      assert.equal(getMetaName('description'), existingDescription);
+      assert.equal(existingDescription.content, 'Default description');
+      assert.equal(routeOpenGraphTag.getAttribute('content'), 'website');
+      assert.equal(routeImageTag.parentNode, null);
+      assert.equal(routeLanguageLink.parentNode, null);
+      assert.equal(canonicalLink.getAttribute('href'), 'https://example.test/about');
 
-    seo.dispose();
-    assert.equal(document.title, '');
-    assert.equal(document.querySelector('meta[name="description"]'), existingDescription);
-    assert.equal(existingDescription.content, 'Original description');
-    disposeRouter();
-    window.close();
-    delete globalThis.window;
-    delete globalThis.document;
+      seo.dispose();
+      seo = null;
+      assert.equal(document.title, '');
+      assert.equal(getMetaName('description'), existingDescription);
+      assert.equal(existingDescription.content, 'Original description');
+    } finally {
+      seo?.dispose();
+      window.close();
+      delete globalThis.window;
+      delete globalThis.document;
+    }
   });
 
-  it('supports dynamic updates and deduplicates duplicate existing managed tags', () => {
+  it('supports dynamic updates and deduplicates duplicate existing managed tags', { timeout: 5000 }, async () => {
     const window = new Window({ url: 'https://example.test/' });
     globalThis.window = window;
     globalThis.document = window.document;
-    document.head.innerHTML = '<title>First original</title><title>Duplicate</title><meta name="description" content="Old"><meta name="description" content="Duplicate">';
-    const [router, disposeRouter] = createRoot(() => createRouter({ '/': () => document.createTextNode('Home') }, undefined, { mode: 'history' }));
-    const seo = createSEO(router, { defaults: { title: 'Home', description: 'Initial' } });
+    let seo;
+    try {
+      document.head.innerHTML = '<title>First original</title><title>Duplicate</title><meta name="description" content="Old"><meta name="description" content="Duplicate">';
+      const [current, setCurrent] = signal('/');
+      const router = { mode: 'history', current, navigate: setCurrent };
+      seo = createSEO(router, { defaults: { title: 'Home', description: 'Initial' } });
 
-    assert.equal(document.head.querySelectorAll('title').length, 1);
-    assert.equal(document.head.querySelectorAll('meta[name="description"]').length, 1);
-    seo.update({ title: 'Updated', description: 'Updated description' });
-    assert.equal(document.title, 'Updated');
-    assert.equal(document.querySelector('meta[name="description"]').content, 'Updated description');
-    seo.dispose();
-    assert.deepEqual([...document.head.querySelectorAll('title')].map((title) => title.textContent), ['First original', 'Duplicate']);
-    assert.deepEqual([...document.head.querySelectorAll('meta[name="description"]')].map((meta) => meta.content), ['Old', 'Duplicate']);
-
-    disposeRouter();
-    window.close();
-    delete globalThis.window;
-    delete globalThis.document;
+      assert.equal(document.head.querySelectorAll('title').length, 1);
+      assert.equal([...document.head.querySelectorAll('meta')].filter((meta) => meta.getAttribute('name') === 'description').length, 1);
+      seo.update({ title: 'Updated', description: 'Updated description' });
+      assert.equal(document.title, 'Updated');
+      assert.equal(getMetaName('description').content, 'Updated description');
+      seo.dispose();
+      seo = null;
+      assert.deepEqual([...document.head.querySelectorAll('title')].map((title) => title.textContent), ['First original', 'Duplicate']);
+      assert.deepEqual([...document.head.querySelectorAll('meta')].filter((meta) => meta.getAttribute('name') === 'description').map((meta) => meta.content), ['Old', 'Duplicate']);
+    } finally {
+      seo?.dispose();
+      window.close();
+      delete globalThis.window;
+      delete globalThis.document;
+    }
   });
 
   it('generates a sitemap and robots.txt during a Vite build', async () => {

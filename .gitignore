@@ -4,6 +4,7 @@ dist/
 demo_app/src/assets/*.af
 demo_app/src/assets/*.af-lock-
 demo_app/src/assets/CSS architecture.md
+demo_app/package-lock.json
 .DS_Store
 .env
 .env.*
