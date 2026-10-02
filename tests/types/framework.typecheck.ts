@@ -31,6 +31,8 @@ import { createIndexedDBSignal, createStorageSignal, deleteCookie, getCookie, se
 import { nodulaPWA } from 'nodula-framework/pwa';
 import { createDataClient, DataError } from 'nodula-framework/data';
 import { createAuth } from 'nodula-framework/auth';
+import { createSEO, type SEOOptions } from 'nodula-framework/seo';
+import { nodulaSEO } from 'nodula-framework/seo-vite';
 import type { Plugin } from 'vite';
 
 const [count, setCount] = signal(0);
@@ -65,7 +67,7 @@ const drawerHandle = openDrawer('Drawer content', { title: 'Typechecked drawer',
 drawerHandle.close();
 const disposeNavigation = mountNavigation(document.createElement('header'), createRouter({}), [
   { label: 'Home', href: '/' },
-  { label: 'Nodula website', href: 'https://sprigjs.richardleurs.nl/', external: true },
+  { label: 'Nodula website', href: 'https://nodula.richardleurs.nl/', external: true },
   { label: 'Same tab external', href: 'https://example.com/docs', external: true, target: '_self' },
 ], { label: 'Demo navigation', activeClassName: 'current' });
 disposeNavigation();
@@ -83,11 +85,26 @@ const pwaPlugins: Plugin[] = nodulaPWA({
   registerType: 'prompt',
   devOptions: { enabled: false },
 });
+const seoOptions: SEOOptions = {
+  siteUrl: 'https://example.test',
+  defaults: { title: 'Nodula', description: 'A framework' },
+  routes: {
+    '/posts/:id': ({ params }) => ({
+      title: () => `Post ${params.id}`,
+      openGraph: { type: 'article' },
+    }),
+  },
+};
+const seoRouter = createRouter({});
+const seo = createSEO(seoRouter, seoOptions);
+seo.update({ title: 'Current page', hreflang: [{ lang: 'en', href: 'https://example.test/' }] });
+seo.dispose();
+const seoBuildPlugin: Plugin = nodulaSEO({ siteUrl: 'https://example.test', routes: ['/', { path: '/about', priority: 0.8 }] });
 const dataClient = createDataClient({ baseURL: '/api', headers: { 'x-client': 'nodula' } });
 const typedResponse: Promise<{ id: number }> = dataClient.get('/items/1');
 const typedCreation: Promise<{ id: number }> = dataClient.post('/items', { name: 'Leaf' });
 const typedDataError: typeof DataError = DataError;
-console.log(typedResponse, typedCreation, typedDataError);
+console.log(typedResponse, typedCreation, typedDataError, seoBuildPlugin);
 const typedAuth = createAuth<{ code: string }, { id: number }, { sessionId: string }>({
   async getSession() { return null; },
   async signIn(credentials) { return { user: { id: credentials.code.length, roles: ['editor'], permissions: ['profile:read'] }, session: { sessionId: 'opaque' } }; },

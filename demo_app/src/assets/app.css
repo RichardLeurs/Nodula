@@ -9,6 +9,7 @@
   --ui-radius-small: 5px;
   --ui-radius-medium: 9px;
   --ui-radius-large: 14px;
+
   --ui-space-1: 4px;
   --ui-space-2: 8px;
   --ui-space-3: 12px;
@@ -17,6 +18,7 @@
   --ui-space-6: 24px;
   --ui-space-8: 32px;
   --ui-space-10: 40px;
+
   --ui-transition-fast: 140ms ease;
   --ui-transition-normal: 200ms ease;
 }
@@ -243,19 +245,41 @@ a {
 /* Navigation addon */
 
 .ui-site-nav {
+    flex: 0 1 auto;
+  min-width: 0;
   display: flex;
-  gap: 32px;
+  gap: 20px;
   margin-left: 70px;
   padding: 10px;
   border-radius: 10px;
   background-color: var(--surface-overlay);
   background-blend-mode: var(--surface-blend);
+   border: 1px solid transparent;
 }
 
-.ui-site-nav {
-  flex: 0 1 auto;
-  min-width: 0;
+
+
+
+.ui-nav-link {
+  color: var(--muted-nav);
+  font-size: 1rem;
+  transition: color 0.2s ease;
+  padding: 8px;
+
+  &:hover {
+    color: var(--ui-color-primary);
+    background-color: var(--ui-color-surface);
+    box-shadow: inset 0 0 0 1px var(--ui-color-border);
+    border-radius: var(--ui-radius-medium);
+  }
+
+
 }
+
+  .ui-nav-link--active {
+    color: var(--ui-color-primary);
+    font-weight: bold;
+  }
 
 .ui-header-actions {
   display: flex;
@@ -263,23 +287,6 @@ a {
   align-items: center;
   gap: 8px;
   margin-left: auto;
-}
-
-.ui-nav-link,
-.ui-github-link {
-  color: var(--muted-nav);
-  font-size: 1rem;
-  transition: color 0.2s ease;
-}
-
-.ui-nav-link--active {
-  color: var(--ui-color-primary);
-  font-weight: bold;
-}
-
-.ui-nav-link:hover {
-  color: var(--ui-color-primary);
-  text-decoration: underline;
 }
 
 .ui-auth-toggle {
@@ -293,22 +300,22 @@ a {
   color: var(--theme-toggle-icon-color);
   background: transparent;
   cursor: pointer;
-}
 
-.ui-auth-toggle:focus-visible {
-  outline: 2px solid var(--ui-color-focus);
-  outline-offset: 3px;
-}
+  &:focus-visible {
+    outline: 2px solid var(--ui-color-focus);
+    outline-offset: 3px;
+  }
 
-.ui-auth-toggle:disabled {
-  opacity: 0.7;
-  cursor: wait;
-}
+  &:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
 
-.ui-auth-toggle svg {
-  display: block;
-  width: 16px;
-  height: 16px;
+  & svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .ui-auth-toggle__loading {
@@ -329,15 +336,15 @@ a {
   font: 1rem var(--mono);
   cursor: pointer;
   background-blend-mode: multiply;
-}
 
-.ui-theme-toggle:hover {
-  border-color: var(--ui-color-primary);
-}
+  &:hover {
+    border-color: var(--ui-color-primary);
+  }
 
-.ui-theme-toggle:focus-visible {
-  outline: 2px solid var(--ui-color-focus);
-  outline-offset: 3px;
+  &:focus-visible {
+    outline: 2px solid var(--ui-color-focus);
+    outline-offset: 3px;
+  }
 }
 
 .ui-theme-toggle__sun,
@@ -606,14 +613,14 @@ a {
   background: var(--ui-color-surface-sunken);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-}
 
-.ui-code-block code {
-  color: var(--ui-color-text-muted);
-  font: 0.75rem/1.65 var(--mono, "DM Mono", monospace);
-  white-space: inherit;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  & code {
+    color: var(--ui-color-text-muted);
+    font: 0.75rem/1.65 var(--mono, "DM Mono", monospace);
+    white-space: inherit;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
 }
 
 .ui-status-dot {
@@ -671,20 +678,20 @@ a {
 .ui-button--primary {
   color: var(--ui-color-text-inverse);
   background: var(--ui-color-primary);
-}
 
-.ui-button--primary:hover:not(:disabled) {
-  background: var(--ui-color-primary-hover);
+  &:hover:not(:disabled) {
+    background: var(--ui-color-primary-hover);
+  }
 }
 
 .ui-button--secondary {
   color: var(--ui-color-text);
   border-color: var(--ui-color-border);
   background: var(--ui-color-surface-raised);
-}
 
-.ui-button--secondary:hover:not(:disabled) {
-  border-color: var(--ui-color-border-strong);
+  &:hover:not(:disabled) {
+    border-color: var(--ui-color-border-strong);
+  }
 }
 
 .ui-button--outline {
@@ -853,10 +860,10 @@ a {
 
 .ui-form__success {
   margin-top: var(--ui-space-4);
-}
 
-.ui-form__success .ui-alert__text {
-  margin: 0;
+  & .ui-alert__text {
+    margin: 0;
+  }
 }
 
 .ui-data-form {
@@ -890,10 +897,10 @@ a {
   font: 0.85rem/1.7 var(--mono, "DM Mono", monospace);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-}
 
-.ui-data-response__code code {
-  font: inherit;
+  & code {
+    font: inherit;
+  }
 }
 
 .ui-input,
@@ -970,11 +977,11 @@ a {
   color: var(--ui-color-primary);
   font-size: 0.84rem;
   font-weight: 600;
-}
 
-.ui-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 }
 
 .ui-icon-picker {
@@ -1433,6 +1440,37 @@ a {
   margin: 0;
 }
 
+.ui-tooltip {
+  position: relative; /* Positioning context for the tooltip */
+  display: inline-block; /* Allows the tooltip to be inline */
+  cursor: pointer; /* Changes cursor to indicate hoverable text */
+}
+
+.ui-tooltiptext {
+  visibility: hidden; /* Hidden by default */
+  width: 130px; /* Width of the tooltip */
+  background-color: black; /* Background color */
+  color: #ffffff; /* Text color */
+  text-align: center; /* Center text */
+  padding: 5px 0; /* Padding around text */
+  border-radius: 6px; /* Rounded corners */
+  position: absolute; /* Positioning relative to the tooltip */
+  z-index: 1; /* Ensure tooltip appears above other content */
+}
+
+.ui-tooltip:hover .tooltiptext {
+  visibility: visible; /* Show tooltip on hover */
+}
+
+.ui-tooltiptext {
+  opacity: 0; /* Start invisible */
+  transition: opacity 0.3s; /* Transition effect */
+}
+
+.ui-tooltip:hover .tooltiptext {
+  opacity: 1; /* Fade in on hover */
+}
+
 /* Highlight.js token colors for JavaScript and HTML examples. */
 
 .hljs {
@@ -1511,9 +1549,9 @@ a {
   color: #eee;
 }
 
-:root[data-theme="dark"] .ui-theme-toggle__sun,
-:root:not([data-theme="light"]) .ui-theme-toggle__sun,
-:root[data-theme="light"] .ui-theme-toggle__moon {
+:root[data-theme="dark"] .ui-theme-toggle__moon,
+:root:not([data-theme="light"]) .ui-theme-toggle__moon,
+:root[data-theme="light"] .ui-theme-toggle__sun {
   display: none;
 }
 

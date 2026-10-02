@@ -2,8 +2,8 @@ import { copyFile, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { transform } from 'lightningcss';
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
-import { nodulaPlugin } from 'nodula-framework/vite';
-import { nodulaPWA } from 'nodula-framework/pwa';
+import { nodulaPlugin } from './framework/vite-plugin.js';
+import { nodulaPWA } from './framework/addons/pwa.js';
 
 const projectRoot = fileURLToPath(new URL('.', import.meta.url));
 const appRoot = fileURLToPath(new URL('./demo_app', import.meta.url));
@@ -34,6 +34,8 @@ const addonBuilds = {
   localstorage: { entry: 'framework/addons/localstorage.js', output: 'nodula-localstorage.js', types: 'localstorage.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-framework.js'], ['nodula-framework', './nodula-framework.js']] },
   data: { entry: 'framework/addons/data.js', output: 'nodula-data.js', types: 'data.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-framework.js'], ['nodula-framework', './nodula-framework.js']] },
   pwa: { entry: 'framework/addons/pwa.js', output: 'nodula-pwa.js', types: 'pwa.d.ts', externals: ['vite', 'vite-plugin-pwa'] },
+  seo: { entry: 'framework/addons/seo.js', output: 'nodula-seo.js', types: 'seo.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-framework.js'], ['nodula-framework', './nodula-framework.js']] },
+  'seo-vite': { entry: 'framework/addons/seo-vite.js', output: 'nodula-seo-vite.js', types: 'seo-vite.d.ts', externals: ['vite'] },
 };
 
 function frameworkBuildPlugins() {

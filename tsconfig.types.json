@@ -24,6 +24,8 @@
     "framework/addons/store.d.ts",
     "framework/addons/pwa.d.ts",
     "framework/addons/auth.d.ts",
+    "framework/addons/seo.d.ts",
+    "framework/addons/seo-vite.d.ts",
     "tests/types/framework.typecheck.ts"
   ]
 }
