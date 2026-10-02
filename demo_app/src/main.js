@@ -1,5 +1,8 @@
 /*
- * NodulaJS
+ * Nodula - demo app
+
+ * A lightweight JavaScript framework built around modular architecture, simplicity and speed. Build your application from small, focused pieces that work together naturally.
+
  * Copyright (C) 2026 Richard Leurs
  *
  * This program is free software: you can redistribute it and/or modify

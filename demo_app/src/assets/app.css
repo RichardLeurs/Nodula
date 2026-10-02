@@ -165,7 +165,7 @@ textarea {
 .ui-app {
   min-height: 100vh;
   overflow: hidden;
-  background-image: url("./logo-nodula-1000.webp");
+  background-image: url("./bg-nodula.webp");
   background-repeat: no-repeat;
   background-position: top right;
   background-size: min(100%, 1049px) auto;
