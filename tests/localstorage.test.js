@@ -6,8 +6,8 @@ const window = new Window({ url: 'http://localhost/' });
 globalThis.window = window;
 globalThis.document = window.document;
 
-const { createRoot } = await import('../dist/framework/nodula-framework.js');
-const { createIndexedDBSignal, createStorageSignal, deleteCookie, getCookie, setCookie } = await import('../dist/framework/nodula-localstorage.js');
+const { createRoot } = await import('nodula-framework');
+const { createIndexedDBSignal, createStorageSignal, deleteCookie, getCookie, setCookie } = await import('../framework/addons/localstorage.js');
 
 after(() => window.close());
 

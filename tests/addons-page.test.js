@@ -62,7 +62,7 @@ it('lists available add-ons on the page linked from shared navigation', async ()
     }
 
     assert.equal(document.querySelector('.ui-page__title')?.textContent, 'Add-ons for the parts you need.');
-    assert.equal(document.querySelectorAll('.ui-card').length, 11);
+    assert.equal(document.querySelectorAll('.ui-card').length, 12);
     for (const entry of [
       'nodula-framework/form',
       'nodula-framework/router',
@@ -75,6 +75,8 @@ it('lists available add-ons on the page linked from shared navigation', async ()
       'nodula-framework/data',
       'nodula-framework/store',
       'nodula-framework/auth',
+      'nodula-framework/seo',
+      'nodula-framework/seo-vite',
     ]) {
       assert.ok(document.querySelector('.ui-page').textContent.includes(entry), `missing ${entry}`);
     }
@@ -83,12 +85,16 @@ it('lists available add-ons on the page linked from shared navigation', async ()
       .find((card) => card.querySelector('.ui-card__title')?.textContent === 'Data');
     const dataDemoLink = dataCard?.querySelector('.ui-card__footer a');
     assert.equal(dataDemoLink?.getAttribute('href'), '/data');
-    assert.equal(document.querySelectorAll('.ui-code-block code[data-highlight]').length, 11);
+    assert.equal(document.querySelectorAll('.ui-code-block code[data-highlight]').length, 12);
     assert.ok([...document.querySelectorAll('.ui-code-block code[data-highlight]')]
       .every((code) => code.dataset.highlighted === 'yes'));
     const authCard = [...document.querySelectorAll('.ui-card')]
       .find((card) => card.querySelector('.ui-card__title')?.textContent === 'Auth');
     assert.equal(authCard?.querySelector('.ui-card__footer a')?.getAttribute('href'), '/login');
+    const seoCard = [...document.querySelectorAll('.ui-card')]
+      .find((card) => card.querySelector('.ui-card__title')?.textContent === 'SEO');
+    assert.ok(seoCard);
+    assert.match(seoCard.querySelector('.ui-card__description')?.textContent ?? '', /Open Graph.*sitemap\.xml.*robots\.txt/);
   } finally {
     disposeCodeHighlighting?.();
     dispose?.();

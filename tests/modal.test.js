@@ -7,8 +7,8 @@ globalThis.window = window;
 globalThis.document = window.document;
 globalThis.Node = window.Node;
 
-const { createRoot } = await import('../dist/framework/nodula-framework.js');
-const { openModal } = await import('../dist/framework/nodula-modal.js');
+const { createRoot } = await import('../framework/index.js');
+const { openModal } = await import('../framework/addons/modal.js');
 
 after(() => window.close());
 

@@ -6,11 +6,9 @@ const window = new Window({ url: 'http://localhost/' });
 globalThis.window = window;
 globalThis.document = window.document;
 globalThis.Node = window.Node;
-
-const { animate, createTransition } = await import('../dist/framework/nodula-animation.js');
-const { createRoot, each, h, mount, outlet, signal, when } = await import('../dist/framework/nodula-framework.js');
-const { enableLifecycleTransitions } = await import('../dist/framework/nodula-animation.js');
-const { createRouter } = await import('nodula-framework/router');
+const { animate, createTransition, enableLifecycleTransitions } = await import('../framework/addons/animation.js');
+const { createRoot, each, h, mount, outlet, signal, when } = await import('nodula-framework');
+const { createRouter } = await import('../framework/addons/router.js');
 
 after(() => window.close());
 

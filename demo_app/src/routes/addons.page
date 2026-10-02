@@ -89,7 +89,7 @@
           <header class="ui-card__header"><h2 class="ui-card__title">Navigation</h2></header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Accessible router-aware internal links and explicitly external HTTP(S) links.</p>
-            <pre class="ui-code-block"><code data-highlight>import { mountNavigation } from 'nodula-framework/navigation';</code></pre>
+            <pre class="ui-code-block"><code data-highlight>import { createNavigation } from 'nodula-framework/navigation';</code></pre>
           </div>
         </article>
 
@@ -100,6 +100,15 @@
             <pre class="ui-code-block"><code data-highlight>import { createAuth } from 'nodula-framework/auth';</code></pre>
           </div>
           <footer class="ui-card__footer"><a class="ui-link" href="/login">Open Auth demo <span aria-hidden="true">→</span></a></footer>
+        </article>
+
+        <article class="ui-card ui-card--interactive">
+          <header class="ui-card__header"><h2 class="ui-card__title">SEO</h2></header>
+          <div class="ui-card__body ui-stack ui-stack--tight">
+            <p class="ui-card__description">Route-aware titles, descriptions, canonical URLs, Open Graph and hreflang metadata, plus Vite build-time sitemap.xml and robots.txt generation.</p>
+            <pre class="ui-code-block"><code data-highlight>import { createSEO } from 'nodula-framework/seo';
+import { nodulaSEO } from 'nodula-framework/seo-vite';</code></pre>
+          </div>
         </article>
       </div>
     </section>

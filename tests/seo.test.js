@@ -5,8 +5,7 @@ import path from 'node:path';
 import { describe, it } from 'node:test';
 import { Window } from 'happy-dom';
 import { build } from 'vite';
-// TO DO: load not from /dist
-import { signal } from '../dist/framework/nodula-framework.js';
+import { signal } from 'nodula-framework';
 import { createSEO } from '../framework/addons/seo.js';
 import { nodulaSEO } from '../framework/addons/seo-vite.js';
 

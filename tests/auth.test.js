@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { createAuth } from '../dist/framework/nodula-auth.js';
+import { createAuth } from '../framework/addons/auth.js';
 
 describe('Nodula auth add-on', () => {
   it('initializes a signed-out state through the supplied adapter', async () => {

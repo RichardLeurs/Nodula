@@ -6,7 +6,7 @@ import { animate, createTransition } from '../../dist/framework/nodula-animation
 import { showDialog } from '../../dist/framework/nodula-dialog.js';
 import { openModal } from '../../dist/framework/nodula-modal.js';
 import { openDrawer } from '../../dist/framework/nodula-drawer.js';
-import { mountNavigation } from '../../dist/framework/nodula-navigation.js';
+import { createNavigation } from '../../dist/framework/nodula-navigation.js';
 import { createIndexedDBSignal, createStorageSignal, deleteCookie, getCookie, setCookie } from '../../dist/framework/nodula-localstorage.js';
 import { createDataClient, DataError } from '../../dist/framework/nodula-data.js';
 import { createAuth } from '../../dist/framework/nodula-auth.js';
@@ -28,7 +28,7 @@ const modalHandle = openModal('Built modal', { title: 'Confirmation' });
 modalHandle.close();
 const drawerHandle = openDrawer('Built drawer', { title: 'Drawer', closeOnBackdrop: false, position: 'right' });
 drawerHandle.close();
-const disposeNavigation = mountNavigation(document.createElement('header'), router, [
+const disposeNavigation = createNavigation(document.createElement('header'), router, [
   { label: 'Home', href: '/' },
   { label: 'External', href: 'https://example.com/', external: true },
   { label: 'External same tab', href: 'https://example.com/docs', external: true, target: '_self' },

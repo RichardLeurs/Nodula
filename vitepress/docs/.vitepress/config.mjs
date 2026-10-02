@@ -34,6 +34,9 @@ function getCanonicalUrl(page) {
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   outDir: '../../dist/vitepress',
+  vite: {
+    configFile: false,
+  },
 
   title: 'Nodula Documentation',
   titleTemplate: ':title | Nodula Docs',

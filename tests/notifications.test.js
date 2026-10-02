@@ -6,8 +6,8 @@ const window = new Window({ url: 'http://localhost/' });
 globalThis.window = window;
 globalThis.document = window.document;
 
-const { createRoot } = await import('../dist/framework/nodula-framework.js');
-const { showNotification } = await import('../dist/framework/nodula-notifications.js');
+const { createRoot } = await import('../framework/index.js');
+const { showNotification } = await import('../framework/addons/notifications.js');
 
 after(() => window.close());
 

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { computed, createRoot, effect, onCleanup, onMount, onUnmount, signal } from '../framework/reactivity.js';
 import { createStore } from '../framework/addons/store.js';
-import { createForm } from '../dist/framework/nodula-form.js';
+import { createForm } from '../framework/addons/form.js';
 
 describe('Nodula reactivity', () => {
   it('runs effects immediately and only when observed values change', () => {

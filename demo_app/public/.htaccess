@@ -1,0 +1,265 @@
+```apache
+# ============================================================
+# NodulaJS - Production .htaccess
+# ============================================================
+#
+# Recommended deployment structure:
+#
+# /
+# ├── index.html
+# ├── assets/
+# │   ├── app.a8f31c.js
+# │   ├── app.7c91de.css
+# │   ├── logo.92ab31.svg
+# │   └── ...
+# └── api/                 (optional backend)
+#
+# Content-hashed assets can safely be cached for one year.
+# index.html is never aggressively cached.
+# ============================================================
+
+
+# ------------------------------------------------------------
+# 1. Apache rewrite engine
+# ------------------------------------------------------------
+
+RewriteEngine On
+
+
+# ------------------------------------------------------------
+# 2. Force HTTPS
+# ------------------------------------------------------------
+#
+# Redirect HTTP → HTTPS.
+#
+# HTTP_X_FORWARDED_PROTO is included for installations behind
+# a reverse proxy / load balancer.
+
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+
+# ------------------------------------------------------------
+# 3. Don't rewrite API requests
+# ------------------------------------------------------------
+#
+# If NodulaJS is used with a backend API under /api/,
+# let Apache/backend handle those requests normally.
+
+RewriteRule ^api(?:/|$) - [L]
+
+
+# ------------------------------------------------------------
+# 4. SPA routing
+# ------------------------------------------------------------
+#
+# Existing files and directories are served normally.
+# Everything else is sent to index.html.
+#
+# Examples:
+#
+# /                       → index.html
+# /dashboard              → index.html
+# /users/123              → index.html
+# /settings/profile       → index.html
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
+
+
+# ------------------------------------------------------------
+# 5. Browser caching
+# ------------------------------------------------------------
+
+<IfModule mod_expires.c>
+
+    ExpiresActive On
+
+    # --------------------------------------------------------
+    # HTML
+    # --------------------------------------------------------
+    #
+    # Always check whether a new version exists.
+    #
+    ExpiresByType text/html "access plus 0 seconds"
+
+    # --------------------------------------------------------
+    # JavaScript
+    # --------------------------------------------------------
+
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType application/x-javascript "access plus 1 year"
+
+    # --------------------------------------------------------
+    # CSS
+    # --------------------------------------------------------
+
+    ExpiresByType text/css "access plus 1 year"
+
+    # --------------------------------------------------------
+    # Images
+    # --------------------------------------------------------
+
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/avif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType image/vnd.microsoft.icon "access plus 1 year"
+
+    # --------------------------------------------------------
+    # Fonts
+    # --------------------------------------------------------
+
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
+
+    # --------------------------------------------------------
+    # JSON / Web manifests
+    # --------------------------------------------------------
+
+    ExpiresByType application/json "access plus 1 day"
+    ExpiresByType application/manifest+json "access plus 1 day"
+
+</IfModule>
+
+
+# ------------------------------------------------------------
+# 6. Cache-Control
+# ------------------------------------------------------------
+
+<IfModule mod_headers.c>
+
+    # --------------------------------------------------------
+    # Static assets
+    # --------------------------------------------------------
+    #
+    # This assumes filenames are content-hashed.
+    #
+    # Example:
+    # app.abc123.js
+    # styles.8f92de.css
+    #
+    # If your build system does NOT hash filenames,
+    # remove "immutable" and use a shorter max-age.
+
+    <FilesMatch "\.(js|mjs|css|jpg|jpeg|png|gif|webp|avif|svg|ico|woff|woff2|ttf|otf|eot)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+
+    # --------------------------------------------------------
+    # HTML
+    # --------------------------------------------------------
+    #
+    # Browser may store index.html but must revalidate it.
+
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+
+
+    # --------------------------------------------------------
+    # JSON
+    # --------------------------------------------------------
+    #
+    # Don't cache application data aggressively.
+
+    <FilesMatch "\.json$">
+        Header set Cache-Control "public, max-age=86400"
+    </FilesMatch>
+
+
+    # --------------------------------------------------------
+    # Security
+    # --------------------------------------------------------
+
+    Header always set X-Content-Type-Options "nosniff"
+
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    Header always set Permissions-Policy \
+        "camera=(), microphone=(), geolocation=()"
+
+
+    # --------------------------------------------------------
+    # Remove server information
+    # --------------------------------------------------------
+
+    Header always unset X-Powered-By
+
+</IfModule>
+
+
+# ------------------------------------------------------------
+# 7. Compression
+# ------------------------------------------------------------
+
+<IfModule mod_deflate.c>
+
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/css
+
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE text/xml
+
+    AddOutputFilterByType DEFLATE image/svg+xml
+
+</IfModule>
+
+
+# ------------------------------------------------------------
+# 8. Prevent MIME sniffing
+# ------------------------------------------------------------
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+
+# ------------------------------------------------------------
+# 9. Disable directory browsing
+# ------------------------------------------------------------
+
+Options -Indexes
+
+
+# ------------------------------------------------------------
+# 10. Protect sensitive files
+# ------------------------------------------------------------
+#
+# Prevent direct access to common project/config files.
+
+<FilesMatch "(^\.|\.env$|\.git|\.gitignore|composer\.(json|lock)|package(-lock)?\.json|README|LICENSE)">
+    Require all denied
+</FilesMatch>
+
+
+# ------------------------------------------------------------
+# 11. Prevent access to backup files
+# ------------------------------------------------------------
+
+<FilesMatch "\.(bak|backup|old|orig|save|swp|tmp)$">
+    Require all denied
+</FilesMatch>
+
+
+# ============================================================
+# End NodulaJS .htaccess
+# ============================================================
+```

@@ -23,10 +23,13 @@ export interface NavigationOptions {
   activeClassName?: string;
 }
 
-/** Mount accessible router-aware navigation links into a target element. */
-export function mountNavigation(
+/** Create accessible router-aware navigation links in a target element. Returns a disposer. */
+export function createNavigation(
   target: Element,
   router: NavigationRouter,
   items: NavigationItem[],
   options?: NavigationOptions,
 ): () => void;
+
+/** @deprecated Use createNavigation. */
+export const mountNavigation: typeof createNavigation;

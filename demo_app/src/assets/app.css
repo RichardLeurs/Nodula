@@ -57,6 +57,8 @@
   --ui-color-text-inverse: #102332;
   --ui-color-primary: #68b9e8;
   --ui-color-primary-hover: #91d0f3;
+  --ui-tooltip-background: #eee;
+  --ui-tooltip-text-color: #333;
 
   --ui-color-success: #198754;
  --ui-color-warning: #ffc107;
@@ -108,6 +110,9 @@
   --ui-color-text-inverse: #ffffff;
   --ui-color-primary: #38633b;
   --ui-color-primary-hover: #2c5031;
+
+  --ui-tooltip-background: #20332f;
+  --ui-tooltip-text-color: #edf2eb;
 
 --ui-color-success: #198754;
  --ui-color-warning: #ffc107;
@@ -1457,17 +1462,22 @@ a {
 
 .ui-tooltip-text {
   visibility: hidden; /* Hidden by default */
-  width: 130px; /* Width of the tooltip */
-  background-color: #eee; /* Background color */
-  color: #333; /* Text color */
+  width: fit-content; 
+  min-width: 50px;
+   /* 130px; Width of the tooltip */
+  background-color: var(--ui-tooltip-background); /* Background color */
+  color: var(--ui-tooltip-text-color); /* Text color */
   text-align: center; /* Center text */
-  padding: 5px 0; /* Padding around text */
+  padding: 5px; /* Padding around text */
   border-radius: 6px; /* Rounded corners */
   position: absolute; /* Positioning relative to the tooltip */
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1; /* Ensure tooltip appears above other content */
 }
 
-.ui-tooltip:hover .tooltip-text {
+.ui-tooltip:hover .ui-tooltip-text {
   visibility: visible; /* Show tooltip on hover */
 }
 

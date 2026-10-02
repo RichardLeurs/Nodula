@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { Window } from 'happy-dom';
 import { createServer } from 'vite';
-import { createRoot, h, mount } from '../dist/framework/nodula-framework.js';
-import { createFileRouter, createRouter } from '../dist/framework/nodula-router.js';
+import { createRoot, h, mount } from 'nodula-framework';
+import { createFileRouter, createRouter } from '../framework/addons/router.js';
 
 describe('Nodula file-based routes', () => {
   it('waits for the initial route guard before requesting a lazy protected page', async () => {

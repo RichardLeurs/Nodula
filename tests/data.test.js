@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { createDataClient, DataError } from '../dist/framework/nodula-data.js';
+import { createDataClient, DataError } from '../framework/addons/data.js';
 
 function createResponse({ status = 200, statusText = 'OK', body = '', contentType = 'application/json' } = {}) {
   return {

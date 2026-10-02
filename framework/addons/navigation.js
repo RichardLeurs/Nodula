@@ -1,16 +1,16 @@
 import { effect } from 'nodula-framework';
 
-/** Mount router-aware links into a semantic navigation element. */
-export function mountNavigation(target, router, items, options = {}) {
-  if (!target || target.nodeType !== 1) throw new TypeError('mountNavigation expects a target element.');
+/** Create router-aware links in a semantic navigation element and return a disposer. */
+export function createNavigation(target, router, items, options = {}) {
+  if (!target || target.nodeType !== 1) throw new TypeError('createNavigation expects a target element.');
   if (!router || typeof router.current !== 'function' || typeof router.navigate !== 'function' || !['hash', 'history'].includes(router.mode)) {
-    throw new TypeError('mountNavigation expects a Nodula router.');
+    throw new TypeError('createNavigation expects a Nodula router.');
   }
-  if (!Array.isArray(items)) throw new TypeError('mountNavigation items must be an array.');
+  if (!Array.isArray(items)) throw new TypeError('createNavigation items must be an array.');
 
   const { label = 'Primary navigation', className = '', linkClassName = '', activeClassName = 'is-active' } = options;
   if ([label, className, linkClassName, activeClassName].some((value) => typeof value !== 'string')) {
-    throw new TypeError('mountNavigation labels and class names must be strings.');
+    throw new TypeError('createNavigation labels and class names must be strings.');
   }
 
   const usesTargetNav = target.tagName === 'NAV';
@@ -84,3 +84,6 @@ export function mountNavigation(target, router, items, options = {}) {
     }
   };
 }
+
+/** @deprecated Use createNavigation. */
+export const mountNavigation = createNavigation;

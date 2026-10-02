@@ -7,8 +7,8 @@ globalThis.window = window;
 globalThis.document = window.document;
 globalThis.Node = window.Node;
 
-const { createRoot } = await import('../dist/framework/nodula-framework.js');
-const { showDialog } = await import('../dist/framework/nodula-dialog.js');
+const { createRoot } = await import('../framework/index.js');
+const { showDialog } = await import('../framework/addons/dialog.js');
 
 after(() => window.close());
 

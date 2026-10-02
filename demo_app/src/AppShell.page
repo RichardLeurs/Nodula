@@ -1,7 +1,8 @@
 <script setup>
 import { effect, onCleanup } from 'nodula-framework';
 import { createFileRouter } from 'nodula-framework/router';
-import { mountNavigation } from 'nodula-framework/navigation';
+import { createSEO } from 'nodula-framework/seo';
+import { createNavigation } from 'nodula-framework/navigation';
 import { enableLifecycleTransitions } from 'nodula-framework/animation';
 import { createStorageSignal } from 'nodula-framework/localstorage';
 import { demoAuth, initializeDemoAuth, navigateDemoRoute, protectDemoAdminRoute, setDemoRouter, signOutDemoAdmin } from './demo-auth.js';
@@ -9,6 +10,19 @@ import { demoAuth, initializeDemoAuth, navigateDemoRoute, protectDemoAdminRoute,
 const router = createFileRouter(import.meta.glob('./routes/**/*.page'), undefined, {
   mode: 'history',
   beforeEach: protectDemoAdminRoute,
+});
+const seo = createSEO(router, {
+  siteUrl: 'https://nodula.richardleurs.nl',
+  defaults: {
+    title: 'Nodula — A small framework for big ideas',
+    description: 'Nodula is a lightweight JavaScript framework for building applications with signals, direct DOM updates, and single-file components.',
+    robots: 'index, follow',
+    openGraph: {
+      siteName: 'Nodula',
+      type: 'website',
+      image: 'https://nodula.richardleurs.nl/assets/bg-nodula.webp',
+    },
+  },
 });
 setDemoRouter(router);
 enableLifecycleTransitions({ options: { duration: 500, easing: 'ease-out' } });
@@ -52,10 +66,12 @@ function setAuthButtonElement(element) {
     const status = demoAuth.status();
     const signedIn = status === 'authenticated';
     const busy = status === 'idle' || status === 'loading';
+    const tooltipText = element.closest('.ui-tooltip')?.querySelector('.ui-tooltip-text');
     element.replaceChildren(signedIn ? signOutIcon.cloneNode(true) : signInIcon.cloneNode(true));
     element.disabled = busy;
     element.setAttribute('aria-label', busy ? 'Checking demo authentication status' : signedIn ? 'Sign out of the demo administrator account' : 'Sign in as the demo administrator');
     element.setAttribute('aria-busy', busy ? 'true' : 'false');
+    if (tooltipText) tooltipText.textContent = busy ? 'Checking sign-in status…' : signedIn ? 'Sign out' : 'Sign in';
   });
 }
 
@@ -97,7 +113,7 @@ function setNavigationElement(element) {
     ];
 
     disposeNavigation?.();
-    disposeNavigation = mountNavigation(element, router, items, {
+    disposeNavigation = createNavigation(element, router, items, {
       label: 'Main navigation',
       linkClassName: 'ui-nav-link',
       activeClassName: 'ui-nav-link--active',
@@ -108,6 +124,7 @@ onCleanup(() => {
   disposeNavigation?.();
   disposeNavigationEffect?.();
   disposeAuthButtonEffect?.();
+  seo.dispose();
 });
 const [theme, setTheme] = createStorageSignal('nodula-theme', 'dark');
 
@@ -163,14 +180,14 @@ function setThemeToggleIcons(element) {
       </a>
       <nav class="ui-site-nav" @ref="setNavigationElement"></nav>
       <div class="ui-header-actions">
-        <div class="ui-tooltip">
-  <span class="ui-tooltip-text">Tooltip text</span>
-
+        <div class="ui-tooltip"><span class="ui-tooltip-text">Sign-in</span>
         <button class="ui-auth-toggle" type="button" @click="toggleDemoSignIn()" @ref="setAuthButtonElement" aria-label="Checking demo authentication status" aria-busy="true"> </button>
      </div>
+  <div class="ui-tooltip"><span class="ui-tooltip-text">{{ theme() === 'dark' ? 'Light mode' : 'Dark mode' }}</span>
      <button class="ui-theme-toggle" type="button" @click="toggleTheme()" @ref="setThemeToggleIcons" :aria-label="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" :aria-pressed="theme() === 'light' ? 'true' : 'false'"></button>
-      </div>
-      <!-- <a class="ui-github-link" href="https://vite.dev/" target="_blank" rel="noreferrer">Made for the web <span aria-hidden="true"> ↗</span></a> -->
+</div>
+</div>
+    <!-- <a class="ui-github-link" href="https://vite.dev/" target="_blank" rel="noreferrer">Made for the web <span aria-hidden="true"> ↗</span></a> -->
     </header>
     <div class="route-view">
       <outlet :view="router.view()" />

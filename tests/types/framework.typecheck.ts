@@ -26,7 +26,7 @@ import { showDialog } from 'nodula-framework/dialog';
 import { showNotification } from 'nodula-framework/notifications';
 import { openModal } from 'nodula-framework/modal';
 import { openDrawer } from 'nodula-framework/drawer';
-import { mountNavigation } from 'nodula-framework/navigation';
+import { createNavigation } from 'nodula-framework/navigation';
 import { createIndexedDBSignal, createStorageSignal, deleteCookie, getCookie, setCookie } from 'nodula-framework/localstorage';
 import { nodulaPWA } from 'nodula-framework/pwa';
 import { createDataClient, DataError } from 'nodula-framework/data';
@@ -65,7 +65,7 @@ const modalHandle = openModal('Modal content', { title: 'Typechecked modal', clo
 modalHandle.close();
 const drawerHandle = openDrawer('Drawer content', { title: 'Typechecked drawer', closeOnBackdrop: false, position: 'left' });
 drawerHandle.close();
-const disposeNavigation = mountNavigation(document.createElement('header'), createRouter({}), [
+const disposeNavigation = createNavigation(document.createElement('header'), createRouter({}), [
   { label: 'Home', href: '/' },
   { label: 'Nodula website', href: 'https://nodula.richardleurs.nl/', external: true },
   { label: 'Same tab external', href: 'https://example.com/docs', external: true, target: '_self' },

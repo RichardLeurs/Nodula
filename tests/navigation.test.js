@@ -6,18 +6,22 @@ const window = new Window({ url: 'http://localhost/#/' });
 globalThis.window = window;
 globalThis.document = window.document;
 
-const { createRoot, signal } = await import('../dist/framework/nodula-framework.js');
-const { createRouter } = await import('../dist/framework/nodula-router.js');
-const { mountNavigation } = await import('../dist/framework/nodula-navigation.js');
+const { createRoot, signal } = await import('nodula-framework');
+const { createRouter } = await import('../framework/addons/router.js');
+const { createNavigation, mountNavigation } = await import('../framework/addons/navigation.js');
 
 after(() => window.close());
 
 describe('Nodula navigation add-on', () => {
+  it('keeps mountNavigation as a compatibility alias', () => {
+    assert.equal(mountNavigation, createNavigation);
+  });
+
   it('mounts an accessible nav and updates the active link with router state', async () => {
     const target = document.createElement('header');
     document.body.append(target);
     const [router, disposeRoot] = createRoot(() => createRouter({ '/': () => document.createTextNode('Home'), '/guide': () => document.createTextNode('Guide') }));
-    const disposeNav = mountNavigation(target, router, [
+    const disposeNav = createNavigation(target, router, [
       { label: 'Home', href: '/' },
       { label: 'Guide', href: '/guide' },
     ], { label: 'Main navigation', className: 'site-nav', linkClassName: 'nav-link', activeClassName: 'active' });
@@ -44,7 +48,7 @@ describe('Nodula navigation add-on', () => {
     const target = document.createElement('div');
     const [current, setCurrent] = signal('/guide');
     const router = { current, navigate() {}, mode: 'history' };
-    const dispose = mountNavigation(target, router, [{ label: 'Guide', href: '/guide' }]);
+    const dispose = createNavigation(target, router, [{ label: 'Guide', href: '/guide' }]);
     const link = target.querySelector('a');
     assert.equal(link.getAttribute('href'), '/guide');
     assert.equal(link.getAttribute('aria-current'), 'page');
@@ -56,7 +60,7 @@ describe('Nodula navigation add-on', () => {
   it('renders explicitly external HTTP(S) links without router state', () => {
     const target = document.createElement('div');
     const router = { current: () => '/', navigate() {}, mode: 'history' };
-    const dispose = mountNavigation(target, router, [
+    const dispose = createNavigation(target, router, [
       { label: 'External guide', href: 'https://sprigjs-docs.richardleurs.nl/', external: true },
     ], { activeClassName: 'active' });
     const link = target.querySelector('a');
@@ -69,7 +73,7 @@ describe('Nodula navigation add-on', () => {
     dispose();
 
     const sameTabTarget = document.createElement('div');
-    const disposeSameTab = mountNavigation(sameTabTarget, router, [
+    const disposeSameTab = createNavigation(sameTabTarget, router, [
       { label: 'Same tab', href: 'https://example.com/docs', external: true, target: '_self' },
     ]);
     const sameTabLink = sameTabTarget.querySelector('a');
@@ -83,7 +87,7 @@ describe('Nodula navigation add-on', () => {
     nav.className = 'site-nav';
     nav.setAttribute('aria-label', 'Old label');
     const router = { current: () => '/', navigate() {}, mode: 'history' };
-    const dispose = mountNavigation(nav, router, [{ label: 'Home', href: '/' }], { label: 'Main navigation' });
+    const dispose = createNavigation(nav, router, [{ label: 'Home', href: '/' }], { label: 'Main navigation' });
     assert.equal(nav.querySelectorAll('a').length, 1);
     assert.equal(nav.getAttribute('aria-label'), 'Main navigation');
     dispose();
@@ -94,15 +98,15 @@ describe('Nodula navigation add-on', () => {
 
   it('rejects invalid router data and navigation items', () => {
     const target = document.createElement('div');
-    assert.throws(() => mountNavigation(target, {}, []), /Nodula router/);
-    assert.throws(() => mountNavigation(target, { current: () => '/', navigate() {}, mode: 'hash' }, [{ label: 'Bad', href: 'guide' }]), /begin with/);
-    assert.throws(() => mountNavigation(target, { current: () => '/', navigate() {}, mode: 'history' }, [
+    assert.throws(() => createNavigation(target, {}, []), /Nodula router/);
+    assert.throws(() => createNavigation(target, { current: () => '/', navigate() {}, mode: 'hash' }, [{ label: 'Bad', href: 'guide' }]), /begin with/);
+    assert.throws(() => createNavigation(target, { current: () => '/', navigate() {}, mode: 'history' }, [
       { label: 'Unsafe', href: 'javascript:alert(1)', external: true },
     ]), /HTTP or HTTPS/);
-    assert.throws(() => mountNavigation(target, { current: () => '/', navigate() {}, mode: 'history' }, [
+    assert.throws(() => createNavigation(target, { current: () => '/', navigate() {}, mode: 'history' }, [
       { label: 'Relative', href: 'https://example.com', external: 'yes' },
     ]), /Internal navigation hrefs/);
-    assert.throws(() => mountNavigation(target, { current: () => '/', navigate() {}, mode: 'history' }, [
+    assert.throws(() => createNavigation(target, { current: () => '/', navigate() {}, mode: 'history' }, [
       { label: 'Bad target', href: 'https://example.com', external: true, target: '_parent' },
     ]), /target must be _blank or _self/);
   });
