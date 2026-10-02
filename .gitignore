@@ -1,16 +1,17 @@
 .clinerules/
-vitest
-node_modules
-api/
-dist/
-demo_app/src/assets/*.af
-demo_app/src/assets/*.af-lock-
-demo_app/src/assets/CSS architecture.md
-demo_app/package-lock.json
 .DS_Store
 .env
 .env.*
 .vscode/
+node_modules
+api/
+dist/
+docs/
+demo_app/src/assets/*.af
+demo_app/src/assets/*.af-lock-
+demo_app/src/assets/CSS architecture.md
+demo_app/package-lock.json
+tests/
 vitepress/
 !vitepress/
 vitepress/*
@@ -19,6 +20,9 @@ vitepress/docs/*
 !vitepress/docs/.vitepress/
 vitepress/docs/.vitepress/*
 !vitepress/docs/.vitepress/config.mjs
+!vitepress/docs/guide/
+vitepress/docs/guide/*
+!vitepress/docs/guide/testing.md
 !vitepress/docs/public/
 vitepress/docs/public/*
 !vitepress/docs/public/robots.txt
