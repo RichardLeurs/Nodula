@@ -1,8 +1,12 @@
 .clinerules/
-.DS_Store
+.cursor/
+.github/
+.opencode/
+.windsurf/
+.vscode/
 .env
 .env.*
-.vscode/
+.DS_Store
 node_modules
 api/
 dist/
@@ -12,21 +16,6 @@ demo_app/src/assets/*.af-lock-
 demo_app/src/assets/CSS architecture.md
 demo_app/package-lock.json
 tests/
+vitest/
 vitepress/
-!vitepress/
-vitepress/*
-!vitepress/docs/
-vitepress/docs/*
-!vitepress/docs/.vitepress/
-vitepress/docs/.vitepress/*
-!vitepress/docs/.vitepress/config.mjs
-!vitepress/docs/guide/
-vitepress/docs/guide/*
-!vitepress/docs/guide/testing.md
-!vitepress/docs/public/
-vitepress/docs/public/*
-!vitepress/docs/public/robots.txt
 /package-lock.json
-README framework.md
-SPECS.md
-Prio.md
