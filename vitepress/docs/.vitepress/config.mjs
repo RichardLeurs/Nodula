@@ -33,7 +33,7 @@ function getCanonicalUrl(page) {
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  outDir: '../../dist/vitepress',
+  outDir: path.resolve(docsDirectory, '.vitepress/dist'),
   vite: {
     configFile: false,
   },
@@ -170,7 +170,6 @@ export default defineConfig({
           { text: 'Authentication, roles, and permissions', link: '/guide/auth' },
           { text: 'Progressive Web Apps', link: '/guide/pwa' },
           { text: 'State Management', link: '/guide/state-management' },
-          { text: 'Sprig and Web Components', link: '/guide/sprig-and-web-components' },
           { text: 'Framework Stylesheet', link: '/guide/framework-stylesheet' },
           { text: 'Building the npm Package', link: '/guide/npm-package' },
           { text: 'Reactive Stores', link: '/guide/stores' },
@@ -179,7 +178,6 @@ export default defineConfig({
           { text: 'Modals', link: '/guide/modals' },
           { text: 'Side drawers', link: '/guide/drawers' },
           { text: 'Testing', link: '/guide/testing' },
-          { text: 'Server-Side Rendering (SSR)', link: '/guide/server-side-rendering' }
         ]
       },
       {
@@ -204,13 +202,9 @@ export default defineConfig({
       {
         text: 'Extra Topics',
         items: [
-          { text: 'Extra Topics', link: '/guide/extra-topics' },
-          { text: 'Ways of Using Vue', link: '/guide/ways-of-using-sprig' },
           { text: 'Composition API FAQ', link: '/guide/composition-api-faq' },
           { text: 'Reactivity in Depth', link: '/guide/reactivity-in-depth' },
           { text: 'Rendering Mechanism', link: '/guide/rendering-mechanism' },
-          { text: 'Render Functions & JSX', link: '/guide/render-functions-jsx' },
-          { text: 'Vue and Web Components', link: '/guide/sprig-and-web-components' },
           { text: 'Animation Techniques', link: '/guide/animation-techniques' },
           { text: 'Specifications and Limits', link: '/guide/specifications' }
         ]

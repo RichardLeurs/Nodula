@@ -35,13 +35,20 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 
-  --page-bg: #0a1424;
-  --app-background-overlay: rgba(10, 20, 36, 0.97);
+
+    /* --page-bg: #0a1424;
+  --app-background-overlay: rgba(10, 20, 36, 0.97); */
+  --page-bg: hsl(217, 57%, 20%);
+    --page-gradient: hsl(217, 57%, 0%);
+
+  --app-background-overlay: #01050c;
+
+
   --app-background-blend: darken;
   --brand-name-color: #eee;
   --muted-footer: #eee;
   --logo-filter: invert(1);
-
+  /* --ui-color-background: #0a1424; */
   --ui-color-background: #0a1424;
 
   --ui-color-surface: #101f33;
@@ -52,8 +59,8 @@
   --ui-color-border-strong: rgba(196, 216, 240, 0.3);
 
   --ui-color-text: #edf2eb;
-  --ui-color-text-muted: #a9bfd2;
-  --ui-color-text-subtle: #8199ad;
+  --ui-color-text-muted: #b4c5d5;
+  --ui-color-text-subtle: #a2afba;
   --ui-color-text-inverse: #102332;
   --ui-color-primary: #68b9e8;
   --ui-color-primary-hover: #91d0f3;
@@ -88,14 +95,21 @@
 
 :root[data-theme="light"] {
   color-scheme: light;
-  --page-bg: #e9f4f8f5;
+
+    /* --page-bg: #e9f4f8f5;
+  --app-background-overlay: #edf4f7f5; */
+  --page-bg: hsla(196, 52%, 97%);
+  --page-gradient: hsla(196, 52%, 89%);
+
   --app-background-overlay: #edf4f7f5;
   --app-background-blend: lighten;
   --brand-name-color: #000;
   --muted-footer: #526760;
   --logo-filter: none;
 
-  --ui-color-background: hsl(132, 24%, 96%);
+    /* --ui-color-background: hsl(132, 24%, 96%); */
+  /* --ui-color-background: hsl(132, 24%, 96%); */
+    --ui-color-background: hsl(196, 52%, 97%);
   --ui-color-surface: hsl(0, 0%, 98%);
   --ui-color-surface-raised: #ffffff;
   /* --ui-color-surface-sunken: #e0f0f5; */
@@ -181,12 +195,15 @@ textarea {
 .ui-app {
   min-height: 100vh;
   overflow: hidden;
-  background-image: url("./bg-nodula.webp");
-  background-repeat: no-repeat;
-  background-position: top right;
-  background-size: min(100%, 1049px) auto;
-  background-color: var(--app-background-overlay);
-  background-blend-mode: var(--app-background-blend);
+  background-image:
+    /* url("./bg-nodula.webp"), */
+    linear-gradient(135deg, var(--page-bg), var(--page-gradient, var(--app-background-overlay)));
+  background-repeat: no-repeat, no-repeat;
+  background-position: top right, center;
+  /* background-size: min(100%, 1049px) auto, 100% 100%; */
+  /* background-color: var(--page-bg); */
+  /* var(--page-bg); */
+  /* background-blend-mode: var(--app-background-blend), normal; */
 }
 
 a {

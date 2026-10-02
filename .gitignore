@@ -31,6 +31,12 @@ vitepress/*
 !vitepress/vite.config.js
 !vitepress/build-entry.js
 !vitepress/package.json
+!vitepress/docs/
+vitepress/docs/*
+!vitepress/docs/index.md
+!vitepress/docs/guide/
+vitepress/docs/guide/*
+!vitepress/docs/guide/*.md
 !framework/public/
 framework/public/*
 !framework/public/README.md
