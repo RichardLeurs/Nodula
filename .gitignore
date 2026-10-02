@@ -9,6 +9,16 @@ demo_app/src/assets/CSS architecture.md
 .env.*
 .vscode/
 vitepress/
+!vitepress/
+vitepress/*
+!vitepress/docs/
+vitepress/docs/*
+!vitepress/docs/.vitepress/
+vitepress/docs/.vitepress/*
+!vitepress/docs/.vitepress/config.mjs
+!vitepress/docs/public/
+vitepress/docs/public/*
+!vitepress/docs/public/robots.txt
 /package-lock.json
 README framework.md
 SPECS.md
