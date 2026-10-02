@@ -1,3 +1,5 @@
+.clinerules/
+vitest
 node_modules
 api/
 dist/
