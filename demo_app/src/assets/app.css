@@ -196,15 +196,18 @@ textarea {
   min-height: 100vh;
   overflow: hidden;
   background-image:
-    /* url("./bg-nodula.webp"), */
-    linear-gradient(135deg, var(--page-bg), var(--page-gradient, var(--app-background-overlay)));
+    linear-gradient(135deg, var(--page-bg), var(--page-gradient));
   background-repeat: no-repeat, no-repeat;
-  background-position: top right, center;
+  /* background-position: top right, center; */
   /* background-size: min(100%, 1049px) auto, 100% 100%; */
   /* background-color: var(--page-bg); */
   /* var(--page-bg); */
-  /* background-blend-mode: var(--app-background-blend), normal; */
+  /* background-blend-mode: var(--app-background-blend),normal ; */
+  /* var(--app-background-blend),normal; */
 }
+
+
+
 
 a {
   color: inherit;
@@ -243,7 +246,8 @@ a {
   width: 23px;
   height: 23px;
   flex: 0 0 23px;
-  background: url("./logo-nodula-128.webp") center / contain no-repeat;
+    /* background: url("./logo-nodula-128.webp") center / contain no-repeat; */
+  background: url("./logo-64x64.png") center / contain no-repeat;
   filter: var(--logo-filter);
 }
 
