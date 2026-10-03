@@ -224,7 +224,11 @@ function reconcile(current, next) {
     for (const attribute of [...current.attributes]) {
       if (!next.hasAttribute(attribute.name)) current.removeAttribute(attribute.name);
     }
-    for (const attribute of next.attributes) current.setAttribute(attribute.name, attribute.value);
+    for (const attribute of next.attributes) {
+      if (current.getAttribute(attribute.name) !== attribute.value) {
+        current.setAttribute(attribute.name, attribute.value);
+      }
+    }
     for (const property of BINDINGS.get(next)?.properties ?? []) {
       if (current[property] !== next[property]) current[property] = next[property];
     }
@@ -241,7 +245,8 @@ function reconcile(current, next) {
       const previous = key === undefined ? unkeyed[unkeyedIndex++] : keyed.get(key);
       const node = previous ? reconcile(previous, proposed) : proposed;
       retained.add(node);
-      current.insertBefore(node, current.childNodes[index] ?? null);
+      const reference = current.childNodes[index] ?? null;
+      if (reference !== node) current.insertBefore(node, reference);
     }
     for (const node of oldChildren) if (!retained.has(node)) node.remove();
   }
@@ -565,19 +570,11 @@ export function list(items, key, render) {
     const values = items();
     const seen = new Set();
 
-    values.forEach((item, index) => {
-      const id = key(item);
+    const ids = values.map((item) => key(item));
+    for (const id of ids) {
       if (seen.has(id)) throw new Error(`Duplicate list key: ${id}`);
       seen.add(id);
-
-      let row = rows.get(id);
-      if (!row) {
-        const [node, dispose] = createRoot(() => render(item, index), { detached: true });
-        row = { node, dispose };
-        rows.set(id, row);
-      }
-      container.append(row.node);
-    });
+    }
 
     for (const [id, row] of rows) {
       if (seen.has(id)) continue;
@@ -585,6 +582,22 @@ export function list(items, key, render) {
       row.node.remove();
       rows.delete(id);
     }
+
+    let current = container.firstChild;
+    values.forEach((item, index) => {
+      const id = ids[index];
+      let row = rows.get(id);
+      if (!row) {
+        const [node, dispose] = createRoot(() => render(item, index), { detached: true });
+        row = { node, dispose };
+        rows.set(id, row);
+      }
+      if (current !== row.node) {
+        if (current) container.insertBefore(row.node, current);
+        else container.append(row.node);
+      }
+      current = row.node.nextSibling;
+    });
   });
 
   onCleanup(() => {
