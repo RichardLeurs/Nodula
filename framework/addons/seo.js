@@ -256,6 +256,8 @@ export function createSEO(router, options = {}) {
 
     if (title != null) set('title', 'title', () => [...document.head.querySelectorAll('title')], {}, title);
     if (description != null) set('description', 'meta', findTag('meta', 'name', 'description'), { name: 'description', content: description });
+    if (metadata.keywords != null) set('keywords', 'meta', findTag('meta', 'name', 'keywords'), { name: 'keywords', content: metadata.keywords });
+    if (metadata.author != null) set('author', 'meta', findTag('meta', 'name', 'author'), { name: 'author', content: metadata.author });
 
     if (canonical != null) set('canonical', 'link', findTag('link[rel="canonical"]', 'rel', 'canonical'), { rel: 'canonical', href: canonical });
     if (metadata.robots != null) set('robots', 'meta', findTag('meta', 'name', 'robots'), { name: 'robots', content: metadata.robots });

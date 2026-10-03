@@ -17,6 +17,8 @@ export interface SEOLanguageAlternate {
 export interface SEOMetadata {
   title?: SEOMetadataValue;
   description?: SEOMetadataValue;
+  keywords?: SEOMetadataValue;
+  author?: SEOMetadataValue;
   /** Absolute URL; omitted values are generated from siteUrl and the active route. */
   canonical?: SEOMetadataValue;
   robots?: SEOMetadataValue;
@@ -50,5 +52,5 @@ export interface SEOController {
   dispose(): void;
 }
 
-/** Manage title, description, canonical, Open Graph, robots, and hreflang head tags. */
+/** Manage title, description, keywords, author, canonical, Open Graph, robots, and hreflang head tags. */
 export function createSEO(router: SEORouteContext['router'], options?: SEOOptions): SEOController;

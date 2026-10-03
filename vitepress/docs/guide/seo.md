@@ -24,6 +24,8 @@ const seo = createSEO(router, {
   defaults: {
     title: 'Example App',
     description: 'A short description of this app.',
+    keywords: 'example, nodula',
+    author: 'Example team',
     robots: 'index, follow',
     openGraph: {
       siteName: 'Example App',
@@ -39,6 +41,8 @@ const seo = createSEO(router, {
     '/products/:id': ({ params }) => ({
       title: `Product ${params.id} | Example App`,
       description: `Details for product ${params.id}.`,
+      keywords: `product, ${params.id}`,
+      author: 'Example catalog team',
       openGraph: { type: 'product' },
     }),
   },
@@ -67,6 +71,8 @@ A metadata resolver receives `{ path, params, router }`. `path` excludes query a
 |---|---|---|
 | `title` | string, `null`, `undefined`, or accessor | Sets document `<title>`. |
 | `description` | string, `null`, `undefined`, or accessor | Sets `meta[name="description"]`. |
+| `keywords` | string, `null`, `undefined`, or accessor | Sets `meta[name="keywords"]`. |
+| `author` | string, `null`, `undefined`, or accessor | Sets `meta[name="author"]`. |
 | `canonical` | string, `null`, `undefined`, or accessor | Sets `link[rel="canonical"]`. If omitted, URL is generated from `siteUrl` and active route; query and fragment are excluded. |
 | `robots` | string, `null`, `undefined`, or accessor | Sets `meta[name="robots"]`. |
 | `openGraph` | `SEOOpenGraph` | Sets supported Open Graph tags. Title, description, and URL default to the corresponding resolved metadata; type defaults to `website`. |

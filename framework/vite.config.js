@@ -6,11 +6,11 @@ import { nodulaPlugin } from './vite-plugin.js';
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 const frameworkSource = (path) => fileURLToPath(new URL(path, import.meta.url));
-const frameworkOutputDirectory = fileURLToPath(new URL('../dist/framework', import.meta.url));
-const frameworkOutputFile = (filename) => fileURLToPath(new URL(`../dist/framework/${filename}`, import.meta.url));
-const runtimeEntry = fileURLToPath(new URL('../dist/framework/nodula-framework.js', import.meta.url));
+const frameworkOutputDirectory = fileURLToPath(new URL('../dist/nodula', import.meta.url));
+const frameworkOutputFile = (filename) => fileURLToPath(new URL(`../dist/nodula/${filename}`, import.meta.url));
+const runtimeEntry = fileURLToPath(new URL('../dist/nodula/nodula-framework.js', import.meta.url));
 const reactivityEntry = fileURLToPath(new URL('./reactivity.js', import.meta.url));
-const storeEntry = fileURLToPath(new URL('../dist/framework/nodula-store.js', import.meta.url));
+const storeEntry = fileURLToPath(new URL('../dist/nodula/nodula-store.js', import.meta.url));
 const frameworkStyles = [
   'nodula-dialog.css',
   'nodula-modal.css',

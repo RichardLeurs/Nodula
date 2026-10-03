@@ -2,7 +2,7 @@ import { Window } from 'happy-dom';
 import { readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 import { createRoot, effect, onCleanup, signal } from '../framework/reactivity.js';
-import { h, mount } from '../framework/dom.js';
+import { h, list, mount } from '../framework/dom.js';
 
 const ROW_COUNT = Number(process.env.ROW_COUNT ?? 1000);
 const ROUNDS = Number(process.env.ROUNDS ?? 7);
@@ -21,14 +21,14 @@ Object.assign(globalThis, {
 const operationCounts = { append: 0, insertBefore: 0, remove: 0, movedInsertBefore: 0, attributeWrites: 0 };
 const restorers = [];
 
-function instrument(prototype, name, counter = name) {
+function instrument(prototype, name, counter = name, when = () => true) {
   const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
   if (typeof descriptor?.value !== 'function') return;
   const original = descriptor.value;
   Object.defineProperty(prototype, name, {
     ...descriptor,
     value(...args) {
-      operationCounts[counter] += 1;
+      if (when(this, args)) operationCounts[counter] += 1;
       if (name === 'insertBefore' && args[0]?.parentNode === this && args[0] !== args[1] && args[0].nextSibling !== args[1]) {
         operationCounts.movedInsertBefore += 1;
       }
@@ -40,7 +40,9 @@ function instrument(prototype, name, counter = name) {
 
 instrument(window.Node.prototype, 'insertBefore');
 for (const name of ['append', 'remove']) instrument(window.Element.prototype, name);
-for (const name of ['setAttribute', 'removeAttribute']) instrument(window.Element.prototype, name, 'attributeWrites');
+for (const name of ['setAttribute', 'removeAttribute']) {
+  instrument(window.Element.prototype, name, 'attributeWrites', (element) => element.isConnected);
+}
 
 function resetOperations() {
   for (const name of Object.keys(operationCounts)) operationCounts[name] = 0;
@@ -106,40 +108,30 @@ function benchmarkMount() {
   console.log(`mount 100-row tree: median ${formatTime(median(timings))}/mount; operations/mount ${JSON.stringify(Object.fromEntries(Object.entries(measuredOperations).map(([key, value]) => [key, value / ITERATIONS])))}`);
 }
 
-function createList(items, key, render, optimized) {
+function createBaselineList(items, key, render) {
   const container = document.createElement('div');
   const rows = new Map();
   effect(() => {
     const values = items();
     const seen = new Set();
-    const ids = values.map((item) => key(item));
-    for (const id of ids) {
+    values.forEach((item, index) => {
+      const id = key(item);
       if (seen.has(id)) throw new Error(`Duplicate list key: ${id}`);
       seen.add(id);
-    }
-    for (const [id, row] of rows) {
-      if (seen.has(id)) continue;
-      row.dispose();
-      row.node.remove();
-      rows.delete(id);
-    }
-
-    let current = container.firstChild;
-    values.forEach((item, index) => {
-      const id = ids[index];
       let row = rows.get(id);
       if (!row) {
         const [node, dispose] = createRoot(() => render(item, index), { detached: true });
         row = { node, dispose };
         rows.set(id, row);
       }
-      if (!optimized) container.append(row.node);
-      else if (current !== row.node) {
-        if (current) container.insertBefore(row.node, current);
-        else container.append(row.node);
-      }
-      if (optimized) current = row.node.nextSibling;
+      container.append(row.node);
     });
+    for (const [id, row] of rows) {
+      if (seen.has(id)) continue;
+      row.dispose();
+      row.node.remove();
+      rows.delete(id);
+    }
   });
   onCleanup(() => {
     for (const row of rows.values()) row.dispose();
@@ -150,7 +142,8 @@ function createList(items, key, render, optimized) {
 
 function mountKeyedList(implementation) {
   const [items, setItems] = signal(Array.from({ length: ROW_COUNT }, (_, id) => ({ id })));
-  const dispose = mount(document.body, () => h('ul', {}, createList(items, (item) => item.id, (item) => h('li', {}, String(item.id)), implementation === 'optimized')));
+  const renderList = implementation === 'baseline' ? createBaselineList : list;
+  const dispose = mount(document.body, () => h('ul', {}, renderList(items, (item) => item.id, (item) => h('li', {}, String(item.id)))));
   return { setItems, dispose };
 }
 
