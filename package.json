@@ -10,11 +10,11 @@
     "**/*.css"
   ],
   "type": "module",
-  "types": "dist/nodula/nodula-framework.d.ts",
+  "types": "dist/nodula/nodula-core.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/nodula/nodula-framework.d.ts",
-      "import": "./dist/nodula/nodula-framework.js"
+      "types": "./dist/nodula/nodula-core.d.ts",
+      "import": "./dist/nodula/nodula-core.js"
     },
     "./nodula-framework.css": "./dist/nodula/nodula-framework.css",
     "./dialog.css": "./dist/nodula/nodula-dialog.css",
@@ -90,7 +90,7 @@
     "dev": "npm run install:framework && npm --prefix demo_app run dev",
     "build": "npm run test:framework && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run test:demo && npm run build:app && npm run build:docs",
     "build:app": "npm --prefix demo_app run build",
-    "build:docs": "vite build --config vite.config.js --mode docs",
+    "build:docs": "node scripts/build-docs.mjs",
     "build:compiler": "vite build --config framework/vite.config.js --mode compiler",
     "build:form": "vite build --config framework/vite.config.js --mode addon-form",
     "build:router": "vite build --config framework/vite.config.js --mode addon-router",
@@ -117,9 +117,8 @@
     "test:framework": "vitest run --config framework/vitest.config.js",
     "test:framework:watch": "vitest --config framework/vitest.config.js",
     "test:demo": "npm --prefix demo_app run test",
-    "typecheck": "npm run build:framework && tsc -p tsconfig.types.json",
-    "typecheck:bundle": "tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM,DOM.Iterable --types node tests/types/bundle.typecheck.ts"
-  },
+    "typecheck": "npm run build:framework && tsc -p tsconfig.types.json"
+    },
   "devDependencies": {
     "happy-dom": "^20.14.5",
     "lightningcss": "^1.33.0",

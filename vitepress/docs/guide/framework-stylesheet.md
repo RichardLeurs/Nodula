@@ -1,6 +1,6 @@
 # Framework Stylesheet
 
-The combined source stylesheet is `framework/assets/nodula-framework.css`. It contains the default styles used by the optional dialog, notification, modal, and drawer add-ons. The framework build copies it to `dist/framework/nodula-framework.css` and publishes it as `nodula-framework/nodula-framework.css`. You can also import an individual add-on stylesheet from `nodula-framework/dialog.css`, `nodula-framework/notifications.css`, `nodula-framework/modal.css`, or `nodula-framework/drawer.css`. Import the combined stylesheet:
+The combined source stylesheet is `framework/assets/nodula-framework.css`. It contains the default styles used by the optional dialog, notification, modal, and drawer add-ons. The framework build copies it to `dist/nodula/nodula-framework.css` and publishes it as `nodula-framework/nodula-framework.css`. You can also import an individual add-on stylesheet from `nodula-framework/dialog.css`, `nodula-framework/notifications.css`, `nodula-framework/modal.css`, or `nodula-framework/drawer.css`. Import the combined stylesheet:
 
 ```
 import 'nodula-framework/nodula-framework.css';

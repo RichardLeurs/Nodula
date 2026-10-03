@@ -26,6 +26,6 @@
     "framework/addons/auth.d.ts",
     "framework/addons/seo.d.ts",
     "framework/addons/seo-vite.d.ts",
-    "tests/types/framework.typecheck.ts"
+    "framework/vitest/types/framework.typecheck.ts"
   ]
 }

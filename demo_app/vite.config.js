@@ -26,7 +26,7 @@ const addonOutputs = [
   ['seo-vite', 'nodula-seo-vite.js'],
   ['store', 'nodula-store.js'],
 ];
-const runtimeEntry = fileURLToPath(new URL('../dist/nodula/nodula-framework.js', import.meta.url));
+const runtimeEntry = fileURLToPath(new URL('../dist/nodula/nodula-core.js', import.meta.url));
 
 function appBuildConfig() {
   const bundledAddonEntries = addonOutputs.map(([, output]) => fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)));
@@ -36,7 +36,7 @@ function appBuildConfig() {
     ...addonOutputs.map(([name]) => `nodula-framework/${name}`),
   ]);
   const outputPaths = new Map([
-    [runtimeEntry, '/framework/nodula-framework.js'],
+    [runtimeEntry, '/framework/nodula-core.js'],
     ...addonOutputs.map(([name, output]) => [fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)), `/framework/${output}`]),
     ...addonOutputs.map(([name, output]) => [`nodula-framework/${name}`, `/framework/${output}`]),
   ]);

@@ -18,5 +18,4 @@ demo_app/src/assets/CSS architecture.md
 demo_app/package-lock.json
 tests/
 vitest/
-vitepress/
 /package-lock.json

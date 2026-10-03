@@ -16,6 +16,8 @@ const seo = createSEO(router, {
   defaults: {
     title: 'Nodula | A small framework for big ideas',
     description: 'Nodula is a lightweight JavaScript framework built around modular architecture, simplicity and speed.',
+    keywords: 'framework, javascript, lightweight, modular, fast, small, modern, web application',
+    author:'Richard Leurs',
     robots: 'index, follow',
     openGraph: {
       siteName: 'Nodula',
