@@ -160,7 +160,7 @@ try {
   const packageData = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
   console.log(`Happy DOM ${packageData.devDependencies['happy-dom']}; ${ROW_COUNT} rows; 2 warm-up + ${ROUNDS} rounds × ${ITERATIONS} updates`);
   try {
-    const runtime = await readFile(new URL('../dist/framework/nodula-framework.js', import.meta.url));
+    const runtime = await readFile(new URL('../dist/nodula/nodula-framework.js', import.meta.url));
     console.log(`Core runtime: ${runtime.length} bytes; ${gzipSync(runtime).length} gzip bytes`);
   } catch {
     console.log('Core runtime size unavailable; run npm run build:framework first.');

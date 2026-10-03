@@ -7,8 +7,8 @@ import { nodulaSEO } from '../framework/addons/seo-vite.js';
 
 const demoRoot = fileURLToPath(new URL('.', import.meta.url));
 const appOutputDirectory = fileURLToPath(new URL('../dist/app', import.meta.url));
-const appFrameworkOutputDirectory = fileURLToPath(new URL('../dist/app/framework', import.meta.url));
-const frameworkOutputDirectory = fileURLToPath(new URL('../dist/framework', import.meta.url));
+const appFrameworkOutputDirectory = fileURLToPath(new URL('../dist/app/nodula', import.meta.url));
+const frameworkOutputDirectory = fileURLToPath(new URL('../dist/nodula', import.meta.url));
 const addonOutputs = [
   ['animation', 'nodula-animation.js'],
   ['auth', 'nodula-auth.js'],
@@ -26,10 +26,10 @@ const addonOutputs = [
   ['seo-vite', 'nodula-seo-vite.js'],
   ['store', 'nodula-store.js'],
 ];
-const runtimeEntry = fileURLToPath(new URL('../dist/framework/nodula-framework.js', import.meta.url));
+const runtimeEntry = fileURLToPath(new URL('../dist/nodula/nodula-framework.js', import.meta.url));
 
 function appBuildConfig() {
-  const bundledAddonEntries = addonOutputs.map(([, output]) => fileURLToPath(new URL(`../dist/framework/${output}`, import.meta.url)));
+  const bundledAddonEntries = addonOutputs.map(([, output]) => fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)));
   const externalEntries = new Set([
     runtimeEntry,
     ...bundledAddonEntries,
@@ -37,14 +37,14 @@ function appBuildConfig() {
   ]);
   const outputPaths = new Map([
     [runtimeEntry, '/framework/nodula-framework.js'],
-    ...addonOutputs.map(([name, output]) => [fileURLToPath(new URL(`../dist/framework/${output}`, import.meta.url)), `/framework/${output}`]),
+    ...addonOutputs.map(([name, output]) => [fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)), `/framework/${output}`]),
     ...addonOutputs.map(([name, output]) => [`nodula-framework/${name}`, `/framework/${output}`]),
   ]);
   const packageAliases = [
     { find: /^nodula-framework$/, replacement: runtimeEntry },
     ...addonOutputs.map(([name, output]) => ({
       find: `nodula-framework/${name}`,
-      replacement: fileURLToPath(new URL(`../dist/framework/${output}`, import.meta.url)),
+      replacement: fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)),
     })),
   ];
 

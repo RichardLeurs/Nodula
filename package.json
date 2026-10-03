@@ -4,86 +4,86 @@
   "license": "GPL-3.0-or-later",
   "private": false,
   "files": [
-    "dist/framework"
+    "dist/nodula"
   ],
   "sideEffects": [
     "**/*.css"
   ],
   "type": "module",
-  "types": "dist/framework/nodula-framework.d.ts",
+  "types": "dist/nodula/nodula-framework.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/framework/nodula-framework.d.ts",
-      "import": "./dist/framework/nodula-framework.js"
+      "types": "./dist/nodula/nodula-framework.d.ts",
+      "import": "./dist/nodula/nodula-framework.js"
     },
-    "./nodula-framework.css": "./dist/framework/nodula-framework.css",
-    "./dialog.css": "./dist/framework/nodula-dialog.css",
-    "./modal.css": "./dist/framework/nodula-modal.css",
-    "./drawer.css": "./dist/framework/nodula-drawer.css",
-    "./notifications.css": "./dist/framework/nodula-notifications.css",
+    "./nodula-framework.css": "./dist/nodula/nodula-framework.css",
+    "./dialog.css": "./dist/nodula/nodula-dialog.css",
+    "./modal.css": "./dist/nodula/nodula-modal.css",
+    "./drawer.css": "./dist/nodula/nodula-drawer.css",
+    "./notifications.css": "./dist/nodula/nodula-notifications.css",
     "./vite": {
-      "types": "./dist/framework/nodula-vite.d.ts",
-      "import": "./dist/framework/nodula-vite.js"
+      "types": "./dist/nodula/nodula-vite.d.ts",
+      "import": "./dist/nodula/nodula-vite.js"
     },
     "./dialog": {
-      "types": "./dist/framework/nodula-dialog.d.ts",
-      "import": "./dist/framework/nodula-dialog.js"
+      "types": "./dist/nodula/nodula-dialog.d.ts",
+      "import": "./dist/nodula/nodula-dialog.js"
     },
     "./notifications": {
-      "types": "./dist/framework/nodula-notifications.d.ts",
-      "import": "./dist/framework/nodula-notifications.js"
+      "types": "./dist/nodula/nodula-notifications.d.ts",
+      "import": "./dist/nodula/nodula-notifications.js"
     },
     "./form": {
-      "types": "./dist/framework/nodula-form.d.ts",
-      "import": "./dist/framework/nodula-form.js"
+      "types": "./dist/nodula/nodula-form.d.ts",
+      "import": "./dist/nodula/nodula-form.js"
     },
     "./router": {
-      "types": "./dist/framework/nodula-router.d.ts",
-      "import": "./dist/framework/nodula-router.js"
+      "types": "./dist/nodula/nodula-router.d.ts",
+      "import": "./dist/nodula/nodula-router.js"
     },
     "./animation": {
-      "types": "./dist/framework/nodula-animation.d.ts",
-      "import": "./dist/framework/nodula-animation.js"
+      "types": "./dist/nodula/nodula-animation.d.ts",
+      "import": "./dist/nodula/nodula-animation.js"
     },
     "./modal": {
-      "types": "./dist/framework/nodula-modal.d.ts",
-      "import": "./dist/framework/nodula-modal.js"
+      "types": "./dist/nodula/nodula-modal.d.ts",
+      "import": "./dist/nodula/nodula-modal.js"
     },
     "./drawer": {
-      "types": "./dist/framework/nodula-drawer.d.ts",
-      "import": "./dist/framework/nodula-drawer.js"
+      "types": "./dist/nodula/nodula-drawer.d.ts",
+      "import": "./dist/nodula/nodula-drawer.js"
     },
     "./navigation": {
-      "types": "./dist/framework/nodula-navigation.d.ts",
-      "import": "./dist/framework/nodula-navigation.js"
+      "types": "./dist/nodula/nodula-navigation.d.ts",
+      "import": "./dist/nodula/nodula-navigation.js"
     },
     "./localstorage": {
-      "types": "./dist/framework/nodula-localstorage.d.ts",
-      "import": "./dist/framework/nodula-localstorage.js"
+      "types": "./dist/nodula/nodula-localstorage.d.ts",
+      "import": "./dist/nodula/nodula-localstorage.js"
     },
     "./data": {
-      "types": "./dist/framework/nodula-data.d.ts",
-      "import": "./dist/framework/nodula-data.js"
+      "types": "./dist/nodula/nodula-data.d.ts",
+      "import": "./dist/nodula/nodula-data.js"
     },
     "./store": {
-      "types": "./dist/framework/nodula-store.d.ts",
-      "import": "./dist/framework/nodula-store.js"
+      "types": "./dist/nodula/nodula-store.d.ts",
+      "import": "./dist/nodula/nodula-store.js"
     },
     "./pwa": {
-      "types": "./dist/framework/nodula-pwa.d.ts",
-      "import": "./dist/framework/nodula-pwa.js"
+      "types": "./dist/nodula/nodula-pwa.d.ts",
+      "import": "./dist/nodula/nodula-pwa.js"
     },
     "./auth": {
-      "types": "./dist/framework/nodula-auth.d.ts",
-      "import": "./dist/framework/nodula-auth.js"
+      "types": "./dist/nodula/nodula-auth.d.ts",
+      "import": "./dist/nodula/nodula-auth.js"
     },
     "./seo": {
-      "types": "./dist/framework/nodula-seo.d.ts",
-      "import": "./dist/framework/nodula-seo.js"
+      "types": "./dist/nodula/nodula-seo.d.ts",
+      "import": "./dist/nodula/nodula-seo.js"
     },
     "./seo-vite": {
-      "types": "./dist/framework/nodula-seo-vite.d.ts",
-      "import": "./dist/framework/nodula-seo-vite.js"
+      "types": "./dist/nodula/nodula-seo-vite.d.ts",
+      "import": "./dist/nodula/nodula-seo-vite.js"
     }
   },
   "scripts": {

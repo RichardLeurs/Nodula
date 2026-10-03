@@ -16,6 +16,35 @@ async function bundleConsumer(entry) {
       configFile: false,
       root: projectRoot,
       logLevel: 'silent',
+      resolve: {
+        alias: [
+          { find: /^nodula-framework$/, replacement: path.join(projectRoot, 'framework/index.js') },
+          {
+            find: 'nodula-framework/vite',
+            replacement: path.join(projectRoot, 'framework/vite-plugin.js'),
+          },
+          ...[
+            'animation',
+            'auth',
+            'data',
+            'dialog',
+            'drawer',
+            'form',
+            'localstorage',
+            'modal',
+            'navigation',
+            'notifications',
+            'pwa',
+            'router',
+            'seo',
+            'seo-vite',
+            'store',
+          ].map((name) => ({
+            find: `nodula-framework/${name}`,
+            replacement: path.join(projectRoot, `framework/addons/${name}.js`),
+          })),
+        ],
+      },
       build: {
         lib: {
           entry: path.join(fixtureDirectory, entry),
