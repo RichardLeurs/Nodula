@@ -168,6 +168,7 @@ export default defineConfig({
           { text: 'Local storage and cookies', link: '/guide/local-storage' },
           { text: 'Data requests', link: '/guide/data' },
           { text: 'Authentication, roles, and permissions', link: '/guide/auth' },
+          { text: 'SEO', link: '/guide/seo' },
           { text: 'Progressive Web Apps', link: '/guide/pwa' },
           { text: 'State Management', link: '/guide/state-management' },
           { text: 'Framework Stylesheet', link: '/guide/framework-stylesheet' },

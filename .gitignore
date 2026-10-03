@@ -11,12 +11,16 @@ node_modules
 api/
 dist/
 docs/
+benchmark/
 demo_app/src/assets/*.af
 demo_app/src/assets/*.af-lock-
 demo_app/src/assets/CSS architecture.md
 demo_app/package-lock.json
 tests/
 vitest/
+!demo_app/vitest/
+demo_app/vitest/*
+!demo_app/vitest/benchmark-page.test.js
 !framework/vitest/
 framework/vitest/*
 !framework/vitest/tree-shaking.test.js

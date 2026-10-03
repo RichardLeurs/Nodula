@@ -14,8 +14,8 @@ const router = createFileRouter(import.meta.glob('./routes/**/*.page'), undefine
 const seo = createSEO(router, {
   siteUrl: 'https://nodula.richardleurs.nl',
   defaults: {
-    title: 'Nodula — A small framework for big ideas',
-    description: 'Nodula is a lightweight JavaScript framework for building applications with signals, direct DOM updates, and single-file components.',
+    title: 'Nodula | A small framework for big ideas',
+    description: 'Nodula is a lightweight JavaScript framework built around modular architecture, simplicity and speed.',
     robots: 'index, follow',
     openGraph: {
       siteName: 'Nodula',
