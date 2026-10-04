@@ -16,5 +16,7 @@ export interface ModalHandle {
   closed: Promise<void>;
 }
 
-/** Open a modal containing safe text or an existing DOM node. */
-export function openModal(content: string | Node, options?: ModalOptions): ModalHandle;
+/** Show a modal containing safe text or an existing DOM node. */
+export function showModal(content: string | Node, options?: ModalOptions): ModalHandle;
+/** @deprecated Use `showModal` instead. */
+export const openModal: typeof showModal;

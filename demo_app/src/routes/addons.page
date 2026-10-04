@@ -1,4 +1,7 @@
 <script setup>
+
+import addonImage from '../assets/addon.webp';
+
 import routerImage from '../assets/router.webp';
 import storageImage from '../assets/storage.webp';
 import dataImage from '../assets/data.webp';
@@ -12,7 +15,7 @@ import drawerImage from '../assets/drawer.webp';
 import navigationImage from '../assets/navigation.webp';
 import authImage from '../assets/auth.webp';
 import seoImage from '../assets/seo.webp';
-
+ 
 
 </script>
 
@@ -20,7 +23,11 @@ import seoImage from '../assets/seo.webp';
   <main class="ui-page page">
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Optional package entries</p>
+
+            <div class="ui-page__title-row">
       <h1 class="ui-page__title">Add-ons for the parts you need.</h1>
+       <img class="ui-page__header-image" :src="addonImage" alt="" width="128" height="147" aria-hidden="true">
+       </div>
       <p class="ui-page__description">Nodula keeps its core small. Import an add-on from its own package entry only when your app needs it.</p>
     </header>
 
@@ -33,7 +40,7 @@ import seoImage from '../assets/seo.webp';
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Hash or History API navigation, route views, and lazy file-based pages and layouts.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createRouter, createFileRouter } from 'nodula-framework/router';</code></pre>
+            <pre class="ui-code-block"><code data-highlight>import { showModal } from 'nodula-framework/modal';</code></pre>
           </div>
         </article>
 
@@ -52,7 +59,7 @@ import seoImage from '../assets/seo.webp';
           <img class="ui-card__header-image" :src="dataImage" alt="" width="64" height="73" aria-hidden="true"></header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Fetch data from a server with method helpers, query parameters, and readable HTTP errors. Try the live request on the data demo page.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';</code></pre>
+            <pre class="ui-code-block"><code data-highlight>import { showDrawer } from 'nodula-framework/drawer';</code></pre>
           </div>
           <footer class="ui-card__footer"><a class="ui-link" href="/data">Open data demo <span aria-hidden="true">→</span></a></footer>
         </article>
@@ -104,7 +111,7 @@ import seoImage from '../assets/seo.webp';
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Native modal windows with safe content, close controls, and configurable backdrop dismissal.</p>
-            <pre class="ui-code-block"><code data-highlight>import { openModal } from 'nodula-framework/modal';</code></pre>
+            <pre class="ui-code-block"><code data-highlight>import { showModal } from 'nodula-framework/modal';</code></pre>
           </div>
           <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see modal button) <span aria-hidden="true">→</span></a></footer>
         </article>
@@ -115,7 +122,7 @@ import seoImage from '../assets/seo.webp';
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Accessible modal side panels that open from the left or right.</p>
-            <pre class="ui-code-block"><code data-highlight>import { openDrawer } from 'nodula-framework/drawer';</code></pre>
+            <pre class="ui-code-block"><code data-highlight>import { showDrawer } from 'nodula-framework/drawer';</code></pre>
           </div>
           <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see drawer button) <span aria-hidden="true">→</span></a></footer>
         </article>

@@ -4,17 +4,17 @@ import modalStyles from '../assets/nodula-modal.css?inline';
 
 let nextModalId = 0;
 
-/** Open a modal window and return controls for closing it and observing its dismissal. */
-export function openModal(content, options = {}) {
+/** Show a modal window and return controls for closing it and observing its dismissal. */
+export function showModal(content, options = {}) {
   if (typeof content !== 'string' && (!content || typeof content.nodeType !== 'number')) {
-    throw new TypeError('openModal expects text or a DOM node as content.');
+    throw new TypeError('showModal expects text or a DOM node as content.');
   }
   const { title = '', closeText = 'Close', closeOnBackdrop = true } = options;
   if (typeof title !== 'string' || typeof closeText !== 'string' || typeof closeOnBackdrop !== 'boolean') {
-    throw new TypeError('openModal title and closeText must be strings, and closeOnBackdrop must be a boolean.');
+    throw new TypeError('showModal title and closeText must be strings, and closeOnBackdrop must be a boolean.');
   }
   if (typeof document === 'undefined' || !document.body) {
-    throw new Error('openModal requires a browser document.');
+    throw new Error('showModal requires a browser document.');
   }
   injectAddonStyles('modal', modalStyles);
 
@@ -102,3 +102,6 @@ export function openModal(content, options = {}) {
 
   return { element: modal, close, closed };
 }
+
+/** @deprecated Use `showModal` instead. */
+export const openModal = showModal;

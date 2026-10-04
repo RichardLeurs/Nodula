@@ -209,8 +209,8 @@ textarea {
 .hero-image {
 width: 500px;
 height: 500px;
-margin-top:30px;
-  background: url("./nodula-hero2.png") center / contain no-repeat;
+margin-top:0px;
+  background: url("./nodula-hero2.webp") center / contain no-repeat;
 }
 
 

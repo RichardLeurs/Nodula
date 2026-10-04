@@ -1,3 +1,3 @@
-import { openDrawer } from 'nodula-framework/drawer';
+import { showDrawer } from 'nodula-framework/drawer';
 
-globalThis.treeShakingResult = openDrawer;
+globalThis.treeShakingResult = showDrawer;

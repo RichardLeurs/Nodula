@@ -4,17 +4,17 @@ import drawerStyles from '../assets/nodula-drawer.css?inline';
 
 let nextDrawerId = 0;
 
-/** Open a modal side drawer and return controls for closing it and observing dismissal. */
-export function openDrawer(content, options = {}) {
+/** Show a modal side drawer and return controls for closing it and observing dismissal. */
+export function showDrawer(content, options = {}) {
   if (typeof content !== 'string' && (!content || typeof content.nodeType !== 'number')) {
-    throw new TypeError('openDrawer expects text or a DOM node as content.');
+    throw new TypeError('showDrawer expects text or a DOM node as content.');
   }
   const { title = '', closeText = 'Close', closeOnBackdrop = true, position = 'right' } = options;
   if (typeof title !== 'string' || typeof closeText !== 'string' || typeof closeOnBackdrop !== 'boolean' || !['left', 'right'].includes(position)) {
-    throw new TypeError('openDrawer title and closeText must be strings, closeOnBackdrop must be a boolean, and position must be "left" or "right".');
+    throw new TypeError('showDrawer title and closeText must be strings, closeOnBackdrop must be a boolean, and position must be "left" or "right".');
   }
   if (typeof document === 'undefined' || !document.body) {
-    throw new Error('openDrawer requires a browser document.');
+    throw new Error('showDrawer requires a browser document.');
   }
   injectAddonStyles('drawer', drawerStyles);
 
@@ -105,3 +105,6 @@ export function openDrawer(content, options = {}) {
 
   return { element: drawer, close, closed };
 }
+
+/** @deprecated Use `showDrawer` instead. */
+export const openDrawer = showDrawer;

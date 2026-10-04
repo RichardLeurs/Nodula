@@ -1,3 +1,3 @@
-import { openModal } from 'nodula-framework/modal';
+import { showModal } from 'nodula-framework/modal';
 
-globalThis.treeShakingResult = openModal;
+globalThis.treeShakingResult = showModal;

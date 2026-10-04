@@ -123,11 +123,13 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
 
   const modal = await bundleConsumer('modal.js');
   assert.match(modal, /treeShakingResult/);
+  assert.match(modal, /showModal/);
   assert.match(modal, /ui-modal/);
   assert.doesNotMatch(modal, /createTransition/);
 
   const drawer = await bundleConsumer('drawer.js');
   assert.match(drawer, /treeShakingResult/);
+  assert.match(drawer, /showDrawer/);
   assert.match(dialog, /ui-dialog/);
   assert.doesNotMatch(drawer, /ui-modal/);
 

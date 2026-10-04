@@ -18,5 +18,7 @@ export interface DrawerHandle {
   closed: Promise<void>;
 }
 
-/** Open a modal side drawer containing safe text or an existing DOM node. */
-export function openDrawer(content: string | Node, options?: DrawerOptions): DrawerHandle;
+/** Show a modal side drawer containing safe text or an existing DOM node. */
+export function showDrawer(content: string | Node, options?: DrawerOptions): DrawerHandle;
+/** @deprecated Use `showDrawer` instead. */
+export const openDrawer: typeof showDrawer;

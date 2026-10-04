@@ -2,9 +2,10 @@ import { access, cp, mkdir } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-const docsDirectory = fileURLToPath(new URL('../vitepress', import.meta.url));
-const docsOutputDirectory = fileURLToPath(new URL('../vitepress/docs/.vitepress/dist', import.meta.url));
+const docsDirectory = fileURLToPath(new URL('.', import.meta.url));
+const docsOutputDirectory = fileURLToPath(new URL('./docs/.vitepress/dist', import.meta.url));
 const publishDirectory = fileURLToPath(new URL('../dist/vitepress', import.meta.url));
+const repositoryRoot = fileURLToPath(new URL('..', import.meta.url));
 
 try {
   await access(docsDirectory);
@@ -16,6 +17,7 @@ try {
 
 const vite = fileURLToPath(new URL('../node_modules/vite/bin/vite.js', import.meta.url));
 const result = spawnSync(process.execPath, [vite, 'build', '--config', 'vite.config.js', '--mode', 'docs'], {
+  cwd: repositoryRoot,
   stdio: 'inherit',
 });
 

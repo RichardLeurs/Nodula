@@ -5,9 +5,9 @@
   },
   "scripts": {
     "dev": "vitepress dev docs",
-    "build": "npm --prefix .. run build:docs",
+    "build": "node build-docs.mjs",
     "docs:dev": "vitepress dev docs",
-    "docs:build": "npm --prefix .. run build:docs",
+    "docs:build": "node build-docs.mjs",
     "docs:preview": "vitepress preview docs"
   }
 }

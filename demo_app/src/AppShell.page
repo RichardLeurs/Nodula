@@ -106,7 +106,7 @@ function setNavigationElement(element) {
       { label: 'Add-ons', href: '/addons' },
       { label: 'Data', href: '/data' },
       { label: 'Forms', href: '/forms' },
-        { label: 'Modal', href: '/modal' },
+        { label: 'Dialogs', href: '/modal' },
       { label: 'Web Components', href: '/web-components' },
       { label: 'NodulaUI', href: '/democss' },
       //...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),

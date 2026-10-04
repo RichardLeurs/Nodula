@@ -1,8 +1,8 @@
 import { Window } from 'happy-dom';
 import { readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
-import { createRoot, effect, onCleanup, signal } from '../framework/reactivity.js';
-import { h, list, mount } from '../framework/dom.js';
+import { createRoot, effect, onCleanup, signal } from './reactivity.js';
+import { h, list, mount } from './dom.js';
 
 const ROW_COUNT = Number(process.env.ROW_COUNT ?? 1000);
 const ROUNDS = Number(process.env.ROUNDS ?? 7);
