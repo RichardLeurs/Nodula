@@ -2,7 +2,7 @@
 
 The optional `nodula-framework/data` add-on provides a small client built on the browser's Fetch API. Import it separately so HTTP helpers do not add code to the core runtime:
 
-The demo app's `/data` route loads a post from `https://jsonplaceholder.typicode.com/posts/1`. The request is made by the visitor's browser, so trying other addresses requires that server to allow cross-origin requests (CORS).
+The demo app's `/data` route loads a post from `https://jsonplaceholder.typicode.com/posts/1` when you click **Load JSON**. No request is made just by opening the page. Requests are made by the visitor's browser, so trying other addresses requires that server to allow cross-origin requests (CORS).
 
 ```
 import { createDataClient, DataError } from 'nodula-framework/data';

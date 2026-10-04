@@ -1,5 +1,5 @@
 <script setup>
-import cssImage from '../assets/css.webp';
+import cssImage from '../assets/images/css.webp';
 
 const tokenExamples = [
   { name: 'Primary', variable: '--ui-color-primary', className: 'ui-token-swatch--primary' },

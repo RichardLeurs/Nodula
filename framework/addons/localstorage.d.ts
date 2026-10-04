@@ -37,15 +37,19 @@ export interface IndexedDBSignalOptions {
 export type IndexedDBSignal<T> = Signal<T> & { ready: Promise<void>; readonly available: boolean };
 
 /** Create a reactive signal initialized from and persisted to localStorage as JSON. */
-export function createStorageSignal<T>(
+export function createLocalStorage<T>(
   key: string,
   initialValue: T,
   options?: StorageSignalOptions,
 ): Signal<T>;
+/** @deprecated Use `createLocalStorage` instead. */
+export const createStorageSignal: typeof createLocalStorage;
 
 /** Create a reactive signal hydrated from and persisted to IndexedDB. Await `ready` before reading `available` or relying on persisted hydration. */
-export function createIndexedDBSignal<T>(
+export function createIndexedDB<T>(
   key: string,
   initialValue: T,
   options?: IndexedDBSignalOptions,
 ): IndexedDBSignal<T>;
+/** @deprecated Use `createIndexedDB` instead. */
+export const createIndexedDBSignal: typeof createIndexedDB;

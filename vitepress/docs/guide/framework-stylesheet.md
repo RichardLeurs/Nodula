@@ -10,6 +10,6 @@ It includes the `.ui-dialog`, `.ui-notification`, `.ui-modal`, and `.ui-drawer` 
 
 Styles from your own `.page` `<style>` blocks are still processed by the Vite compiler and are not included in this shared framework stylesheet. You may override the shared rules in your app's CSS.
 
-The demo app's shared shell uses `demo_app/src/assets/Leaves-background.png` as a decorative background image. In `demo_app/src/assets/app.css`, the app background and header navigation/toggle surfaces are styled for light and dark modes; these demo styles are separate from this shared add-on stylesheet.
+The demo app keeps image files in `demo_app/src/assets/images/` and its application stylesheet at `demo_app/src/assets/app.css`. The app hero background and header navigation/toggle surfaces are styled separately for light and dark modes; these demo styles are separate from this shared add-on stylesheet.
 
 The demo app uses Highlight.js to detect JavaScript, HTML, and CSS in its route examples, including code text inserted after the element mounts. Highlight.js is used only by the demo app, not by the framework runtime, and is declared as a development dependency. Syntax token spans use theme-aware palettes: brighter colors in dark mode and darker colors in light mode. Unclassified code text uses the shared global `--green` color. These app styles are separate from the published framework stylesheet.

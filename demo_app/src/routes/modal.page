@@ -3,10 +3,10 @@ import { signal } from 'nodula-framework';
 import { showDialog } from 'nodula-framework/dialog';
 import { showModal } from 'nodula-framework/modal';
 import { showDrawer } from 'nodula-framework/drawer';
-import addonImage from '../assets/addon.webp';
-import modalImage from '../assets/modal.webp';
-import drawerImage from '../assets/drawer.webp';
-import dialogImage from '../assets/dialog.webp';
+import addonImage from '../assets/images/addon.webp';
+import modalImage from '../assets/images/modal.webp';
+import drawerImage from '../assets/images/drawer.webp';
+import dialogImage from '../assets/images/dialog.webp';
 
 const [count, setCount] = signal(0);
 
@@ -37,6 +37,7 @@ function showExampleDrawer() {
       <p class="ui-page__eyebrow">Optional overlay add-ons</p>
       <div class="ui-page__title-row">
         <h1 class="ui-page__title">Dialogs, modals, and drawers.</h1>
+        <!-- <img class="ui-page__header-image" :src="addonImage" alt="" width="128" height="147" aria-hidden="true"> -->
         <img class="ui-page__header-image" :src="dialogImage" alt="" width="128" height="145" aria-hidden="true">
         <img class="ui-page__header-image" :src="modalImage" alt="" width="128" height="145" aria-hidden="true">
         <img class="ui-page__header-image" :src="drawerImage" alt="" width="128" height="145" aria-hidden="true">

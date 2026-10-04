@@ -1,7 +1,7 @@
 <script setup>
 import { onCleanup, signal } from 'nodula-framework';
 import { createDataClient, DataError } from 'nodula-framework/data';
-import dataImage from '../assets/data.webp';
+import dataImage from '../assets/images/data.webp';
 
 const sampleUrl = 'https://jsonplaceholder.typicode.com/posts/1';
 const dataClient = createDataClient();
@@ -37,7 +37,6 @@ async function loadJson(event) {
 }
 
 onCleanup(() => activeRequest?.abort());
-void loadJson();
 </script>
 
 <template>

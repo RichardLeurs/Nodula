@@ -1,3 +1,3 @@
-import { createStorageSignal } from 'nodula-framework/localstorage';
+import { createLocalStorage } from 'nodula-framework/localstorage';
 
-globalThis.treeShakingResult = createStorageSignal;
+globalThis.treeShakingResult = createLocalStorage;

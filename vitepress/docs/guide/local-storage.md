@@ -5,9 +5,9 @@ The optional `nodula-framework/localstorage` add-on provides cookie helpers and 
 ## localStorage
 
 ```
-import { createStorageSignal } from 'nodula-framework/localstorage';
+import { createLocalStorage } from 'nodula-framework/localstorage';
 
-const [theme, setTheme] = createStorageSignal('app-theme', 'dark');
+const [theme, setTheme] = createLocalStorage('app-theme', 'dark');
 
 theme(); // 'dark', or the saved value for "app-theme"
 setTheme('light'); // updates the signal and persists the JSON value
@@ -16,7 +16,7 @@ setTheme('light'); // updates the signal and persists the JSON value
 ## API
 
 ```
-createStorageSignal<T>(
+createLocalStorage<T>(
   key: string,
   initialValue: T,
   options?: { storage?: Storage | null },
@@ -31,23 +31,23 @@ Saved values are read with `JSON.parse` and written with `JSON.stringify`, so us
 
 When created inside a Nodula owner, the persistence effect is cleaned up when that owner is disposed. This add-on is browser-side persistence: it does not serialize saved values into server-rendered HTML, synchronize changes across browser tabs, or protect sensitive data. Do not use local storage for secrets or as an authorization mechanism.
 
-The demo app uses `createStorageSignal('nodula-theme', 'dark')` to persist the theme toggle. The selection is restored when the app is mounted again in the same browser storage area.
+The demo app uses `createLocalStorage('nodula-theme', 'dark')` to persist the theme toggle. The selection is restored when the app is mounted again in the same browser storage area. `createStorageSignal` remains available as a deprecated alias.
 
 ## IndexedDB
 
-Use `createIndexedDBSignal` for larger values or storage that should use IndexedDB:
+Use `createIndexedDB` for larger values or storage that should use IndexedDB:
 
 ```
-import { createIndexedDBSignal } from 'nodula-framework/localstorage';
+import { createIndexedDB } from 'nodula-framework/localstorage';
 
-const notes = createIndexedDBSignal('notes', []);
+const notes = createIndexedDB('notes', []);
 const [readNotes, setNotes] = notes;
 await notes.ready;
 console.log(readNotes());
 setNotes((notes) => [...notes, { text: 'A saved note' }]);
 ```
 
-The function returns the normal signal pair with a `ready` promise and an `available` flag. The pair starts with `initialValue`; await `ready` before checking `available` or relying on the saved value having hydrated. `available` is true only when the database opens and its initial read succeeds. Options accept an `indexedDB` factory for testing/custom environments and a `databaseName` (default `nodula-framework`). The add-on creates and uses a `signals` object store. Changes made before hydration take precedence over saved data and are persisted after the database opens. If IndexedDB is unavailable or fails, the signal remains usable in memory.
+The function returns the normal signal pair with a `ready` promise and an `available` flag. The pair starts with `initialValue`; await `ready` before checking `available` or relying on the saved value having hydrated. `available` is true only when the database opens and its initial read succeeds. Options accept an `indexedDB` factory for testing/custom environments and a `databaseName` (default `nodula-framework`). The add-on creates and uses a `signals` object store. Changes made before hydration take precedence over saved data and are persisted after the database opens. If IndexedDB is unavailable or fails, the signal remains usable in memory. `createIndexedDBSignal` remains available as a deprecated alias.
 
 When created inside a Nodula owner, the database connection is closed when the owner is disposed. IndexedDB is asynchronous and is not cross-tab reactive synchronization or a security boundary.
 

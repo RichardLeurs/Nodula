@@ -98,9 +98,9 @@ function decodeStoredValue(storage, key, fallback) {
 }
 
 /** Create a reactive signal persisted as JSON in localStorage when it is available. */
-export function createStorageSignal(key, initialValue, { storage = defaultStorage() } = {}) {
+export function createLocalStorage(key, initialValue, { storage = defaultStorage() } = {}) {
   if (typeof key !== 'string' || !key.trim()) {
-    throw new TypeError('createStorageSignal expects a non-empty storage key.');
+    throw new TypeError('createLocalStorage expects a non-empty storage key.');
   }
 
   const [read, write] = signal(decodeStoredValue(storage, key, initialValue));
@@ -160,15 +160,15 @@ function openDatabase(indexedDB, databaseName, storeName) {
 }
 
 /** Create a reactive signal persisted asynchronously in IndexedDB. */
-export function createIndexedDBSignal(key, initialValue, {
+export function createIndexedDB(key, initialValue, {
   indexedDB = defaultIndexedDB(),
   databaseName = 'nodula-framework',
 } = {}) {
   if (typeof key !== 'string' || !key.trim()) {
-    throw new TypeError('createIndexedDBSignal expects a non-empty storage key.');
+    throw new TypeError('createIndexedDB expects a non-empty storage key.');
   }
   if (typeof databaseName !== 'string' || !databaseName.trim()) {
-    throw new TypeError('createIndexedDBSignal expects a non-empty database name.');
+    throw new TypeError('createIndexedDB expects a non-empty database name.');
   }
   const storeName = 'signals';
 
@@ -258,3 +258,9 @@ export function createIndexedDBSignal(key, initialValue, {
   Object.defineProperty(storedSignal, 'available', { enumerable: true, get: () => available });
   return storedSignal;
 }
+
+/** @deprecated Use `createLocalStorage` instead. */
+//export const createStorageSignal = createLocalStorage;
+
+/** @deprecated Use `createIndexedDB` instead. */
+//export const createIndexedDBSignal = createIndexedDB;

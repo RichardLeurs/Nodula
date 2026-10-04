@@ -4,7 +4,7 @@ import { createForm } from 'nodula-framework/form';
 import { animate } from 'nodula-framework/animation';
 import { showDialog } from 'nodula-framework/dialog';
 import { showNotification } from 'nodula-framework/notifications';
-import formImage from '../assets/form.webp';
+import formImage from '../assets/images/form.webp';
 const [submissionMessage, setSubmissionMessage] = signal('');
 let successMessageElement = null;
 

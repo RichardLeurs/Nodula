@@ -98,6 +98,7 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
 
   const storage = await bundleConsumer('localstorage.js');
   assert.match(storage, /treeShakingResult/);
+  assert.match(storage, /createLocalStorage/);
   assert.match(storage, /localStorage/);
   assert.doesNotMatch(storage, /createTransition/);
 

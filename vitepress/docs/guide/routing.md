@@ -1,10 +1,29 @@
 # Routing
 
-Nodula provides manual routing with `createRouter` and Vite file-based routing with `createFileRouter`. Both are client-side routers, supplied by the optional `nodula-framework/router` add-on rather than the core runtime.
+Nodula provides manual routing with `createRouter` and optional Vite file-based routing with `createFileRouter`. Both are client-side routers supplied by the optional `nodula-framework/router` add-on rather than the core runtime. The demo app uses `createRouter` with the explicit route map in `demo_app/src/routes.js`.
+
+## Manual routes
+
+Use `createRouter(routes, fallback, options)` for an explicit route map. Route values are components keyed by pathname; options can enable History API mode and navigation guards:
+
+```
+import { createRouter } from 'nodula-framework/router';
+import HomePage from './routes/index.page';
+import AboutPage from './routes/about.page';
+
+const routes = {
+  '/': HomePage,
+  '/about': AboutPage,
+};
+
+const router = createRouter(routes, NotFoundPage, { mode: 'history' });
+```
+
+For parameterized routes, match the current path and return a component renderer with decoded params. The demo's `routes.js` demonstrates this for `/ideas/:id` and composes an ideas layout around the detail page.
 
 ## File-based routes
 
-`createFileRouter` is a public runtime API that consumes Vite's `import.meta.glob` result; it does not compile `.page` files. To compile `.page` and `.comp` files in a Vite app, install and configure `nodulaPlugin` from `nodula-framework/vite` (see [Tooling](/guide/tooling)). The repository demo uses both integrations together:
+`createFileRouter` is a public runtime API that consumes Vite's `import.meta.glob` result; it does not compile `.page` files. To compile `.page` and `.comp` files in a Vite app, install and configure `nodulaPlugin` from `nodula-framework/vite` (see [Tooling](/guide/tooling)). To use file-based routing instead of maintaining an explicit route map:
 
 ```
 import { createFileRouter } from 'nodula-framework/router';
@@ -16,7 +35,7 @@ const router = createFileRouter(
 );
 ```
 
-For this repository's demo, pages live under `demo_app/src/routes/`:
+For the optional file-based example, pages can live under a `routes/` directory:
 
 ```
 routes/
@@ -47,20 +66,7 @@ This is client-side navigation control, not authorization security. Enforce acce
 
 ## Manual routes
 
-For explicit route maps, use `createRouter(routes, fallback, options)`. The router exposes `current`, `view()`, and `navigate(path)`:
-
-```
-import { createRouter } from 'nodula-framework/router';
-
-const router = createRouter({
-  '/': HomePage,
-  '/guide': GuidePage,
-}, NotFoundPage);
-
-router.navigate('/guide');
-```
-
-In history mode, ordinary same-origin links are intercepted; external links, modified clicks, downloads, new-window links, and same-page anchors are left to the browser.
+The router exposes `current`, `view()`, and `navigate(path)`. In history mode, ordinary same-origin links are intercepted; external links, modified clicks, downloads, new-window links, and same-page anchors are left to the browser.
 
 ## Hosting history routes
 

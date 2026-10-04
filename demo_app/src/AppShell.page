@@ -1,16 +1,29 @@
 <script setup>
 import { effect, onCleanup } from 'nodula-framework';
 import { createFileRouter } from 'nodula-framework/router';
+
 import { createSEO } from 'nodula-framework/seo';
 import { createNavigation } from 'nodula-framework/navigation';
 import { enableLifecycleTransitions } from 'nodula-framework/animation';
-import { createStorageSignal } from 'nodula-framework/localstorage';
+import { createLocalStorage } from 'nodula-framework/localstorage';
 import { demoAuth, initializeDemoAuth, navigateDemoRoute, protectDemoAdminRoute, setDemoRouter, signOutDemoAdmin } from './demo-auth.js';
 
+// For router
+//import { createRouter } from 'nodula-framework/router';
+//import { notFound, routes } from './routes.js';
+
+// Router based on routes.js
+// const router = createRouter(routes, notFound, {
+//   mode: 'history',
+//   beforeEach: protectDemoAdminRoute,
+// });
+
+// Filerouter based on pages in /routes
 const router = createFileRouter(import.meta.glob('./routes/**/*.page'), undefined, {
   mode: 'history',
   beforeEach: protectDemoAdminRoute,
 });
+
 const seo = createSEO(router, {
   siteUrl: 'https://nodula.richardleurs.nl',
   defaults: {
@@ -128,7 +141,7 @@ onCleanup(() => {
   disposeAuthButtonEffect?.();
   seo.dispose();
 });
-const [theme, setTheme] = createStorageSignal('nodula-theme', 'dark');
+const [theme, setTheme] = createLocalStorage('nodula-theme', 'dark');
 
 effect(() => {
   document.documentElement.dataset.theme = theme();

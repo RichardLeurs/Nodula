@@ -2,7 +2,7 @@
 
 Nodula's optional `nodula-framework/pwa` add-on integrates the Vite PWA plugin into a Vite app. It is a build-time integration: PWA support is not included in the Nodula browser runtime, and apps opt in by adding the returned plugins to their Vite configuration.
 
-The Nodula demo opts in with `...nodulaPWA()` in its `vite.config.js`. Pass options when you want to provide app-specific manifest metadata, icons, or caching behavior.
+The Nodula demo opts in with `...nodulaPWA()` in its `vite.config.js`; the Add-ons page lists this PWA integration alongside other optional package entries. Pass options when you want to provide app-specific manifest metadata, icons, or caching behavior.
 
 Install the integration and its Vite plugin:
 

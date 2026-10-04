@@ -1,21 +1,21 @@
 <script setup>
 
-import addonImage from '../assets/addon.webp';
+import addonImage from '../assets/images/addon.webp';
 
-import routerImage from '../assets/router.webp';
-import storageImage from '../assets/storage.webp';
-import dataImage from '../assets/data.webp';
+import routerImage from '../assets/images/router.webp';
+import storageImage from '../assets/images/storage.webp';
+import dataImage from '../assets/images/data.webp';
 
-import storeImage from '../assets/store.webp';
-import animationImage from '../assets/animation.webp';
-import formImage from '../assets/form.webp';
-import dialogImage from '../assets/dialog.webp';
-import modalImage from '../assets/modal.webp';
-import drawerImage from '../assets/drawer.webp';
-import navigationImage from '../assets/navigation.webp';
-import authImage from '../assets/auth.webp';
-import seoImage from '../assets/seo.webp';
- 
+import storeImage from '../assets/images/store.webp';
+import animationImage from '../assets/images/animation.webp';
+import formImage from '../assets/images/form.webp';
+import dialogImage from '../assets/images/dialog.webp';
+import modalImage from '../assets/images/modal.webp';
+import drawerImage from '../assets/images/drawer.webp';
+import navigationImage from '../assets/images/navigation.webp';
+import authImage from '../assets/images/auth.webp';
+import seoImage from '../assets/images/seo.webp';
+import pwaImage from '../assets/images/pwa.webp';
 
 </script>
 
@@ -39,8 +39,8 @@ import seoImage from '../assets/seo.webp';
             <img class="ui-card__header-image" :src="routerImage" alt="" width="64" height="73" aria-hidden="true">
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Hash or History API navigation, route views, and lazy file-based pages and layouts.</p>
-            <pre class="ui-code-block"><code data-highlight>import { showModal } from 'nodula-framework/modal';</code></pre>
+            <p class="ui-card__description">History API navigation and route views from an explicit JavaScript route map.</p>
+            <pre class="ui-code-block"><code data-highlight>import { createRouter } from 'nodula-framework/router';</code></pre>
           </div>
         </article>
 
@@ -50,7 +50,7 @@ import seoImage from '../assets/seo.webp';
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createStorageSignal, createIndexedDBSignal, getCookie, setCookie } from 'nodula-framework/localstorage';</code></pre>
+            <pre class="ui-code-block"><code data-highlight>import { createLocalStorage, createIndexedDB, getCookie, setCookie } from 'nodula-framework/localstorage';</code></pre>
           </div>
         </article>
 
@@ -59,7 +59,7 @@ import seoImage from '../assets/seo.webp';
           <img class="ui-card__header-image" :src="dataImage" alt="" width="64" height="73" aria-hidden="true"></header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Fetch data from a server with method helpers, query parameters, and readable HTTP errors. Try the live request on the data demo page.</p>
-            <pre class="ui-code-block"><code data-highlight>import { showDrawer } from 'nodula-framework/drawer';</code></pre>
+            <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';</code></pre>
           </div>
           <footer class="ui-card__footer"><a class="ui-link" href="/data">Open data demo <span aria-hidden="true">→</span></a></footer>
         </article>
@@ -157,6 +157,17 @@ import seoImage from '../assets/seo.webp';
             <pre class="ui-code-block"><code data-highlight>import { createSEO } from 'nodula-framework/seo';
 import { nodulaSEO } from 'nodula-framework/seo-vite';</code></pre>
           </div>
+        </article>
+
+        <article class="ui-card ui-card--interactive">
+          <header class="ui-card__header"><h2 class="ui-card__title">PWA</h2>
+            <img class="ui-card__header-image" :src="pwaImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
+          <div class="ui-card__body ui-stack ui-stack--tight">
+            <p class="ui-card__description">Add installable app metadata, a generated service worker, and build-asset precaching to your Vite app.</p>
+            <pre class="ui-code-block"><code data-highlight>import { nodulaPWA } from 'nodula-framework/pwa';</code></pre>
+          </div>
+          <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/pwa" target="_blank" rel="noreferrer">Read the PWA guide <span aria-hidden="true">↗</span></a></footer>
         </article>
       </div>
     </section>

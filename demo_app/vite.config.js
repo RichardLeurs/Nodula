@@ -36,9 +36,9 @@ function appBuildConfig() {
     ...addonOutputs.map(([name]) => `nodula-framework/${name}`),
   ]);
   const outputPaths = new Map([
-    [runtimeEntry, '/framework/nodula-core.js'],
-    ...addonOutputs.map(([name, output]) => [fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)), `/framework/${output}`]),
-    ...addonOutputs.map(([name, output]) => [`nodula-framework/${name}`, `/framework/${output}`]),
+    [runtimeEntry, '/nodula/nodula-core.js'],
+    ...addonOutputs.map(([name, output]) => [fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)), `/nodula/${output}`]),
+    ...addonOutputs.map(([name, output]) => [`nodula-framework/${name}`, `/nodula/${output}`]),
   ]);
   const packageAliases = [
     { find: /^nodula-framework$/, replacement: runtimeEntry },
@@ -89,7 +89,7 @@ function appBuildConfig() {
           ]);
           await Promise.all([
             copyFile(
-              fileURLToPath(new URL('./src/assets/logo-64x64.png', import.meta.url)),
+              fileURLToPath(new URL('./src/assets/images/logo-64x64.png', import.meta.url)),
               fileURLToPath(new URL('../dist/app/assets/logo-64x64.png', import.meta.url)),
             ),
             cp(frameworkOutputDirectory, appFrameworkOutputDirectory, { recursive: true }),

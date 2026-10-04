@@ -41,8 +41,15 @@ import { createForm } from 'nodula-framework/form';
 The router is also an optional add-on with a separate entry:
 
 ```
-import { createFileRouter } from 'nodula-framework/router';
+import { createRouter } from 'nodula-framework/router';
+
+const router = createRouter({
+  '/': HomePage,
+  '/about': AboutPage,
+});
 ```
+
+The demo app uses an explicit route map in `demo_app/src/routes.js`. For Vite-discovered `.page` routes and layouts, `createFileRouter` is also available; see the [routing guide](/guide/routing).
 
 For optional Web Animations API helpers, import `animate` or `createTransition` from `nodula-framework/animation`. See the [animations guide](/guide/animations) for lifecycle and reduced-motion behavior.
 

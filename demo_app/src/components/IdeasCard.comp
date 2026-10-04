@@ -1,6 +1,6 @@
 <script setup>
 import { signal } from 'nodula-framework';
-import { createIndexedDBSignal } from 'nodula-framework/localstorage';
+import { createIndexedDB } from 'nodula-framework/localstorage';
 
 const initialIdeas = [
   { id: 1, text: 'Sketch out a weekend garden', done: false },
@@ -8,7 +8,7 @@ const initialIdeas = [
   { id: 3, text: 'Share an idea with a friend', done: false },
 ];
 
-const storedIdeas = createIndexedDBSignal('nodula-ideas', initialIdeas);
+const storedIdeas = createIndexedDB('nodula-ideas', initialIdeas);
 const [ideas, setIdeas] = storedIdeas;
 const [draft, setDraft] = signal('');
 const [ready, setReady] = signal(false);
