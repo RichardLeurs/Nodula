@@ -2,6 +2,8 @@
 import { signal } from 'nodula-framework';
 import { openModal } from 'nodula-framework/modal';
 import { openDrawer } from 'nodula-framework/drawer';
+import modalImage from '../assets/modal.webp';
+import drawerImage from '../assets/drawer.webp';
 
 const [count, setCount] = signal(0);
 
@@ -22,7 +24,11 @@ function showExampleDrawer() {
   <main class="ui-page page">
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Optional overlay add-ons</p>
+           <div class="ui-page__title-row">  
       <h1 class="ui-page__title">Dialogs that fit your interface.</h1>
+      <img class="ui-page__header-image" :src="modalImage" alt="" width="128" height="147" aria-hidden="true">
+      <img class="ui-page__header-image" :src="drawerImage" alt="" width="128" height="147" aria-hidden="true">
+        </div>
       <p class="ui-page__description">Explore Nodula's native modal and drawer add-ons. Both examples keep content safe and provide accessible dismissal controls.</p>
     </header>
 
@@ -35,7 +41,10 @@ function showExampleDrawer() {
       <div class="ui-grid ui-grid--2">
         <article class="ui-card">
           <header class="ui-card__header">
+       
             <h2 class="ui-card__title">Modal window</h2>
+             
+          
             <!-- <span class="ui-badge ui-badge--primary">Modal</span> -->
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">

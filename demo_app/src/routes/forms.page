@@ -4,7 +4,7 @@ import { createForm } from 'nodula-framework/form';
 import { animate } from 'nodula-framework/animation';
 import { showDialog } from 'nodula-framework/dialog';
 import { showNotification } from 'nodula-framework/notifications';
-
+import formImage from '../assets/form.webp';
 const [submissionMessage, setSubmissionMessage] = signal('');
 let successMessageElement = null;
 
@@ -55,7 +55,13 @@ async function resetForm() {
   <main class="ui-page page">
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Reactive form state</p>
-      <h1 class="ui-page__title">A form, with the state included.</h1>
+
+      <div class="ui-page__title-row">  
+        <h1 class="ui-page__title">A form, with the state included.</h1>
+        <img class="ui-page__header-image" :src="formImage" alt="" width="128" height="147" aria-hidden="true">
+      </div>
+
+   
       <p class="ui-page__description">This example uses Nodula's <code>createForm</code> for values, validation, touched fields, submission state, and reset—without adding a form library.</p>
     </header>
 

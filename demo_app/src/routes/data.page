@@ -1,6 +1,7 @@
 <script setup>
 import { onCleanup, signal } from 'nodula-framework';
 import { createDataClient, DataError } from 'nodula-framework/data';
+import dataImage from '../assets/data.webp';
 
 const sampleUrl = 'https://jsonplaceholder.typicode.com/posts/1';
 const dataClient = createDataClient();
@@ -41,9 +42,12 @@ void loadJson();
 
 <template>
   <main class="ui-page page">
-    <header class="ui-page__header">
+    <header class="ui-page__header ui-page__header--with-image">
       <p class="ui-page__eyebrow">Optional data add-on</p>
-      <h1 class="ui-page__title">Load data from a server.</h1>
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">Load data from a server.</h1>
+        <img class="ui-page__header-image" :src="dataImage" alt="" width="128" height="147" aria-hidden="true">
+      </div>
       <p class="ui-page__description">This page uses <code>nodula-framework/data</code> to request a JSON resource with Fetch, then renders the response and handles loading or HTTP errors.</p>
     </header>
 

@@ -1,3 +1,21 @@
+<script setup>
+import routerImage from '../assets/router.webp';
+import storageImage from '../assets/storage.webp';
+import dataImage from '../assets/data.webp';
+
+import storeImage from '../assets/store.webp';
+import animationImage from '../assets/animation.webp';
+import formImage from '../assets/form.webp';
+import dialogImage from '../assets/dialog.webp';
+import modalImage from '../assets/modal.webp';
+import drawerImage from '../assets/drawer.webp';
+import navigationImage from '../assets/navigation.webp';
+import authImage from '../assets/auth.webp';
+import seoImage from '../assets/seo.webp';
+
+
+</script>
+
 <template>
   <main class="ui-page page">
     <header class="ui-page__header">
@@ -9,7 +27,10 @@
     <section class="ui-section" aria-label="Available Nodula add-ons">
       <div class="ui-grid ui-grid--2">
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Router</h2></header>
+          <header class="ui-card__header">
+            <h2 class="ui-card__title">Router</h2>
+            <img class="ui-card__header-image" :src="routerImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Hash or History API navigation, route views, and lazy file-based pages and layouts.</p>
             <pre class="ui-code-block"><code data-highlight>import { createRouter, createFileRouter } from 'nodula-framework/router';</code></pre>
@@ -17,7 +38,9 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Local storage</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Local storage</h2>
+           <img class="ui-card__header-image" :src="storageImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies.</p>
             <pre class="ui-code-block"><code data-highlight>import { createStorageSignal, createIndexedDBSignal, getCookie, setCookie } from 'nodula-framework/localstorage';</code></pre>
@@ -25,7 +48,8 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Data</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Data</h2>
+          <img class="ui-card__header-image" :src="dataImage" alt="" width="64" height="73" aria-hidden="true"></header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Fetch data from a server with method helpers, query parameters, and readable HTTP errors. Try the live request on the data demo page.</p>
             <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';</code></pre>
@@ -34,7 +58,8 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Store</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Store</h2>
+          <img class="ui-card__header-image" :src="storeImage" alt="" width="64" height="73" aria-hidden="true"></header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Deeply reactive proxies for plain objects and arrays, including nested values.</p>
             <pre class="ui-code-block"><code data-highlight>import { createStore } from 'nodula-framework/store';</code></pre>
@@ -42,7 +67,9 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Animation</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Animation</h2>
+          <img class="ui-card__header-image" :src="animationImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Web Animations helpers and opt-in enter/leave transitions for routes, conditionals, and keyed lists.</p>
             <pre class="ui-code-block"><code data-highlight>import { animate, enableLifecycleTransitions } from 'nodula-framework/animation';</code></pre>
@@ -50,7 +77,9 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Form</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Form</h2>
+          <img class="ui-card__header-image" :src="formImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Reactive form values, validation, touched and dirty state, async submission, and reset helpers.</p>
             <pre class="ui-code-block"><code data-highlight>import { createForm } from 'nodula-framework/form';</code></pre>
@@ -59,7 +88,9 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Dialog</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Dialog</h2>
+          <img class="ui-card__header-image" :src="dialogImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Native confirmation dialogs with configurable labels and owner cleanup.</p>
             <pre class="ui-code-block"><code data-highlight>import { showDialog } from 'nodula-framework/dialog';</code></pre>
@@ -68,7 +99,9 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Modal</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Modal</h2>
+          <img class="ui-card__header-image" :src="modalImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Native modal windows with safe content, close controls, and configurable backdrop dismissal.</p>
             <pre class="ui-code-block"><code data-highlight>import { openModal } from 'nodula-framework/modal';</code></pre>
@@ -77,7 +110,9 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Drawer</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Drawer</h2>
+          <img class="ui-card__header-image" :src="drawerImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Accessible modal side panels that open from the left or right.</p>
             <pre class="ui-code-block"><code data-highlight>import { openDrawer } from 'nodula-framework/drawer';</code></pre>
@@ -86,7 +121,9 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Navigation</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Navigation</h2>
+          <img class="ui-card__header-image" :src="navigationImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Accessible router-aware internal links and explicitly external HTTP(S) links.</p>
             <pre class="ui-code-block"><code data-highlight>import { createNavigation } from 'nodula-framework/navigation';</code></pre>
@@ -94,7 +131,9 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Auth</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">Auth</h2>
+          <img class="ui-card__header-image" :src="authImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Reactive authentication state backed by your app's session adapter, with sign-in, sign-out, and optional session refresh.</p>
             <pre class="ui-code-block"><code data-highlight>import { createAuth } from 'nodula-framework/auth';</code></pre>
@@ -103,7 +142,9 @@
         </article>
 
         <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">SEO</h2></header>
+          <header class="ui-card__header"><h2 class="ui-card__title">SEO</h2>
+          <img class="ui-card__header-image" :src="seoImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
             <p class="ui-card__description">Route-aware titles, descriptions, canonical URLs, Open Graph and hreflang metadata, plus Vite build-time sitemap.xml and robots.txt generation.</p>
             <pre class="ui-code-block"><code data-highlight>import { createSEO } from 'nodula-framework/seo';

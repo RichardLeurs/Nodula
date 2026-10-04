@@ -206,7 +206,12 @@ textarea {
   /* var(--app-background-blend),normal; */
 }
 
-
+.hero-image {
+width: 500px;
+height: 500px;
+margin-top:30px;
+  background: url("./nodula-hero2.png") center / contain no-repeat;
+}
 
 
 a {
@@ -409,8 +414,26 @@ a {
 }
 
 .ui-page__header {
-  max-width: 760px;
+  max-width: 1128px;
   margin-bottom: var(--ui-space-10);
+}
+
+.ui-page__header--with-image {
+  max-width: none;
+}
+
+.ui-page__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-6);
+}
+
+.ui-page__header-image {
+  width: clamp(72px, 12vw, 128px);
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
 }
 
 .ui-page__eyebrow {
@@ -436,6 +459,14 @@ a {
   color: var(--ui-color-text-muted);
   font-size: 1.05rem;
   line-height: 1.75;
+
+  code {
+
+    padding: 5px;
+border: 1pt solid var(--ui-color-border);
+border-radius: var(--ui-radius-medium);
+  }
+
 }
 
 .ui-section {
@@ -552,7 +583,7 @@ a {
 .ui-card__title {
   margin: 0;
   color: var(--ui-color-text);
-  font-size: 1.05rem;
+  font-size: 1.6rem;
   line-height: 1.35;
 }
 
@@ -594,6 +625,13 @@ a {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--ui-space-3);
+}
+
+.ui-card__header-image {
+  width: 50px;
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
 }
 
 .ui-card__footer {
@@ -1668,6 +1706,14 @@ a {
 }
 
 @media (max-width: 560px) {
+  .ui-page__title-row {
+    gap: var(--ui-space-3);
+  }
+
+  .ui-page__header-image {
+    width: 64px;
+  }
+
   .ui-home-examples .ui-section__header {
     align-items: flex-start;
     flex-direction: column;

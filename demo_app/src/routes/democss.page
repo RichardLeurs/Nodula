@@ -1,4 +1,6 @@
 <script setup>
+import cssImage from '../assets/css.webp';
+
 const tokenExamples = [
   { name: 'Primary', variable: '--ui-color-primary', className: 'ui-token-swatch--primary' },
   { name: 'Surface', variable: '--ui-color-surface', className: 'ui-token-swatch--surface' },
@@ -22,7 +24,11 @@ function preventSubmit(event) {
   <main class="ui-page page">
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Nodula UI · architecture demo</p>
+
+      <div class="ui-page__title-row">  
       <h1 class="ui-page__title">A small, composable UI vocabulary.</h1>
+<img class="ui-page__header-image" :src="cssImage" alt="" width="128" height="147" aria-hidden="true">
+</div>
       <p class="ui-page__description">A working visual tour of the tokens, layout primitives, components, modifiers, and states described in the CSS architecture.</p>
       <div class="ui-cluster ui-cluster--wrap" aria-label="Page actions">
         <a class="ui-button ui-button--primary" href="#components">Explore components <span aria-hidden="true">↓</span></a>

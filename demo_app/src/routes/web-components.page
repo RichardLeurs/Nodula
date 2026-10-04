@@ -1,6 +1,6 @@
 <script setup>
 import { signal } from 'nodula-framework';
-
+import webcompImage from '../assets/webcomp.webp';
 const [selectedIcon, setSelectedIcon] = signal('');
 
 function selectIcon(icon) {
@@ -11,8 +11,13 @@ function selectIcon(icon) {
 <template>
    <main class="ui-page page">
     <header class="ui-page__header">
+      
       <p class="ui-page__eyebrow">Nodula + Web Components</p>
+         <div class="ui-page__title-row">  
       <h1 class="ui-page__title">Bring a custom Web Component into the page.</h1>
+      <img class="ui-page__header-image" :src="webcompImage" alt="" width="128" height="147" aria-hidden="true">
+</div>
+
       <p class="ui-page__description">This page uses Iconify’s external <code>&lt;iconify-icon&gt;</code> custom element inside a Nodula template. Nodula creates the tag and reactively passes its icon property; the buttons below update that property through a signal.</p>
     </header>
 

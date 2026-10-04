@@ -35,6 +35,9 @@ effect(() => {
     <section class="ui-home-hero" aria-labelledby="home-title">
       <div class="ui-home-hero__copy">
         <p class="ui-page__eyebrow"><span class="ui-status-dot" aria-hidden="true"></span> A modular JavaScript application framework</p>
+
+
+              
         <div :class="carouselIndex() % 2 === 0 ? 'ui-home-carousel ui-home-carousel--fade-a' : 'ui-home-carousel ui-home-carousel--fade-b'">
           <h1 id="home-title" class="ui-home-hero__title" aria-live="polite" aria-atomic="true">
             <span class="ui-home-carousel__line"><b>{{ displayCarouselText(carouselItems[carouselIndex()][0]) }}</b></span>
@@ -42,7 +45,13 @@ effect(() => {
             
           </h1>
         </div>
+
+          <div class="hero-image"></div>
         <p class="ui-page__description ui-home-hero__description">Meet Nodula: A lightweight JavaScript framework built around modular architecture, simplicity and speed. Build your application from small, focused pieces that work together naturally.</p>
+        
+     
+
+        
         <div class="ui-cluster ui-cluster--wrap">
           <a class="ui-button ui-button--primary" href="https://sprigjs-docs.richardleurs.nl/" target="_blank" rel="noreferrer">Explore the guide <span aria-hidden="true">↗</span></a>
           <a class="ui-button ui-button--outline" href="https://github.com/RichardLeurs/nodula" target="_blank" rel="noreferrer">View on GitHub <span aria-hidden="true">↗</span></a>

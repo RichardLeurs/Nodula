@@ -10,7 +10,7 @@ Nodula has a small core runtime, with optional add-on modules for extra features
 
 | Module         | Contents                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------------- |
-| Framework      | Reactivity, DOM rendering, Helpers                                                                  |
+| Core           | Reactivity, DOM rendering, Helpers                                                                  |
 | Router         | Hash or History API navigation, route views, and lazy file-based pages and layouts                  |
 | Localstorage   | Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies              |
 | Data           | Fetch data from a server with method helpers, query parameters, and readable HTTP errors            |
