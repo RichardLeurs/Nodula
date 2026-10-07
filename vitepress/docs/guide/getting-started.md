@@ -45,9 +45,11 @@ import { createRouter } from 'nodula-framework/router';
 
 const router = createRouter({
   '/': HomePage,
-  '/about': AboutPage,
+  '/about': { load: () => import('./routes/about.page') },
 });
 ```
+
+Lazy route loaders run on first visit and resolve to a component or a module with a default component export. The router displays loading/error text while loading and caches successful results.
 
 The demo app uses an explicit route map in `demo_app/src/routes.js`. For Vite-discovered `.page` routes and layouts, `createFileRouter` is also available; see the [routing guide](/guide/routing).
 

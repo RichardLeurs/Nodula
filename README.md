@@ -24,6 +24,8 @@ Nodula has a small core runtime, with optional add-on modules for extra features
 | PWA            | Build installable, offline-capable applications                                                     |
 | Auth           | Reactive client authentication state connected to an app-provided auth service                      |
 | SEO            | Route-aware title, descriptions, canonical, Open Graph, hreflang, sitemap, and robots metadata      |
+| Cookie Consent | Manage versioned privacy choices with a floating, expandable consent notice (EU GDPR/ePrivacy)      |
+
 
 
 ## Install and run

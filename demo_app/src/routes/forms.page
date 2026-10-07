@@ -41,8 +41,8 @@ const form = createForm({ name: '', email: '', updates: false }, {
 async function resetForm() {
   const confirmed = await showDialog('Reset this form? Your changes will be cleared.', {
     title: 'Reset form?',
-    cancelText: 'Keep editing',
-    okText: 'Reset form',
+    btn_cancel: 'Keep editing',
+    btn_ok: 'Reset form',
   });
   if (!confirmed) return;
 

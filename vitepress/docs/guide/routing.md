@@ -4,22 +4,21 @@ Nodula provides manual routing with `createRouter` and optional Vite file-based 
 
 ## Manual routes
 
-Use `createRouter(routes, fallback, options)` for an explicit route map. Route values are components keyed by pathname; options can enable History API mode and navigation guards:
+Use `createRouter(routes, fallback, options)` for an explicit route map. Route values can be eager components or lazy route entries with a `load` function. Lazy loaders start only after navigation guards allow the route, show `Loading page…` while pending, cache successful modules, and show `Could not load this page.` after rejection. Loaders must resolve to a component or a module with a component as its default export. Options can enable History API mode and navigation guards:
 
 ```
 import { createRouter } from 'nodula-framework/router';
 import HomePage from './routes/index.page';
-import AboutPage from './routes/about.page';
 
 const routes = {
   '/': HomePage,
-  '/about': AboutPage,
+  '/about': { load: () => import('./routes/about.page') },
 };
 
 const router = createRouter(routes, NotFoundPage, { mode: 'history' });
 ```
 
-For parameterized routes, match the current path and return a component renderer with decoded params. The demo's `routes.js` demonstrates this for `/ideas/:id` and composes an ideas layout around the detail page.
+For parameterized routes, match the current path and return a lazy route entry with optional `context` passed to the loaded component. The demo's `routes.js` demonstrates this for `/ideas/:id` and composes an ideas layout around the detail page. Loaders start after guards allow navigation; a rejected loader displays the router's standard error state.
 
 ## File-based routes
 
@@ -48,7 +47,7 @@ routes/
 
 `index.page` maps to `/`; `[id].page` matches one path segment and makes the decoded value available as `params.id`. Catch-all segments are not supported. A `layout.page` wraps descendant pages (a root layout wraps all routes) and receives `children`; render it with `<outlet :view="children" />`.
 
-By default, the router uses hash navigation. Pass `{ mode: 'history' }` to use the pathname and History API. Lazy glob loaders load the matched page and its layouts on demand, show loading/error content, and cache successful imports. Manual route maps and eager glob modules are also supported.
+By default, the router uses hash navigation. Pass `{ mode: 'history' }` to use the pathname and History API. File-based glob loaders and explicit lazy route entries both load matched pages on demand and cache successful imports.
 
 Both routers accept an optional `beforeEach` guard. It runs before the initial route is rendered and before later navigations. Return `true` or `undefined` to allow, `false` to cancel, or a path string to redirect. Async guards are supported; `router.navigationPending()` reports a pending guard, and `router.canRender()` stays false until the initial route is allowed. With `createFileRouter`, page and layout loaders do not run until the guard allows the route.
 

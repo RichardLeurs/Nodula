@@ -1,7 +1,7 @@
 <script setup>
 import { effect, onCleanup, signal, visibleIsland } from 'nodula-framework';
+
 import DemoCounter from '../components/DemoCounter.comp';
-import IdeasCard from '../components/IdeasCard.comp';
 import routerImage from '../assets/images/router.webp';
 import storageImage from '../assets/images/storage.webp';
 import dataImage from '../assets/images/data.webp';
@@ -15,8 +15,12 @@ import navigationImage from '../assets/images/navigation.webp';
 import authImage from '../assets/images/auth.webp';
 import seoImage from '../assets/images/seo.webp';
 import pwaImage from '../assets/images/pwa.webp';
+import cookieImage from '../assets/images/cookie.webp';
+
 
 const loadExtraCard = () => import('../components/ExtraCard.comp').then((module) => module.default);
+
+
 
 const carouselItems = [
   ['Small pieces.', 'Big ideas.'],
@@ -30,7 +34,7 @@ const carouselItems = [
 ];
 const [carouselIndex, setCarouselIndex] = signal(0);
 const addonCarouselItems = [
-  { title: 'Router', description: 'Navigate with hash or History API routes, lazy-loaded pages, layouts, and route parameters.', image: routerImage },
+  { title: 'Router', description: 'Navigate with Hash or History API routes, lazy-loaded file-based and code-based routes with route parameters.', image: routerImage },
   { title: 'Local storage', description: 'Persist reactive values with localStorage or IndexedDB, and work with browser cookies.', image: storageImage },
   { title: 'Data', description: 'Make HTTP requests with method helpers, query parameters, and readable errors.', image: dataImage },
   { title: 'Store', description: 'Manage deeply reactive state in plain objects and arrays, including nested values.', image: storeImage },
@@ -43,6 +47,7 @@ const addonCarouselItems = [
   { title: 'Auth', description: 'Connect reactive sign-in state and role or permission checks to your session adapter.', image: authImage },
   { title: 'SEO', description: 'Manage route-aware metadata and generate sitemap.xml and robots.txt during Vite builds.', image: seoImage },
   { title: 'PWA', description: 'Make your Vite app installable with a generated service worker and precached build assets.', image: pwaImage },
+  { title: 'Cookie consent', description: 'Manage versioned privacy choices with a floating consent banner.\n(EU GDPR/ePrivacy)', image: cookieImage },
 ];
 const [addonCarouselIndex, setAddonCarouselIndex] = signal(0);
 
@@ -79,7 +84,7 @@ function moveAddonCarousel(direction) {
   <main class="ui-page page ui-home">
     <section class="ui-home-hero" aria-labelledby="home-title">
       <div class="ui-home-hero__copy">
-        <p class="ui-page__eyebrow"><span class="ui-status-dot" aria-hidden="true"></span> A modular JavaScript application framework</p>
+        <p class="ui-page__eyebrow"> A modular JavaScript application framework</p>
 
 
               
@@ -108,12 +113,12 @@ function moveAddonCarousel(direction) {
       <div class="ui-home-hero__aside">
         <section class="ui-panel ui-panel--flat ui-home-specs" aria-labelledby="framework-specs-heading">
         <header class="ui-panel__header ui-home-specs__header">
-          <div class="ui-cluster"><span class="ui-status-dot" aria-hidden="true"></span><p class="ui-page__eyebrow">Built to stay lightweight</p></div>
+          <div class="ui-cluster"><p class="ui-page__eyebrow">Built to stay lightweight</p></div>
           <h2 id="framework-specs-heading" class="ui-panel__title">Framework specs</h2>
         </header>
         <dl class="ui-home-specs__list">
           <div class="ui-home-specs__item"><dt>Modular</dt><dd>Only add the framework add-ons you need</dd></div>
-         <div class="ui-home-specs__item"><dt>Routing</dt><dd>Lazy file-based pages and layouts</dd></div>
+         <div class="ui-home-specs__item"><dt>Routing</dt><dd>Lazy loaded file-based and code-based routes </dd></div>
           <div class="ui-home-specs__item"><dt>Rendering</dt><dd>Fine-grained reactive DOM</dd></div>
           <!--  <div class="ui-home-specs__item"><dt>State</dt><dd>Signals and reactive stores</dd></div>
           <div class="ui-home-specs__item"><dt>Components</dt><dd>HTML-first <code>.page</code>, no JSX</dd></div>
@@ -149,29 +154,28 @@ function moveAddonCarousel(direction) {
 
     </section>
 
-    <section class="ui-section ui-home-examples" aria-labelledby="home-examples-title">
+    <!-- <section class="ui-section ui-home-examples" aria-labelledby="home-examples-title">
       <div class="ui-section__header">
         <div>
           <p class="ui-page__eyebrow">Try it out</p>
           <h2 class="ui-section__title" id="home-examples-title">Composable modules. Powerful applications.</h2>
         </div>
-        <!-- <p class="ui-section__description">State updates. The page stays out of your way.</p> -->
+        <p class="ui-section__description">State updates. The page stays out of your way.</p>
       </div>
       <div class="ui-grid ui-grid--2 ui-home-examples__grid">
         <DemoCounter></DemoCounter>
-        <IdeasCard></IdeasCard>
       </div>
-    </section>
+    </section> -->
 
-    <section class="ui-grid ui-grid--3 ui-home-highlights" aria-label="Framework highlights">
+    <!-- <section class="ui-grid ui-grid--3 ui-home-highlights" aria-label="Framework highlights">
       <article class="ui-home-highlight"><span class="ui-home-highlight__number">01</span><div><h3 class="ui-card__title">Signals, not snapshots</h3><p class="ui-card__description">Update just what changed.</p></div></article>
       <article class="ui-home-highlight"><span class="ui-home-highlight__number">02</span><div><h3 class="ui-card__title">Plain JavaScript</h3><p class="ui-card__description">HTML templates, no JSX.</p></div></article>
       <article class="ui-home-highlight"><span class="ui-home-highlight__number">03</span><div><h3 class="ui-card__title">Built with Vite</h3><p class="ui-card__description">A quick loop from idea to app.</p></div></article>
     </section>
 </br>
     <section class="ui-panel ui-panel--flat ui-home-island">
-      <!-- <div class="ui-cluster ui-home-island__label"><span class="ui-status-dot" aria-hidden="true"></span>A little something further down</div> -->
+      <div class="ui-cluster ui-home-island__label"><span class="ui-status-dot" aria-hidden="true"></span>A little something further down</div> 
       <div class="ui-home-island__content" use:visibleIsland="visibleIsland(loadExtraCard)"></div>
-    </section>
+    </section> -->
   </main>
 </template>

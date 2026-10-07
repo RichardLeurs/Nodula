@@ -2,7 +2,7 @@ export interface ModalOptions {
   /** Optional heading displayed at the top of the modal. */
   title?: string;
   /** Visible label for the close button. Defaults to "Close". */
-  closeText?: string;
+  btn_close?: string;
   /** Whether clicking the backdrop closes the modal. Defaults to true. */
   closeOnBackdrop?: boolean;
 }

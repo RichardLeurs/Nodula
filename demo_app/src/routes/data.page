@@ -2,6 +2,7 @@
 import { onCleanup, signal } from 'nodula-framework';
 import { createDataClient, DataError } from 'nodula-framework/data';
 import dataImage from '../assets/images/data.webp';
+import IdeasCard from '../components/IdeasCard.comp';
 
 const sampleUrl = 'https://jsonplaceholder.typicode.com/posts/1';
 const dataClient = createDataClient();
@@ -47,12 +48,38 @@ onCleanup(() => activeRequest?.abort());
         <h1 class="ui-page__title">Load data from a server.</h1>
         <img class="ui-page__header-image" :src="dataImage" alt="" width="128" height="147" aria-hidden="true">
       </div>
-      <p class="ui-page__description">This page uses <code>nodula-framework/data</code> to request a JSON resource with Fetch, then renders the response and handles loading or HTTP errors.</p>
+      <p class="ui-page__description">This page uses <code>nodula-framework/data</code> to use your browser's IndexedDB as a database.</p>
     </header>
 
+
+    <section class="ui-section" aria-labelledby="data-ideas-title">
+      <h2 id="data-ideas-title" class="ui-section__title">Data from IndexedDB </h2>
+      <p class="ui-section__description">Add, complete, and remove ideas. Your list is saved in IndexedDB when available.</p>
+      </br>
+      <IdeasCard></IdeasCard>
+    </section>
+
+    <section class="ui-section" aria-labelledby="indexeddb-example-title">
+      <h2 id="indexeddb-example-title" class="ui-section__title">How to use IndexedDB</h2>
+      <p class="ui-section__description">Create a reactive signal backed by IndexedDB, wait for saved data to load, then update it with the signal setter.</p>
+      <pre class="ui-code-block"><code data-highlight>import { createIndexedDB } from 'nodula-framework/localstorage';
+
+const savedIdeas = createIndexedDB('saved-ideas', []);
+const [ideas, setIdeas] = savedIdeas;
+
+await savedIdeas.ready;
+
+setIdeas((current) => [...current, { text: 'Plant a garden', done: false }]);
+</code></pre>
+    </section>
+
+
     <section class="ui-section" aria-labelledby="data-request-title">
+        <h2 id="data-ideas-title" class="ui-section__title">Data from server </h2>
+       <p class="ui-page__description">This page uses <code>nodula-framework/data</code> to request a JSON resource with Fetch, then renders the response and handles loading or HTTP errors.</p>
       <form class="ui-panel ui-panel--raised ui-data-form" @submit="loadJson($event)">
         <header class="ui-panel__header">
+          
           <div>
             <h2 id="data-request-title" class="ui-panel__title">Request a JSON resource</h2>
             <p class="ui-panel__description">Enter a public endpoint that allows cross-origin requests.</p>
@@ -92,12 +119,14 @@ onCleanup(() => activeRequest?.abort());
     </section>
 
     <section class="ui-section" aria-labelledby="data-example-title">
-      <h2 id="data-example-title" class="ui-section__title">Use the data client</h2>
+      <h2 id="data-example-title" class="ui-section__title">How to use DataClient</h2>
       <p class="ui-section__description">The same request can be made directly from your application code.</p>
       <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';
 
 const api = createDataClient();
 const post = await api.get('https://jsonplaceholder.typicode.com/posts/1');</code></pre>
     </section>
+
+
   </main>
 </template>

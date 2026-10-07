@@ -16,6 +16,7 @@
     "framework/addons/animation.d.ts",
     "framework/addons/dialog.d.ts",
     "framework/addons/notifications.d.ts",
+    "framework/addons/cookieconsent.d.ts",
     "framework/addons/modal.d.ts",
     "framework/addons/drawer.d.ts",
     "framework/addons/navigation.d.ts",

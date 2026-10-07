@@ -16,6 +16,7 @@ import navigationImage from '../assets/images/navigation.webp';
 import authImage from '../assets/images/auth.webp';
 import seoImage from '../assets/images/seo.webp';
 import pwaImage from '../assets/images/pwa.webp';
+import cookieImage from '../assets/images/cookie.webp';
 
 </script>
 
@@ -167,8 +168,19 @@ import { nodulaSEO } from 'nodula-framework/seo-vite';</code></pre>
             <p class="ui-card__description">Add installable app metadata, a generated service worker, and build-asset precaching to your Vite app.</p>
             <pre class="ui-code-block"><code data-highlight>import { nodulaPWA } from 'nodula-framework/pwa';</code></pre>
           </div>
-          <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/pwa" target="_blank" rel="noreferrer">Read the PWA guide <span aria-hidden="true">↗</span></a></footer>
+          <!-- <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/pwa" target="_blank" rel="noreferrer">Read the PWA guide <span aria-hidden="true">↗</span></a></footer> -->
         </article>
+
+        <article class="ui-card ui-card--interactive">
+          <header class="ui-card__header"><h2 class="ui-card__title">Cookie consent</h2>
+            <img class="ui-card__header-image" :src="cookieImage" alt="" width="64" height="73" aria-hidden="true">
+          </header>
+          <div class="ui-card__body ui-stack ui-stack--tight">
+            <p class="ui-card__description">Manage privacy choices with a floating preference banner and category-level consent callbacks.</p>
+            <pre class="ui-code-block"><code data-highlight>import { createCookieConsent } from 'nodula-framework/cookieconsent';</code></pre>
+          </div>
+          <!-- <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/cookie-consent" target="_blank" rel="noreferrer">Read the cookie consent guide <span aria-hidden="true">↗</span></a></footer>
+        </article> -->
       </div>
     </section>
 

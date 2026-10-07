@@ -26,6 +26,7 @@ async function bundleConsumer(entry) {
           ...[
             'animation',
             'auth',
+            'cookieconsent',
             'data',
             'dialog',
             'drawer',

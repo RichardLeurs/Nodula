@@ -13,21 +13,21 @@ const [count, setCount] = signal(0);
 async function showExampleDialog() {
   await showDialog('Continue with this action?', {
     title: 'Confirmation dialog',
-    cancelText: 'Keep editing',
-    okText: 'Continue',
+    btn_cancel: 'Keep editing',
+    btn_ok: 'Continue',
   });
 }
 
 function showExampleModal() {
   const content = document.createElement('p');
   content.textContent = 'This modal is provided by the optional Nodula modal add-on.';
-  showModal(content, { title: 'A modal window', closeText: 'Got it', closeOnBackdrop: false });
+  showModal(content, { title: 'A modal window', btn_close: 'Got it', closeOnBackdrop: false });
 }
 
 function showExampleDrawer() {
   const content = document.createElement('p');
   content.textContent = 'This side panel is a modal drawer. Click outside to dismiss it, or use the close button.';
-  showDrawer(content, { title: 'A side drawer', closeText: 'Close panel', closeOnBackdrop: false, position: 'left' });
+  showDrawer(content, { title: 'A side drawer', btn_close: 'Close panel', closeOnBackdrop: false, position: 'left' });
 }
 </script>
 

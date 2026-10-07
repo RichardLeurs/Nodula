@@ -1,28 +1,15 @@
-import HomePage from './routes/index.page';
-import AddonsPage from './routes/addons.page';
-import AdminPage from './routes/admin.page';
-import DataPage from './routes/data.page';
-import DemoCssPage from './routes/democss.page';
-import FormsPage from './routes/forms.page';
-import IdeaDetailPage from './routes/ideas/[id].page';
-import IdeasLayout from './routes/ideas/layout.page';
-import LoginPage from './routes/login.page';
-import ModalPage from './routes/modal.page';
-import WebComponentsPage from './routes/web-components.page';
-
 const routeComponents = {
-  '/': HomePage,
-  '/addons': AddonsPage,
-  '/admin': AdminPage,
-  '/data': DataPage,
-  '/democss': DemoCssPage,
-  '/forms': FormsPage,
-  '/login': LoginPage,
-  '/modal': ModalPage,
-  '/web-components': WebComponentsPage,
+  '/': { load: () => import('./routes/index.page') },
+  '/addons': { load: () => import('./routes/addons.page') },
+  '/admin': { load: () => import('./routes/admin.page') },
+  '/data': { load: () => import('./routes/data.page') },
+  '/democss': { load: () => import('./routes/democss.page') },
+  '/forms': { load: () => import('./routes/forms.page') },
+  '/login': { load: () => import('./routes/login.page') },
+  '/modal': { load: () => import('./routes/modal.page') },
+  '/web-components': { load: () => import('./routes/web-components.page') },
 };
 
-// To DO nested routes
 function createIdeaRoute(path) {
   const encodedId = path.slice('/ideas/'.length);
   let id;
@@ -32,13 +19,24 @@ function createIdeaRoute(path) {
     return undefined;
   }
 
-  return () => IdeasLayout({ children: IdeaDetailPage({ params: { id } }) });
+  return {
+    load: async () => {
+      const [pageModule, layoutModule] = await Promise.all([
+        import('./routes/ideas/[id].page'),
+        import('./routes/ideas/layout.page'),
+      ]);
+      const page = pageModule.default;
+      const layout = layoutModule.default;
+      return ({ params }) => layout({ children: page({ params }) });
+    },
+    context: { params: { id } },
+  };
 }
 
 export const routes = new Proxy(routeComponents, {
   get(target, path) {
     if (typeof path !== 'string') return undefined;
-    if (Object.hasOwn(target, path)) return () => target[path]();
+    if (Object.hasOwn(target, path)) return target[path];
     if (/^\/ideas\/[^/]+$/.test(path)) return createIdeaRoute(path);
     return undefined;
   },

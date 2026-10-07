@@ -9,7 +9,8 @@ export function showDrawer(content, options = {}) {
   if (typeof content !== 'string' && (!content || typeof content.nodeType !== 'number')) {
     throw new TypeError('showDrawer expects text or a DOM node as content.');
   }
-  const { title = '', closeText = 'Close', closeOnBackdrop = true, position = 'right' } = options;
+  const { title = '', closeOnBackdrop = true, position = 'right' } = options;
+  const closeText = options.btn_close ?? 'Close';
   if (typeof title !== 'string' || typeof closeText !== 'string' || typeof closeOnBackdrop !== 'boolean' || !['left', 'right'].includes(position)) {
     throw new TypeError('showDrawer title and closeText must be strings, closeOnBackdrop must be a boolean, and position must be "left" or "right".');
   }

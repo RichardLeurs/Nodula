@@ -13,6 +13,56 @@ export function createRouter(routes, fallback = () => document.createTextNode('P
   let active = true;
   let navigationId = 0;
   let acceptedLocation = window.location.href;
+  const routeStates = new Map();
+
+  function routeStateFor(path) {
+    let routeState = routeStates.get(path);
+    if (!routeState) {
+      routeState = signal({ status: 'idle', component: null });
+      routeStates.set(path, routeState);
+    }
+    return routeState;
+  }
+
+  effect(() => {
+    if (!canRender()) return;
+    const path = current();
+    const route = routes[path];
+    if (!route || typeof route === 'function') return;
+    if (typeof route.load !== 'function') {
+      throw new TypeError(`Router route "${path}" must be a component or a lazy route with a load function.`);
+    }
+
+    const [readState, writeState] = routeStateFor(path);
+    if (readState().status !== 'idle') return;
+    writeState({ status: 'loading', component: null });
+    Promise.resolve().then(() => route.load()).then((loaded) => {
+      const component = typeof loaded === 'function' ? loaded : loaded?.default;
+      if (typeof component !== 'function') {
+        throw new TypeError(`Lazy route "${path}" must resolve to a component or a module with a default component export.`);
+      }
+      if (active) writeState({ status: 'loaded', component });
+    }).catch((error) => {
+      if (!active) return;
+      console.error(`Router: failed to load route "${path}".`, error);
+      writeState({ status: 'error', component: null });
+    });
+  });
+
+  function renderRoute(path) {
+    const route = routes[path];
+    if (!route) return fallback();
+    if (typeof route === 'function') return route();
+    if (typeof route.load !== 'function') {
+      throw new TypeError(`Router route "${path}" must be a component or a lazy route with a load function.`);
+    }
+
+    const [readState] = routeStateFor(path);
+    const state = readState();
+    if (state.status === 'loaded') return state.component(route.context);
+    if (state.status === 'error') return document.createTextNode('Could not load this page.');
+    return document.createTextNode('');
+  }
 
   function parseTarget(path) {
     if (typeof path !== 'string' || !path.trim()) throw new TypeError('Router paths must be non-empty strings.');
@@ -151,7 +201,7 @@ export function createRouter(routes, fallback = () => document.createTextNode('P
     canRender,
     view: () => {
       if (!canRender()) return document.createTextNode(navigationPending() ? 'Checking route…' : 'Navigation blocked.');
-      return (routes[current()] ?? fallback)();
+      return renderRoute(current());
     },
     navigate,
   };

@@ -7,15 +7,15 @@ import { showDialog } from 'nodula-framework/dialog';
 
 const accepted = await showDialog('Save these changes?', {
   title: 'Confirm save',
-  cancelText: 'Keep editing',
-  okText: 'Save changes',
+  btn_cancel: 'Keep editing',
+  btn_ok: 'Save changes',
 });
 if (accepted) {
   await saveChanges();
 }
 ```
 
-`showDialog(message, options?)` returns a promise: it resolves to `true` when the OK button is selected and `false` when the Cancel button, Escape, backdrop dismissal, or the owning Nodula root's cleanup closes it. Set `options.title` to show an optional heading, and use `options.cancelText` and `options.okText` to customize the button labels; they default to **Cancel** and **OK**. When a title is supplied, it labels the dialog for assistive technology. The dialog uses the native `<dialog>` element, focuses the OK button initially, restores the previous focus when it closes, and inserts the title and message as text rather than HTML.
+`showDialog(message, options?)` returns a promise: it resolves to `true` when the OK button is selected and `false` when the Cancel button, Escape, backdrop dismissal, or the owning Nodula root's cleanup closes it. Set `options.title` to show an optional heading, and use `options.btn_cancel` and `options.btn_ok` to customize button labels; they default to **Cancel** and **OK**. These are the only supported button label option names. When a title is supplied, it labels the dialog for assistive technology. The dialog uses the native `<dialog>` element, focuses the OK button initially, restores the previous focus when it closes, and inserts the title and message as text rather than HTML.
 
 ## Demo
 

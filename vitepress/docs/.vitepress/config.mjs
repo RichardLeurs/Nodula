@@ -166,6 +166,7 @@ export default defineConfig({
           { text: 'Routing', link: '/guide/routing' },
           { text: 'Navigation', link: '/guide/navigation' },
           { text: 'Local storage and cookies', link: '/guide/local-storage' },
+          { text: 'Cookie consent', link: '/guide/cookie-consent' },
           { text: 'Data requests', link: '/guide/data' },
           { text: 'Authentication, roles, and permissions', link: '/guide/auth' },
           { text: 'SEO', link: '/guide/seo' },

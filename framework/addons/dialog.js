@@ -9,7 +9,9 @@ export function showDialog(message, options = {}) {
   if (typeof message !== 'string') {
     throw new TypeError('showDialog expects a message string.');
   }
-  const { title, cancelText = 'Cancel', okText = 'OK' } = options;
+  const { title } = options;
+  const cancelText = options.btn_cancel ?? 'Cancel';
+  const okText = options.btn_ok ?? 'OK';
   if ((title !== undefined && typeof title !== 'string') || typeof cancelText !== 'string' || typeof okText !== 'string') {
     throw new TypeError('showDialog title and button labels must be strings.');
   }

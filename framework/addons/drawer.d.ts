@@ -2,7 +2,7 @@ export interface DrawerOptions {
   /** Optional heading displayed in the drawer header. */
   title?: string;
   /** Visible label for the close button. Defaults to "Close". */
-  closeText?: string;
+  btn_close?: string;
   /** Whether clicking the backdrop closes the drawer. Defaults to true. */
   closeOnBackdrop?: boolean;
   /** Which viewport edge the drawer enters from. Defaults to "right". */

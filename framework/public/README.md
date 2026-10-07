@@ -11,7 +11,8 @@ Nodula has a small core runtime, with optional add-on modules for extra features
 | Module         | Contents                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------------- |
 | Framework      | Reactivity, DOM rendering, Helpers                                                                  |
-| Router         | Hash or History API navigation, route views, and lazy file-based pages and layouts                  |
+| Router         | Hash or History API navigation, eager or lazy route maps, and lazy file-based pages and layouts       |
+| Cookie consent | Versioned, localStorage-backed consent choices with a floating preference banner                    |
 | Localstorage   | Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies              |
 | Data           | Fetch data from a server with method helpers, query parameters, and readable HTTP errors            |
 | Store          | Deeply reactive proxies for plain objects and arrays, including nested values                       |
@@ -24,6 +25,18 @@ Nodula has a small core runtime, with optional add-on modules for extra features
 | PWA            | Build installable, offline-capable applications                                                     |
 | Auth           | Reactive client authentication state connected to an app-provided auth service                      |
 | SEO            | Route-aware title, descriptions, canonical, Open Graph, hreflang, sitemap, and robots metadata      |
+
+The demo app's `/data` page also includes an IndexedDB-backed ideas list with local create, complete, and remove actions.
+
+Cookie consent UI copy can be overridden with `labels`; built-in category copy can also be set with `categories` entries using IDs `analytics`, `personalization`, or `marketing`. Hide unused built-in preferences with `showAnalytics`, `showPersonalization`, and `showMarketing`; hidden categories remain denied, including when visitors accept all.
+
+Set `image` in `createCookieConsent` to display an optional decorative image on the left side of the banner. It accepts relative or HTTP(S) URLs.
+
+Set `showSettingsButton: false` in `createCookieConsent` to hide floating settings shortcut after choice. Manage preferences remains available on initial banner; application code can also call `openSettings()`.
+
+Dialog buttons accept `btn_cancel` and `btn_ok`; modal and drawer close buttons accept `btn_close`. These are the only supported button-label option names.
+
+The demo's `/democss` page previews components in light and dark themes and demonstrates tabs, switches, progress, and empty/loading states.
 
 
 ## Install and run

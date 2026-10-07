@@ -1,4 +1,5 @@
 <script setup>
+import { signal } from 'nodula-framework';
 import cssImage from '../assets/images/css.webp';
 
 const tokenExamples = [
@@ -15,6 +16,10 @@ const people = [
   { name: 'Ari Patel', role: 'Administrator', status: 'Active', statusClass: 'ui-badge--primary' },
 ];
 
+const [activeComponentTab, setActiveComponentTab] = signal('overview');
+const [emailUpdatesEnabled, setEmailUpdatesEnabled] = signal(true);
+const [productTipsEnabled, setProductTipsEnabled] = signal(false);
+
 function preventSubmit(event) {
   event.preventDefault();
 }
@@ -29,11 +34,11 @@ function preventSubmit(event) {
       <h1 class="ui-page__title">A small, composable UI vocabulary.</h1>
 <img class="ui-page__header-image" :src="cssImage" alt="" width="128" height="147" aria-hidden="true">
 </div>
-      <p class="ui-page__description">A working visual tour of the tokens, layout primitives, components, modifiers, and states described in the CSS architecture.</p>
-      <div class="ui-cluster ui-cluster--wrap" aria-label="Page actions">
+      <p class="ui-page__description">A working visual tour of the tokens, layout primitives, components, modifiers, and states described in the CSS architecture. Supports light and dark themes.</p>
+      <!-- <div class="ui-cluster ui-cluster--wrap" aria-label="Page actions">
         <a class="ui-button ui-button--primary" href="#components">Explore components <span aria-hidden="true">↓</span></a>
         <a class="ui-button ui-button--outline" href="/addons">Browse framework add-ons</a>
-      </div>
+      </div> -->
     </header>
 
     <section class="ui-section" aria-labelledby="tokens-title">
@@ -42,7 +47,7 @@ function preventSubmit(event) {
           <h2 id="tokens-title" class="ui-section__title">Foundation tokens</h2>
           <p class="ui-section__description">Components use semantic variables instead of hard-coded theme colors.</p>
         </div>
-        <span class="ui-badge ui-badge--neutral">Foundation</span>
+        <!-- <span class="ui-badge ui-badge--neutral">Foundation</span> -->
       </div>
       <div class="ui-grid ui-grid--auto">
         <article @for="token of tokenExamples" :key="token.name" class="ui-card ui-card--compact">
@@ -52,6 +57,56 @@ function preventSubmit(event) {
             <code class="ui-code">{{ token.variable }}</code>
           </div>
         </article>
+      </div>
+    </section>
+
+    <section class="ui-section" aria-labelledby="theme-previews-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="theme-previews-title" class="ui-section__title">Light and dark themes</h2>
+          <p class="ui-section__description">Compare the same semantic UI components in both palettes, independent of the active site theme.</p>
+        </div>
+      </div>
+      <div class="ui-grid ui-grid--2 ui-theme-preview-grid">
+        <section class="ui-theme-preview" data-theme="light" aria-labelledby="light-theme-title">
+          <header class="ui-stack ui-stack--tight">
+            <span class="ui-badge ui-badge--primary">Light theme</span>
+            <h3 id="light-theme-title" class="ui-panel__title">Daylight workspace</h3>
+            <p class="ui-panel__description">Soft surfaces, dark text, and clear borders.</p>
+          </header>
+          <div class="ui-cluster ui-cluster--wrap" aria-label="Light theme buttons">
+            <button class="ui-button ui-button--primary" type="button">Primary action</button>
+            <button class="ui-button ui-button--secondary" type="button">Secondary</button>
+          </div>
+          <div class="ui-alert ui-alert--success" role="status">
+            <span class="ui-alert__icon" aria-hidden="true">✓</span>
+            <div class="ui-alert__content"><strong class="ui-alert__title">All changes saved</strong><p class="ui-alert__text">Your workspace is up to date.</p></div>
+          </div>
+          <label class="ui-field">
+            <span class="ui-field__label">Workspace name</span>
+            <input class="ui-input" value="Daylight studio" readonly />
+          </label>
+        </section>
+
+        <section class="ui-theme-preview" data-theme="dark" aria-labelledby="dark-theme-title">
+          <header class="ui-stack ui-stack--tight">
+            <span class="ui-badge ui-badge--primary">Dark theme</span>
+            <h3 id="dark-theme-title" class="ui-panel__title">Evening workspace</h3>
+            <p class="ui-panel__description">Deep surfaces, bright text, and restrained accents.</p>
+          </header>
+          <div class="ui-cluster ui-cluster--wrap" aria-label="Dark theme buttons">
+            <button class="ui-button ui-button--primary" type="button">Primary action</button>
+            <button class="ui-button ui-button--secondary" type="button">Secondary</button>
+          </div>
+          <div class="ui-alert ui-alert--success" role="status">
+            <span class="ui-alert__icon" aria-hidden="true">✓</span>
+            <div class="ui-alert__content"><strong class="ui-alert__title">All changes saved</strong><p class="ui-alert__text">Your workspace is up to date.</p></div>
+          </div>
+          <label class="ui-field">
+            <span class="ui-field__label">Workspace name</span>
+            <input class="ui-input" value="Evening studio" readonly />
+          </label>
+        </section>
       </div>
     </section>
 
@@ -110,6 +165,92 @@ function preventSubmit(event) {
       </div>
     </section>
 
+    <section class="ui-section" aria-labelledby="controls-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="controls-title" class="ui-section__title">Tabs, switches, and progress</h2>
+          <p class="ui-section__description">Selection and progress controls keep native semantics and visible state.</p>
+        </div>
+      </div>
+      <div class="ui-grid ui-grid--2">
+        <article class="ui-panel ui-panel--raised">
+          <header class="ui-panel__header">
+            <div>
+              <h3 class="ui-panel__title">Tabs</h3>
+              <p class="ui-panel__description">Select a tab to switch the visible panel.</p>
+            </div>
+          </header>
+          <div class="ui-panel__body ui-stack">
+            <div class="ui-tabs" role="tablist" aria-label="Component preview tabs">
+              <button class="ui-tab" type="button" role="tab" id="ui-tab-overview" aria-controls="ui-tab-panel-overview" :aria-selected="activeComponentTab() === 'overview' ? 'true' : 'false'" :tabindex="activeComponentTab() === 'overview' ? 0 : -1" @click="setActiveComponentTab('overview')">Overview</button>
+              <button class="ui-tab" type="button" role="tab" id="ui-tab-activity" aria-controls="ui-tab-panel-activity" :aria-selected="activeComponentTab() === 'activity' ? 'true' : 'false'" :tabindex="activeComponentTab() === 'activity' ? 0 : -1" @click="setActiveComponentTab('activity')">Activity</button>
+              <button class="ui-tab" type="button" role="tab" id="ui-tab-settings" aria-controls="ui-tab-panel-settings" :aria-selected="activeComponentTab() === 'settings' ? 'true' : 'false'" :tabindex="activeComponentTab() === 'settings' ? 0 : -1" @click="setActiveComponentTab('settings')">Settings</button>
+            </div>
+            <div class="ui-tab-panel" role="tabpanel" id="ui-tab-panel-overview" aria-labelledby="ui-tab-overview" @if="activeComponentTab() === 'overview'">
+              <p class="ui-card__description">A concise summary of the current workspace.</p>
+            </div>
+            <div class="ui-tab-panel" role="tabpanel" id="ui-tab-panel-activity" aria-labelledby="ui-tab-activity" @if="activeComponentTab() === 'activity'">
+              <p class="ui-card__description">Recent updates appear here as they happen.</p>
+            </div>
+            <div class="ui-tab-panel" role="tabpanel" id="ui-tab-panel-settings" aria-labelledby="ui-tab-settings" @if="activeComponentTab() === 'settings'">
+              <p class="ui-card__description">Workspace preferences live in this panel.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="ui-panel ui-panel--bordered">
+          <header class="ui-panel__header">
+            <div>
+              <h3 class="ui-panel__title">Switches</h3>
+              <p class="ui-panel__description">Labeled native checkboxes expose their checked state to assistive technology.</p>
+            </div>
+          </header>
+          <div class="ui-panel__body ui-stack">
+            <label class="ui-switch">
+              <span class="ui-switch__copy"><strong>Email updates</strong><span class="ui-field__description">Get a summary of workspace changes.</span></span>
+              <input class="ui-switch__control" type="checkbox" role="switch" :checked="emailUpdatesEnabled()" @change="setEmailUpdatesEnabled($event.currentTarget.checked)" />
+            </label>
+            <label class="ui-switch">
+              <span class="ui-switch__copy"><strong>Product tips</strong><span class="ui-field__description">Show occasional tips in the app.</span></span>
+              <input class="ui-switch__control" type="checkbox" role="switch" :checked="productTipsEnabled()" @change="setProductTipsEnabled($event.currentTarget.checked)" />
+            </label>
+          </div>
+        </article>
+      </div>
+
+      <article class="ui-panel ui-panel--bordered ui-progress-panel">
+        <div class="ui-panel__body ui-stack">
+          <div class="ui-cluster ui-cluster--wrap ui-progress-heading"><strong>Workspace setup</strong><span class="ui-badge ui-badge--primary">3 of 5 complete</span></div>
+          <progress class="ui-progress" value="60" max="100" aria-label="Workspace setup progress">60%</progress>
+          <p class="ui-field__description">Add a profile photo and invite your team to finish setup.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="ui-section" aria-labelledby="loading-states-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="loading-states-title" class="ui-section__title">Empty and loading states</h2>
+          <p class="ui-section__description">Explain what is happening and offer a clear next step.</p>
+        </div>
+      </div>
+      <div class="ui-grid ui-grid--2">
+        <article class="ui-panel ui-panel--bordered ui-state-card" aria-labelledby="empty-state-title">
+          <span class="ui-state-card__icon" aria-hidden="true">＋</span>
+          <h3 id="empty-state-title" class="ui-panel__title">No projects yet</h3>
+          <p class="ui-panel__description">Create a project to organize work and invite collaborators.</p>
+          <button class="ui-button ui-button--primary" type="button">Create project</button>
+        </article>
+        <article class="ui-panel ui-panel--bordered ui-state-card" aria-labelledby="loading-state-title" aria-busy="true">
+          <h3 id="loading-state-title" class="ui-panel__title">Loading activity</h3>
+          <p class="ui-panel__description">Fetching the latest workspace updates.</p>
+          <div class="ui-skeleton" aria-hidden="true"></div>
+          <div class="ui-skeleton ui-skeleton--short" aria-hidden="true"></div>
+          <p class="ui-sr-only" role="status">Loading activity…</p>
+        </article>
+      </div>
+    </section>
+
     <section class="ui-section" aria-labelledby="forms-title">
       <div class="ui-section__header">
         <div>
@@ -117,7 +258,7 @@ function preventSubmit(event) {
           <p class="ui-section__description">Semantic labels, controls, descriptions, and visible focus states.</p>
         </div>
       </div>
-      <form class="ui-panel ui-panel--flat" @submit="preventSubmit($event)">
+      <form class="ui-panel ui-panel" @submit="preventSubmit($event)">
         <div class="ui-form__body">
           <div class="ui-field">
             <label class="ui-field__label" for="ui-name">Name <span class="ui-field__required" aria-label="required">*</span></label>

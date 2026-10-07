@@ -40,13 +40,14 @@ function addIdea(event) {
 </script>
 
 <template>
-  <article class="ui-card ui-ideas-card">
-    <div class="ui-cluster"><span class="ui-ideas-card__icon" aria-hidden="true">↗</span><span class="ui-counter-card__label">A keyed little list</span></div>
+  <article class="ui-panel ui-panel--raised ui-ideas-card">
+    <div class="ui-cluster"></div>
     <div class="ui-ideas-card__heading">
       <h3 class="ui-card__title">Things worth doing</h3>
       <span class="ui-badge ui-badge--success">{{ doneCount() }} / {{ ideas().length }} done</span>
     </div>
     <p class="ui-ideas-card__status" role="status">{{ status() }}</p>
+    </br>
     <ul class="ui-ideas-list">
       <li class="ui-ideas-list__item" @for="idea of ideas()" :key="idea.id" :class="idea().done ? 'ui-ideas-list__item ui-ideas-list__item--done' : 'ui-ideas-list__item'">
         <label class="ui-checkbox ui-ideas-list__label">

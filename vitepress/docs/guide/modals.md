@@ -7,14 +7,14 @@ import { showModal } from 'nodula-framework/modal';
 
 const modal = showModal('This content is inserted as text.', {
   title: 'A modal window',
-  closeText: 'Done',
+  btn_close: 'Done',
   closeOnBackdrop: false,
 });
 
 await modal.closed;
 ```
 
-Pass a string for safely rendered text or a DOM node for interactive content. `showModal` returns a handle with `element`, `close()`, and a `closed` promise. The window dismisses from its close button, Escape, backdrop click (enabled by default), or cleanup of its owning Nodula root; set `closeOnBackdrop: false` to require the explicit close button or `close()`. Focus returns to the previously focused element when possible. `openModal` remains as a deprecated alias.
+Pass a string for safely rendered text or a DOM node for interactive content. `showModal` returns a handle with `element`, `close()`, and a `closed` promise. Set `btn_close` to customize close-button text; it is the only supported close-button label option. The window dismisses from its close button, Escape, backdrop click (enabled by default), or cleanup of its owning Nodula root; set `closeOnBackdrop: false` to require the explicit close button or `close()`. Focus returns to the previously focused element when possible. `openModal` remains as a deprecated alias.
 
 ## Demo
 

@@ -16,6 +16,7 @@ const frameworkStyles = [
   'nodula-modal.css',
   'nodula-drawer.css',
   'nodula-notifications.css',
+  'nodula-cookieconsent.css',
 ];
 
 const addonBuilds = {
@@ -26,6 +27,7 @@ const addonBuilds = {
   animation: { entry: 'framework/addons/animation.js', output: 'nodula-animation.js', types: 'animation.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
   dialog: { entry: 'framework/addons/dialog.js', output: 'nodula-dialog.js', types: 'dialog.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
   notifications: { entry: 'framework/addons/notifications.js', output: 'nodula-notifications.js', types: 'notifications.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
+  cookieconsent: { entry: 'framework/addons/cookieconsent.js', output: 'nodula-cookieconsent.js', types: 'cookieconsent.d.ts', externals: [runtimeEntry, 'nodula-framework', 'nodula-framework/localstorage'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js'], ['nodula-framework/localstorage', './nodula-localstorage.js']] },
   modal: { entry: 'framework/addons/modal.js', output: 'nodula-modal.js', types: 'modal.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
   drawer: { entry: 'framework/addons/drawer.js', output: 'nodula-drawer.js', types: 'drawer.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
   navigation: { entry: 'framework/addons/navigation.js', output: 'nodula-navigation.js', types: 'navigation.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
