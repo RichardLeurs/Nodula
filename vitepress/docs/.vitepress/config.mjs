@@ -37,8 +37,7 @@ export default defineConfig({
   vite: {
     configFile: false,
   },
-
-  title: 'Nodula Documentation',
+  title: 'Nodula Docs',
   titleTemplate: ':title | Nodula Docs',
   description: siteDescription,
   sitemap: {
@@ -73,6 +72,9 @@ export default defineConfig({
   head: [['link', { rel: 'icon', href: '/logo-nodula-64.webp' }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    search: {
+      provider: 'local'
+    },
     logo: {
       src: '/logo-nodula-64.webp',
       alt: 'Nodula',
@@ -89,17 +91,55 @@ export default defineConfig({
       {
         text: 'Getting Started',
         items: [
-          { text: 'Getting Started', link: '/guide/getting-started' },
           { text: 'Introduction', link: '/guide/introduction' },
-          { text: 'Quick Start', link: '/guide/quick-start' }
+        // { text: 'Getting Started', link: '/guide/getting-started' },
+          { text: 'Quick Start', link: '/guide/quick-start' },
+             { text: 'Specifications and Limits', link: '/guide/specifications' }
         ]
       },
       {
+        text: 'Framework',
+        items: [
+           { text: 'Framework core', link: '/guide/framework-core' },
+          { text: 'Routing', link: '/guide/routing' },
+          { text: 'Local storage', link: '/guide/local-storage' },
+          { text: 'Data', link: '/guide/data' },
+          { text: 'Store', link: '/guide/stores' },
+          { text: 'Animation', link: '/guide/animations' },
+          { text: 'Form', link: '/guide/forms' },
+       
+          { text: 'Navigation', link: '/guide/navigation' },
+          { text: 'Authentication', link: '/guide/auth' },
+          { text: 'Dialog', link: '/guide/dialogs' },
+          { text: 'Notifications', link: '/guide/notifications' },
+          { text: 'Modal', link: '/guide/modals' },
+          { text: 'Side drawer', link: '/guide/drawers' },
+          { text: 'Progressive Web App', link: '/guide/pwa' },
+          { text: 'SEO', link: '/guide/seo' },
+        { text: 'Cookie consent', link: '/guide/cookie-consent' },
+          { text: 'Privacy notice', link: '/guide/privacy' },
+         //  { text: 'Add-on Page Template', link: '/guide/addon-page-template' },
+           { text: 'Framework Stylesheets', link: '/guide/framework-stylesheet' },
+        ]
+      },
+         {
+        text: 'Tooling',
+        items: [
+          { text: 'Vite', link: '/guide/tooling' },
+           { text: 'VS Code', link: '/guide/vscode' },
+          { text: 'Building the npm Package', link: '/guide/npm-package' },
+          { text: 'Vitest', link: '/guide/testing' },
+                
+         
+        ]
+      },
+{
         text: 'Essentials',
         items: [
-          { text: 'Essentials', link: '/guide/essentials' },
-          { text: 'Creating an Application', link: '/guide/creating-an-application' },
+      
+        
           { text: 'Template Syntax', link: '/guide/templates' },
+          { text: 'Styles ans CSS modules', link: '/guide/styles' },
           { text: 'Reactivity Fundamentals', link: '/guide/reactivity' },
           { text: 'Computed Properties', link: '/guide/computed-properties' },
           { text: 'Class and Style Bindings', link: '/guide/class-and-style-bindings' },
@@ -107,81 +147,63 @@ export default defineConfig({
           { text: 'List Rendering', link: '/guide/list-rendering' },
           { text: 'Event Handling', link: '/guide/event-handling' },
           { text: 'Form Input Bindings', link: '/guide/form-input-bindings' },
+          { text: 'Styles and CSS Modules', link: '/guide/styles' },
           { text: 'Watchers', link: '/guide/watchers' },
-          { text: 'Template Refs', link: '/guide/template-refs' }
+          { text: 'Template Refs', link: '/guide/template-refs' },
+               { text: 'Components Basics', link: '/guide/components-basics' },
+          { text: 'Lifecycle Hooks', link: '/guide/lifecycle-hooks' },
+          
         ]
       },
-      {
-        text: 'Components Basics',
-        items: [
-          { text: 'Components Basics', link: '/guide/components-basics' },
-          { text: 'Lifecycle Hooks', link: '/guide/lifecycle-hooks' }
-        ]
-      },
+      
+
+
+      
+   
       {
         text: 'Components In-Depth',
         items: [
-          { text: 'Components In-Depth', link: '/guide/components-in-depth' },
+          { text: 'Components', link: '/guide/components-in-depth' },
+      { text: 'Web Components', link: '/guide/web-components' },
           { text: 'Registration', link: '/guide/registration' },
           { text: 'Props', link: '/guide/props' },
           { text: 'Events', link: '/guide/component-events' },
-          { text: 'Component v-model', link: '/guide/component-v-model' },
+      //    { text: 'Component v-model', link: '/guide/component-v-model' },
           { text: 'Fallthrough Attributes', link: '/guide/fallthrough-attributes' },
           { text: 'Slots', link: '/guide/slots' },
-          { text: 'Provide / inject', link: '/guide/provide-inject' },
+      { text: 'State Management', link: '/guide/state-management' },
           { text: 'Async Components', link: '/guide/async-components' }
         ]
       },
-      {
-        text: 'Reusability',
-        items: [
-          { text: 'Reusability', link: '/guide/reusability' },
-          { text: 'Composables', link: '/guide/composables' },
-          { text: 'Custom Directives', link: '/guide/custom-directives' },
-          { text: 'Plugins', link: '/guide/plugins' }
-        ]
-      },
-      {
-        text: 'Built-in Components',
-        items: [
-          { text: 'Built-in Components', link: '/guide/built-in-components' },
-          { text: 'Transition', link: '/guide/transition' },
-          { text: 'TransitionGroup', link: '/guide/transition-group' },
-          { text: 'KeepAlive', link: '/guide/keep-alive' },
-          { text: 'Teleport', link: '/guide/teleport' },
-          { text: 'Suspense', link: '/guide/suspense' }
-        ]
-      },
-      {
-        text: 'Scaling Up',
-        items: [
-          { text: 'Scaling Up', link: '/guide/scaling-up' },
-          { text: 'Single-File Components', link: '/guide/templates' }
-        ]
-      },
-      {
-        text: 'Tooling',
-        items: [
-          { text: 'Tooling', link: '/guide/tooling' },
-          { text: 'Routing', link: '/guide/routing' },
-          { text: 'Navigation', link: '/guide/navigation' },
-          { text: 'Local storage and cookies', link: '/guide/local-storage' },
-          { text: 'Cookie consent', link: '/guide/cookie-consent' },
-          { text: 'Data requests', link: '/guide/data' },
-          { text: 'Authentication, roles, and permissions', link: '/guide/auth' },
-          { text: 'SEO', link: '/guide/seo' },
-          { text: 'Progressive Web Apps', link: '/guide/pwa' },
-          { text: 'State Management', link: '/guide/state-management' },
-          { text: 'Framework Stylesheet', link: '/guide/framework-stylesheet' },
-          { text: 'Building the npm Package', link: '/guide/npm-package' },
-          { text: 'Reactive Stores', link: '/guide/stores' },
-          { text: 'Dialogs', link: '/guide/dialogs' },
-          { text: 'Notifications', link: '/guide/notifications' },
-          { text: 'Modals', link: '/guide/modals' },
-          { text: 'Side drawers', link: '/guide/drawers' },
-          { text: 'Testing', link: '/guide/testing' },
-        ]
-      },
+      // {
+      //   text: 'Reusability',
+      //   items: [
+      //     { text: 'Reusability', link: '/guide/reusability' },
+      //     { text: 'Composables', link: '/guide/composables' },
+      //     { text: 'Custom Directives', link: '/guide/custom-directives' },
+      //     { text: 'Plugins', link: '/guide/plugins' }
+      //   ]
+      // },
+      // {
+      //   text: 'Built-in Components',
+      //   items: [
+      //     { text: 'Built-in Components', link: '/guide/built-in-components' },
+      //     { text: 'Transition', link: '/guide/transition' },
+      //     { text: 'TransitionGroup', link: '/guide/transition-group' },
+      //     { text: 'KeepAlive', link: '/guide/keep-alive' },
+      //     { text: 'Teleport', link: '/guide/teleport' },
+      //     { text: 'Suspense', link: '/guide/suspense' }
+      //   ]
+      // },
+      // {
+      //   text: 'Scaling Up',
+      //   items: [
+      //     { text: 'Scaling Up', link: '/guide/scaling-up' },
+      //     { text: 'Single-File Components', link: '/guide/templates' },
+         
+      //   ]
+      // },
+
       {
         text: 'Best Practices',
         items: [
@@ -195,22 +217,22 @@ export default defineConfig({
       {
         text: 'TypeScript',
         items: [
-          { text: 'TypeScript', link: '/guide/typescript' },
-          { text: 'Overview', link: '/guide/typescript-overview' },
-          { text: 'TS with Composition API', link: '/guide/typescript-composition-api' },
-          { text: 'TS with Options API', link: '/guide/typescript-options-api' }
+          { text: 'Overview', link: '/guide/typescript' },
+            { text: 'Privacy', link: '/guide/privacy' },
+          // { text: 'TS with Composition API', link: '/guide/typescript-composition-api' },
+          // { text: 'TS with Options API', link: '/guide/typescript-options-api' }
         ]
       },
-      {
-        text: 'Extra Topics',
-        items: [
-          { text: 'Composition API FAQ', link: '/guide/composition-api-faq' },
-          { text: 'Reactivity in Depth', link: '/guide/reactivity-in-depth' },
-          { text: 'Rendering Mechanism', link: '/guide/rendering-mechanism' },
-          { text: 'Animation Techniques', link: '/guide/animation-techniques' },
-          { text: 'Specifications and Limits', link: '/guide/specifications' }
-        ]
-      },
+      // {
+      //   text: 'Extra Topics',
+      //   items: [
+      //     // { text: 'Composition API FAQ', link: '/guide/composition-api-faq' },
+      //     // { text: 'Reactivity in Depth', link: '/guide/reactivity-in-depth' },
+      //     // { text: 'Rendering Mechanism', link: '/guide/rendering-mechanism' },
+      
+      //     { text: 'Specifications and Limits', link: '/guide/specifications' }
+      //   ]
+      // },
       // {
       //   text: 'Examples',
       //   items: [

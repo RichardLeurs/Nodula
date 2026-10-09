@@ -57,6 +57,54 @@ function notifyListener(callback, allowed, currentConsent) {
   catch (error) { console.error('Cookie consent listener failed:', error); }
 }
 
+/** Load Google Analytics only while the consent manager grants analytics permission. */
+export function setupGoogleAnalytics(consent, measurementId) {
+  if (!consent || typeof consent.on !== 'function') {
+    throw new TypeError('setupGoogleAnalytics expects a cookie consent manager.');
+  }
+  if (typeof measurementId !== 'string' || !/^G-[A-Z0-9]+$/.test(measurementId)) {
+    throw new TypeError('setupGoogleAnalytics expects a valid Google Analytics measurement ID.');
+  }
+
+  let googleTagLoaded = false;
+  let googleTagScript;
+
+  // Queue consent as denied before any Google tag can run.
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function gtag() {
+    window.dataLayer.push(arguments);
+  };
+
+  window.gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  });
+  window.gtag('js', new Date());
+  window.gtag('config', measurementId);
+
+  return consent.on('analytics', (allowed) => {
+    window.gtag('consent', 'update', {
+      analytics_storage: allowed ? 'granted' : 'denied',
+    });
+
+    if (!allowed) {
+      googleTagScript?.remove();
+      googleTagScript = null;
+      googleTagLoaded = false;
+      return;
+    }
+    if (googleTagLoaded) return;
+
+    googleTagLoaded = true;
+    googleTagScript = document.createElement('script');
+    googleTagScript.async = true;
+    googleTagScript.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    document.head.append(googleTagScript);
+  });
+}
+
 /** Create a consent manager with a floating notice, preference UI, and localStorage-backed decisions. */
 export function createCookieConsent(options = {}) {
   if (!options || typeof options !== 'object' || Array.isArray(options)) {

@@ -1,4 +1,4 @@
-<script setup>
+<script>
 import { effect, onCleanup, signal, visibleIsland } from 'nodula-framework';
 
 import DemoCounter from '../components/DemoCounter.comp';

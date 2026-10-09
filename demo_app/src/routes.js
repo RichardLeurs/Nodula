@@ -43,5 +43,8 @@ export const routes = new Proxy(routeComponents, {
 });
 
 export function notFound() {
-  return document.createTextNode('Page not found');
+  const element = document.createElement('div');
+  element.className = 'ui-route-not-found';
+  element.textContent = 'Page not found';
+  return element;
 }

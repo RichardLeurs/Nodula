@@ -8,7 +8,7 @@ The repository package is named `nodula-framework` and its manifest defines the 
 
 Run these commands from the repository root:
 
-```
+```sh
 npm install
 npm run dev
 ```
@@ -16,7 +16,7 @@ npm run dev
 
 ## Build and test the checkout
 
-```
+```js
 npm run build
 npm run preview
 npm test
@@ -28,19 +28,19 @@ npm test
 
 The checkout's demo is the supported, working integration example. Its Vite config loads the `.page` compiler plugin from the repository source, and app code imports the public runtime entries:
 
-```
+```js
 import { computed, effect, h, mount, signal } from 'nodula-framework';
 ```
 
 The optional form helpers use a separate entry:
 
-```
+```js
 import { createForm } from 'nodula-framework/form';
 ```
 
 The router is also an optional add-on with a separate entry:
 
-```
+```js
 import { createRouter } from 'nodula-framework/router';
 
 const router = createRouter({

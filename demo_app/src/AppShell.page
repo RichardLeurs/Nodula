@@ -1,16 +1,16 @@
-<script setup>
+<script>
 import { effect, onCleanup, onMount } from 'nodula-framework';
 import { createRouter } from 'nodula-framework/router';
 import { createSEO } from 'nodula-framework/seo';
 import { createNavigation } from 'nodula-framework/navigation';
 import { enableLifecycleTransitions } from 'nodula-framework/animation';
 import { createLocalStorage } from 'nodula-framework/localstorage';
-import { createCookieConsent } from 'nodula-framework/cookieconsent';
+import { createCookieConsent, setupGoogleAnalytics } from 'nodula-framework/cookieconsent';
 import cookieConsentImage from './assets/images/cookie.webp';
 import { demoAuth, initializeDemoAuth, navigateDemoRoute, protectDemoAdminRoute, setDemoRouter, signOutDemoAdmin } from './demo-auth.js';
 import { notFound, routes } from './routes.js';
 
-
+const GA_ID = 'G-7TZGDGCGKJ';
 // For router
 //import { createRouter } from 'nodula-framework/router';
 //import { notFound, routes } from './routes.js';
@@ -42,11 +42,11 @@ const seo = createSEO(router, {
     },
   },
 });
+
 setDemoRouter(router);
 enableLifecycleTransitions({ options: { duration: 500, easing: 'ease-out' } });
 
 let consent;
-//const COOKIE_CONSENT_OPTIONS = {  };
 
 onCleanup(() => consent?.close());
 
@@ -62,9 +62,9 @@ onMount(() => {
     necessary: 'Necessary',
     necessaryDescription: 'Required to run this demo. Always active.',
     analytics: 'Analytics',
-    analyticsDescription: 'Helps us understand which Nodula pages visitors use.',
+    analyticsDescription: 'Helps us understand which Nodula pages visitors use. Shares data with Google Analytics.',
     personalization: 'Personalisation',
-    personalizationDescription: 'Remembers preferences that make the Nodula demo more useful. Shares data with Google Analytics.',
+    personalizationDescription: 'Remembers preferences that make the Nodula demo more useful.',
     marketing: 'Marketing',
     marketingDescription: 'Measures the effectiveness of Nodula announcements and campaigns.',
     btn_acceptAll: 'Accept all',
@@ -75,59 +75,23 @@ onMount(() => {
     btn_settings: 'Cookie settings',
     privacyPolicy: 'Privacy policy',
   },
-  categories: [
-  {
-    id: 'another',
-    label: 'this is an extra category',
-    description: 'explain what it is',
-  },
-],
+//   categories: [
+//   {
+//     id: 'another',
+//     label: 'this is an extra category',
+//     description: 'explain what it is',
+//   },
+// ],
   showAnalytics: true,
-  showPersonalization: false,
-  showMarketing: false,
+  showPersonalization: flase,
+  showMarketing: flase,
   privacyPolicyUrl: 'https://nodula-docs.richardleurs.nl/guide/privacy.html',
   showSettingsButton: false
   });
-  const GA_ID = 'G-G-7TZGDGCGKJ';
-  let googleTagLoaded = false;
-  let googleTagScript;
 
-// Queue consent as denied before any Google tag can run.
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = window.gtag || function gtag() {
-    window.dataLayer.push(arguments);
-  };
-
-  window.gtag('consent', 'default', {
-    analytics_storage: 'denied',
-    ad_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
-  });
-  window.gtag('js', new Date());
-  window.gtag('config', GA_ID);
-
-// Check consent analytics.
-  consent.on('analytics', (allowed) => {
-    window.gtag('consent', 'update', {
-      analytics_storage: allowed ? 'granted' : 'denied',
-    });
-
-    if (!allowed) {
-      googleTagScript?.remove();
-      googleTagScript = null;
-      googleTagLoaded = false;
-      return;
-    }
-    if (googleTagLoaded) return;
-
-    googleTagLoaded = true;
-    googleTagScript = document.createElement('script');
-    googleTagScript.async = true;
-    googleTagScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-    document.head.append(googleTagScript);
-  });
+  setupGoogleAnalytics(consent, GA_ID);
 });
+
 let disposeNavigation;
 let disposeNavigationEffect;
 let navigationElement;
@@ -208,7 +172,7 @@ function setNavigationElement(element) {
       { label: 'Forms', href: '/forms' },
         { label: 'Dialogs', href: '/modal' },
       { label: 'Web Components', href: '/web-components' },
-      { label: 'NodulaUI', href: '/democss' },
+      // { label: 'NodulaUI', href: '/democss' },
       //...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
       // { label: 'Demo login', href: '/login' },
       { label: 'Guide', href: 'https://nodula-docs.richardleurs.nl/', external: true },

@@ -1,4 +1,4 @@
-<script setup>
+<script>
 
 import addonImage from '../assets/images/addon.webp';
 

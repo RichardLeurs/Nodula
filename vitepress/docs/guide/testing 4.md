@@ -1,5 +1,0 @@
-# Testing
-
-Framework and demo-app JavaScript tests run as separate Vitest suites; the local API tests use Python's `unittest`. Run `npm run test:framework` for framework tests, `npm run test:demo` for demo-app tests, or `npm test` to type-check the framework and run both suites. Use `npm run test:framework:watch` or `npm --prefix demo_app run test:watch` for watch mode.
-
-Framework tests live in `/framework/vitest` and cover compiler output, DOM/reactivity behavior, routing, add-ons, plugin behavior, tree shaking, and generated framework artifacts. Demo-app tests live in `/demo_app/vitest` and exercise rendered routes, app interactions, styling, and demo behavior. Each suite has its own Vitest config and resolves framework imports to this checkout's `/framework` source; generated-artifact checks still read `/dist/framework`. Use `npm run test:api` for only the Python API suite. Browser-engine, accessibility, and performance benchmark suites remain future targets; see [Specifications and Limits](/guide/specifications).

@@ -1,70 +1,154 @@
-# Reactivity and DOM
+# Reactivity Fundamentals
 
-Nodula's core is a small set of runtime primitives. Import them from `nodula-framework`; optional add-ons such as reactive stores use their own package entries.
+Nodula core reactivity connects state reads to the effects that use them. When a tracked value changes, only dependent computations and DOM bindings rerun. The core API uses getter/setter signals; nested object and array proxies are available separately through the optional Store add-on.
 
-## Signals, computed values, and effects
+## Prerequisites
 
-```
+Import reactive primitives from `nodula-framework`. This guide uses browser examples; the runtime does not provide server-side rendering or hydration. For full public signatures, see [Framework Core](/guide/framework-core).
+
+## Core concepts
+
+- **Signal:** a pair of functions `[read, write]`. Calling `read()` retrieves current value and tracks the read inside an effect or computed callback. `write(value)` replaces the value; `write(current => next)` derives a new one.
+- **Computed:** a read-only accessor derived from reactive reads. It updates when its dependencies update.
+- **Effect:** a side-effect callback that runs immediately and reruns when values it read change. It returns a stop function.
+- **Owner scope:** a root or effect execution that owns cleanup callbacks, nested effects, and DOM listeners.
+- **DOM binding:** a function child or function-valued property passed to core DOM helpers. Reads inside it are tracked, then that specific binding updates when dependencies change.
+
+## Quick start
+
+```js
 import { computed, effect, signal } from 'nodula-framework';
 
 const [count, setCount] = signal(0);
 const doubled = computed(() => count() * 2);
 
 const stop = effect(() => {
-  console.log(`count=${count()}, doubled=${doubled()}`);
+  console.log(`Count: ${count()}, doubled: ${doubled()}`);
 });
 
-setCount((value) => value + 1);
+setCount((current) => current + 1);
 stop();
 ```
 
-- `signal(value)`returns a getter and setter. The setter accepts either a replacement value or an updater function.
-- `computed(fn)`returns a read-only getter that follows the signals read by`fn`.
-- `effect(fn)`runs immediately and reruns when a signal it read changes. It returns a function that stops it.
-- `createRoot(fn)`scopes effects and cleanup callbacks;`onCleanup(fn)`registers cleanup with the active root or effect run.
+The effect logs once when created, then again after `setCount`. Calling `stop()` removes its subscriptions so later writes do not rerun it.
 
-Effects track dependencies as they execute, including conditional reads. Notifications are batched for a signal update. `computed` is effect-backed and does not currently expose a separate disposal handle.
+## How it works
 
-## Reactive stores
+### Dependency tracking
 
-The optional `nodula-framework/store` add-on exports `createStore`, which creates a reactive proxy for plain objects and arrays, including nested plain objects and arrays:
+An effect records signal reads made during its current run. Before rerunning, Nodula removes its previous dependencies and tracks the reads made this time. This supports conditional dependencies:
 
-```
-import { effect } from 'nodula-framework';
-import { createStore } from 'nodula-framework/store';
+```js
+const [showLeft, setShowLeft] = signal(true);
+const [left, setLeft] = signal('left');
+const [right, setRight] = signal('right');
 
-const state = createStore({ user: { name: 'Nodula' }, items: [] });
 const stop = effect(() => {
-  console.log(state.user.name, state.items.length);
+  console.log(showLeft() ? left() : right());
 });
 
-state.user.name = 'World';
-state.items.push('Idea');
+setShowLeft(false); // effect switches from left to right dependency
 stop();
 ```
 
-Property reads, key enumeration, and presence checks are tracked. Writes, deletes, and array mutations notify subscribers. Class instances, `Map`, and `Set` are ordinary values rather than recursively reactive store data. Import it only in modules that need nested object or array state; the core package no longer includes the store implementation.
+The setter skips notifications when new value is `Object.is`-equal to current value. Signal updates notify dependent computations synchronously; `batch(fn)` groups writes and flushes dependent work when the callback completes.
 
-## DOM helpers
+### Computed values
 
-The lower-level API can create and mount a component without a `.page` file:
+Use `computed()` for derived values instead of storing duplicates:
 
+```js
+const [price, setPrice] = signal(12);
+const [quantity, setQuantity] = signal(3);
+const total = computed(() => price() * quantity());
+
+console.log(total()); // 36
+setQuantity(4);
+console.log(total()); // 48
 ```
-import { computed, h, mount, signal } from 'nodula-framework';
+
+`computed()` returns a read-only accessor. Current implementation is effect-backed and does not expose a separate disposer; create it in an owned scope when its lifetime should be bounded.
+
+### DOM updates
+
+Core `h()` accepts function children and function-valued properties. Those functions become reactive bindings:
+
+```js
+import { h, mount, signal } from 'nodula-framework';
 
 const [count, setCount] = signal(0);
-const doubled = computed(() => count() * 2);
 
 function Counter() {
   return h('button', {
+    type: 'button',
+    title: () => `Current value: ${count()}`,
     onClick: () => setCount((value) => value + 1),
-  }, () => `Count ${count()} · doubled ${doubled()}`);
+  }, () => `Count: ${count()}`);
 }
 
 const unmount = mount('#app', Counter);
-// Call unmount() when the app should be disposed.
 ```
 
-`mount(target, component)` replaces the target's children and returns a disposer. Function-valued children and properties are reactive. Native event listeners are cleaned up with their owning component. Other core helpers include keyed `list`, conditional `when`, `slot`, and `component`.
+Only the dependent text and `title` bindings update. `mount()` returns a disposer that cleans up its root and removes the mounted node. See [Single-File Components](/guide/templates) for template bindings.
 
-For authoring HTML-like components, see [single-file components](/guide/templates). For manual or file-based navigation, see [routing](/guide/routing).
+## Ownership and cleanup
+
+Effects created inside a root are stopped when that root is disposed. `onCleanup()` registers work with the active root or current effect run; effect cleanup runs before the effect reruns and when it stops. Root cleanup runs when the root is disposed.
+
+```js
+import { createRoot, effect, onCleanup, signal } from 'nodula-framework';
+
+const [active, setActive] = signal(true);
+const [, dispose] = createRoot(() => {
+  effect(() => {
+    if (!active()) return;
+    const timer = setInterval(() => console.log('active'), 1000);
+    onCleanup(() => clearInterval(timer));
+  });
+});
+
+setActive(false); // clears timer for the previous effect run
+dispose();        // stops owned effect and root work
+```
+
+Use `onMount()` for work after synchronous root setup; it runs in a microtask and is skipped if the root was disposed first. Use `onUnmount()` for root disposal work. Both require a root scope, not an effect callback.
+
+## Common patterns
+
+### Group related updates with `batch()`
+
+```js
+import { batch, effect, signal } from 'nodula-framework';
+
+const [first, setFirst] = signal('Ada');
+const [last, setLast] = signal('Lovelace');
+effect(() => console.log(`${first()} ${last()}`));
+
+batch(() => {
+  setFirst('Grace');
+  setLast('Hopper');
+});
+```
+
+The dependent effect flushes after the batch rather than between the two writes.
+
+### Choose signals or a store
+
+Signals suit individual values and derived state. For deeply reactive plain objects and arrays, import `createStore` from `nodula-framework/store`; see [Stores](/guide/stores). The store add-on tracks property reads, key enumeration, presence checks, writes, and deletes. It is not included in the core package entry.
+
+## Limitations and troubleshooting
+
+- Read signals by calling their accessor: `count()`. Passing the accessor itself does not read or track its value.
+- Effects track only reads made during their synchronous execution. Reads deferred to a later timer or promise callback are not automatically tracked by the original effect run.
+- Avoid writing a signal on every execution of an effect that also reads that signal unless the update has a clear stopping condition; otherwise it can schedule repeated work.
+- `computed()` has no independent disposal method. Its internal effect is owned by the scope active when it is created.
+- Core `signal()` does not recursively proxy object properties. Use `createStore()` when nested object/array property changes need reactive tracking.
+- `onCleanup()` outside an active root/effect throws. Put resource setup and cleanup inside an owned scope.
+- This client runtime does not perform server rendering or hydration. Initial HTML is not produced by these reactive APIs.
+
+## Related guides
+
+- [Framework Core](/guide/framework-core) — core API reference.
+- [State Management](/guide/state-management) — choosing and scoping application state.
+- [Stores](/guide/stores) — nested object and array reactivity.
+- [Single-File Components](/guide/templates) — reactive templates and DOM bindings.

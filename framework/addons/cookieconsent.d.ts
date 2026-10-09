@@ -85,5 +85,8 @@ export interface CookieConsent {
   close(): void;
 }
 
+/** Queue Google consent defaults and load the tag only while analytics consent is granted. */
+export function setupGoogleAnalytics(consent: CookieConsent, measurementId: string): () => void;
+
 /** Create a bottom-floating consent notice and localStorage-backed consent manager. */
 export function createCookieConsent(options?: CookieConsentOptions): CookieConsent;

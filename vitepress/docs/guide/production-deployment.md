@@ -1,20 +1,96 @@
 # Production Deployment
 
-Build the repository demo with `npm run build` and inspect the generated `dist/app/` output. The app build copies framework runtime and add-on bundles into `dist/app/nodula/`, matching the `/nodula/` URLs referenced by generated JavaScript. The build then checks that every service-worker precache entry exists in `dist/app/`; treat failures as incomplete or inconsistent build output. Deploy the contents of `dist/app/` as the site root, preserving the `nodula/` subdirectory. Build the framework before an app-only build.
+This guide describes building and hosting Nodula's repository demo. A separately structured application may use a different output directory, base path, API, and service-worker configuration; adapt these steps to that app's Vite config rather than assuming demo-specific paths apply unchanged.
 
-## Cache and deployment order
+## Build the repository demo
 
-Configure the host to revalidate shell and PWA control files, rather than keeping old copies for days:
+From the repository root, build the framework package and demo app:
+
+```sh
+npm install
+npm run build
+```
+
+The root `npm run build` runs framework tests, packages the framework, checks generated declarations, runs demo tests, builds the app, then builds the docs. For an app-only rebuild after framework outputs already exist:
+
+```sh
+npm run build:app
+```
+
+An app-only build does not create framework bundles. Build those first when absent or stale:
+
+```sh
+npm run build:framework
+npm run build:app
+```
+
+The demo app build writes the deployable site to `dist/app/`. It copies framework core and add-on bundles into `dist/app/nodula/`; generated application chunks refer to those `/nodula/` URLs. The app build also copies `demo_app/src/assets/images/logo-64x64.png` to `dist/app/assets/logo-64x64.png`. Deploy the complete contents of `dist/app/` as the site document root, preserving `assets/`, `nodula/`, `index.html`, and generated PWA files.
+
+The demo uses root-relative paths (including `/assets/...` and `/nodula/...`). Hosting it under a URL subdirectory requires configuring Vite's base path and reviewing the manifest, service-worker scope, router URLs, and asset URLs together; changing only the upload directory is not sufficient.
+
+## Preview and verify output
+
+Preview the built demo locally:
+
+```sh
+npm --prefix demo_app run preview
+```
+
+The demo build runs `demo_app/verify-precache.mjs`, which verifies that every URL in the generated service-worker precache manifest points to a file in `dist/app/`. If verification fails, rebuild and deploy the complete matching output; do not publish an HTML or service worker that points to missing assets. Preview validates the app build, but does not reproduce your production CDN, headers, DNS, API, TLS, or hosting rewrites.
+
+## Configure routing fallback
+
+The demo uses the History API router. Configure the production host to serve the app's `index.html` for unknown application paths, while still serving real assets and API endpoints normally. Without this single-page-app fallback, direct visits and browser refreshes of routes such as `/guide` can receive a server 404 before Nodula starts.
+
+Keep the fallback scoped to application navigation. Do not rewrite missing `/assets/...`, `/nodula/...`, service-worker, manifest, or API requests to `index.html`; returning HTML for a missing JavaScript chunk or API response hides the actual error and can break runtime behavior. Hash-mode routers do not need path-based fallback because the fragment is not sent to the server.
+
+History fallback is hosting configuration, not a Nodula runtime feature. Test direct route visits, refreshes, unknown paths, and static asset 404s on the actual host.
+
+## Cache headers and release ordering
+
+Use conservative revalidation for the application shell and PWA control files, and long-lived immutable caching only for content-hashed assets:
 
 | Files | Suggested cache policy |
 |---|---|
 | `index.html`, `sw.js`, `workbox-*.js`, `manifest.webmanifest` | `Cache-Control: no-cache, must-revalidate` |
-| Fingerprinted files under `assets/` | `Cache-Control: public, max-age=31536000, immutable` |
+| Fingerprinted files under `assets/` (and any versioned framework files, if configured) | `Cache-Control: public, max-age=31536000, immutable` |
 
-Publish each build atomically: upload new assets first, then publish the new HTML and service worker together. Keep previous fingerprinted assets available for at least the maximum lifetime of open pages and installed service workers, because an existing client may still request chunks from the previous build during activation or navigation. Do not delete old chunks before clients can no longer reference them.
+Publish releases atomically: upload new assets first, then publish matching HTML and service-worker files. Retain old fingerprinted chunks while open pages or older service workers might still request them. Removing old chunks immediately can break an already-open client during navigation or update activation.
 
-The demo keeps image sources in `demo_app/src/assets/images/`; its build copies the 64×64 PNG favicon from that directory to `dist/assets/logo-64x64.png`, referenced by the built `index.html`.
+## API, authentication, and secrets
 
-For history-mode routing, configure the host to return `index.html` for unknown app paths so direct visits and refreshes reach the client router. If an app needs the demo's `/api`, replace its local Python server and Vite proxy with a production-grade same-origin API, authentication/authorization, HTTPS, and persistent storage. The demo's Python `http.server` has no authentication and must not be exposed publicly. See [Getting Started](/guide/getting-started).
+The demo Vite config proxies `/api` to a local development server at `http://localhost:8787`. That proxy is development tooling; it is not included as a production reverse proxy. A deployed app that needs an API must configure its own production API origin/routing, HTTPS, authentication and authorization, persistence, CORS/CSRF protections where applicable, and operational monitoring.
 
-For an app using the optional PWA integration, deploy the generated web manifest and service worker from the build output at the configured base path, use HTTPS (except for localhost), and configure SPA navigation fallbacks without intercepting the service worker or manifest requests. Review any Workbox runtime caching rules before caching API or user-specific responses. See [Progressive Web Apps](/guide/pwa).
+The repository's example Python `http.server` API has no authentication or per-user authorization and is local/demo-only. **Do not expose it publicly or use it as production infrastructure.** Client-side route guards, hidden UI, and browser-side auth checks are not access control; authorize every protected request on the server. Never embed server credentials or secrets in browser bundles. See [Security](/guide/security) and [Authentication](/guide/auth).
+
+## Optional PWA deployment
+
+The demo opts into `nodulaPWA()` in its Vite config. Deploy the generated manifest and service worker at paths consistent with the app's configured base and service-worker scope. Serve production PWAs over HTTPS (localhost is suitable for development). Preserve the generated files referenced by the worker and test install, offline navigation, and update behavior on the target host.
+
+Review Workbox runtime-caching rules before caching API or user-specific responses. Do not precache private data or assume that an app-shell fallback is appropriate for every request. Coordinate service-worker navigation fallback with the host's History API fallback so neither returns the app shell for missing assets, API errors, the manifest, or worker scripts. See [Progressive Web Apps](/guide/pwa) for plugin options and caching boundaries.
+
+## SEO and static output boundaries
+
+The demo config generates sitemap and robots assets during the Vite build using its configured public origin and route list. Set the equivalent values to the real canonical production origin and public route set in your app's build config; do not copy the demo domain or publish private routes in a sitemap. Nodula's runtime is client-rendered and does not provide server-side rendering or hydration, so deployment of static assets alone does not produce server-rendered route HTML or per-route metadata before JavaScript runs. See [SEO](/guide/seo) and [Specifications and Limits](/guide/specifications).
+
+## Deployment checklist
+
+- [ ] Run the production build and resolve framework, app, and precache verification failures.
+- [ ] Deploy the complete `dist/app/` output, including `nodula/` and all generated assets.
+- [ ] Confirm configured base path matches asset URLs, router URLs, manifest, and service-worker scope.
+- [ ] Configure History API fallback only for app routes; preserve 404 behavior for missing assets and APIs.
+- [ ] Set revalidation headers on HTML/PWA control files and immutable caching on fingerprinted assets.
+- [ ] Publish new assets before shell/service-worker files and retain previous hashed assets during rollout.
+- [ ] Replace the local demo API and enforce authorization server-side; keep secrets out of client code.
+- [ ] Test direct route refresh, API calls, PWA update/offline behavior, and asset error responses on the production-like host.
+- [ ] Review canonical SEO origin, sitemap routes, robots rules, and client-rendering expectations.
+
+## Related guides
+
+- [Quick Start](/guide/quick-start) — build and run the reference app.
+- [Tooling](/guide/tooling) — repository Vite and compiler setup.
+- [Routing](/guide/routing) — History API behavior and SPA fallback requirements.
+- [Progressive Web Apps](/guide/pwa) — service worker and Workbox configuration.
+- [Security](/guide/security) and [Authentication](/guide/auth) — server-side trust boundaries.
+- [SEO](/guide/seo) — sitemap, robots, and route metadata.
+- Build verification: `demo_app/verify-precache.mjs` and `demo_app/vitest/verify-precache.test.js`.

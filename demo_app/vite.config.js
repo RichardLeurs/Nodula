@@ -51,6 +51,11 @@ function appBuildConfig() {
 
   return {
     root: demoRoot,
+    server: {
+      proxy: {
+        '/api': 'http://localhost:8787',
+      },
+    },
     resolve: {
       dedupe: ['nodula-framework'],
       alias: packageAliases,

@@ -195,8 +195,11 @@ textarea {
 /* -- 05-base ---------------------------------------------------------------------------------- */
 
 .ui-app {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
   background-image:
     linear-gradient(135deg, var(--page-bg), var(--page-gradient));
   background-repeat: no-repeat, no-repeat;
@@ -226,6 +229,9 @@ a {
 /* Page header */
 
 .ui-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   height: 78px;
   max-width: 1200px;
   margin: 0 auto;
@@ -234,6 +240,7 @@ a {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
+  background: var(--page-bg);
 }
 
 .ui-brand {
@@ -424,13 +431,21 @@ a {
 .ui-site-footer {
   width: min(100% - 72px, 1128px);
   min-height: 63px;
-  margin: 0 auto;
+  margin: auto auto 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: var(--muted-footer);
   font-size: 0.875rem;
   gap:20px
+}
+
+.ui-route-not-found {
+  display: grid;
+  min-height: calc(100vh - 141px);
+  place-items: center;
+  text-align: center;
+  color: var(--ui-color-text);
 }
 
 .ui-page {
@@ -571,6 +586,7 @@ border-radius: var(--ui-radius-medium);
   border: 1px solid var(--ui-color-border);
   border-radius: var(--ui-radius-medium);
   background: var(--ui-color-surface);
+      margin: var(--ui-space-2) 0 0;
 }
 
 .ui-panel--raised,
@@ -611,9 +627,22 @@ border-radius: var(--ui-radius-medium);
 .ui-panel__title,
 .ui-card__title {
   margin: 0;
+
   color: var(--ui-color-text);
   font-size: 1.6rem;
   line-height: 1.35;
+}
+
+.ui-card__title {
+  margin-top: var(--ui-space-4);
+}
+
+.ui-card .ui-card__title {
+  margin-top: 0;
+}
+
+.ui-ideas-card .ui-card__title {
+  margin-top: 0;
 }
 
 .ui-panel__description,
@@ -989,6 +1018,7 @@ border-radius: var(--ui-radius-medium);
   gap: var(--ui-space-1);
   overflow-x: auto;
   border-bottom: 1px solid var(--ui-color-border);
+  margin-bottom: 20px;
 }
 
 .ui-tab {
@@ -1018,7 +1048,7 @@ border-radius: var(--ui-radius-medium);
   min-height: 54px;
   padding: var(--ui-space-3);
   border-radius: var(--ui-radius-small);
-  background: var(--ui-color-surface-sunken);
+  background: transparent;
 }
 
 .ui-switch {
@@ -1420,9 +1450,10 @@ border-radius: var(--ui-radius-medium);
 
 .ui-home-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr);
+  /* grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr); */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(var(--ui-space-6), 5vw, var(--ui-space-10));
+  gap: clamp(var(--ui-space-8), 5vw, var(--ui-space-10));
   padding: var(--ui-space-8) 0 var(--ui-space-10);
   /* border-bottom: 1px solid var(--ui-color-border); */
 }
@@ -1790,6 +1821,15 @@ border-radius: var(--ui-radius-medium);
   background: color-mix(in srgb, var(--ui-color-danger) 10%, transparent);
 }
 
+.ui-data-table-panel {
+  overflow: hidden;
+}
+
+.ui-data-table__error {
+  margin: 0;
+  padding: var(--ui-space-4);
+}
+
 .ui-ideas-card__add {
   column-gap: var(--ui-space-3);
   padding-top: var(--ui-space-3);
@@ -1849,6 +1889,7 @@ border-radius: var(--ui-radius-medium);
   position: relative; /* Positioning context for the tooltip */
   display: inline-block; /* Allows the tooltip to be inline */
   cursor: pointer; /* Changes cursor to indicate hoverable text */
+  font-size: small;
 }
 
 .ui-tooltip-text {

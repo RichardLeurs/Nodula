@@ -1,4 +1,4 @@
-<script setup>
+<script>
 import { signal } from 'nodula-framework';
 import { showDialog } from 'nodula-framework/dialog';
 import { showModal } from 'nodula-framework/modal';

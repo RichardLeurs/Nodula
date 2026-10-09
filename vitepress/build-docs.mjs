@@ -1,4 +1,4 @@
-import { access, cp, mkdir } from 'node:fs/promises';
+import { access, cp, mkdir, rm } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -16,6 +16,9 @@ try {
 }
 
 const vite = fileURLToPath(new URL('../node_modules/vite/bin/vite.js', import.meta.url));
+await rm(publishDirectory, { recursive: true, force: true });
+await mkdir(publishDirectory, { recursive: true });
+
 const result = spawnSync(process.execPath, [vite, 'build', '--config', 'vite.config.js', '--mode', 'docs'], {
   cwd: repositoryRoot,
   stdio: 'inherit',

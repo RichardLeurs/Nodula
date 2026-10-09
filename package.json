@@ -93,6 +93,7 @@
   },
   "scripts": {
     "dev": "npm run install:framework && npm --prefix demo_app run dev",
+    "dev:api": "php -S localhost:8787 -t . api/index.php",
     "build": "npm run test:framework && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run test:demo && npm run build:app && npm run build:docs",
     "build:app": "npm --prefix demo_app run build",
     "build:docs": "node vitepress/build-docs.mjs",

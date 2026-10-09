@@ -1,0 +1,54 @@
+<script>
+import { effect, signal } from 'nodula-framework';
+
+const [columns, setColumns] = signal([]);
+const [rows, setRows] = signal([]);
+const [errorMessage, setErrorMessage] = signal('');
+
+function formatCell(value) {
+  if (value == null) return '';
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(value);
+}
+
+effect(() => {
+  try {
+    const parsed = JSON.parse(props.json);
+    if (!Array.isArray(parsed) || parsed.some((row) => row === null || typeof row !== 'object' || Array.isArray(row))) {
+      throw new TypeError('JSON must be an array of objects.');
+    }
+
+    const nextColumns = [...new Set(parsed.flatMap((row) => Object.keys(row)))];
+    setColumns(nextColumns);
+    setRows(parsed.map((values, index) => ({ id: index, values })));
+    setErrorMessage('');
+  } catch (error) {
+    setColumns([]);
+    setRows([]);
+    setErrorMessage(error instanceof SyntaxError ? 'JSON is not valid.' : error.message);
+  }
+});
+</script>
+
+<template>
+  <div class="ui-panel ui-panel--bordered ui-data-table-panel">
+    <p class="ui-alert ui-alert--danger ui-data-table__error" role="alert" @show="Boolean(errorMessage())">{{ errorMessage() }}</p>
+    <div class="ui-table-wrap" @show="!errorMessage()">
+      <table class="ui-table" aria-label="SQLite ideas data">
+        <thead>
+          <tr>
+            <th scope="col" @for="column of columns()" :key="column()">{{ column() }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr @for="row of rows()" :key="row().id">
+            <td @for="column of columns()" :key="column()">{{ formatCell(row().values[column()]) }}</td>
+          </tr>
+          <tr @if="rows().length === 0 && columns().length > 0">
+            <td :colspan="columns().length">No rows found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>

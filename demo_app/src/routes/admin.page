@@ -1,4 +1,4 @@
-<script setup>
+<script>
 import { demoAuth } from '../demo-auth.js';
 </script>
 

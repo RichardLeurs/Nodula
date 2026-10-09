@@ -1,4 +1,4 @@
-<script setup>
+<script>
 import { signal } from 'nodula-framework';
 import cssImage from '../assets/images/css.webp';
 

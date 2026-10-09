@@ -1,34 +1,77 @@
-# Data Requests
+# Data Add-on
 
-The optional `nodula-framework/data` add-on provides a small client built on the browser's Fetch API. Import it separately so HTTP helpers do not add code to the core runtime:
+The optional `nodula-framework/data` add-on provides a small client built on the browser’s Fetch API. It adds base-URL joining, shared headers, query parameters, JSON body/response handling, HTTP errors, and method helpers while keeping networking code out of the core runtime. Requests run in the environment where the client is called; this API does not create a server proxy or enforce authorization.
 
-The demo app's `/data` route loads a post from `https://jsonplaceholder.typicode.com/posts/1` when you click **Load JSON**. No request is made just by opening the page. Requests are made by the visitor's browser, so trying other addresses requires that server to allow cross-origin requests (CORS). The page also includes a full-width, padded IndexedDB ideas panel demonstrating local create, complete, and remove actions independently of the data client, followed by a `createIndexedDB` example. `createIndexedDB` belongs to `nodula-framework/localstorage`; see the [browser storage guide](/guide/local-storage#indexeddb) for its complete API details.
+## Install and import
 
-```
+The add-on is included with Nodula. Import `createDataClient` and, when you need to distinguish HTTP failures, `DataError`:
+
+```js
 import { createDataClient, DataError } from 'nodula-framework/data';
+```
 
+No additional runtime dependency or plugin is required.
+
+## Quick start
+
+```js
 const api = createDataClient({ baseURL: '/api' });
+
 const ideas = await api.get('/ideas', { params: { limit: 10 } });
 const created = await api.post('/ideas', { text: 'Plant a garden' });
+await api.patch(`/ideas/${created.id}`, { done: true });
 ```
 
-## Client options
+Relative request paths are joined to `baseURL`. Absolute request URLs are used as-is. Requests are not made until a client method is called.
 
-`createDataClient({ baseURL, headers, fetcher })` accepts:
+## API reference
 
-- **`baseURL`**: optional URL prefix joined with each request path.
-- **`headers`**: default request headers. Headers passed to an individual request override defaults.
-- **`fetcher`**: a Fetch-compatible function; defaults to`globalThis.fetch`and can be replaced for tests or custom transports.
+### `createDataClient(options?)`
 
-## Requests and responses
+Creates a Fetch-based client. Options:
 
-The returned client exposes `fetch(path, options)` and its alias `request(path, options)`, plus `get`, `post`, `put`, `patch`, and `delete` helpers. The method helpers accept standard Fetch options; `get` and `delete` take options, while `post`, `put`, and `patch` take a body followed by optional request options.
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `baseURL` | `string` | `''` | URL prefix joined with relative request paths. Must be a string. |
+| `headers` | `HeadersInit` | `{}` | Default request headers. Per-request headers override matching defaults. |
+| `fetcher` | `typeof globalThis.fetch` | `globalThis.fetch` | Fetch-compatible transport, useful for tests or custom transports. Must be a function. |
 
-Pass `params` in request options to append query values. Arrays become repeated query keys, and `null` or `undefined` values are omitted. Plain object and array bodies are JSON-serialized and receive an `application/json` content type unless one is already set. Other `BodyInit` values pass through unchanged.
+Returns a `DataClient` with the following methods:
 
-Responses with a JSON content type are parsed as JSON; other response bodies are returned as text. Empty `204` and `205` responses return `null`. Non-success HTTP responses reject with `DataError`, which exposes the HTTP `status`, original `response`, and parsed response body as `data`. Network errors and JSON parse errors are not hidden or retried.
+| Method | Parameters | Result |
+|---|---|---|
+| `fetch(path, options?)` | `string \| URL`, `DataRequestOptions` | Sends request and parses response. |
+| `request(path, options?)` | Same as `fetch` | Alias of `fetch`. |
+| `get(path, options?)` | Path and request options | Sends `GET`. |
+| `post(path, body?, options?)` | Path, body, request options | Sends `POST`. |
+| `put(path, body?, options?)` | Path, body, request options | Sends `PUT`. |
+| `patch(path, body?, options?)` | Path, body, request options | Sends `PATCH`. |
+| `delete(path, options?)` | Path and request options | Sends `DELETE`. |
 
-```
+Request options extend Fetch `RequestInit` (except `body`, which accepts JSON values too) and add:
+
+| Option | Type | Description |
+|---|---|---|
+| `params` | `URLSearchParams \| Record<string, scalar \| scalar[] \| null \| undefined>` | Appends query parameters. Arrays become repeated keys; `null` and `undefined` entries are omitted. |
+| `body` | `BodyInit \| object \| null` | Plain objects and arrays are JSON-serialized; other Fetch body types pass through. |
+
+### `DataError`
+
+`DataError` extends `Error` and is thrown when a response has a non-success HTTP status. It exposes `status`, the original `response`, and the parsed response body as `data`. Network errors and JSON parse errors propagate as their original errors.
+
+## Request and response behavior
+
+- Per-request headers override default headers.
+- Plain object and array bodies are JSON-serialized and receive `Content-Type: application/json` unless already supplied.
+- `FormData`, `Blob`, strings, and other Fetch `BodyInit` values pass through without JSON serialization.
+- JSON content types are parsed as JSON; other content types are returned as text.
+- Empty `204` and `205` responses return `null`.
+- Standard Fetch options, including `signal`, are passed to the configured fetcher.
+- The client does not retry requests, cache responses, or impose an authentication/session policy.
+
+## Error handling
+
+```js
 try {
   const idea = await api.get('/ideas/42');
 } catch (error) {
@@ -40,4 +83,15 @@ try {
 }
 ```
 
-This add-on does not provide authentication, caching, retries, or request cancellation policy beyond the standard `signal` Fetch option; configure those concerns in the app or its supplied `fetcher`.
+`DataError` covers HTTP error responses. Fetch/network failures and malformed JSON remain separate errors so applications can handle them according to their transport and UI needs.
+
+## Browser, CORS, and security boundaries
+
+When called in a browser, Fetch requests go directly from the visitor’s browser to the target. Cross-origin targets must allow the site’s origin through CORS. Use a same-origin backend endpoint when credentials or private upstream access must stay server-side; do not put server secrets in client headers or source code.
+
+The add-on does not authenticate users or authorize operations. Validate input and enforce authorization on the server for every protected request. See [Security](/guide/security).
+
+## Examples and related resources
+
+- The demo app’s [`/data` page](https://nodula.richardleurs.nl/data) shows browser storage, PHP-backed SQLite and PocketBase endpoints, and remote JSON requests. Its IndexedDB-backed local ideas list is a separate example using `createIndexedDB` from `nodula-framework/localstorage`; see [Local Storage](/guide/local-storage).
+- Data client behavior is covered by `framework/vitest/data.test.js`, and the demo integrations by `demo_app/vitest/data-page.test.js`, `demo_app/vitest/sqlite-ideas.test.js`, and `demo_app/vitest/pocketbase-api.test.js`.

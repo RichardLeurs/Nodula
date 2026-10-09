@@ -1,7 +1,86 @@
-# Tooling
+# Vite Support
 
-Nodula uses Vite for the development server and production build. The package exports `nodulaPlugin` from `nodula-framework/vite` to compile `.page` and `.comp` files in a consumer Vite app. Separate package entries provide the core runtime and optional add-ons.
+Nodula uses Vite for development serving, compiling `.page`/`.comp` single-file components, and production builds. The Vite plugin runs in Node during development/build; it is not included in the browser runtime. Other optional build integrations, such as PWA and static SEO generation, are separate add-ons.
 
-The plugin is a build-time Node/Vite integration, not part of the browser runtime. It is independent of `createFileRouter`: the router consumes modules/loaders, while the plugin compiles single-file sources. The demo uses both together. Vite is an optional peer dependency; install Vite in applications that use the compiler plugin. The project test command uses Node's test runner plus Python `unittest`; it does not currently use Vitest. TypeScript declarations and type fixtures are checked by the repository scripts.
+## Repository prerequisites
 
-See [Routing](/guide/routing), [Testing](/guide/testing), and [TypeScript](/guide/typescript).
+The repository demo is the runnable reference application. From the repository root:
+
+```sh
+npm install
+npm run dev
+```
+
+The root development script builds Nodula core and add-on bundles before starting Vite for the demo. For available workflows see the root `package.json` scripts; key commands include:
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Build framework packages, then start demo Vite server. |
+| `npm run build:framework` | Build core, compiler package entry, and add-on bundles. |
+| `npm run build:app` | Build demo app only; framework bundles must already exist. |
+| `npm run build:docs` | Build VitePress documentation. |
+| `npm test` | Run type checks and framework/demo tests through repository scripts. |
+| `npm run build` | Run framework tests/builds, type checks, demo tests/build, and docs build. |
+
+## Use Nodula's Vite plugin
+
+The published package exposes `nodulaPlugin` from `nodula-framework/vite`. Install Vite and Nodula in an application, then add the plugin to the Vite config:
+
+```js
+import { defineConfig } from 'vite';
+import { nodulaPlugin } from 'nodula-framework/vite';
+
+export default defineConfig({
+  plugins: [nodulaPlugin()],
+});
+```
+
+The plugin handles `.page` and `.comp` modules. It compiles their templates and style blocks into JavaScript/CSS that Vite bundles. The repository implementation lives at `framework/vite-plugin.js`; its `load()` hook reads those files and calls the component/style compiler. See [Single-File Components](/guide/templates) for supported syntax.
+
+### Package and peer dependency boundary
+
+The package exports the plugin at `nodula-framework/vite` and declares Vite as an optional peer dependency. Install a compatible Vite version in the consuming project when using this plugin. Applications using only browser runtime APIs do not need to import the Vite entry at runtime.
+
+The demo config imports `nodulaPlugin` directly from repository source so it can build the checkout while creating its own package tarball. It also aliases package entries to local build output. A normal package consumer should use the public `nodula-framework/vite` entry shown above rather than copy the demo's repository-relative imports and aliases.
+
+## Compiler and router are separate
+
+The Vite plugin compiles `.page` and `.comp` source modules. It does not register routes. The optional router consumes components, route maps, or Vite-discovered module loaders; see [Routing](/guide/routing). A `.page` module is not automatically a URL merely because Vite compiled it.
+
+## Testing and type checks
+
+The framework uses Vitest. Run its suite with:
+
+```sh
+npm run test:framework
+```
+
+The suite covers core runtime behavior, compiler output, Vite plugin loading, add-ons, and declarations. `npm run test:demo` runs demo integration tests. The root `npm test` also includes type-checking; `npm run typecheck:bundle` validates declarations against built package entries.
+
+The focused Vite plugin test is `framework/vitest/vite-plugin.test.js`; compiler behavior is covered by `framework/vitest/compiler.test.js`.
+
+## Optional build integrations
+
+Other build-time tools are imported separately and are not required for basic `.page` compilation:
+
+- [PWA](/guide/pwa): `nodula-framework/pwa` configures `vite-plugin-pwa`.
+- [SEO](/guide/seo): `nodula-framework/seo-vite` emits sitemap and robots assets during builds; `nodula-framework/seo` manages client-side route metadata.
+
+Only add integrations your app needs. Their peer dependencies and deployment boundaries are documented in their respective guides.
+
+## Limitations and troubleshooting
+
+- If Vite treats `.page` or `.comp` as an unknown extension, confirm `nodulaPlugin()` is in the active Vite config and the file uses one of the supported extensions.
+- The Vite plugin is build-time code and must not be imported by browser modules.
+- This compiler supports a focused template subset, not full Vue/Svelte syntax or TypeScript inside `<script setup>`; see [Specifications and Limits](/guide/specifications).
+- Build the framework before running an app-only build. Root `npm run dev` and `npm run build` arrange this automatically; the demo's direct `npm run build` expects packages produced by the framework build first.
+- The demo's `/api` proxy is development tooling, not a production reverse proxy. Production apps need their own API and hosting configuration.
+
+## Related guides
+
+- [Quick Start](/guide/quick-start) — run and mount an application.
+- [Getting Started](/guide/getting-started) — repository and package setup boundaries.
+- [Single-File Components](/guide/templates) — `.page`/`.comp` syntax.
+- [Testing](/guide/testing) — testing practices and framework test setup.
+- [TypeScript](/guide/typescript) — declarations and typed app code.
+- [Production Deployment](/guide/production-deployment) — build output and hosting.

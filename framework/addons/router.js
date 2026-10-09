@@ -1,6 +1,22 @@
 import { effect, onCleanup, signal } from 'nodula-framework';
 
-export function createRouter(routes, fallback = () => document.createTextNode('Page not found'), options = {}) {
+function createCenteredStatus(message) {
+  const element = document.createElement('div');
+  element.textContent = message;
+  Object.assign(element.style, {
+    display: 'grid',
+    minHeight: '100vh',
+    placeItems: 'center',
+    textAlign: 'center',
+  });
+  return element;
+}
+
+function createDefaultFallback() {
+  return createCenteredStatus('Page not found');
+}
+
+export function createRouter(routes, fallback = createDefaultFallback, options = {}) {
   const { mode = 'hash', beforeEach } = options;
   if (mode !== 'hash' && mode !== 'history') throw new Error(`Unsupported router mode: ${mode}`);
   if (beforeEach !== undefined && typeof beforeEach !== 'function') throw new TypeError('Router beforeEach must be a function.');
@@ -60,7 +76,7 @@ export function createRouter(routes, fallback = () => document.createTextNode('P
     const [readState] = routeStateFor(path);
     const state = readState();
     if (state.status === 'loaded') return state.component(route.context);
-    if (state.status === 'error') return document.createTextNode('Could not load this page.');
+    if (state.status === 'error') return createCenteredStatus('Could not load this page.');
     return document.createTextNode('');
   }
 
@@ -304,7 +320,7 @@ export function createFileRouter(files, fallback, options) {
     if (!matched) return undefined;
     return () => {
       const entries = [matched.page.page, ...matched.chain];
-      if (entries.some((item) => item.error())) return document.createTextNode('Could not load this page.');
+      if (entries.some((item) => item.error())) return createCenteredStatus('Could not load this page.');
       if (entries.some((item) => !item.component())) return document.createTextNode(' ');
       let node = matched.page.page.component()({ params: matched.params });
       for (const layout of [...matched.chain].reverse()) node = layout.component()({ params: matched.params, children: node });

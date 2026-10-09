@@ -1,4 +1,4 @@
-<script setup>
+<script>
 import { signal } from 'nodula-framework';
 import webcompImage from '../assets/images/webcomp.webp';
 const [selectedIcon, setSelectedIcon] = signal('');

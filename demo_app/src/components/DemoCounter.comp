@@ -1,4 +1,4 @@
-<script setup>
+<script>
 import { signal } from 'nodula-framework';
 
 const [count, setCount] = signal(0);

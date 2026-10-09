@@ -34,15 +34,18 @@ Set `image` in `createCookieConsent` to display an optional decorative image on 
 
 Set `showSettingsButton: false` in `createCookieConsent` to hide floating settings shortcut after choice. Manage preferences remains available on initial banner; application code can also call `openSettings()`.
 
+Use `setupGoogleAnalytics(consent, measurementId)` from `nodula-framework/cookieconsent` to load Google Analytics only while analytics consent is granted. It queues denied Consent Mode defaults, removes the injected tag on withdrawal, and returns an unsubscribe function. Supply your own GA4 measurement ID.
+
 Dialog buttons accept `btn_cancel` and `btn_ok`; modal and drawer close buttons accept `btn_close`. These are the only supported button-label option names.
 
 The demo's `/democss` page previews components in light and dark themes and demonstrates tabs, switches, progress, and empty/loading states.
+
+The optional router's default `createRouter()` fallback displays “Page not found” centered in the viewport. Pass a custom fallback component to control its content and styling.
 
 
 ## Install and run
 
 This repository contains the code for the Nodula framework and a demo app. This demo app is the website for Nodula, see https://nodula.richardleurs.nl.
-
 To install this repository's dependencies and run the demo locally:
 
 ```sh
@@ -63,6 +66,10 @@ export default defineConfig({
   plugins: [nodulaPlugin()],
 });
 ```
+
+Vite applications can also import `*.module.css` files from a `.page` or `.comp` script and bind the returned local class map in the template, for example `:class="styles.card"`. This uses Vite's CSS Modules support; Nodula `<style module>` blocks are not supported.
+
+The [Styles and CSS Modules guide](https://nodula-docs.richardleurs.nl/guide/styles) compares global CSS imports, component `<style>` / `<style scoped>` blocks, and Vite CSS Modules.
 
 
 
