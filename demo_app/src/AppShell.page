@@ -47,10 +47,23 @@ setDemoRouter(router);
 enableLifecycleTransitions({ options: { duration: 500, easing: 'ease-out' } });
 
 let consent;
+let siteHeaderElement;
+
+function setSiteHeaderElement(element) {
+  siteHeaderElement = element;
+}
+
+function updateSiteHeaderScrollState() {
+  siteHeaderElement?.classList.toggle('ui-site-header--scrolled', window.scrollY > 0);
+}
 
 onCleanup(() => consent?.close());
+onCleanup(() => window.removeEventListener('scroll', updateSiteHeaderScrollState));
 
 onMount(() => {
+  updateSiteHeaderScrollState();
+  window.addEventListener('scroll', updateSiteHeaderScrollState, { passive: true });
+
   consent = createCookieConsent({
   siteName: 'Nodula',
   image: cookieConsentImage,
@@ -83,8 +96,8 @@ onMount(() => {
 //   },
 // ],
   showAnalytics: true,
-  showPersonalization: flase,
-  showMarketing: flase,
+  showPersonalization: false,
+  showMarketing: false,
   privacyPolicyUrl: 'https://nodula-docs.richardleurs.nl/guide/privacy.html',
   showSettingsButton: false
   });
@@ -259,7 +272,7 @@ function setThemeToggleIcons(element) {
 <template>
   <div class="ui-app">
 
-    <header class="ui-site-header">
+    <header class="ui-site-header" @ref="setSiteHeaderElement">
       <a class="ui-brand" href="/" aria-label="Nodula home">
         <!-- <span class="ui-brand__mark" aria-hidden="true">s</span> -->
         <span class="ui-brand__logo" aria-hidden="true"></span>
