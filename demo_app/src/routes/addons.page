@@ -49,7 +49,7 @@ import cookieImage from '../assets/images/cookie.webp';
               <p class="ui-card__description">Reactive form values, validation, touched and dirty state, async submission, and reset helpers.</p>
               <pre class="ui-code-block"><code data-highlight>import { createForm } from 'nodula-framework/form';</code></pre>
             </div>
-            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo <span aria-hidden="true">→</span></a></footer>
+            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open Forms demo <span aria-hidden="true">→</span></a></footer>
           </article>
           <article class="ui-card ui-card--interactive">
             <header class="ui-card__header"><h2 class="ui-card__title">Dialog</h2>
@@ -59,7 +59,7 @@ import cookieImage from '../assets/images/cookie.webp';
               <p class="ui-card__description">Native confirmation dialogs with configurable labels and owner cleanup.</p>
               <pre class="ui-code-block"><code data-highlight>import { showDialog } from 'nodula-framework/dialog';</code></pre>
             </div>
-            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see reset button) <span aria-hidden="true">→</span></a></footer>
+            <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Dialog demo (see reset button) <span aria-hidden="true">→</span></a></footer>
           </article>
           <article class="ui-card ui-card--interactive">
             <header class="ui-card__header"><h2 class="ui-card__title">Modal</h2>
@@ -69,7 +69,7 @@ import cookieImage from '../assets/images/cookie.webp';
               <p class="ui-card__description">Native modal windows with safe content, close controls, and configurable backdrop dismissal.</p>
               <pre class="ui-code-block"><code data-highlight>import { showModal } from 'nodula-framework/modal';</code></pre>
             </div>
-            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see modal button) <span aria-hidden="true">→</span></a></footer>
+            <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Modal demo (see modal button) <span aria-hidden="true">→</span></a></footer>
           </article>
           <article class="ui-card ui-card--interactive">
             <header class="ui-card__header"><h2 class="ui-card__title">Drawer</h2>
@@ -79,7 +79,7 @@ import cookieImage from '../assets/images/cookie.webp';
               <p class="ui-card__description">Accessible modal side panels that open from the left or right.</p>
               <pre class="ui-code-block"><code data-highlight>import { showDrawer } from 'nodula-framework/drawer';</code></pre>
             </div>
-            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see drawer button) <span aria-hidden="true">→</span></a></footer>
+            <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Drawer demo (see drawer button) <span aria-hidden="true">→</span></a></footer>
           </article>
           <article class="ui-card ui-card--interactive">
             <header class="ui-card__header"><h2 class="ui-card__title">Navigation</h2>
@@ -134,7 +134,7 @@ import cookieImage from '../assets/images/cookie.webp';
               <p class="ui-card__description">Fetch data from a server with method helpers, query parameters, and readable HTTP errors. Try the live request on the data demo page.</p>
               <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';</code></pre>
             </div>
-            <footer class="ui-card__footer"><a class="ui-link" href="/data">Open data demo <span aria-hidden="true">→</span></a></footer>
+            <footer class="ui-card__footer"><a class="ui-link" href="/data">Open Data demo <span aria-hidden="true">→</span></a></footer>
           </article>
           <article class="ui-card ui-card--interactive">
             <header class="ui-card__header"><h2 class="ui-card__title">Auth</h2>

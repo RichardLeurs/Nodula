@@ -24,7 +24,7 @@ npm run build:framework
 npm run build:app
 ```
 
-The demo app build writes the deployable site to `dist/app/`. It copies framework core and add-on bundles into `dist/app/nodula/`; generated application chunks refer to those `/nodula/` URLs. The app build also copies `demo_app/src/assets/images/logo-64x64.png` to `dist/app/assets/logo-64x64.png`. Deploy the complete contents of `dist/app/` as the site document root, preserving `assets/`, `nodula/`, `index.html`, and generated PWA files.
+The demo app build writes the deployable site to `dist/app/`. It copies framework core and add-on bundles into `dist/app/nodula/`; generated application chunks refer to those `/nodula/` URLs. App CSS is emitted under `dist/app/assets/css/`, and images under `dist/app/assets/images/`, including the favicon referenced at `/assets/images/logo-64x64.png`. Deploy the complete contents of `dist/app/` as the site document root, preserving `assets/css/`, `assets/images/`, `nodula/`, `index.html`, and generated PWA files.
 
 The demo uses root-relative paths (including `/assets/...` and `/nodula/...`). Hosting it under a URL subdirectory requires configuring Vite's base path and reviewing the manifest, service-worker scope, router URLs, and asset URLs together; changing only the upload directory is not sufficient.
 

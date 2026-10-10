@@ -48,6 +48,14 @@ function appBuildConfig() {
       replacement: fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)),
     })),
   ];
+  const appAssetFileNames = (assetInfo) => {
+    const name = assetInfo.name ?? '';
+    if (name.endsWith('.css')) return 'assets/css/[name]-[hash][extname]';
+    if (/\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(name) || /[?&]url$/.test(assetInfo.originalFileName ?? '')) {
+      return 'assets/images/[name]-[hash][extname]';
+    }
+    return 'assets/[name]-[hash][extname]';
+  };
 
   return {
     root: demoRoot,
@@ -90,13 +98,12 @@ function appBuildConfig() {
         name: 'nodula-copy-app-assets',
         async closeBundle() {
           await Promise.all([
-            mkdir(fileURLToPath(new URL('../dist/app/assets/', import.meta.url)), { recursive: true }),
             mkdir(appFrameworkOutputDirectory, { recursive: true }),
           ]);
           await Promise.all([
             copyFile(
               fileURLToPath(new URL('./src/assets/images/logo-64x64.png', import.meta.url)),
-              fileURLToPath(new URL('../dist/app/assets/logo-64x64.png', import.meta.url)),
+              fileURLToPath(new URL('../dist/app/assets/images/logo-64x64.png', import.meta.url)),
             ),
             cp(frameworkOutputDirectory, appFrameworkOutputDirectory, { recursive: true }),
           ]);
@@ -111,7 +118,10 @@ function appBuildConfig() {
       rolldownOptions: {
         external: (id) => externalEntries.has(id),
         makeAbsoluteExternalsRelative: false,
-        output: { paths: (id) => outputPaths.get(id) ?? id },
+        output: {
+          paths: (id) => outputPaths.get(id) ?? id,
+          assetFileNames: appAssetFileNames,
+        },
       },
     },
   };

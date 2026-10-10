@@ -343,7 +343,7 @@ a {
   height: 23px;
   flex: 0 0 23px;
   /* background: url("./images/logo-nodula-128.webp") center / contain no-repeat; */
-  background: url("./images/logo-64x64.png") center / contain no-repeat;
+  background: url("../images/logo-64x64.png") center / contain no-repeat;
   filter: var(--logo-filter);
 }
 

@@ -16,12 +16,12 @@
       "types": "./dist/nodula/nodula-core.d.ts",
       "import": "./dist/nodula/nodula-core.js"
     },
-    "./nodula-framework.css": "./dist/nodula/nodula-framework.css",
-    "./dialog.css": "./dist/nodula/nodula-dialog.css",
-    "./modal.css": "./dist/nodula/nodula-modal.css",
-    "./drawer.css": "./dist/nodula/nodula-drawer.css",
-    "./notifications.css": "./dist/nodula/nodula-notifications.css",
-    "./cookieconsent.css": "./dist/nodula/nodula-cookieconsent.css",
+    "./nodula-framework.css": "./dist/nodula/css/nodula-framework.css",
+    "./dialog.css": "./dist/nodula/css/nodula-dialog.css",
+    "./modal.css": "./dist/nodula/css/nodula-modal.css",
+    "./drawer.css": "./dist/nodula/css/nodula-drawer.css",
+    "./notifications.css": "./dist/nodula/css/nodula-notifications.css",
+    "./cookieconsent.css": "./dist/nodula/css/nodula-cookieconsent.css",
     "./vite": {
       "types": "./dist/nodula/nodula-vite.d.ts",
       "import": "./dist/nodula/nodula-vite.js"

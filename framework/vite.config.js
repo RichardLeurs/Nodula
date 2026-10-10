@@ -8,6 +8,8 @@ const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 const frameworkSource = (path) => fileURLToPath(new URL(path, import.meta.url));
 const frameworkOutputDirectory = fileURLToPath(new URL('../dist/nodula', import.meta.url));
 const frameworkOutputFile = (filename) => fileURLToPath(new URL(`../dist/nodula/${filename}`, import.meta.url));
+const frameworkCssOutputDirectory = fileURLToPath(new URL('../dist/nodula/css', import.meta.url));
+const frameworkCssOutputFile = (filename) => fileURLToPath(new URL(`../dist/nodula/css/${filename}`, import.meta.url));
 const runtimeEntry = fileURLToPath(new URL('../dist/nodula/nodula-core.js', import.meta.url));
 const reactivityEntry = fileURLToPath(new URL('./reactivity.js', import.meta.url));
 const storeEntry = fileURLToPath(new URL('../dist/nodula/nodula-store.js', import.meta.url));
@@ -42,15 +44,20 @@ function frameworkBuildPlugins() {
   return [{
     name: 'nodula-framework-types-and-styles',
     async closeBundle() {
-      await mkdir(frameworkOutputDirectory, { recursive: true });
+      await Promise.all([
+        mkdir(frameworkOutputDirectory, { recursive: true }),
+        mkdir(frameworkCssOutputDirectory, { recursive: true }),
+        rm(fileURLToPath(new URL('../dist/nodula/assets/css', import.meta.url)), { recursive: true, force: true }),
+        ...['nodula-framework.css', ...frameworkStyles].map((file) => rm(frameworkOutputFile(file), { force: true })),
+      ]);
       const cssParts = await Promise.all(frameworkStyles.map((file) => readFile(frameworkSource(`assets/css/${file}`), 'utf8')));
       const minified = transform({ filename: 'nodula-framework.css', code: Buffer.from(cssParts.join('\n')), minify: true });
       await Promise.all([
         copyFile(frameworkSource('index.d.ts'), frameworkOutputFile('nodula-core.d.ts')),
         copyFile(frameworkSource('public/README.md'), frameworkOutputFile('README.md')),
         copyFile(frameworkSource('public/LICENSE.md'), frameworkOutputFile('LICENSE.md')),
-        writeFile(frameworkOutputFile('nodula-framework.css'), minified.code),
-        ...frameworkStyles.map((file) => copyFile(frameworkSource(`assets/css/${file}`), frameworkOutputFile(file))),
+        writeFile(frameworkCssOutputFile('nodula-framework.css'), minified.code),
+        ...frameworkStyles.map((file) => copyFile(frameworkSource(`assets/css/${file}`), frameworkCssOutputFile(file))),
         copyFile(frameworkSource('assets/vite.config.js'), frameworkOutputFile('vite.config.js')),
         rm(frameworkOutputFile('nodula.js'), { force: true }),
         rm(frameworkOutputFile('nodula.d.ts'), { force: true }),
