@@ -82,9 +82,6 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/introduction' },
-    //  { text: 'Local Storage', link: '/guide/local-storage' },
-      // { text: 'Examples', link: '/markdown-examples' },
-      // { text: 'API Examples', link: '/api-examples' }
     ],
 
     sidebar: [
@@ -156,7 +153,7 @@ export default defineConfig({
           { text: 'Registration', link: '/guide/registration' },
           { text: 'Props', link: '/guide/props' },
           { text: 'Events', link: '/guide/component-events' },
-      //    { text: 'Component v-model', link: '/guide/component-v-model' },
+      //  { text: 'Component v-model', link: '/guide/component-v-model' },
           { text: 'Fallthrough Attributes', link: '/guide/fallthrough-attributes' },
           { text: 'Slots', link: '/guide/slots' },
       { text: 'State Management', link: '/guide/state-management' },
