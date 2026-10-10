@@ -71,7 +71,7 @@ export default defineConfig({
 });
 ```
 
-**Repository boundary:** the current demo config imports `framework/vite-plugin.js` from repository source to compile `.page` and `.comp` files while building this checkout. The compiler implementation is a Node/Vite build-time integration, not browser runtime code. For the supported repository setup and current compiler-install details, see [Tooling](/guide/tooling) and [Getting Started](/guide/getting-started).
+**Repository boundary:** the current demo config imports `framework/vite-plugin.js` from repository source to compile `.page` and `.comp` files while building this checkout. The compiler implementation is a Node/Vite build-time integration, not browser runtime code. For the supported repository setup and current compiler-install details, see [Tooling](/guide/tooling) and [Installation](/guide/installation).
 
 Add-ons externalize the core runtime so an application uses one shared Nodula runtime instance rather than bundling a separate core copy per add-on.
 
@@ -99,7 +99,7 @@ The repository manifest currently has no registry publication workflow. Do not t
 ## Related guides
 
 - [Tooling](/guide/tooling) — Vite and compiler setup.
-- [Getting Started](/guide/getting-started) — repository setup and integration status.
+- [Installation](/guide/installation) — repository setup and integration status.
 - [Quick Start](/guide/quick-start) — create and mount an app.
 - [TypeScript](/guide/typescript) — using emitted declaration files.
 - [Production Deployment](/guide/production-deployment) — building and hosting the demo output.

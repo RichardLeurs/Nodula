@@ -87,7 +87,7 @@ When a component must be consumed from plain HTML or another framework, register
 
 ## Limitations and troubleshooting
 
-- **Unknown `.comp` extension:** confirm the active Vite config installs `nodulaPlugin()` and the project follows the current compiler availability guidance in [Getting Started](/guide/getting-started).
+- **Unknown `.comp` extension:** confirm the active Vite config installs `nodulaPlugin()` and the project follows the current compiler availability guidance in [Installation](/guide/installation).
 - **Imported tag renders as an ordinary HTML tag:** verify a default `.comp` import exists in that same compiled file and that the template tag matches the imported identifier.
 - **Component is not found through an app-wide name:** there is no global component registry; add a local import where the tag is used.
 - **`.page` used as a child tag:** page modules are for application/router use. Create a `.comp` for reusable template children.

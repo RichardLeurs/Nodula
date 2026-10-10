@@ -1,28 +1,10 @@
 # Quick Start
 
-This guide takes you from repository checkout to a mounted Nodula application. It covers package installation, the application entry/root, mounting, and a first single-file page. 
+This guide takes you from a configured Nodula app to a mounted application. For repository installation, local package setup, and Vite plugin configuration, see [Installation](/guide/installation).
 
 Nodula renders in the browser; Vite handles development serving, `.page`/`.comp` compilation, and production builds.
 
-## 1. Install and run the supported demo
-
-From the repository root, install dependencies and start the demo:
-
-```sh
-npm install
-npm run dev
-```
-
-The repository scripts build Nodula core and add-on bundles before starting the demo. To build and test the checkout, run:
-
-```sh
-npm run build
-npm test
-```
-
-The demo is the runnable reference integration for this checkout. The `.page`/`.comp` compiler is provided in this repository as `framework/vite-plugin.js`; it is not currently a public standalone package entry. See [Getting Started](/guide/getting-started) for that package boundary and build workflow.
-
-## 2. Create the HTML mount point
+## 1. Create the HTML mount point
 
 Your HTML page needs an element for the root component:
 
@@ -34,7 +16,7 @@ Your HTML page needs an element for the root component:
 
 Vite loads the JavaScript entry, which imports the root component and mounts it into `#app`.
 
-## 3. Create the root component
+## 2. Create the root component
 
 For a plain JavaScript component, core `mount(target, component)` creates an ownership root, renders the component's returned DOM node, and returns a disposer:
 
@@ -69,20 +51,43 @@ export default function App() {
 
 This direct-DOM setup uses the published core entry. `mount` accepts a selector or an element, replaces its children, and throws if a selector matches no element. Call its returned function to dispose effects/listeners and remove the mounted node.
 
-## 4. Use a single-file page as the root
+## 3. Use a single-file page as the root
 
-In the repository demo, the Vite compiler lets the entry import a `.page` root instead:
+With `nodulaPlugin()` configured, the Vite entry can import and mount a `.page` root:
 
 ```js
-// /src/main.js
-import AppShell from './AppShell.page';
+// src/main.js
 import { mount } from 'nodula-framework';
-import './assets/app.css';
+import App from './App.page';
 
-mount('#app', AppShell);
+mount('#app', App);
 ```
 
-A `.page` or reusable `.comp` file places JavaScript, template, and optional styles together:
+Create `src/App.page`:
+
+```html
+<script>
+import { signal } from 'nodula-framework';
+import Counter from './Counter.comp';
+
+const [count, setCount] = signal(0);
+</script>
+
+<template>
+  <main>
+    <h1>My Nodula app</h1>
+    <p>Page count: {{ count() }}</p>
+    <button type="button" @click="setCount(count() + 1)">Increment</button>
+    <Counter />
+  </main>
+</template>
+
+<style>
+button { font: inherit; }
+</style>
+```
+
+Create reusable component `src/Counter.comp`:
 
 ```html
 <script>
@@ -92,20 +97,13 @@ const [count, setCount] = signal(0);
 </script>
 
 <template>
-  <main>
-    <h1>My Nodula app</h1>
-    <button type="button" @click="setCount(count() + 1)">
-      Count: {{ count() }}
-    </button>
-  </main>
+  <button type="button" @click="setCount(count() + 1)">
+    Component count: {{ count() }}
+  </button>
 </template>
-
-<style>
-button { font: inherit; }
-</style>
 ```
 
-The template compiler supports a focused syntax, requires one template root, and uses JavaScript in `<script>` (not TypeScript). See [Single-File Components](/guide/templates) for supported bindings, events, loops, slots, and imports.
+Vite compiles both `.page` and `.comp` files with `nodulaPlugin()`. Each file needs exactly one template root; script blocks use JavaScript, not TypeScript. Routing is separate: a `.page` file does not automatically become a route. See [Single-File Components](/guide/templates) for supported bindings, events, loops, slots, component imports, and styles.
 
 ## Application instance and root ownership
 

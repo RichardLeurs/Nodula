@@ -69,7 +69,7 @@ Some add-ons require peer tooling or browser APIs; consult each guide for setup 
 ## How to start
 
 1. Follow [Quick Start](/guide/quick-start) to run the repository demo.
-2. Read [Getting Started](/guide/getting-started) for project setup and package boundaries.
+2. Read [Installation](/guide/installation) for project setup and package boundaries.
 3. Learn the reactive foundation in [Reactivity and DOM](/guide/reactivity).
 4. Build a page or reusable component with [Single-File Components](/guide/templates).
 5. Add routing or another optional capability only when your app needs it.

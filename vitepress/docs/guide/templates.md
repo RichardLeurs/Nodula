@@ -8,7 +8,7 @@ Nodula single-file components put component logic, template, and optional styles
 - Core runtime imports from `nodula-framework` for state and lifecycle helpers.
 - Familiarity with [Reactivity and DOM](/guide/reactivity) and [Quick Start](/guide/quick-start).
 
-**Repository boundary:** The Vite compiler is implemented in this checkout as `framework/vite-plugin.js`. `nodula-framework/vite` is a public package entry in package declarations/build output, but a fresh external setup should follow [Getting Started](/guide/getting-started) for the current compiler availability and installation limitations.
+**Repository boundary:** The Vite compiler is implemented in this checkout as `framework/vite-plugin.js`. `nodula-framework/vite` is a public package entry in package declarations/build output, but a fresh external setup should follow [Installation](/guide/installation) for the current compiler availability and installation limitations.
 
 ## Core concepts
 

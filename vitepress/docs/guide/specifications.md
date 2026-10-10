@@ -75,7 +75,7 @@ npm run test:demo
 npm run benchmark:render
 ```
 
-See [Testing](/guide/testing) for suite details and limitations, [Performance](/guide/performance) for benchmark interpretation, [Styles and CSS Modules](/guide/styles) for CSS integration choices, and [Getting Started](/guide/getting-started) for repository and package boundaries.
+See [Testing](/guide/testing) for suite details and limitations, [Performance](/guide/performance) for benchmark interpretation, [Styles and CSS Modules](/guide/styles) for CSS integration choices, and [Installation](/guide/installation) for repository and package boundaries.
 
 ## Related guides
 

@@ -42,7 +42,35 @@ npm run dev
 For a production build, run `npm run build`. This will build the framework to `dist/nodula/` and the demo app to `dist/app/`.
 It also builds the npm package to the /dist/npm directory. The demo app loads that file as the framework package.
 
-To compile `.page` (Nodula route pages) and `.comp` (Reusable Nodula components) files in your own Vite app, install Nodula and Vite, then add the package's build-time plugin:
+### Compile `.page` and `.comp` files in a Vite app
+
+`.page` and `.comp` files are compiled by Nodula's Vite plugin during development and production builds. The plugin runs in Node; it is not part of the browser runtime. `.page` files export components but do not automatically become routes—you mount a page directly or register it with the optional router. `.comp` files are reusable components imported by pages or other components.
+
+This repository is in alpha status, so for a local consumer first build Nodula's package tarball from the checkout, then install it in your Vite project:
+
+```sh
+# From the Nodula repository root
+npm install
+npm run package:framework
+
+# From your Vite app directory; use the generated tarball filename
+npm install /dist/npm/nodula-framework-0.1.0.tgz
+npm install -D vite@^8.3.1
+```
+
+Alternatively, add the local tarball as a file dependency in your app's `package.json` (the relative path is resolved from that file), then run `npm install`:
+
+```json
+{
+  "dependencies": {
+    "nodula-framework": "file:../dist/npm/nodula-framework-0.1.0.tgz"
+  }
+}
+```
+
+The tarball version is controlled by the Nodula package version and may differ from this example. `npm run package:framework` builds the core, compiler entry, add-ons, and declarations before packing them.
+
+Add the Nodula plugin to your app's `vite.config.js`:
 
 ```js
 import { defineConfig } from 'vite';
@@ -52,6 +80,48 @@ export default defineConfig({
   plugins: [nodulaPlugin()],
 });
 ```
+
+Create a page and a reusable component:
+
+```html
+<!-- src/Counter.comp -->
+<script setup>
+import { signal } from 'nodula-framework';
+
+const [count, setCount] = signal(0);
+</script>
+
+<template>
+  <button type="button" @click="setCount(count() + 1)">
+    Count: {{ count() }}
+  </button>
+</template>
+```
+
+```html
+<!-- src/Home.page -->
+<script setup>
+import Counter from './Counter.comp';
+</script>
+
+<template>
+  <main>
+    <h1>My Nodula app</h1>
+    <Counter />
+  </main>
+</template>
+```
+
+Import and mount the page from your Vite entry, such as `src/main.js`:
+
+```js
+import { mount } from 'nodula-framework';
+import Home from './Home.page';
+
+mount('#app', Home);
+```
+
+Then run Vite with your app's scripts (commonly `vite` for development and `vite build` for production). For the full supported template syntax, compiler limits, and current package boundary, see the [Single-File Components guide](https://nodula-docs.richardleurs.nl/guide/templates), [Vite guide](https://nodula-docs.richardleurs.nl/guide/tooling), and [Building the npm Package guide](https://nodula-docs.richardleurs.nl/guide/npm-package).
 
 
 

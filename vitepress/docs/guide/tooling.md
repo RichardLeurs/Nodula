@@ -79,7 +79,7 @@ Only add integrations your app needs. Their peer dependencies and deployment bou
 ## Related guides
 
 - [Quick Start](/guide/quick-start) — run and mount an application.
-- [Getting Started](/guide/getting-started) — repository and package setup boundaries.
+- [Installation](/guide/installation) — repository and package setup boundaries.
 - [Single-File Components](/guide/templates) — `.page`/`.comp` syntax.
 - [Testing](/guide/testing) — testing practices and framework test setup.
 - [TypeScript](/guide/typescript) — declarations and typed app code.
