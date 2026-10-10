@@ -28,7 +28,7 @@ const addonBuilds = {
   router: { entry: 'framework/addons/router.js', output: 'nodula-router.js', types: 'router.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
   animation: { entry: 'framework/addons/animation.js', output: 'nodula-animation.js', types: 'animation.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
   dialog: { entry: 'framework/addons/dialog.js', output: 'nodula-dialog.js', types: 'dialog.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
-  notifications: { entry: 'framework/addons/notifications.js', output: 'nodula-notifications.js', types: 'notifications.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
+  notification: { entry: 'framework/addons/notification.js', output: 'nodula-notification.js', types: 'notification.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
   cookieconsent: { entry: 'framework/addons/cookieconsent.js', output: 'nodula-cookieconsent.js', types: 'cookieconsent.d.ts', externals: [runtimeEntry, 'nodula-framework', 'nodula-framework/localstorage'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js'], ['nodula-framework/localstorage', './nodula-localstorage.js']] },
   modal: { entry: 'framework/addons/modal.js', output: 'nodula-modal.js', types: 'modal.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
   drawer: { entry: 'framework/addons/drawer.js', output: 'nodula-drawer.js', types: 'drawer.d.ts', externals: [runtimeEntry, 'nodula-framework'], paths: [[runtimeEntry, './nodula-core.js'], ['nodula-framework', './nodula-core.js']] },
@@ -54,8 +54,8 @@ function frameworkBuildPlugins() {
       const minified = transform({ filename: 'nodula-framework.css', code: Buffer.from(cssParts.join('\n')), minify: true });
       await Promise.all([
         copyFile(frameworkSource('index.d.ts'), frameworkOutputFile('nodula-core.d.ts')),
-        copyFile(frameworkSource('public/README.md'), frameworkOutputFile('README.md')),
-        copyFile(frameworkSource('public/LICENSE.md'), frameworkOutputFile('LICENSE.md')),
+        copyFile(fileURLToPath(new URL('../README.md', import.meta.url)), frameworkOutputFile('README.md')),
+        copyFile(fileURLToPath(new URL('../LICENSE.md', import.meta.url)), frameworkOutputFile('LICENSE.md')),
         writeFile(frameworkCssOutputFile('nodula-framework.css'), minified.code),
         ...frameworkStyles.map((file) => copyFile(frameworkSource(`assets/css/${file}`), frameworkCssOutputFile(file))),
         copyFile(frameworkSource('assets/vite.config.js'), frameworkOutputFile('vite.config.js')),

@@ -107,13 +107,12 @@ export default defineConfig({
           { text: 'Navigation', link: '/guide/navigation' },
           { text: 'Authentication', link: '/guide/auth' },
           { text: 'Dialog', link: '/guide/dialogs' },
-          { text: 'Notifications', link: '/guide/notifications' },
+          { text: 'Notification', link: '/guide/notification' },
           { text: 'Modal', link: '/guide/modals' },
           { text: 'Side drawer', link: '/guide/drawers' },
           { text: 'Progressive Web App', link: '/guide/pwa' },
           { text: 'SEO', link: '/guide/seo' },
           { text: 'Cookie consent', link: '/guide/cookie-consent' },
-          { text: 'Privacy notice', link: '/guide/privacy' },
           { text: 'Framework Stylesheets', link: '/guide/framework-stylesheet' },
         ]
       },
@@ -174,7 +173,7 @@ export default defineConfig({
         text: 'TypeScript',
         items: [
           { text: 'Overview', link: '/guide/typescript' },
-          { text: 'Privacy', link: '/guide/privacy' },
+        // { text: 'Privacy', link: '/guide/privacy' },
         ]
       },
     ],

@@ -30,9 +30,9 @@
       "types": "./dist/nodula/nodula-dialog.d.ts",
       "import": "./dist/nodula/nodula-dialog.js"
     },
-    "./notifications": {
-      "types": "./dist/nodula/nodula-notifications.d.ts",
-      "import": "./dist/nodula/nodula-notifications.js"
+    "./notification": {
+      "types": "./dist/nodula/nodula-notification.d.ts",
+      "import": "./dist/nodula/nodula-notification.js"
     },
     "./cookieconsent": {
       "types": "./dist/nodula/nodula-cookieconsent.d.ts",
@@ -102,7 +102,7 @@
     "build:router": "vite build --config framework/vite.config.js --mode addon-router",
     "build:animation": "vite build --config framework/vite.config.js --mode addon-animation",
     "build:dialog": "vite build --config framework/vite.config.js --mode addon-dialog",
-    "build:notifications": "vite build --config framework/vite.config.js --mode addon-notifications",
+    "build:notification": "vite build --config framework/vite.config.js --mode addon-notification",
     "build:cookieconsent": "vite build --config framework/vite.config.js --mode addon-cookieconsent",
     "build:modal": "vite build --config framework/vite.config.js --mode addon-modal",
     "build:drawer": "vite build --config framework/vite.config.js --mode addon-drawer",
@@ -114,7 +114,7 @@
     "build:auth": "vite build --config framework/vite.config.js --mode addon-auth",
     "build:seo": "vite build --config framework/vite.config.js --mode addon-seo",
     "build:seo-vite": "vite build --config framework/vite.config.js --mode addon-seo-vite",
-    "build:framework": "vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notifications && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:localstorage && npm run build:data && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite",
+    "build:framework": "vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:localstorage && npm run build:data && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node gzip-framework.mjs",
     "package:framework": "npm run build:framework && npm run pack:framework",
     "pack:framework": "mkdir -p dist/npm && npm pack --pack-destination dist/npm",
     "install:framework": "npm run package:framework && npm run install:framework:package",

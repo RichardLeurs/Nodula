@@ -19,7 +19,7 @@ const addonOutputs = [
   ['localstorage', 'nodula-localstorage.js'],
   ['modal', 'nodula-modal.js'],
   ['navigation', 'nodula-navigation.js'],
-  ['notifications', 'nodula-notifications.js'],
+  ['notification', 'nodula-notification.js'],
   ['cookieconsent', 'nodula-cookieconsent.js'],
   ['pwa', 'nodula-pwa.js'],
   ['router', 'nodula-router.js'],

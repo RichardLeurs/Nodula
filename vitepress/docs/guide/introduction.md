@@ -58,7 +58,7 @@ Add-ons use distinct package entries, so an app imports only the capabilities it
 | Browser persistence | `nodula-framework/localstorage` | [Local Storage](/guide/local-storage) |
 | Fetch client | `nodula-framework/data` | [Data](/guide/data) |
 | Animation | `nodula-framework/animation` | [Animations](/guide/animations) |
-| Dialogs, modals, drawers, notifications | `nodula-framework/dialog`, `/modal`, `/drawer`, `/notifications` | [Dialogs](/guide/dialogs), [Modals](/guide/modals), [Drawers](/guide/drawers), [Notifications](/guide/notifications) |
+| Dialogs, modals, drawers, notifications | `nodula-framework/dialog`, `/modal`, `/drawer`, `/notifications` | [Dialogs](/guide/dialogs), [Modals](/guide/modals), [Drawers](/guide/drawers), [Notifications](/guide/notification) |
 | Cookie consent | `nodula-framework/cookieconsent` | [Cookie Consent](/guide/cookie-consent) |
 | Authentication state helpers | `nodula-framework/auth` | [Authentication](/guide/auth) |
 | SEO metadata and build files | `nodula-framework/seo`, `nodula-framework/seo-vite` | [SEO](/guide/seo) |

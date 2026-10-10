@@ -17,6 +17,7 @@ import authImage from '../assets/images/auth.webp';
 import seoImage from '../assets/images/seo.webp';
 import pwaImage from '../assets/images/pwa.webp';
 import cookieImage from '../assets/images/cookie.webp';
+import notificationImage from '../assets/images/notification.webp';
 
 </script>
 
@@ -60,6 +61,15 @@ import cookieImage from '../assets/images/cookie.webp';
               <pre class="ui-code-block"><code data-highlight>import { showDialog } from 'nodula-framework/dialog';</code></pre>
             </div>
             <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Dialog demo (see reset button) <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Notification</h2>
+            <img class="ui-card__header-image" :src="notificationImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Accessible, transient status messages with success, error, warning, and informational variants.</p>
+              <pre class="ui-code-block"><code data-highlight>import { showNotification } from 'nodula-framework/notification';</code></pre>
+            </div>
           </article>
           <article class="ui-card ui-card--interactive">
             <header class="ui-card__header"><h2 class="ui-card__title">Modal</h2>

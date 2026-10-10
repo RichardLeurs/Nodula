@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.js",
-    "build": "vite build --config vite.config.js && node verify-precache.mjs",
+    "build": "vite build --config vite.config.js && node ../gzip-demo-assets.mjs && node verify-precache.mjs",
     "preview": "vite preview --config vite.config.js",
     "test": "vitest run --config vitest.config.js",
     "test:watch": "vitest --config vitest.config.js"

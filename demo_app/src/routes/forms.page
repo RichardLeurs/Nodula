@@ -3,7 +3,7 @@ import { effect, signal } from 'nodula-framework';
 import { createForm } from 'nodula-framework/form';
 import { animate } from 'nodula-framework/animation';
 import { showDialog } from 'nodula-framework/dialog';
-import { showNotification } from 'nodula-framework/notifications';
+import { showNotification } from 'nodula-framework/notification';
 import formImage from '../assets/images/form.webp';
 import styles from '../assets/css/form.module.css';
 const [submissionMessage, setSubmissionMessage] = signal('');

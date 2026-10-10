@@ -16,7 +16,7 @@ Build and package only the framework:
 npm run package:framework
 ```
 
-This runs `build:framework`, builds the core and separate add-on entries into `dist/nodula/`, copies declarations/styles, then creates a tarball in `dist/npm/` using the package name and version from the root `package.json`.
+This runs `build:framework`, builds the core and separate add-on entries into `dist/nodula/`, copies declarations/styles, writes `.gz` companions for files outside `dist/nodula/css/`, then creates a tarball in `dist/npm/` using the package name and version from the root `package.json`. The demo build also writes `.gz` companions for JavaScript files directly inside `dist/app/assets/`.
 
 If bundles are already built, create the tarball without rebuilding:
 

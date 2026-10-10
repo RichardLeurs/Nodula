@@ -34,7 +34,7 @@ async function bundleConsumer(entry) {
             'localstorage',
             'modal',
             'navigation',
-            'notifications',
+            'notification',
             'pwa',
             'router',
             'seo',
@@ -117,11 +117,11 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   assert.doesNotMatch(dialog, /createTransition/);
   assert.doesNotMatch(dialog, /translateY\(8px\)/);
 
-  const notifications = await bundleConsumer('notifications.js');
-  assert.match(notifications, /treeShakingResult/);
-  assert.match(notifications, /showNotification expects an options object/);
-  assert.match(notifications, /ui-notification/);
-  assert.doesNotMatch(notifications, /createTransition/);
+  const notification = await bundleConsumer('notification.js');
+  assert.match(notification, /treeShakingResult/);
+  assert.match(notification, /showNotification expects an options object/);
+  assert.match(notification, /ui-notification/);
+  assert.doesNotMatch(notification, /createTransition/);
 
   const modal = await bundleConsumer('modal.js');
   assert.match(modal, /treeShakingResult/);

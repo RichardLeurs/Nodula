@@ -16,6 +16,7 @@ import authImage from '../assets/images/auth.webp';
 import seoImage from '../assets/images/seo.webp';
 import pwaImage from '../assets/images/pwa.webp';
 import cookieImage from '../assets/images/cookie.webp';
+import notificationImage from '../assets/images/notification.webp';
 
 
 const loadExtraCard = () => import('../components/ExtraCard.comp').then((module) => module.default);
@@ -48,6 +49,7 @@ const addonCarouselItems = [
   { title: 'SEO', description: 'Manage route-aware metadata and generate sitemap.xml and robots.txt during Vite builds.', image: seoImage },
   { title: 'PWA', description: 'Make your Vite app installable with a generated service worker and precached build assets.', image: pwaImage },
   { title: 'Cookie consent', description: 'Manage versioned privacy choices with a floating consent banner.\n(EU GDPR/ePrivacy)', image: cookieImage },
+  { title: 'Notification', description: 'Show accessible, transient status messages for success, error, warning, and info.', image: notificationImage },
 ];
 const [addonCarouselIndex, setAddonCarouselIndex] = signal(0);
 
