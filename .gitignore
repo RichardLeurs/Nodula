@@ -21,7 +21,6 @@ demo_app/package-lock.json
 demo_app/public/
 !demo_app/.env
 package-lock.json
-tests/
 vitest/
-/package-lock.json
+vitepress/package-lock.json
 demo_os/
