@@ -62,7 +62,14 @@ function collectBlocks(source, componentName) {
     const content = node.childNodes.map((child) => child.value ?? '').join('');
     if (name === 'script') blocks.scripts.push(content);
     if (name === 'template') blocks.templates.push(node);
-    if (name === 'style') blocks.styles.push({ content, scoped: node.attrs.some((attribute) => attribute.name === 'scoped') });
+    if (name === 'style') {
+      const scoped = node.attrs.some((attribute) => attribute.name === 'scoped');
+      const moduleAttribute = node.attrs.find((attribute) => attribute.name === 'module');
+      const module = Boolean(moduleAttribute);
+      if (moduleAttribute?.value) throw new Error(`${componentName}: <style module> does not accept a custom mapping name.`);
+      if (scoped && module) throw new Error(`${componentName}: <style> cannot combine "scoped" and "module".`);
+      blocks.styles.push({ content, scoped, module });
+    }
   }
 
   if (blocks.templates.length !== 1) {
@@ -73,7 +80,7 @@ function collectBlocks(source, componentName) {
   }
   for (const node of document.childNodes) {
     if (['script', 'template', 'style'].includes(node.tagName) && node.attrs.length) {
-      const allowed = node.tagName === 'script' ? ['setup'] : node.tagName === 'style' ? ['scoped'] : [];
+      const allowed = node.tagName === 'script' ? ['setup'] : node.tagName === 'style' ? ['scoped', 'module'] : [];
       const unsupported = node.attrs.find((attribute) => !allowed.includes(attribute.name));
       if (unsupported) throw new Error(`${componentName}: unsupported <${node.tagName}> attribute "${unsupported.name}".`);
     }
@@ -460,8 +467,10 @@ export function compileNodulaComponent(source, id = 'Anonymous.comp') {
   const usesNodulaCss = /\bNodula\s*\.\s*css\s*\(/.test(script);
   const runtimeExports = ['h', ...(usesNodulaCss && !importsNodula ? ['Nodula'] : []), ...(components.size ? ['component'] : []), ...(/\s(?:each|@for)\s*=/.test(source) ? ['each'] : []), ...(usesWhen ? ['when'] : []), ...(usesFragment ? ['fragment'] : []), ...(usesSlot ? ['slot'] : []), ...(usesOutlet ? ['outlet'] : [])].join(', ');
   const generatedImports = [`import { ${runtimeExports} } from "nodula-framework";`, ...imports];
-  const styleImport = styleBlock?.content.trim()
-    ? `\nimport ${JSON.stringify(`${id}?nodula-style${styleBlock.scoped ? '-scoped' : ''}`)};`
+  const styleImport = styleBlock && (styleBlock.module || styleBlock.content.trim())
+    ? styleBlock.module
+      ? `\nimport $style from ${JSON.stringify(`${id}.module.css?nodula-style-module`)};`
+      : `\nimport ${JSON.stringify(`${id}?nodula-style${styleBlock.scoped ? '-scoped' : ''}`)};`
     : '';
 
   return `${generatedImports.join('\n')}${styleImport}\nexport function ${component}({ params = {}, children, slots = {}, props = {} } = {}) {\n${body}\nreturn ${roots[0]};\n}\nexport default ${component};`;
@@ -470,6 +479,7 @@ export function compileNodulaComponent(source, id = 'Anonymous.comp') {
 export function compileNodulaStyle(source, id) {
   const styleBlock = collectBlocks(source, id.split(/[\\/]/).pop()).styles[0];
   if (!styleBlock) return { css: '', scoped: false };
+  if (styleBlock.module) return { css: styleBlock.content, scoped: false, module: true };
   if (!styleBlock.scoped) return { css: styleBlock.content, scoped: false };
   const attribute = scopeAttributeFor(id);
   return { css: scopeStyles(styleBlock.content, attribute), scoped: true, attribute };

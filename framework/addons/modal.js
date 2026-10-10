@@ -1,6 +1,6 @@
 import { onCleanup } from 'nodula-framework';
 import { injectAddonStyles } from './inject-styles.js';
-import modalStyles from '../assets/nodula-modal.css?inline';
+import modalStyles from '../assets/css/nodula-modal.css?inline';
 
 let nextModalId = 0;
 

@@ -109,7 +109,7 @@ For complete examples of global CSS imports, `<style scoped>`, and Vite CSS Modu
 - `:style` is intended for a style object. Use valid CSS property names/values; complex style objects and framework-specific normalization are not provided.
 - A dynamic class expression replaces the element's class value. Include static/base classes in the expression if they must persist across updates.
 - Scoped CSS is selector scoping, not Shadow DOM isolation. Global selectors and styles outside the component remain global.
-- Vite CSS Modules are supported through external `.module.css` imports; Nodula `<style module>` blocks are unsupported. The compiler accepts `<style>` and `<style scoped>`; other style-block attributes fail compilation.
+- Vite CSS Modules work through external `.module.css` imports and `<style module>` blocks. SFC module blocks expose `$style` in template expressions; custom module names and combining `module` with `scoped` are unsupported.
 - If a binding does not update, confirm the expression calls its signal accessor (for example `active()`), and that the template was compiled by Nodula's Vite plugin.
 
 ## Related guides

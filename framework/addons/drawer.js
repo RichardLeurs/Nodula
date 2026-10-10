@@ -1,6 +1,6 @@
 import { onCleanup } from 'nodula-framework';
 import { injectAddonStyles } from './inject-styles.js';
-import drawerStyles from '../assets/nodula-drawer.css?inline';
+import drawerStyles from '../assets/css/nodula-drawer.css?inline';
 
 let nextDrawerId = 0;
 

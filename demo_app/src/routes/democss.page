@@ -28,7 +28,7 @@ function preventSubmit(event) {
 <template>
   <main class="ui-page page">
     <header class="ui-page__header">
-      <p class="ui-page__eyebrow">Nodula UI · architecture demo</p>
+      <p class="ui-page__eyebrow">Nodula UI · CSS architecture demo</p>
 
       <div class="ui-page__title-row">  
       <h1 class="ui-page__title">A small, composable UI vocabulary.</h1>
@@ -58,6 +58,178 @@ function preventSubmit(event) {
           </div>
         </article>
       </div>
+    </section>
+
+    <section class="ui-section" aria-labelledby="grid-system-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="grid-system-title" class="ui-section__title">A responsive grid system</h2>
+          <p class="ui-section__description">Choose equal columns for a known layout, or auto-fit when cards should wrap according to available space.</p>
+        </div>
+      </div>
+      <div class="ui-grid ui-grid--2">
+        <article class="ui-panel ui-panel--bordered ui-grid-example">
+          <div class="ui-stack ui-stack--tight">
+            <h3 class="ui-panel__title">Auto-fit</h3>
+            <p class="ui-panel__description">Columns stay at least 180px wide, then wrap to fit.</p>
+            <code class="ui-code">ui-grid ui-grid--auto</code>
+          </div>
+          <div class="ui-grid ui-grid--auto">
+            <div class="ui-grid-demo-cell">One</div>
+            <div class="ui-grid-demo-cell">Two</div>
+            <div class="ui-grid-demo-cell">Three</div>
+            <div class="ui-grid-demo-cell">Four</div>
+          </div>
+        </article>
+
+        <article class="ui-panel ui-panel--bordered ui-grid-example">
+          <div class="ui-stack ui-stack--tight">
+            <h3 class="ui-panel__title">Two equal columns</h3>
+            <p class="ui-panel__description">Useful for paired content at this breakpoint.</p>
+            <code class="ui-code">ui-grid ui-grid--2</code>
+          </div>
+          <div class="ui-grid ui-grid--2">
+            <div class="ui-grid-demo-cell">Half</div>
+            <div class="ui-grid-demo-cell">Half</div>
+          </div>
+        </article>
+
+        <article class="ui-panel ui-panel--bordered ui-grid-example ui-grid-example--wide">
+          <div class="ui-stack ui-stack--tight">
+            <h3 class="ui-panel__title">Three equal columns</h3>
+            <p class="ui-panel__description">A fixed three-track layout for compact summaries.</p>
+            <code class="ui-code">ui-grid ui-grid--3</code>
+          </div>
+          <div class="ui-grid ui-grid--3">
+            <div class="ui-grid-demo-cell">One</div>
+            <div class="ui-grid-demo-cell">Two</div>
+            <div class="ui-grid-demo-cell">Three</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="ui-section" aria-labelledby="flexbox-system-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="flexbox-system-title" class="ui-section__title">Flexbox layout</h2>
+          <p class="ui-section__description">Use flexbox for one-dimensional rows or columns, wrapping groups, and items that grow into available space.</p>
+        </div>
+      </div>
+      <div class="ui-grid ui-grid--2">
+        <article class="ui-panel ui-panel--bordered ui-flexbox-example">
+          <div class="ui-stack ui-stack--tight">
+            <h3 class="ui-panel__title">Row with wrapping</h3>
+            <p class="ui-panel__description">Items stay in a row, then wrap when the container runs out of room.</p>
+            <code class="ui-code">ui-flexbox ui-flexbox--row ui-flexbox--wrap</code>
+          </div>
+          <div class="ui-flexbox ui-flexbox--row ui-flexbox--wrap">
+            <div class="ui-flexbox-demo-item">Navigation</div>
+            <div class="ui-flexbox-demo-item">Filters</div>
+            <div class="ui-flexbox-demo-item">Actions</div>
+          </div>
+        </article>
+
+        <article class="ui-panel ui-panel--bordered ui-flexbox-example">
+          <div class="ui-stack ui-stack--tight">
+            <h3 class="ui-panel__title">Row growth and column stacking</h3>
+            <p class="ui-panel__description">A grow item fills remaining row space; column direction stacks content vertically.</p>
+            <code class="ui-code">ui-flexbox--row · ui-flexbox--column · ui-flexbox__item--grow</code>
+          </div>
+          <div class="ui-flexbox ui-flexbox--row ui-flexbox--center">
+            <div class="ui-flexbox-demo-item ui-flexbox__item--grow">Flexible content</div>
+            <button class="ui-button ui-button--secondary ui-flexbox__item" type="button">Action</button>
+          </div>
+          <div class="ui-flexbox ui-flexbox--column ui-flexbox--stretch">
+            <div class="ui-flexbox-demo-item">First stacked item</div>
+            <div class="ui-flexbox-demo-item">Second stacked item</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="ui-section" aria-labelledby="type-density-title">
+      <div class="ui-section__header">
+        <div>
+          <h2 id="type-density-title" class="ui-section__title">Typography, sizing, and density</h2>
+          <p class="ui-section__description">Semantic tokens keep type and control dimensions consistent. Compact density inherits through its container.</p>
+        </div>
+      </div>
+      <div class="ui-grid ui-grid--2">
+        <article class="ui-panel ui-panel--bordered ui-token-example">
+          <header class="ui-panel__header">
+            <div>
+              <h3 class="ui-panel__title">Type scale</h3>
+              <p class="ui-panel__description">Fluid display and heading roles use shared font tokens.</p>
+            </div>
+          </header>
+          <div class="ui-panel__body ui-stack ui-stack--tight">
+            <p class="ui-type-sample ui-type-sample--display">Display heading</p>
+            <code class="ui-code">--ui-font-size-display</code>
+            <p class="ui-type-sample ui-type-sample--heading">Section heading</p>
+            <code class="ui-code">--ui-font-size-heading-2</code>
+            <p class="ui-type-sample ui-type-sample--body">Body copy stays readable at browser zoom.</p>
+            <code class="ui-code">--ui-font-size-body · --ui-line-height-body</code>
+          </div>
+        </article>
+
+        <article class="ui-panel ui-panel--bordered ui-token-example">
+          <header class="ui-panel__header">
+            <div>
+              <h3 class="ui-panel__title">Sizing and layering</h3>
+              <p class="ui-panel__description">Named dimensions and stacking levels make layout intent visible.</p>
+            </div>
+          </header>
+          <div class="ui-panel__body ui-stack">
+            <div class="ui-cluster ui-cluster--wrap" aria-label="Control sizes">
+              <button class="ui-button ui-button--secondary ui-button--small" type="button">Small</button>
+              <button class="ui-button ui-button--secondary" type="button">Medium</button>
+              <button class="ui-button ui-button--secondary ui-button--large" type="button">Large</button>
+            </div>
+            <code class="ui-code">--ui-size-control-small · medium · large</code>
+            <div class="ui-layer-scale" aria-label="Stacking layer token examples">
+              <span class="ui-layer-scale__item">Sticky <code>--ui-z-sticky: 20</code></span>
+              <span class="ui-layer-scale__item">Dropdown <code>--ui-z-dropdown: 30</code></span>
+              <span class="ui-layer-scale__item">Overlay <code>--ui-z-overlay: 50</code></span>
+              <span class="ui-layer-scale__item">Tooltip <code>--ui-z-tooltip: 70</code></span>
+            </div>
+            <p class="ui-field__description">Illustrates token ordering; browser top-layer dialogs sit outside this scale.</p>
+          </div>
+        </article>
+      </div>
+
+      <article class="ui-panel ui-panel--bordered ui-density-example">
+        <header class="ui-panel__header">
+          <div>
+            <h3 class="ui-panel__title">Comfortable and compact density</h3>
+            <p class="ui-panel__description">Set <code>data-density="compact"</code> on a container to shrink descendant controls, fields, and panel spacing.</p>
+          </div>
+        </header>
+        <div class="ui-density-comparison">
+          <section class="ui-density-preview" aria-labelledby="comfortable-density-title">
+            <h4 id="comfortable-density-title" class="ui-field__label">Comfortable</h4>
+            <label class="ui-field">
+              <span class="ui-field__label">Workspace</span>
+              <input class="ui-input" value="Studio North" readonly />
+            </label>
+            <div class="ui-cluster ui-cluster--wrap">
+              <button class="ui-button ui-button--primary" type="button">Save changes</button>
+              <span class="ui-badge ui-badge--neutral">Default spacing</span>
+            </div>
+          </section>
+          <section class="ui-density-preview" data-density="compact" aria-labelledby="compact-density-title">
+            <h4 id="compact-density-title" class="ui-field__label">Compact</h4>
+            <label class="ui-field">
+              <span class="ui-field__label">Workspace</span>
+              <input class="ui-input" value="Studio North" readonly />
+            </label>
+            <div class="ui-cluster ui-cluster--wrap">
+              <button class="ui-button ui-button--primary" type="button">Save changes</button>
+              <span class="ui-badge ui-badge--neutral">Dense layout</span>
+            </div>
+          </section>
+        </div>
+      </article>
     </section>
 
     <section class="ui-section" aria-labelledby="theme-previews-title">
@@ -245,7 +417,6 @@ function preventSubmit(event) {
           <h3 id="loading-state-title" class="ui-panel__title">Loading activity</h3>
           <p class="ui-panel__description">Fetching the latest workspace updates.</p>
           <div class="ui-skeleton" aria-hidden="true"></div>
-          <div class="ui-skeleton ui-skeleton--short" aria-hidden="true"></div>
           <p class="ui-sr-only" role="status">Loading activity…</p>
         </article>
       </div>

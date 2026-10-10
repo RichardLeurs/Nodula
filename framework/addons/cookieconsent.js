@@ -1,7 +1,7 @@
 import { createRoot, onCleanup } from 'nodula-framework';
 import { createLocalStorage } from 'nodula-framework/localstorage';
 import { injectAddonStyles } from './inject-styles.js';
-import cookieConsentStyles from '../assets/nodula-cookieconsent.css?inline';
+import cookieConsentStyles from '../assets/css/nodula-cookieconsent.css?inline';
 
 const defaultCategories = [
   { id: 'analytics', label: 'Analytics', description: 'Helps us understand how visitors use this website.' },

@@ -16,8 +16,24 @@ Nodula single-file components put component logic, template, and optional styles
 - **`.comp`:** reusable component module imported by a page or another compiled component.
 - **`<script setup>`:** JavaScript evaluated as component setup. Values and functions declared here can be referenced by that file's template. TypeScript syntax is not supported by this compiler.
 - **`<template>`:** one root element containing supported markup and directives.
-- **`<style>`:** optional CSS; plain styles are global, while `<style scoped>` scopes selectors to this component's rendered elements.
-- **CSS Modules:** import a `.module.css` file from `<script setup>` through Vite, then use its generated class-name map in a template binding such as `:class="styles.card"`. This is Vite CSS Modules behavior, not Nodula `<style module>` support.
+- **`<style>`:** optional CSS; plain styles are global, `<style scoped>` scopes selectors to this component's rendered elements, and `<style module>` exposes Vite-generated local classes through `$style`.
+- **CSS Modules:** `<style module>` is the inline SFC form. External `.module.css` imports through Vite also remain supported and expose their imported class map.
+
+### CSS Modules in an SFC
+
+Use fixed `$style` mapping in template expressions:
+
+```html
+<template>
+  <button :class="$style.primary">Save</button>
+</template>
+
+<style module>
+.primary { color: royalblue; }
+</style>
+```
+
+Vite generates local class names and handles CSS Modules processing. An SFC supports one style block; `module` cannot be combined with `scoped`, and `<style module="customName">` is unsupported. For details and external `.module.css` imports, see [Styles and CSS Modules](/guide/styles).
 
 For global imports, scoped blocks, CSS Module setup, and guidance on choosing between them, see [Styles and CSS Modules](/guide/styles).
 

@@ -5,7 +5,7 @@ import { animate } from 'nodula-framework/animation';
 import { showDialog } from 'nodula-framework/dialog';
 import { showNotification } from 'nodula-framework/notifications';
 import formImage from '../assets/images/form.webp';
-import styles from '../assets/form.module.css';
+import styles from '../assets/css/form.module.css';
 const [submissionMessage, setSubmissionMessage] = signal('');
 let successMessageElement = null;
 
@@ -55,7 +55,7 @@ async function resetForm() {
 <template>
   <main class="ui-page page">
     <header class="ui-page__header">
-      <p class="ui-page__eyebrow">Reactive form state</p>
+      <p class="ui-page__eyebrow">Optional form add-on</p>
 
       <div class="ui-page__title-row">  
         <h1 class="ui-page__title">A form, with the state included.</h1>

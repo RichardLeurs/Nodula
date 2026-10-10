@@ -10,7 +10,7 @@ import cookieConsentImage from './assets/images/cookie.webp';
 import { demoAuth, initializeDemoAuth, navigateDemoRoute, protectDemoAdminRoute, setDemoRouter, signOutDemoAdmin } from './demo-auth.js';
 import { notFound, routes } from './routes.js';
 
-const GA_ID = 'G-7TZGDGCGKJ';
+
 // For router
 //import { createRouter } from 'nodula-framework/router';
 //import { notFound, routes } from './routes.js';
@@ -102,6 +102,7 @@ onMount(() => {
   showSettingsButton: false
   });
 
+  const GA_ID = 'G-7TZGDGCGKJ';
   setupGoogleAnalytics(consent, GA_ID);
 });
 
@@ -182,10 +183,10 @@ function setNavigationElement(element) {
 
       { label: 'Add-ons', href: '/addons' },
       { label: 'Data', href: '/data' },
-      { label: 'Forms', href: '/forms' },
-        { label: 'Dialogs', href: '/modal' },
+      { label: 'Form', href: '/forms' },
+      { label: 'Dialog', href: '/modal' },
       { label: 'Web Components', href: '/web-components' },
-      // { label: 'NodulaUI', href: '/democss' },
+      { label: 'NodulaUI', href: '/democss' },
       //...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
       // { label: 'Demo login', href: '/login' },
       { label: 'Guide', href: 'https://nodula-docs.richardleurs.nl/', external: true },

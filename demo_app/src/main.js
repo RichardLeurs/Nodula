@@ -22,7 +22,7 @@
 import AppShell from './AppShell.page';
 import { mount } from 'nodula-framework';
 //import 'nodula-framework/nodula-framework.css';
-import './assets/app.css';
+import './assets/css/app.css';
 
 import { installDemoCodeHighlighting } from './highlight-demo-code.js';
 

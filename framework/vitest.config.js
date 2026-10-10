@@ -36,7 +36,7 @@ export default defineConfig({
   },
   test: {
     root: projectRoot,
-    include: ['framework/vitest/**/*.test.js'],
+    include: ['framework/vitest/**/*.test.js', 'tests/**/*.test.js'],
     environment: 'node',
     fileParallelism: false,
     pool: 'threads',

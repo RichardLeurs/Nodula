@@ -18,8 +18,8 @@ This page summarizes Nodula's implemented public behavior and known boundaries. 
 
 - The Vite plugin compiles `.page` and `.comp` files from JavaScript, a single-root `<template>`, and optional style blocks.
 - Supported template features include text interpolation, reactive attributes, native events, `@if`/adjacent `@else`, keyed `@for`/`each`, `@show`, `@ref`, value/checked bindings, imported `.comp` components, default/named slots, and `use:visibleIsland`.
-- Plain `<style>` blocks are global; `<style scoped>` scopes supported selectors to the component's rendered elements.
-- Vite CSS Modules work through imported `.module.css` files and generated class maps used in template bindings; `<style module>` is not supported by the Nodula SFC compiler.
+- Plain `<style>` blocks are global; `<style scoped>` scopes supported selectors to the component's rendered elements; `<style module>` uses Vite CSS Modules and exposes `$style` in template expressions.
+- SFCs currently support at most one style block, and `module` and `scoped` cannot be combined.
 - The plugin is build-time tooling. The compiler is not a full Vue/Svelte compiler, and `<script setup>` blocks are JavaScript-only; TypeScript syntax is unsupported.
 
 ### Public package and optional add-ons

@@ -1,15 +1,88 @@
 /*
- * Nodula UI architecture
+ * Nodula UI - CSS architecture
+ * A small, composable UI vocabulary
+ * 
  * Component styles are scoped to ui-* classes and use semantic tokens.
  */
 
 /* -- 01-settings ---------------------------------------------------------------------------------- */
 
 :root {
+  /* Semantic typography roles shared by UI components. */
+  --ui-font-family-sans: "DM Sans", sans-serif;
+  --ui-font-family-mono: "DM Mono", monospace;
+  --mono: var(--ui-font-family-mono);
+  --ui-font-size-xs: 0.72rem;
+  --ui-font-size-caption: 0.78rem;
+  --ui-font-size-sm: 0.8rem;
+  --ui-font-size-body-small: 0.84rem;
+  --ui-font-size-label: 0.86rem;
+  --ui-font-size-control: 0.9rem;
+  --ui-font-size-code: 0.85rem;
+  --ui-font-size-brand: 1.5833rem;
+  --ui-font-size-body: 1rem;
+  --ui-font-size-lg: 1.05rem;
+  --ui-font-size-heading-3: 1.6rem;
+  --ui-font-size-heading-2: clamp(1.4rem, 3vw, 1.9rem);
+  --ui-font-size-display: clamp(2.5rem, 6vw, 3.5rem);
+  --ui-font-weight-regular: 400;
+  --ui-font-weight-medium: 500;
+  --ui-font-weight-semibold: 600;
+  --ui-font-weight-strong: 650;
+  --ui-font-weight-bold: 700;
+  --ui-font-weight-extrabold: 800;
+  --ui-line-height-tight: 1.2;
+  --ui-line-height-compact: 1.4;
+  --ui-line-height-body: 1.6;
+  --ui-line-height-relaxed: 1.75;
+  --ui-line-height-code: 1.7;
+  --ui-letter-spacing-tight: -0.045em;
+  --ui-letter-spacing-heading: -0.025em;
+  --ui-letter-spacing-normal: 0;
+  --ui-letter-spacing-wide: 0.06em;
+  --ui-letter-spacing-wider: 0.08em;
+
+  /* Shared content and control dimensions. */
+  --ui-size-content: 70.5rem;
+  --ui-size-copy: 40.625rem;
+  --ui-size-title: 45rem;
+  --ui-size-page-gutter: 1.5rem;
+  --ui-size-page-padding-block: clamp(2.25rem, 7vw, 5rem);
+  --ui-size-control-small: 2rem;
+  --ui-size-control-medium: 2.5rem;
+  --ui-size-control-large: 3rem;
+  --ui-size-input: 2.625rem;
+  --ui-size-input-padding-block: 9px;
+  --ui-size-input-padding-inline: 11px;
+  --ui-size-checkbox: 1rem;
+  --ui-size-icon: 2.5rem;
+  --ui-size-avatar: 2.5rem;
+
+  /* Stacking order for positioned UI; native top-layer dialogs remain browser-managed. */
+  --ui-z-base: 0;
+  --ui-z-raised: 1;
+  --ui-z-sticky: 20;
+  /* Reserved ordering slots for future reusable overlays and notifications. */
+  --ui-z-dropdown: 30;
+  --ui-z-overlay: 50;
+  --ui-z-toast: 60;
+  --ui-z-tooltip: 70;
+
+  /* Comfortable density is default; compact mode overrides these inherited values. */
+  --ui-density-control-height: var(--ui-size-control-medium);
+  --ui-density-input-height: var(--ui-size-input);
+  --ui-density-control-padding-inline: var(--ui-space-4);
+  --ui-density-panel-padding: var(--ui-space-6);
+  --ui-density-panel-header-padding: var(--ui-space-5);
+  --ui-density-form-gap: var(--ui-space-5);
+  --ui-density-field-gap: var(--ui-space-2);
+
+  /* Shared radius dimensions. */
   --ui-radius-small: 5px;
   --ui-radius-medium: 9px;
   --ui-radius-large: 14px;
 
+  /* Shared spacing dimensions. */
   --ui-space-1: 4px;
   --ui-space-2: 8px;
   --ui-space-3: 12px;
@@ -19,6 +92,7 @@
   --ui-space-8: 32px;
   --ui-space-10: 40px;
 
+  /* Shared transitions. */
   --ui-transition-fast: 140ms ease;
   --ui-transition-normal: 200ms ease;
 }
@@ -26,7 +100,7 @@
 /* -- 02-tokens ---------------------------------------------------------------------------------- */
 
 :root {
-  font-family: "DM Sans", sans-serif;
+  font-family: var(--ui-font-family-sans);
   font-size: 100%;
   color: var(--ui-color-text);
   background: var(--page-bg);
@@ -35,14 +109,12 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 
-
-    /* --page-bg: #0a1424;
+  /* --page-bg: #0a1424;
   --app-background-overlay: rgba(10, 20, 36, 0.97); */
   --page-bg: hsl(217, 57%, 20%);
-    --page-gradient: hsl(217, 57%, 0%);
+  --page-gradient: hsl(217, 57%, 0%);
 
   --app-background-overlay: #01050c;
-
 
   --app-background-blend: darken;
   --brand-name-color: #eee;
@@ -54,7 +126,9 @@
   --ui-color-surface: #101f33;
   --ui-color-surface-raised: #152944;
   --ui-color-surface-sunken: #081322;
- --ui-color-surface-muted: hsl(217, 57%, 12%);
+  --ui-color-surface-muted: hsl(217, 57%, 12%);
+  --ui-color-skeleton: #354b65;
+  --ui-color-skeleton-highlight: #526b89;
 
   --ui-color-border: rgba(196, 216, 240, 0.16);
   --ui-color-border-strong: rgba(196, 216, 240, 0.3);
@@ -69,7 +143,7 @@
   --ui-tooltip-text-color: #333;
 
   --ui-color-success: #198754;
- --ui-color-warning: #ffc107;
+  --ui-color-warning: #ffc107;
   --ui-color-danger: #dc3545;
   --ui-color-info: #0d6efd;
 
@@ -97,7 +171,7 @@
 :root[data-theme="light"] {
   color-scheme: light;
 
-    /* --page-bg: #e9f4f8f5;
+  /* --page-bg: #e9f4f8f5;
   --app-background-overlay: #edf4f7f5; */
   --page-bg: hsla(196, 52%, 97%);
   --page-gradient: hsla(196, 52%, 89%);
@@ -108,14 +182,16 @@
   --muted-footer: #526760;
   --logo-filter: none;
 
-    /* --ui-color-background: hsl(132, 24%, 96%); */
   /* --ui-color-background: hsl(132, 24%, 96%); */
-    --ui-color-background: hsl(196, 52%, 97%);
+  /* --ui-color-background: hsl(132, 24%, 96%); */
+  --ui-color-background: hsl(196, 52%, 97%);
   --ui-color-surface: hsl(0, 0%, 98%);
   --ui-color-surface-raised: #ffffff;
   /* --ui-color-surface-sunken: #e0f0f5; */
- --ui-color-surface-sunken: hsl(132, 24%, 97%);
- --ui-color-surface-muted: hsla(196, 52%, 91%);
+  --ui-color-surface-sunken: hsl(132, 24%, 97%);
+  --ui-color-surface-muted: hsla(196, 52%, 91%);
+  --ui-color-skeleton: #8b9aa8;
+  --ui-color-skeleton-highlight: #a7b4bf;
 
   --ui-color-border: rgba(32, 51, 47, 0.16);
   --ui-color-border-strong: rgba(32, 51, 47, 0.3);
@@ -130,10 +206,10 @@
   --ui-tooltip-background: #20332f;
   --ui-tooltip-text-color: #edf2eb;
 
---ui-color-success: #198754;
- --ui-color-warning: #ffc107;
+  --ui-color-success: #198754;
+  --ui-color-warning: #ffc107;
   --ui-color-danger: #dc3545;
-  --ui-color-info:  #0d6efd;
+  --ui-color-info: #0d6efd;
 
   --ui-color-focus: #38633b;
   --ui-color-disabled: #7b8980;
@@ -146,7 +222,7 @@
   --ui-syntax-literal: #28685e;
   --ui-syntax-default: #455c54;
   --ui-syntax-function: #286486;
-  
+
   --ui-shadow-raised: 0 12px 30px rgba(32, 51, 47, 0.09);
 }
 
@@ -194,14 +270,18 @@ textarea {
 
 /* -- 05-base ---------------------------------------------------------------------------------- */
 
+/* .ui-app: defines full-height application shell and themed page background. */
 .ui-app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   overflow-x: clip;
   overflow-y: visible;
-  background-image:
-    linear-gradient(135deg, var(--page-bg), var(--page-gradient));
+  background-image: linear-gradient(
+    135deg,
+    var(--page-bg),
+    var(--page-gradient)
+  );
   background-repeat: no-repeat, no-repeat;
   /* background-position: top right, center; */
   /* background-size: min(100%, 1049px) auto, 100% 100%; */
@@ -211,27 +291,19 @@ textarea {
   /* var(--app-background-blend),normal; */
 }
 
-.hero-image {
-width: 100%;
-height: 450px;
-margin-top:0px;
-  background: url("./images/nodula-hero2.webp") center / contain no-repeat;
-}
-
-
 a {
   color: inherit;
   text-decoration: none;
 }
 
 /* - 06-layout ---------------------------------------------------------------------------------- */
-
 /* Page header */
 
+/* .ui-site-header: keeps primary navigation visible at the top of the viewport. */
 .ui-site-header {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: var(--ui-z-sticky);
   width: 100%;
   /* min(100% - 48px, 1128px); */
   height: 78px;
@@ -242,24 +314,27 @@ a {
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
   background: transparent;
-  transition: background-color 1000ms ease, backdrop-filter 1000ms ease;
+  transition:
+    background-color 1000ms ease,
+    backdrop-filter 1000ms ease;
 }
 
+/* .ui-site-header--scrolled: adds translucent surface and blur after scrolling. */
 .ui-site-header--scrolled {
   background: color-mix(in srgb, var(--page-bg) 92%, transparent);
   backdrop-filter: blur(12px);
 }
 
+/* .ui-brand: aligns product mark, name, and optional version as one identity. */
 .ui-brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font:
-    800 3rem "DM Sans" Manrope,
-    sans-serif;
+  font: var(--ui-font-weight-extrabold) 3rem var(--ui-font-family-sans);
   letter-spacing: -0.8px;
 }
 
+/* .ui-brand__logo: renders the brand image within the identity row. */
 .ui-brand__logo {
   position: relative;
   top: -2px;
@@ -267,11 +342,12 @@ a {
   width: 23px;
   height: 23px;
   flex: 0 0 23px;
-    /* background: url("./images/logo-nodula-128.webp") center / contain no-repeat; */
+  /* background: url("./images/logo-nodula-128.webp") center / contain no-repeat; */
   background: url("./images/logo-64x64.png") center / contain no-repeat;
   filter: var(--logo-filter);
 }
 
+/* .ui-brand__mark: frames a compact text mark when used instead of a logo. */
 .ui-brand__mark {
   display: grid;
   place-items: center;
@@ -280,28 +356,27 @@ a {
   height: 28px;
   color: var(--brand-mark-text);
   border-radius: 9px 9px 9px 3px;
-  font:
-    800 1.25rem Manrope,
-    sans-serif;
+  font: var(--ui-font-weight-extrabold) 1.25rem var(--ui-font-family-sans);
 }
 
+/* .ui-brand__version: places small version metadata beside the brand name. */
 .ui-brand__version {
   align-self: flex-start;
   padding-top: 2px;
   color: var(--brand-name-color);
-  font: 0.875rem var(--mono);
+  font: var(--ui-font-size-caption) var(--ui-font-family-mono);
   letter-spacing: 0;
 }
 
+/* .ui-brand__name: applies the product name color and type scale. */
 .ui-brand__name {
   color: var(--brand-name-color);
-  font-size: 19pt;
+  font-size: var(--ui-font-size-brand);
 }
 
-/* Navigation addon */
-
+/* .ui-site-nav: lays out application navigation links as a grouped region. */
 .ui-site-nav {
-    flex: 0 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
   display: flex;
   gap: 20px;
@@ -310,15 +385,13 @@ a {
   border-radius: 10px;
   background-color: var(--surface-overlay);
   background-blend-mode: var(--surface-blend);
-   border: 1px solid transparent;
+  border: 1px solid transparent;
 }
 
-
-
-
+/* .ui-nav-link: styles one navigation link; active modifier marks current route. */
 .ui-nav-link {
   color: var(--muted-nav);
-  font-size: 1rem;
+  font-size: var(--ui-font-size-body);
   transition: color 0.2s ease;
   padding: 8px;
 
@@ -328,15 +401,15 @@ a {
     box-shadow: inset 0 0 0 1px var(--ui-color-border);
     border-radius: var(--ui-radius-medium);
   }
-
-
 }
 
-  .ui-nav-link--active {
-    color: var(--ui-color-primary);
-    font-weight: bold;
-  }
+/* .ui-nav-link--active: distinguishes the link for the current route. */
+.ui-nav-link--active {
+  color: var(--ui-color-primary);
+  font-weight: var(--ui-font-weight-bold);
+}
 
+/* .ui-header-actions: groups account, cookie, and theme controls in the header. */
 .ui-header-actions {
   display: flex;
   flex: 0 0 auto;
@@ -345,6 +418,7 @@ a {
   margin-left: auto;
 }
 
+/* .ui-auth-toggle: icon button for opening or checking authentication state. */
 .ui-auth-toggle {
   display: grid;
   width: 34px;
@@ -374,6 +448,19 @@ a {
   }
 }
 
+/* .ui-auth-toggle__loading: compact progress indicator shown while auth is busy. */
+.ui-auth-toggle__loading {
+  font-size: var(--ui-font-size-body);
+  line-height: var(--ui-line-height-tight);
+}
+
+:root:not([data-theme="light"]) .ui-auth-toggle,
+:root:not([data-theme="light"]) .ui-cookie-settings-toggle,
+:root:not([data-theme="light"]) .ui-theme-toggle {
+  color: #eee;
+}
+
+/* .ui-cookie-settings-toggle: opens cookie-consent preferences from the header. */
 .ui-cookie-settings-toggle {
   display: grid;
   width: 34px;
@@ -385,7 +472,6 @@ a {
   color: var(--ui-color-text, #edf2eb);
   background: transparent;
   cursor: pointer;
-
 
   &:focus-visible {
     outline: 2px solid var(--ui-color-focus);
@@ -399,11 +485,7 @@ a {
   }
 }
 
-.ui-auth-toggle__loading {
-  font-size: 1rem;
-  line-height: 1;
-}
-
+/* .ui-theme-toggle: switches color scheme; child icons reflect selected theme. */
 .ui-theme-toggle {
   display: grid;
   width: 34px;
@@ -414,7 +496,7 @@ a {
   border-radius: 5px;
   color: var(--theme-toggle-icon-color);
   background: transparent;
-  font: 1rem var(--mono);
+  font: var(--ui-font-size-body) var(--ui-font-family-mono);
   cursor: pointer;
   background-blend-mode: multiply;
 
@@ -428,6 +510,8 @@ a {
   }
 }
 
+/* .ui-theme-toggle__sun and .ui-theme-toggle__moon: indicate available themes. */
+/* .ui-theme-toggle__sun and .ui-theme-toggle__moon: represent theme choices. */
 .ui-theme-toggle__sun,
 .ui-theme-toggle__moon {
   display: block;
@@ -435,6 +519,13 @@ a {
   height: 16px;
 }
 
+:root[data-theme="dark"] .ui-theme-toggle__moon,
+:root:not([data-theme="light"]) .ui-theme-toggle__moon,
+:root[data-theme="light"] .ui-theme-toggle__sun {
+  display: none;
+}
+
+/* .ui-site-footer: anchors shared footer content to the app shell width. */
 .ui-site-footer {
   width: min(100% - 72px, 1128px);
   min-height: 63px;
@@ -444,9 +535,10 @@ a {
   justify-content: space-between;
   color: var(--muted-footer);
   font-size: 0.875rem;
-  gap:20px
+  gap: 20px;
 }
 
+/* .ui-route-not-found: centers fallback content when no route matches. */
 .ui-route-not-found {
   display: grid;
   min-height: calc(100vh - 141px);
@@ -455,23 +547,30 @@ a {
   color: var(--ui-color-text);
 }
 
+/* .ui-page: centers route content and establishes shared page gutters. */
 .ui-page {
-  --ui-content-width: 1128px;
-  width: min(100% - 48px, var(--ui-content-width));
+  --ui-content-width: var(--ui-size-content);
+  width: min(
+    calc(100% - var(--ui-size-page-gutter) - var(--ui-size-page-gutter)),
+    var(--ui-content-width)
+  );
   margin: 0 auto;
-  padding: clamp(36px, 7vw, 80px) 0;
+  padding: var(--ui-size-page-padding-block) 0;
   color: var(--ui-color-text);
 }
 
+/* .ui-page__header: separates page heading content from following sections. */
 .ui-page__header {
-  max-width: 1128px;
+  max-width: var(--ui-size-content);
   margin-bottom: var(--ui-space-10);
 }
 
+/* .ui-page__header--with-image: lets image-led headers use full page width. */
 .ui-page__header--with-image {
   max-width: none;
 }
 
+/* .ui-page__title-row: aligns page title and optional trailing actions. */
 .ui-page__title-row {
   display: flex;
   align-items: center;
@@ -479,6 +578,7 @@ a {
   gap: var(--ui-space-6);
 }
 
+/* .ui-page__header-image: sizes decorative or identifying page-header artwork. */
 .ui-page__header-image {
   width: clamp(72px, 12vw, 128px);
   height: auto;
@@ -486,43 +586,48 @@ a {
   object-fit: contain;
 }
 
+/* .ui-page__eyebrow: renders small uppercase context above a page title. */
 .ui-page__eyebrow {
   margin: 0 0 var(--ui-space-3);
   color: var(--ui-color-primary);
-  font: 600 0.78rem/1.4 var(--mono, "DM Mono", monospace);
-  letter-spacing: 0.08em;
+  font: var(--ui-font-weight-semibold)
+    var(--ui-font-size-caption)/var(--ui-line-height-compact)
+    var(--ui-font-family-mono);
+  letter-spacing: var(--ui-letter-spacing-wider);
   text-transform: uppercase;
 }
 
+/* .ui-page__title: sets display typography and readable measure for page titles. */
 .ui-page__title {
-  max-width: 720px;
+  max-width: var(--ui-size-title);
   margin: 0;
   color: var(--ui-color-text);
-  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  font-size: var(--ui-font-size-display);
   line-height: 1.05;
-  letter-spacing: -0.045em;
+  letter-spacing: var(--ui-letter-spacing-tight);
 }
 
+/* .ui-page__description: constrains introductory copy below a page title. */
 .ui-page__description {
-  max-width: 650px;
+  max-width: var(--ui-size-copy);
   margin: var(--ui-space-4) 0 var(--ui-space-6);
   color: var(--ui-color-text-muted);
-  font-size: 1.05rem;
-  line-height: 1.75;
+  font-size: var(--ui-font-size-lg);
+  line-height: var(--ui-line-height-relaxed);
 
   code {
-
     padding: 5px;
-border: 1pt solid var(--ui-color-border);
-border-radius: var(--ui-radius-medium);
+    border: 1pt solid var(--ui-color-border);
+    border-radius: var(--ui-radius-medium);
   }
-
 }
 
+/* .ui-section: adds consistent vertical separation between page sections. */
 .ui-section {
   margin-top: var(--ui-space-10);
 }
 
+/* .ui-section__header: aligns section title and optional supporting content. */
 .ui-section__header {
   display: flex;
   align-items: flex-start;
@@ -531,138 +636,211 @@ border-radius: var(--ui-radius-medium);
   margin-bottom: var(--ui-space-5);
 }
 
+/* .ui-section__title: provides shared heading scale for page sections. */
 .ui-section__title {
   margin: 0;
   color: var(--ui-color-text);
-  font-size: clamp(1.4rem, 3vw, 1.9rem);
-  line-height: 1.2;
-  letter-spacing: -0.025em;
+  font-size: var(--ui-font-size-heading-2);
+  line-height: var(--ui-line-height-tight);
+  letter-spacing: var(--ui-letter-spacing-heading);
 }
 
+/* .ui-section__description: styles explanatory copy attached to a section. */
 .ui-section__description {
   margin: var(--ui-space-2) 0 0;
   color: var(--ui-color-text-muted);
-  line-height: 1.6;
+  line-height: var(--ui-line-height-body);
 }
 
 /* -- 07-objects ---------------------------------------------------------------------------------- */
 
+/* .ui-stack: arranges children vertically with a consistent gap. */
 .ui-stack {
   display: grid;
   gap: var(--ui-space-4);
 }
 
+/* .ui-stack--tight: reduces spacing for compact content groups. */
 .ui-stack--tight {
   gap: var(--ui-space-1);
 }
 
+/* .ui-cluster: aligns related items in a horizontal row. */
 .ui-cluster {
   display: flex;
   align-items: center;
   gap: var(--ui-space-2);
 }
 
+/* .ui-cluster--wrap: lets cluster items continue onto additional lines. */
 .ui-cluster--wrap {
   flex-wrap: wrap;
 }
 
+/* .ui-cluster--end: aligns cluster items to the row's end. */
 .ui-cluster--end {
   justify-content: flex-end;
 }
 
+/* .ui-flexbox: creates a flexible row of items with shared spacing. */
+.ui-flexbox {
+  display: flex;
+  gap: var(--ui-space-3);
+}
+
+/* .ui-flexbox--row: explicitly lays flex items along the horizontal axis. */
+.ui-flexbox--row {
+  flex-direction: row;
+}
+
+/* .ui-flexbox--column: stacks flex items along the vertical axis. */
+.ui-flexbox--column {
+  flex-direction: column;
+}
+
+/* .ui-flexbox--wrap: allows flex items to flow onto another line. */
+.ui-flexbox--wrap {
+  flex-wrap: wrap;
+}
+
+/* .ui-flexbox--between: distributes free space between flex items. */
+.ui-flexbox--between {
+  justify-content: space-between;
+}
+
+/* .ui-flexbox--center: centers flex items on the cross axis. */
+.ui-flexbox--center {
+  align-items: center;
+}
+
+/* .ui-flexbox--stretch: stretches flex items across the cross axis. */
+.ui-flexbox--stretch {
+  align-items: stretch;
+}
+
+/* .ui-flexbox__item: prevents an individual flex child from overflowing. */
+.ui-flexbox__item {
+  min-width: 0;
+}
+
+/* .ui-flexbox__item--grow: lets an item grow from a responsive basis. */
+.ui-flexbox__item--grow {
+  flex: 1 1 12rem;
+}
+
+/* .ui-grid: creates a token-spaced CSS grid. */
+/* .ui-grid: creates a token-spaced CSS grid. */
 .ui-grid {
   display: grid;
   gap: var(--ui-space-4);
 }
 
+/* .ui-grid--2: sets a two-column grid. */
 .ui-grid--2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* .ui-grid--3: sets a three-column grid. */
 .ui-grid--3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+/* .ui-grid--auto: fits as many minimum-width columns as available space allows. */
 .ui-grid--auto {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
 }
 
+/* .ui-panel: provides a reusable surface with optional header, body, and footer. */
 .ui-panel,
 .ui-card {
   min-width: 0;
   border: 1px solid var(--ui-color-border);
   border-radius: var(--ui-radius-medium);
   background: var(--ui-color-surface);
-      margin: var(--ui-space-2) 0 0;
+  margin: var(--ui-space-2) 0 0;
 }
 
+/* .ui-panel--raised: adds elevation to a panel surface. */
 .ui-panel--raised,
+/* .ui-card: shares panel elevation treatment. */
 .ui-card {
   box-shadow: var(--ui-shadow-raised);
 }
 
+/* .ui-panel--bordered: emphasizes the panel outline. */
 .ui-panel--bordered {
   border-color: var(--ui-color-border-strong);
 }
 
+/* .ui-panel--flat: removes elevation and uses a muted flat surface. */
 .ui-panel--flat {
   box-shadow: none;
   background: var(--ui-color-surface-muted);
 }
 
+/* .ui-panel__header: lays out panel heading content above the body. */
 .ui-panel__header,
 .ui-panel__footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--ui-space-4);
-  padding: var(--ui-space-5) var(--ui-space-6);
+  padding: var(--ui-density-panel-header-padding)
+    var(--ui-density-panel-padding);
 }
 
+/* .ui-panel__header: separates heading region from panel body. */
 .ui-panel__header {
   border-bottom: 1px solid var(--ui-color-border);
 }
 
+/* .ui-panel__footer: separates trailing actions from panel body. */
+/* .ui-panel__footer: lays out actions and metadata below panel content. */
 .ui-panel__footer {
   border-top: 1px solid var(--ui-color-border);
 }
 
+/* .ui-panel__body: applies density-aware inner spacing to panel content. */
 .ui-panel__body {
-  padding: var(--ui-space-6);
+  padding: var(--ui-density-panel-padding);
 }
 
+/* .ui-panel__title and .ui-card__title: style panel and card headings. */
 .ui-panel__title,
 .ui-card__title {
   margin: 0;
 
   color: var(--ui-color-text);
-  font-size: 1.6rem;
-  line-height: 1.35;
+  font-size: var(--ui-font-size-heading-3);
+  line-height: var(--ui-line-height-relaxed);
 }
 
+/* .ui-card__title: adds separation when title is outside a card header. */
 .ui-card__title {
   margin-top: var(--ui-space-4);
 }
 
+/* Nested card titles omit the standalone title spacing. */
 .ui-card .ui-card__title {
   margin-top: 0;
 }
 
+/* Ideas card title follows its card-specific heading layout. */
 .ui-ideas-card .ui-card__title {
   margin-top: 0;
 }
 
+/* .ui-panel__description and .ui-card__description: style supporting copy. */
 .ui-panel__description,
 .ui-card__description {
   margin: var(--ui-space-1) 0 0;
   color: var(--ui-color-text-muted);
-  font-size: 0.9rem;
-  line-height: 1.55;
-   white-space: pre-line;
+  font-size: var(--ui-font-size-sm);
+  line-height: var(--ui-line-height-body);
+  white-space: pre-line;
 }
 
-
-
+/* .ui-card: sets card content layout, padding, and interaction transitions. */
 .ui-card {
   display: grid;
   align-content: start;
@@ -674,6 +852,7 @@ border-radius: var(--ui-radius-medium);
     box-shadow var(--ui-transition-normal);
 }
 
+/* .ui-card--compact: reduces padding for denser, icon-led cards. */
 .ui-card--compact {
   grid-template-columns: 40px minmax(0, 1fr);
   align-items: center;
@@ -682,11 +861,13 @@ border-radius: var(--ui-radius-medium);
   box-shadow: none;
 }
 
+/* .ui-card--interactive: lifts interactive cards on pointer hover. */
 .ui-card--interactive:hover {
   transform: translateY(-2px);
   border-color: var(--ui-color-border-strong);
 }
 
+/* .ui-card__header and .ui-card__footer: align content at card edges. */
 .ui-card__header,
 .ui-card__footer {
   display: flex;
@@ -695,6 +876,7 @@ border-radius: var(--ui-radius-medium);
   gap: var(--ui-space-3);
 }
 
+/* .ui-card__header-image: constrains an image within the card header. */
 .ui-card__header-image {
   width: 50px;
   height: auto;
@@ -709,6 +891,7 @@ border-radius: var(--ui-radius-medium);
 
 /* -- 08-components ---------------------------------------------------------------------------------- */
 
+/* .ui-token-swatch: previews one semantic color token. */
 .ui-token-swatch {
   width: 40px;
   height: 40px;
@@ -717,30 +900,194 @@ border-radius: var(--ui-radius-medium);
   background: var(--ui-color-surface);
 }
 
+/* .ui-token-swatch--primary: previews the primary theme color. */
 .ui-token-swatch--primary {
   background: var(--ui-color-primary);
 }
 
+/* .ui-token-swatch--surface: previews the component surface color. */
 .ui-token-swatch--surface {
   background: var(--ui-color-surface);
 }
 
+/* .ui-token-swatch--success: previews the success state color. */
 .ui-token-swatch--success {
   background: var(--ui-color-success);
 }
 
+/* .ui-token-swatch--warning: previews the warning state color. */
 .ui-token-swatch--warning {
   background: var(--ui-color-warning);
 }
 
+/* .ui-token-swatch--danger: previews the danger state color. */
 .ui-token-swatch--danger {
   background: var(--ui-color-danger);
 }
 
+/* .ui-token-example: keeps token demonstration content from overflowing. */
+.ui-token-example {
+  min-width: 0;
+}
+
+/* .ui-grid-example: frames one grid layout demonstration. */
+.ui-grid-example {
+  display: grid;
+  align-content: start;
+  gap: var(--ui-space-4);
+  min-width: 0;
+  padding: var(--ui-density-panel-padding);
+}
+
+/* .ui-grid-example--wide: spans the complete example grid width. */
+.ui-grid-example--wide {
+  grid-column: 1 / -1;
+}
+
+/* .ui-grid-demo-cell: displays a labeled cell in grid demonstrations. */
+.ui-grid-demo-cell {
+  display: grid;
+  min-height: var(--ui-size-control-large);
+  place-items: center;
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-primary);
+  background: color-mix(
+    in srgb,
+    var(--ui-color-primary) 10%,
+    var(--ui-color-surface)
+  );
+  font-size: var(--ui-font-size-caption);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+/* .ui-flexbox-example: frames one flex layout demonstration. */
+.ui-flexbox-example {
+  display: grid;
+  align-content: start;
+  gap: var(--ui-space-4);
+  min-width: 0;
+  padding: var(--ui-density-panel-padding);
+}
+
+/* .ui-flexbox-demo-item: displays a labeled item in flex demonstrations. */
+.ui-flexbox-demo-item {
+  display: grid;
+  min-height: var(--ui-size-control-large);
+  place-items: center;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-primary);
+  background: color-mix(
+    in srgb,
+    var(--ui-color-primary) 10%,
+    var(--ui-color-surface)
+  );
+  font-size: var(--ui-font-size-caption);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+/* .ui-type-sample: base style shared by typography specimens. */
+.ui-type-sample {
+  margin: 0;
+  color: var(--ui-color-text);
+}
+
+/* .ui-type-sample--display: demonstrates large display typography. */
+.ui-type-sample--display {
+  font-size: var(--ui-font-size-display);
+  font-weight: var(--ui-font-weight-bold);
+  line-height: var(--ui-line-height-tight);
+  letter-spacing: var(--ui-letter-spacing-tight);
+}
+
+/* .ui-type-sample--heading: demonstrates section-heading typography. */
+.ui-type-sample--heading {
+  font-size: var(--ui-font-size-heading-2);
+  font-weight: var(--ui-font-weight-semibold);
+  line-height: var(--ui-line-height-tight);
+}
+
+/* .ui-type-sample--body: demonstrates body-copy typography. */
+.ui-type-sample--body {
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-body);
+  line-height: var(--ui-line-height-body);
+}
+
+/* .ui-layer-scale: lists available stacking-layer tokens. */
+.ui-layer-scale {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ui-space-2);
+}
+
+/* .ui-layer-scale__item: pairs a layer name with its token value. */
+.ui-layer-scale__item {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-text-muted);
+  background: var(--ui-color-surface-sunken);
+  font-size: var(--ui-font-size-caption);
+}
+
+/* Code inside layer rows identifies token values. */
+.ui-layer-scale__item code {
+  color: var(--ui-color-primary);
+  font-family: var(--ui-font-family-mono);
+}
+
+/* .ui-density-example: separates density comparison from preceding content. */
+.ui-density-example {
+  margin-top: var(--ui-space-4);
+}
+
+/* .ui-density-comparison: arranges density previews side by side. */
+.ui-density-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* .ui-density-preview: demonstrates controls under one density setting. */
+.ui-density-preview {
+  display: grid;
+  align-content: start;
+  gap: var(--ui-density-form-gap);
+  min-width: 0;
+  padding: var(--ui-density-panel-padding);
+}
+
+/* Adjacent density previews are separated by a divider. */
+.ui-density-preview + .ui-density-preview {
+  border-left: 1px solid var(--ui-color-border);
+}
+
+@media (max-width: 560px) {
+  .ui-density-comparison,
+  .ui-layer-scale {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Stacked previews use horizontal rather than vertical separation. */
+  .ui-density-preview + .ui-density-preview {
+    border-top: 1px solid var(--ui-color-border);
+    border-left: 0;
+  }
+}
+
+/* .ui-theme-preview-grid: aligns theme preview surfaces consistently. */
 .ui-theme-preview-grid {
   align-items: stretch;
 }
 
+/* .ui-theme-preview: previews UI components using locally scoped theme tokens. */
 .ui-theme-preview {
   display: grid;
   align-content: start;
@@ -754,6 +1101,7 @@ border-radius: var(--ui-radius-medium);
   color-scheme: dark;
 }
 
+/* Light preview values override inherited tokens inside this sample only. */
 .ui-theme-preview[data-theme="light"] {
   --ui-color-background: hsl(196, 52%, 97%);
   --ui-color-surface: hsl(0, 0%, 98%);
@@ -768,12 +1116,15 @@ border-radius: var(--ui-radius-medium);
   --ui-color-primary: #38633b;
   --ui-color-primary-hover: #2c5031;
   --ui-color-success: #198754;
+  --ui-color-skeleton: #8b9aa8;
+  --ui-color-skeleton-highlight: #a7b4bf;
   --ui-color-focus: #38633b;
   --ui-color-disabled: #7b8980;
   --ui-shadow-raised: 0 12px 30px rgba(32, 51, 47, 0.09);
   color-scheme: light;
 }
 
+/* Dark preview values override inherited tokens inside this sample only. */
 .ui-theme-preview[data-theme="dark"] {
   --ui-color-background: #0a1424;
   --ui-color-surface: #101f33;
@@ -788,19 +1139,25 @@ border-radius: var(--ui-radius-medium);
   --ui-color-primary: #68b9e8;
   --ui-color-primary-hover: #91d0f3;
   --ui-color-success: #198754;
+  --ui-color-skeleton: #354b65;
+  --ui-color-skeleton-highlight: #526b89;
   --ui-color-focus: #68b9e8;
   --ui-color-disabled: #778681;
   --ui-shadow-raised: 0 12px 32px rgba(0, 0, 0, 0.2);
   color-scheme: dark;
 }
 
+/* .ui-code: styles compact inline code or token-value labels. */
 .ui-code {
   display: block;
   overflow-wrap: anywhere;
   color: var(--ui-color-text-subtle);
-  font: 0.72rem/1.5 var(--mono, "DM Mono", monospace);
+  font: var(--ui-font-size-xs)/var(--ui-line-height-body)
+    var(--ui-font-family-mono);
 }
 
+/* Code and status groups style inline examples, scrollable snippets, and state markers. */
+/* .ui-code-block: presents a wrapped, horizontally scrollable code sample. */
 .ui-code-block {
   min-width: 0;
   margin: var(--ui-space-2) 0 0;
@@ -814,13 +1171,14 @@ border-radius: var(--ui-radius-medium);
 
   & code {
     color: var(--ui-color-text-muted);
-    font: 0.75rem/1.65 var(--mono, "DM Mono", monospace);
+    font: var(--ui-font-size-caption)/1.65 var(--ui-font-family-mono);
     white-space: inherit;
     overflow-wrap: anywhere;
     word-break: break-word;
   }
 }
 
+/* .ui-status-dot: marks a compact status or activity indicator. */
 .ui-status-dot {
   display: inline-block;
   width: 7px;
@@ -832,19 +1190,20 @@ border-radius: var(--ui-radius-medium);
     color-mix(in srgb, var(--ui-color-primary) 55%, transparent);
 }
 
+/* .ui-button: base interactive control with shared sizing and focus behavior. */
 .ui-button {
   display: inline-flex;
-  min-height: 40px;
+  min-height: var(--ui-density-control-height);
   align-items: center;
   justify-content: center;
   gap: var(--ui-space-2);
-  padding: 0 var(--ui-space-4);
+  padding: 0 var(--ui-density-control-padding-inline);
   border: 1px solid transparent;
   border-radius: var(--ui-radius-small);
   font: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 1.2;
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-semibold);
+  line-height: var(--ui-line-height-tight);
   text-decoration: none;
   cursor: pointer;
   transition:
@@ -858,6 +1217,7 @@ border-radius: var(--ui-radius-medium);
   transform: translateY(-1px);
 }
 
+/* Keyboard focus remains visible on buttons and form controls. */
 .ui-button:focus-visible,
 .ui-input:focus-visible,
 .ui-select:focus-visible,
@@ -866,6 +1226,7 @@ border-radius: var(--ui-radius-medium);
   outline-offset: 2px;
 }
 
+/* Disabled buttons use muted colors and a non-interactive cursor. */
 .ui-button:disabled {
   color: var(--ui-color-disabled);
   background: var(--ui-color-surface-sunken);
@@ -873,6 +1234,7 @@ border-radius: var(--ui-radius-medium);
   opacity: 0.75;
 }
 
+/* .ui-button--primary: emphasizes the main action. */
 .ui-button--primary {
   color: var(--ui-color-text-inverse);
   background: var(--ui-color-primary);
@@ -882,6 +1244,7 @@ border-radius: var(--ui-radius-medium);
   }
 }
 
+/* .ui-button--secondary: presents a contained, lower-emphasis action. */
 .ui-button--secondary {
   color: var(--ui-color-text);
   border-color: var(--ui-color-border);
@@ -892,34 +1255,40 @@ border-radius: var(--ui-radius-medium);
   }
 }
 
+/* .ui-button--outline: presents a transparent action with primary outline. */
 .ui-button--outline {
   color: var(--ui-color-primary);
   border-color: var(--ui-color-primary);
   background: transparent;
 }
 
+/* Outline and ghost actions share a subtle primary hover surface. */
 .ui-button--outline:hover:not(:disabled),
 .ui-button--ghost:hover:not(:disabled) {
   background: color-mix(in srgb, var(--ui-color-primary) 10%, transparent);
 }
 
+/* .ui-button--ghost: presents a low-emphasis text-like action. */
 .ui-button--ghost {
   color: var(--ui-color-text-muted);
   background: transparent;
 }
 
+/* .ui-button--small: reduces control height and horizontal padding. */
 .ui-button--small {
-  min-height: 32px;
+  min-height: var(--ui-size-control-small);
   padding: 0 var(--ui-space-3);
-  font-size: 0.8rem;
+  font-size: var(--ui-font-size-sm);
 }
 
+/* .ui-button--large: increases control height and label scale. */
 .ui-button--large {
-  min-height: 48px;
+  min-height: var(--ui-size-control-large);
   padding: 0 var(--ui-space-5);
-  font-size: 1rem;
+  font-size: var(--ui-font-size-body);
 }
 
+/* .ui-badge: renders a compact, pill-shaped status label. */
 .ui-badge {
   display: inline-flex;
   min-height: 24px;
@@ -928,45 +1297,51 @@ border-radius: var(--ui-radius-medium);
   padding: 2px 9px;
   border: 1px solid transparent;
   border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 650;
-  line-height: 1.2;
+  font-size: var(--ui-font-size-xs);
+  font-weight: var(--ui-font-weight-semibold);
+  line-height: var(--ui-line-height-tight);
   white-space: nowrap;
 }
 
+/* .ui-badge: renders a compact, pill-shaped status label. */
+/* .ui-badge--neutral: gives non-semantic labels a subdued appearance. */
+/* .ui-badge--neutral: gives non-semantic labels a subdued appearance. */
 .ui-badge--neutral {
   color: var(--ui-color-text-muted);
   border-color: var(--ui-color-border);
   background: var(--ui-color-surface-sunken);
 }
 
+/* .ui-badge--primary: associates a badge with primary emphasis. */
 .ui-badge--primary {
   color: var(--ui-color-primary);
-    border-color: var(--ui-color-border);
+  border-color: var(--ui-color-border);
   background: color-mix(in srgb, var(--ui-color-primary) 15%, transparent);
 }
 
+/* .ui-badge--success: communicates successful state. */
 .ui-badge--success {
   color: var(--ui-color-success);
   background: color-mix(in srgb, var(--ui-color-success) 13%, transparent);
-    border-color: var(--ui-color-border);
+  border-color: var(--ui-color-border);
 }
 
+/* .ui-badge--warning: communicates caution or pending state. */
 .ui-badge--warning {
- 
   color: var(--ui-color-primary);
-   color: var(--ui-color-warning);
-    border-color: var(--ui-color-border);
+  color: var(--ui-color-warning);
+  border-color: var(--ui-color-border);
   background: color-mix(in srgb, var(--ui-color-warning) 13%, transparent);
-  
 }
 
+/* .ui-badge--danger: communicates an error or destructive state. */
 .ui-badge--danger {
   color: var(--ui-color-danger);
   background: color-mix(in srgb, var(--ui-color-danger) 13%, transparent);
-    border-color: var(--ui-color-border);
+  border-color: var(--ui-color-border);
 }
 
+/* .ui-alert: groups an icon and message in a contextual feedback surface. */
 .ui-alert {
   display: flex;
   align-items: flex-start;
@@ -976,24 +1351,28 @@ border-radius: var(--ui-radius-medium);
   border-radius: var(--ui-radius-small);
 }
 
+/* .ui-alert--info: styles informational feedback. */
 .ui-alert--info {
   color: var(--ui-color-info);
   border-color: color-mix(in srgb, var(--ui-color-info) 35%, transparent);
   background: color-mix(in srgb, var(--ui-color-info) 8%, transparent);
 }
 
+/* .ui-alert--danger: styles error or danger feedback. */
 .ui-alert--danger {
   color: var(--ui-color-danger);
   border-color: color-mix(in srgb, var(--ui-color-danger) 35%, transparent);
   background: color-mix(in srgb, var(--ui-color-danger) 8%, transparent);
 }
 
+/* .ui-alert--success: styles successful feedback. */
 .ui-alert--success {
   color: var(--ui-color-success);
   border-color: color-mix(in srgb, var(--ui-color-success) 35%, transparent);
   background: color-mix(in srgb, var(--ui-color-success) 8%, transparent);
 }
 
+/* .ui-alert__icon: provides a fixed-size marker for alert state. */
 .ui-alert__icon {
   display: grid;
   width: 20px;
@@ -1002,24 +1381,29 @@ border-radius: var(--ui-radius-medium);
   place-items: center;
   border: 1px solid currentColor;
   border-radius: 50%;
-  font: 700 0.75rem/1 sans-serif;
+  font: var(--ui-font-weight-bold) var(--ui-font-size-caption)/1
+    var(--ui-font-family-sans);
 }
 
+/* .ui-alert__content: contains alert title and message without overflow. */
 .ui-alert__content {
   min-width: 0;
 }
 
+/* .ui-alert__title: gives the alert's short heading stronger emphasis. */
 .ui-alert__title {
-  font-size: 0.88rem;
+  font-size: var(--ui-font-size-sm);
 }
 
+/* .ui-alert__text: styles explanatory copy within an alert. */
 .ui-alert__text {
   margin: var(--ui-space-1) 0 0;
   color: var(--ui-color-text-muted);
-  font-size: 0.84rem;
-  line-height: 1.5;
+  font-size: var(--ui-font-size-body-small);
+  line-height: var(--ui-line-height-body);
 }
 
+/* .ui-tabs: groups horizontally scrollable tab controls. */
 .ui-tabs {
   display: flex;
   gap: var(--ui-space-1);
@@ -1028,6 +1412,7 @@ border-radius: var(--ui-radius-medium);
   margin-bottom: 20px;
 }
 
+/* Tabs, switches, and progress groups expose selection and completion states. */
 .ui-tab {
   flex: 0 0 auto;
   padding: var(--ui-space-2) var(--ui-space-3);
@@ -1039,18 +1424,21 @@ border-radius: var(--ui-radius-medium);
   cursor: pointer;
 }
 
+/* Selected tabs receive primary text, border, and surface treatment. */
 .ui-tab[aria-selected="true"] {
   border-bottom-color: var(--ui-color-primary);
   color: var(--ui-color-primary);
-  font-weight: 650;
+  font-weight: var(--ui-font-weight-semibold);
 }
 
+/* Tabs and switch controls share a visible keyboard focus indicator. */
 .ui-tab:focus-visible,
 .ui-switch__control:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--ui-color-focus) 38%, transparent);
   outline-offset: 2px;
 }
 
+/* .ui-tab-panel: holds content associated with the selected tab. */
 .ui-tab-panel {
   min-height: 54px;
   padding: var(--ui-space-3);
@@ -1058,6 +1446,7 @@ border-radius: var(--ui-radius-medium);
   background: transparent;
 }
 
+/* .ui-switch: aligns a labeled boolean control and its supporting copy. */
 .ui-switch {
   display: flex;
   align-items: center;
@@ -1067,11 +1456,13 @@ border-radius: var(--ui-radius-medium);
   cursor: pointer;
 }
 
+/* .ui-switch__copy: stacks switch label and description. */
 .ui-switch__copy {
   display: grid;
   gap: var(--ui-space-1);
 }
 
+/* .ui-switch__control: sizes and colors the native switch input. */
 .ui-switch__control {
   width: 42px;
   height: 24px;
@@ -1080,14 +1471,17 @@ border-radius: var(--ui-radius-medium);
   cursor: pointer;
 }
 
+/* .ui-progress-panel: separates progress feedback from nearby panel content. */
 .ui-progress-panel {
   margin-top: var(--ui-space-4);
 }
 
+/* .ui-progress-heading: separates progress label from its value or action. */
 .ui-progress-heading {
   justify-content: space-between;
 }
 
+/* .ui-progress: styles native progress track and completed value. */
 .ui-progress {
   --ui-progress-track: var(--ui-color-surface-sunken);
   display: block;
@@ -1100,25 +1494,30 @@ border-radius: var(--ui-radius-medium);
   background: var(--ui-progress-track);
 }
 
+/* WebKit progress track retains the rounded track shape. */
 .ui-progress::-webkit-progress-bar {
   border-radius: inherit;
   background: var(--ui-progress-track);
 }
 
+/* Light theme adjusts progress-track contrast. */
 :root[data-theme="light"] .ui-progress {
   --ui-progress-track: hsl(132, 18%, 91%);
 }
 
+/* WebKit progress value uses the primary semantic color. */
 .ui-progress::-webkit-progress-value {
   border-radius: inherit;
   background: var(--ui-color-primary);
 }
 
+/* Firefox progress value uses the primary semantic color. */
 .ui-progress::-moz-progress-bar {
   border-radius: inherit;
   background: var(--ui-color-primary);
 }
 
+/* .ui-state-card: centers icon and copy for empty or status states. */
 .ui-state-card {
   display: grid;
   justify-items: start;
@@ -1128,10 +1527,11 @@ border-radius: var(--ui-radius-medium);
   padding: var(--ui-space-6);
 }
 
+/* .ui-state-card__icon: highlights the symbol representing current state. */
 .ui-state-card__icon {
   display: grid;
-  width: 40px;
-  height: 40px;
+  width: var(--ui-size-icon);
+  height: var(--ui-size-icon);
   place-items: center;
   border-radius: 50%;
   color: var(--ui-color-primary);
@@ -1139,19 +1539,27 @@ border-radius: var(--ui-radius-medium);
   font-size: 1.4rem;
 }
 
+/* .ui-skeleton: animates a placeholder while content is loading. */
 .ui-skeleton {
   width: 100%;
   height: 14px;
   border-radius: var(--ui-radius-small);
-  background: linear-gradient(90deg, var(--ui-color-surface-sunken), var(--ui-color-surface-raised), var(--ui-color-surface-sunken));
+  background: linear-gradient(
+    90deg,
+    var(--ui-color-skeleton),
+    var(--ui-color-skeleton-highlight),
+    var(--ui-color-skeleton)
+  );
   background-size: 200% 100%;
   animation: ui-skeleton-shimmer 1.6s ease-in-out infinite;
 }
 
+/* .ui-skeleton--short: varies placeholder length within a skeleton group. */
 .ui-skeleton--short {
   width: 68%;
 }
 
+/* .ui-sr-only: hides content visually but preserves assistive access. */
 .ui-sr-only {
   position: absolute;
   width: 1px;
@@ -1164,56 +1572,83 @@ border-radius: var(--ui-radius-medium);
 }
 
 @keyframes ui-skeleton-shimmer {
-  to { background-position: -200% 0; }
+  to {
+    background-position: -200% 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ui-skeleton { animation: none; }
+  /* Reduced-motion preference disables skeleton shimmer animation. */
+  .ui-skeleton {
+    animation: none;
+  }
 }
 
+/* .ui-form__body: spaces form controls using current density tokens. */
 .ui-form__body {
   display: grid;
-  gap: var(--ui-space-5);
-  padding: var(--ui-space-6);
+  gap: var(--ui-density-form-gap);
+  padding: var(--ui-density-panel-padding);
 }
 
+/* Local density scopes also work on app shell regions and isolated panels. */
+[data-density="compact"] {
+  --ui-density-control-height: var(--ui-size-control-small);
+  --ui-density-input-height: 2.25rem;
+  --ui-density-control-padding-inline: var(--ui-space-3);
+  --ui-density-panel-padding: var(--ui-space-4);
+  --ui-density-panel-header-padding: var(--ui-space-4);
+  --ui-density-form-gap: var(--ui-space-4);
+  --ui-density-field-gap: var(--ui-space-1);
+}
+
+/* .ui-field: stacks a control with its label, help, and validation feedback. */
 .ui-field {
   display: grid;
-  gap: var(--ui-space-2);
+  gap: var(--ui-density-field-gap);
 }
 
+/* .ui-field__label: identifies the associated form control. */
 .ui-field__label {
   color: var(--ui-color-text);
-  font-size: 0.86rem;
-  font-weight: 600;
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-semibold);
 }
 
+/* .ui-field__required: marks required fields with the danger color. */
 .ui-field__required {
   color: var(--ui-color-danger);
 }
 
+/* .ui-field__description: provides supplementary guidance for a field. */
+/* .ui-field__error: explains why a field value is invalid. */
 .ui-field__description,
+/* .ui-field__error: emphasizes validation feedback as an error. */
 .ui-field__error {
   margin: 0;
   color: var(--ui-color-text-subtle);
-  font-size: 0.78rem;
-  line-height: 1.5;
+  font-size: var(--ui-font-size-xs);
+  line-height: var(--ui-line-height-body);
 }
 
 .ui-field__error {
   color: var(--ui-color-danger);
 }
 
+/* .ui-field--invalid: marks the field input when validation fails. */
 .ui-field--invalid .ui-input {
   border-color: var(--ui-color-danger);
 }
 
+/* .ui-form__dirty: indicates that values differ from their saved state. */
 .ui-form__dirty {
   margin-left: auto;
   color: var(--ui-color-text-subtle);
-  font: 0.78rem/1.5 var(--mono, "DM Mono", monospace);
+  font: var(--ui-font-size-caption)/var(--ui-line-height-body)
+    var(--ui-font-family-mono);
 }
 
+/* .ui-form__success: spaces successful form submission feedback. */
 .ui-form__success {
   margin-top: var(--ui-space-4);
 
@@ -1222,10 +1657,13 @@ border-radius: var(--ui-radius-medium);
   }
 }
 
+/* .ui-data-form: constrains the width of a data-backed form. */
 .ui-data-form {
   max-width: 100%;
 }
 
+/* .ui-data-status: positions request or save feedback. */
+/* .ui-data-error: positions request failure feedback. */
 .ui-data-status,
 .ui-data-error {
   margin-top: var(--ui-space-4);
@@ -1236,21 +1674,25 @@ border-radius: var(--ui-radius-medium);
   margin: 0;
 }
 
+/* .ui-data-response: contains returned data in a separated response surface. */
 .ui-data-response {
   margin-top: var(--ui-space-5);
   overflow: hidden;
 }
 
+/* .ui-data-response__body: lets response content shrink within its panel. */
 .ui-data-response__body {
   min-width: 0;
 }
 
+/* .ui-data-response__code: displays long response data in a bounded code view. */
 .ui-data-response__code {
   max-height: 430px;
   margin: 0;
   overflow: auto;
   color: var(--ui-syntax-default);
-  font: 0.85rem/1.7 var(--mono, "DM Mono", monospace);
+  font: var(--ui-font-size-code)/var(--ui-line-height-code)
+    var(--ui-font-family-mono);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 
@@ -1259,14 +1701,15 @@ border-radius: var(--ui-radius-medium);
   }
 }
 
+/* .ui-input, .ui-select, and .ui-textarea share themed form-control surfaces. */
 .ui-input,
 .ui-select,
 .ui-textarea {
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  min-height: 42px;
-  padding: 9px 11px;
+  min-height: var(--ui-density-input-height);
+  padding: var(--ui-space-2) var(--ui-space-3);
   border: 1px solid var(--ui-color-border-strong);
   border-radius: var(--ui-radius-small);
   color: var(--ui-color-text);
@@ -1274,65 +1717,75 @@ border-radius: var(--ui-radius-medium);
   font: inherit;
 }
 
+/* Form controls include text inputs, checkboxes, avatars, and inline links. */
 .ui-input::placeholder,
 .ui-textarea::placeholder {
   color: var(--ui-color-text-subtle);
 }
 
+/* .ui-input--invalid: marks a control whose value failed validation. */
 .ui-input--invalid {
   border-color: var(--ui-color-danger);
 }
 
+/* .ui-textarea: sets a practical minimum size and vertical-only resizing. */
 .ui-textarea {
   min-height: 92px;
   resize: vertical;
 }
 
+/* .ui-checkbox: aligns a native checkbox with its label. */
 .ui-checkbox {
   display: flex;
   align-items: center;
-  gap: var(--ui-space-2);
+  gap: var(--ui-density-field-gap);
   color: var(--ui-color-text-muted);
-  font-size: 0.86rem;
+  font-size: var(--ui-font-size-sm);
   cursor: pointer;
 }
 
+/* .ui-checkbox__control: sizes and themes the native checkbox input. */
 .ui-checkbox__control {
-  width: 16px;
-  height: 16px;
+  width: var(--ui-size-checkbox);
+  height: var(--ui-size-checkbox);
   margin: 0;
   accent-color: var(--ui-color-primary);
 }
 
+/* .ui-avatar: presents initials or a person in a circular frame. */
 .ui-avatar {
   display: inline-grid;
-  width: 40px;
-  height: 40px;
+  width: var(--ui-size-control-medium);
+  height: var(--ui-size-control-medium);
   place-items: center;
   border-radius: 50%;
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: var(--ui-font-size-xs);
+  font-weight: var(--ui-font-weight-bold);
 }
 
+/* .ui-avatar--primary: applies primary semantic color to an avatar. */
 .ui-avatar--primary {
   color: var(--ui-color-primary);
   background: color-mix(in srgb, var(--ui-color-primary) 17%, transparent);
 }
 
+/* .ui-avatar--success: applies success semantic color to an avatar. */
 .ui-avatar--success {
   color: var(--ui-color-success);
   background: color-mix(in srgb, var(--ui-color-success) 17%, transparent);
 }
 
+/* .ui-avatar--info: applies informational semantic color to an avatar. */
 .ui-avatar--info {
   color: var(--ui-color-info);
   background: color-mix(in srgb, var(--ui-color-info) 17%, transparent);
 }
 
+/* .ui-link: styles an inline link with visible hover feedback. */
 .ui-link {
   color: var(--ui-color-primary);
-  font-size: 0.84rem;
-  font-weight: 600;
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-semibold);
 
   &:hover {
     text-decoration: underline;
@@ -1340,10 +1793,12 @@ border-radius: var(--ui-radius-medium);
   }
 }
 
+/* .ui-icon-picker: constrains icon-selection content to available width. */
 .ui-icon-picker {
   max-width: 100%;
 }
 
+/* .ui-icon-picker__button: makes one icon a visible, focusable choice. */
 .ui-icon-picker__button {
   display: grid;
   width: 58px;
@@ -1384,6 +1839,7 @@ border-radius: var(--ui-radius-medium);
   height: 30px;
 }
 
+/* .ui-icon-picker__selection: lays out the chosen icon and its identifier. */
 .ui-icon-picker__selection {
   display: flex;
   min-width: 0;
@@ -1393,82 +1849,96 @@ border-radius: var(--ui-radius-medium);
   color: var(--ui-color-text-muted);
 }
 
+/* The icon identifier wraps instead of overflowing its selection row. */
 .ui-icon-picker__selection code {
   overflow-wrap: anywhere;
   color: var(--ui-color-text);
 }
 
+/* The selected icon uses consistent size and primary color. */
 .ui-icon-picker__selection iconify-icon {
   width: 28px;
   height: 28px;
   color: var(--ui-color-primary);
 }
 
+/* .ui-table-panel: clips table content to the panel's rounded surface. */
 .ui-table-panel {
   margin-top: var(--ui-space-5);
   overflow: hidden;
 }
 
+/* .ui-table-wrap: enables horizontal scrolling when a table exceeds its container. */
 .ui-table-wrap {
   width: 100%;
   overflow-x: auto;
 }
 
+/* .ui-table: sets full-width collapsed table layout and left alignment. */
 .ui-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
+/* .ui-table__caption: labels the data shown in the table. */
 .ui-table__caption {
   padding: var(--ui-space-4) var(--ui-space-5);
   color: var(--ui-color-text);
-  font-weight: 650;
+  font-weight: var(--ui-font-weight-semibold);
   text-align: left;
 }
 
+/* Table headers and cells share padding, separators, and readable type size. */
 .ui-table th,
 .ui-table td {
   padding: var(--ui-space-3) var(--ui-space-5);
   border-top: 1px solid var(--ui-color-border);
-  font-size: 0.86rem;
+  font-size: var(--ui-font-size-sm);
 }
 
+/* Column headers use subdued uppercase styling. */
 .ui-table thead th {
   color: var(--ui-color-text-subtle);
   background: var(--ui-color-surface-sunken);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  font-size: var(--ui-font-size-xs);
+  letter-spacing: var(--ui-letter-spacing-wide);
   text-transform: uppercase;
 }
 
+/* Row headers identify each data record with stronger text. */
 .ui-table tbody th {
   color: var(--ui-color-text);
-  font-weight: 600;
+  font-weight: var(--ui-font-weight-semibold);
 }
 
+/* Data cells use muted text to distinguish values from row labels. */
 .ui-table tbody td {
   color: var(--ui-color-text-muted);
 }
 
+/* Hovered table rows receive a subtle primary tint. */
 .ui-table tbody tr:hover {
   background: color-mix(in srgb, var(--ui-color-primary) 5%, transparent);
 }
 
+/* .ui-home-hero: arranges introductory copy and supporting content in columns. */
 .ui-home-hero {
   display: grid;
   /* grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr); */
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(var(--ui-space-8), 5vw, var(--ui-space-10));
   padding: var(--ui-space-8) 0 var(--ui-space-10);
   /* border-bottom: 1px solid var(--ui-color-border); */
 }
 
+/* .ui-home-hero__copy: lets hero text shrink without overflowing its column. */
 .ui-home-hero__copy {
   min-width: 0;
 }
 
+/* .ui-home-hero__aside: stacks supporting hero panels with consistent spacing. */
 .ui-home-hero__aside {
   display: grid;
   min-width: 0;
@@ -1476,97 +1946,124 @@ border-radius: var(--ui-radius-medium);
   gap: var(--ui-space-5);
 }
 
+/* .ui-home-hero__title: reserves stable height for the rotating headline. */
 .ui-home-hero__title {
   display: grid;
   align-content: center;
   min-height: 2.12em;
   margin: 0;
   color: var(--ui-color-text);
-  font-size: clamp(2.25rem, 5.2vw, 3.5rem);
-  line-height: 1.15;
-  letter-spacing: -0.045em;
+  font-size: var(--ui-font-size-display);
+  line-height: var(--ui-line-height-compact);
+  letter-spacing: var(--ui-letter-spacing-tight);
 }
 
+/* .ui-home-hero-image: sizes the landing-page hero artwork. */
+.ui-home-hero-image {
+  width: 100%;
+  height: 450px;
+  margin-top: 0px;
+  background: url("../images/nodula-hero2.webp") center / contain no-repeat;
+}
+
+/* .ui-home-carousel: keeps changing headline text from shifting nearby content. */
 .ui-home-carousel {
   min-height: 2.12em;
 }
 
+/* .ui-home-carousel__line: makes each carousel headline occupy its own line. */
 .ui-home-carousel__line {
   display: block;
 }
 
+/* Fade variants animate carousel text between headline states. */
 .ui-home-carousel--fade-a .ui-home-carousel__line {
   animation: ui-home-carousel-fade-a 0.45s ease both;
 }
 
+/* .ui-home-carousel--fade-a and --fade-b animate headline transitions. */
+/* .ui-home-carousel--fade-b: applies alternate headline transition timing. */
 .ui-home-carousel--fade-b .ui-home-carousel__line {
   animation: ui-home-carousel-fade-b 0.45s ease both;
 }
 
+/* .ui-home-hero__description: separates supporting copy from hero actions. */
 .ui-home-hero__description {
   margin: var(--ui-space-4) 0 var(--ui-space-6);
 }
 
+/* .ui-home-hero__note: styles secondary footnote copy in the hero. */
 .ui-home-hero__note {
   color: var(--ui-color-text-subtle);
-  font-size: 0.86rem;
+  font-size: var(--ui-font-size-label);
 }
 
+/* .ui-home-specs: contains a compact specification summary panel. */
 .ui-home-specs {
   min-width: 0;
   overflow: hidden;
   margin-bottom: 0px;
 }
 
+/* .ui-home-specs__header: groups title and metadata above specification rows. */
 .ui-home-specs__header {
   display: grid;
   justify-content: stretch;
   gap: var(--ui-space-2);
-  padding: var(--ui-space-5) var(--ui-space-6);
+  padding: var(--ui-space-5) var(--ui-density-panel-padding);
   border-bottom: 1px solid var(--ui-color-border);
 }
 
+/* The specs header removes extra eyebrow spacing inside its compact layout. */
 .ui-home-specs__header .ui-page__eyebrow {
   margin: 0;
 }
 
+/* The specs header tightens its inline metadata cluster. */
 .ui-home-specs__header .ui-cluster {
   gap: var(--ui-space-2);
 }
 
+/* The specs panel title uses compact heading scale. */
 .ui-home-specs__header .ui-panel__title {
-  font-size: 1.2rem;
+  font-size: var(--ui-font-size-heading-3);
 }
 
+/* .ui-home-specs__list: removes list defaults and spaces the spec rows. */
 .ui-home-specs__list {
   margin: 0;
   padding: 0 var(--ui-space-6) var(--ui-space-4);
 }
 
+/* .ui-home-specs__item: aligns each specification label and value. */
 .ui-home-specs__item {
   display: grid;
   grid-template-columns: minmax(95px, 0.7fr) minmax(0, 1fr);
   gap: var(--ui-space-3);
   padding: var(--ui-space-3) 0;
   border-top: 1px solid var(--ui-color-border);
-  font-size: 0.84rem;
-  line-height: 1.45;
+  font-size: var(--ui-font-size-body-small);
+  line-height: var(--ui-line-height-compact);
 }
 
+/* The first specification row omits a top divider. */
 .ui-home-specs__item:first-child {
   border-top: 0;
 }
 
+/* Specification terms use subdued monospace text. */
 .ui-home-specs__item dt {
   color: var(--ui-color-text-subtle);
-  font-family: var(--mono, "DM Mono", monospace);
+  font-family: var(--ui-font-family-mono);
 }
 
+/* Specification values remove definition-list defaults. */
 .ui-home-specs__item dd {
   margin: 0;
   color: var(--ui-color-text-muted);
 }
 
+/* .ui-home-addon-carousel: frames addon slides between header and controls. */
 .ui-home-addon-carousel {
   display: grid;
   min-width: 0;
@@ -1579,6 +2076,8 @@ border-radius: var(--ui-radius-medium);
   box-shadow: var(--ui-shadow-raised);
 }
 
+/* Carousel header and footer align metadata and navigation controls. */
+/* Addon carousel header and footer align metadata and navigation controls. */
 .ui-home-addon-carousel__header,
 .ui-home-addon-carousel__footer {
   display: flex;
@@ -1588,28 +2087,33 @@ border-radius: var(--ui-radius-medium);
   padding: var(--ui-space-4) var(--ui-space-5);
 }
 
+/* .ui-home-addon-carousel__header: separates title metadata from slide. */
 .ui-home-addon-carousel__header {
   border-bottom: 1px solid var(--ui-color-border);
 }
 
+/* Carousel header eyebrow omits default bottom margin. */
 .ui-home-addon-carousel__header .ui-page__eyebrow {
   margin: 0;
 }
 
+/* .ui-home-addon-carousel__count: identifies the current carousel slide. */
 .ui-home-addon-carousel__count {
   color: var(--ui-color-text-subtle);
-  font-family: var(--mono, "DM Mono", monospace);
-  font-size: 0.8rem;
+  font-family: var(--ui-font-family-mono);
+  font-size: var(--ui-font-size-sm);
 }
 
+/* .ui-home-addon-carousel__slide: lays addon image beside its description. */
 .ui-home-addon-carousel__slide {
   display: grid;
   grid-template-columns: minmax(100px, 0.7fr) minmax(0, 1.3fr);
   align-items: center;
   gap: var(--ui-space-5);
-  padding: var(--ui-space-6);
+  padding: var(--ui-density-panel-padding);
 }
 
+/* .ui-home-addon-carousel__image: contains addon artwork within its slide. */
 .ui-home-addon-carousel__image {
   width: min(100%, 150px);
   aspect-ratio: 128 / 147;
@@ -1617,25 +2121,30 @@ border-radius: var(--ui-radius-medium);
   justify-self: center;
 }
 
+/* .ui-home-addon-carousel__copy: constrains text content within the slide. */
 .ui-home-addon-carousel__copy {
   display: grid;
-  gap: var(--ui-space-3);
+  gap: var(--ui-density-form-gap);
 }
 
+/* Addon slide title uses a responsive compact heading scale. */
 .ui-home-addon-carousel__copy .ui-panel__title {
   margin: 0;
   font-size: clamp(1.25rem, 2.4vw, 1.7rem);
 }
 
+/* .ui-home-addon-carousel__footer: separates slide content from controls. */
 .ui-home-addon-carousel__footer {
   border-top: 1px solid var(--ui-color-border);
 }
 
+/* .ui-home-addon-carousel__controls: groups previous/next carousel actions. */
 .ui-home-addon-carousel__controls {
   display: flex;
   gap: var(--ui-space-2);
 }
 
+/* Carousel buttons retain touch-friendly target dimensions. */
 .ui-home-addon-carousel__controls .ui-button {
   min-width: 44px;
   min-height: 44px;
@@ -1643,30 +2152,36 @@ border-radius: var(--ui-radius-medium);
   font-size: 1.2rem;
 }
 
+/* .ui-home-examples: separates example content from neighboring home sections. */
 .ui-home-examples {
   padding-bottom: var(--ui-space-8);
   border-bottom: 1px solid var(--ui-color-border);
 }
 
+/* .ui-home-examples__grid: balances the two example columns. */
 .ui-home-examples__grid {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
 }
 
+/* Example section heading aligns with supporting copy. */
 .ui-home-examples .ui-section__header {
   align-items: flex-end;
 }
 
+/* Example section description is right-aligned beside its heading. */
 .ui-home-examples .ui-section__description {
   max-width: 29ch;
   margin: 0;
   text-align: right;
 }
 
+/* .ui-home-highlights: groups concise product feature callouts. */
 .ui-home-highlights {
   padding: var(--ui-space-6) 0;
   border-bottom: 1px solid var(--ui-color-border);
 }
 
+/* .ui-home-highlight: aligns a numbered feature with its copy. */
 .ui-home-highlight {
   display: flex;
   align-items: flex-start;
@@ -1675,26 +2190,32 @@ border-radius: var(--ui-radius-medium);
   border-left: 1px solid var(--ui-color-border);
 }
 
+/* The first highlight omits the leading divider and inset. */
 .ui-home-highlight:first-child {
   padding-left: 0;
   border-left: 0;
 }
 
+/* .ui-home-highlight__number: styles the feature's index marker. */
 .ui-home-highlight__number {
   color: var(--ui-color-primary);
-  font: 0.78rem/1.4 var(--mono, "DM Mono", monospace);
+  font: var(--ui-font-size-caption)/var(--ui-line-height-compact)
+    var(--ui-font-family-mono);
 }
 
+/* Highlight card titles use compact type scale. */
 .ui-home-highlight .ui-card__title {
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-semibold);
 }
 
+/* Highlight card descriptions use compact copy styling. */
 .ui-home-highlight .ui-card__description {
   margin-top: var(--ui-space-1);
-  font-size: 0.82rem;
+  font-size: var(--ui-font-size-sm);
 }
 
+/* .ui-home-island: lays out a standalone feature strip across the page. */
 .ui-home-island {
   display: flex;
   align-items: center;
@@ -1705,19 +2226,27 @@ border-radius: var(--ui-radius-medium);
   border-bottom: 1px solid var(--ui-color-border);
 }
 
+/* .ui-home-island__label: styles the concise label in a feature strip. */
 .ui-home-island__label {
   color: var(--ui-color-text-muted);
-  font: 0.8rem/1.5 var(--mono, "DM Mono", monospace);
+  font: var(--ui-font-size-sm)/var(--ui-line-height-body)
+    var(--ui-font-family-mono);
 }
 
+/* .ui-home-island__content: prevents strip content from overflowing. */
 .ui-home-island__content {
   min-width: 0;
 }
 
+/* .ui-counter-card: reserves space for the interactive counter example. */
 .ui-counter-card {
   min-height: 220px;
 }
 
+/* Demo-card groups style the counter, editable ideas list, and related details. */
+/* Counter and ideas icons share a compact primary-tinted frame. */
+/* .ui-counter-card__icon and .ui-ideas-card__icon: shared demo icon frame. */
+/* Counter and ideas icons share a compact primary-tinted frame. */
 .ui-counter-card__icon,
 .ui-ideas-card__icon {
   display: grid;
@@ -1729,11 +2258,14 @@ border-radius: var(--ui-radius-medium);
   background: color-mix(in srgb, var(--ui-color-primary) 14%, transparent);
 }
 
+/* .ui-counter-card__label: identifies the counter value or metric. */
 .ui-counter-card__label {
   color: var(--ui-color-text-subtle);
-  font: 0.76rem/1.4 var(--mono, "DM Mono", monospace);
+  font: var(--ui-font-size-caption)/var(--ui-line-height-compact)
+    var(--ui-font-family-mono);
 }
 
+/* .ui-counter-card__display: aligns counter description and current value. */
 .ui-counter-card__display {
   display: flex;
   align-items: center;
@@ -1741,24 +2273,30 @@ border-radius: var(--ui-radius-medium);
   padding: var(--ui-space-3) 0;
   border-top: 1px solid var(--ui-color-border);
   color: var(--ui-color-text-muted);
-  font-size: 0.85rem;
+  font-size: var(--ui-font-size-sm);
 }
 
+/* Counter value uses prominent monospace numerals. */
 .ui-counter-card__display strong {
   color: var(--ui-color-primary);
-  font: 500 1.5rem/1.2 var(--mono, "DM Mono", monospace);
+  font: var(--ui-font-weight-medium)
+    var(--ui-font-size-heading-3)/var(--ui-line-height-tight)
+    var(--ui-font-family-mono);
 }
 
+/* Counter action fills available card width. */
 .ui-counter-card > .ui-button {
   width: 100%;
 }
 
+/* .ui-ideas-card: contains the interactive ideas-list demonstration. */
 .ui-ideas-card {
   width: 100%;
   min-height: 220px;
   padding: var(--ui-space-6);
 }
 
+/* .ui-ideas-card__heading: aligns title and list status, wrapping if needed. */
 .ui-ideas-card__heading {
   display: flex;
   align-items: center;
@@ -1767,12 +2305,14 @@ border-radius: var(--ui-radius-medium);
   gap: var(--ui-space-2);
 }
 
+/* .ui-ideas-card__status: reports list completion or item count. */
 .ui-ideas-card__status {
   margin: 0;
   color: var(--ui-color-text-subtle);
-  font-size: 0.8rem;
+  font-size: var(--ui-font-size-sm);
 }
 
+/* .ui-ideas-list: resets list markers and reserves room for list items. */
 .ui-ideas-list {
   min-height: 77px;
   margin: 0;
@@ -1780,6 +2320,7 @@ border-radius: var(--ui-radius-medium);
   list-style: none;
 }
 
+/* .ui-ideas-list__item: aligns idea text with its controls. */
 .ui-ideas-list__item {
   display: flex;
   min-height: 36px;
@@ -1787,26 +2328,32 @@ border-radius: var(--ui-radius-medium);
   justify-content: space-between;
   gap: var(--ui-space-2);
   color: var(--ui-color-text-muted);
-  font-size: 0.84rem;
+  font-size: var(--ui-font-size-sm);
 }
 
+/* .ui-ideas-list__label: allows long idea text to shrink within the row. */
 .ui-ideas-list__label {
   min-width: 0;
 }
 
+/* Idea text wraps at long unbroken strings. */
 .ui-ideas-list__label span {
   overflow-wrap: anywhere;
 }
 
+/* .ui-ideas-list__control: reserves a stable slot for the completion checkbox. */
 .ui-ideas-list__control {
   flex: 0 0 16px;
 }
 
+/* Completed ideas appear muted and struck through. */
+/* .ui-ideas-list__item--done: mutes and strikes through completed idea text. */
 .ui-ideas-list__item--done .ui-ideas-list__label span {
   color: var(--ui-color-disabled);
   text-decoration: line-through;
 }
 
+/* .ui-ideas-list__remove: provides a compact action to remove an idea. */
 .ui-ideas-list__remove {
   display: grid;
   width: 30px;
@@ -1823,20 +2370,24 @@ border-radius: var(--ui-radius-medium);
   cursor: pointer;
 }
 
+/* Remove action signals its destructive effect on hover. */
 .ui-ideas-list__remove:hover {
   color: var(--ui-color-danger);
   background: color-mix(in srgb, var(--ui-color-danger) 10%, transparent);
 }
 
+/* .ui-data-table-panel: clips fetched table content to its panel surface. */
 .ui-data-table-panel {
   overflow: hidden;
 }
 
+/* .ui-data-table__error: spaces error feedback inside the data panel. */
 .ui-data-table__error {
   margin: 0;
   padding: var(--ui-space-4);
 }
 
+/* .ui-ideas-card__add: separates new-item controls from existing ideas. */
 .ui-ideas-card__add {
   column-gap: var(--ui-space-3);
   padding-top: var(--ui-space-3);
@@ -1848,12 +2399,14 @@ border-radius: var(--ui-radius-medium);
   min-width: 0;
 }
 
+/* .ui-ideas-card__add-button: sizes the compact add-item action. */
 .ui-ideas-card__add-button {
   width: 42px;
   padding: 0;
-  font-size: 1.2rem;
+  font-size: var(--ui-font-size-lg);
 }
 
+/* .ui-extra-card: lays out a small supplementary card with leading icon. */
 .ui-extra-card {
   display: flex;
   align-items: center;
@@ -1865,6 +2418,7 @@ border-radius: var(--ui-radius-medium);
   border: none;
 }
 
+/* .ui-extra-card__icon: frames the supplementary card symbol. */
 .ui-extra-card__icon {
   display: grid;
   width: 34px;
@@ -1876,10 +2430,12 @@ border-radius: var(--ui-radius-medium);
   color: var(--ui-color-primary);
 }
 
+/* .ui-idea-detail: constrains the width of an idea detail view. */
 .ui-idea-detail {
   max-width: 760px;
 }
 
+/* Authentication demo panel and message styles are page-specific, not ui-* APIs. */
 .auth-demo-panel {
   max-width: 820px;
 }
@@ -1892,18 +2448,20 @@ border-radius: var(--ui-radius-medium);
   margin: 0;
 }
 
+/* .ui-tooltip: establishes inline trigger and positioning context for its text. */
 .ui-tooltip {
   position: relative; /* Positioning context for the tooltip */
   display: inline-block; /* Allows the tooltip to be inline */
   cursor: pointer; /* Changes cursor to indicate hoverable text */
-  font-size: small;
+  font-size: var(--ui-font-size-sm);
 }
 
+/* .ui-tooltip-text: hides tooltip copy until its trigger is hovered. */
 .ui-tooltip-text {
   visibility: hidden; /* Hidden by default */
-  width: fit-content; 
+  width: fit-content;
   min-width: 50px;
-   /* 130px; Width of the tooltip */
+  /* 130px; Width of the tooltip */
   background-color: var(--ui-tooltip-background); /* Background color */
   color: var(--ui-tooltip-text-color); /* Text color */
   text-align: center; /* Center text */
@@ -1913,7 +2471,7 @@ border-radius: var(--ui-radius-medium);
   top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1; /* Ensure tooltip appears above other content */
+  z-index: var(--ui-z-tooltip); /* Ensure tooltip appears above other content */
 }
 
 .ui-tooltip:hover .ui-tooltip-text {
@@ -1928,6 +2486,120 @@ border-radius: var(--ui-radius-medium);
 .ui-tooltip:hover .tooltiptext {
   opacity: 1;
 } */
+
+/* -- 09 media query -------------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-home-carousel--fade-a .ui-home-carousel__line,
+  .ui-home-carousel--fade-b .ui-home-carousel__line {
+    animation: none;
+  }
+}
+
+/* Wide layouts */
+@media (max-width: 1100px) {
+  .ui-site-header {
+    height: auto;
+    min-height: 78px;
+    flex-wrap: wrap;
+    row-gap: 4px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .ui-brand {
+    order: 1;
+  }
+  .ui-header-actions {
+    order: 2;
+    margin-left: auto;
+  }
+  .ui-site-nav {
+    order: 3;
+    flex: 0 0 100%;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-left: 0;
+  }
+}
+
+@keyframes ui-home-carousel-fade-a {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ui-home-carousel-fade-b {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tablet-ish layouts */
+@media (max-width: 820px) {
+  .ui-home-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-home-examples__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-home-addon-carousel__slide {
+    grid-template-columns: minmax(88px, 0.65fr) minmax(0, 1.35fr);
+  }
+  .ui-home-highlights {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-home-highlight,
+  .ui-home-highlight:first-child {
+    padding: 0;
+    border: 0;
+  }
+}
+
+/* Narrow layouts */
+@media (max-width: 560px) {
+  /* sections and comparisons stack */
+}
+
+/* Very narrow layouts */
+@media (max-width: 440px) {
+  .ui-page {
+    width: min(100% - 24px, var(--ui-content-width));
+  }
+
+  .ui-nav-link {
+    font-size: 0.9rem;
+  }
+
+  .ui-site-footer {
+    font-size: 0.8rem;
+  }
+
+  .ui-section__header {
+    flex-direction: column;
+  }
+  .ui-panel__footer {
+    flex-wrap: wrap;
+  }
+  .ui-table th,
+  .ui-table td {
+    padding: var(--ui-space-3);
+  }
+}
+
+/* -- 10 utilities ---------------------------------------------------------------------------------- */
+
+/* -- 12 0verrides/imports--------------------------------------------------------------------------- */
 
 /* Highlight.js token colors for JavaScript and HTML examples. */
 
@@ -1994,173 +2666,4 @@ border-radius: var(--ui-radius-medium);
 .hljs-property,
 .hljs-params {
   color: var(--ui-syntax-default);
-}
-
-/* -- 09-patterns ---------------------------------------------------------------------------------- */
-
-/* -- 10-utilities ---------------------------------------------------------------------------------- */
-
-/* -- 11-overrides ---------------------------------------------------------------------------------- */
-
-:root:not([data-theme="light"]) .ui-auth-toggle,
-:root:not([data-theme="light"]) .ui-cookie-settings-toggle,
-:root:not([data-theme="light"]) .ui-theme-toggle {
-  color: #eee;
-}
-
-:root[data-theme="dark"] .ui-theme-toggle__moon,
-:root:not([data-theme="light"]) .ui-theme-toggle__moon,
-:root[data-theme="light"] .ui-theme-toggle__sun {
-  display: none;
-}
-
-@media (max-width: 1100px) {
-  .ui-site-header {
-    height: auto;
-    min-height: 78px;
-    flex-wrap: wrap;
-    row-gap: 4px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .ui-brand {
-    order: 1;
-  }
-  .ui-header-actions {
-    order: 2;
-    margin-left: auto;
-  }
-  .ui-site-nav {
-    order: 3;
-    flex: 0 0 100%;
-    width: 100%;
-    flex-wrap: wrap;
-    gap: 10px 20px;
-    margin-left: 0;
-  }
-}
-
-@keyframes ui-home-carousel-fade-a {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes ui-home-carousel-fade-b {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ui-home-carousel--fade-a .ui-home-carousel__line,
-  .ui-home-carousel--fade-b .ui-home-carousel__line {
-    animation: none;
-  }
-}
-
-@media (max-width: 820px) {
-  .ui-home-hero {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .ui-home-examples__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .ui-home-addon-carousel__slide {
-    grid-template-columns: minmax(88px, 0.65fr) minmax(0, 1.35fr);
-  }
-  .ui-home-highlights {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .ui-home-highlight,
-  .ui-home-highlight:first-child {
-    padding: 0;
-    border: 0;
-  }
-}
-
-/* @media (max-width: 560px) {
-  .ui-page__title-row {
-    gap: var(--ui-space-3);
-  }
-
-  .ui-page__header-image {
-    width: 64px;
-  }
-
-  .ui-home-examples .ui-section__header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .ui-home-examples .ui-section__description {
-    text-align: left;
-  }
-  .ui-home-island {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-} */
-
-/* @media (max-width: 760px) {
-  .ui-page {
-    width: min(100% - 32px, var(--ui-content-width));
-  }
-
-.ui-site-footer {
-
-    font-size: 0.8rem;
-  
-
-}
-
-  .ui-grid--2,
-  .ui-grid--3 {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .ui-panel__header,
-  .ui-panel__body,
-  .ui-form__body {
-    padding: var(--ui-space-4);
-  }
-  .ui-panel__footer {
-    padding: var(--ui-space-4);
-  }
-} */
-
-@media (max-width: 440px) {
-  .ui-page {
-    width: min(100% - 24px, var(--ui-content-width));
-  }
-
-.ui-nav-link {
-
-  font-size: 0.9rem;
-}
-
-.ui-site-footer {
-
-    font-size: 0.8rem;
-
-}
-
-  .ui-section__header {
-    flex-direction: column;
-  }
-  .ui-panel__footer {
-    flex-wrap: wrap;
-  }
-  .ui-table th,
-  .ui-table td {
-    padding: var(--ui-space-3);
-  }
 }

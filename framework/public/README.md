@@ -67,9 +67,11 @@ export default defineConfig({
 });
 ```
 
-Vite applications can also import `*.module.css` files from a `.page` or `.comp` script and bind the returned local class map in the template, for example `:class="styles.card"`. This uses Vite's CSS Modules support; Nodula `<style module>` blocks are not supported.
+Vite applications can use CSS Modules in `.page` and `.comp` files either by importing `*.module.css` and binding its class map (for example `:class="styles.card"`) or by adding `<style module>` and using the generated `$style` map in the template (for example `:class="$style.card"`). Vite generates local class names and handles development injection and production CSS output. Each SFC supports one style block; `module` and `scoped` cannot be combined.
 
-The [Styles and CSS Modules guide](https://nodula-docs.richardleurs.nl/guide/styles) compares global CSS imports, component `<style>` / `<style scoped>` blocks, and Vite CSS Modules.
+The [Styles and CSS Modules guide](https://nodula-docs.richardleurs.nl/guide/styles) compares global CSS imports, component `<style>` / `<style scoped>` / `<style module>` blocks, and external Vite CSS Modules.
+
+Framework-provided source stylesheets are maintained in `framework/assets/css/`; package CSS entry names remain unchanged.
 
 
 

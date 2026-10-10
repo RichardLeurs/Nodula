@@ -1,6 +1,6 @@
 import { onCleanup } from 'nodula-framework';
 import { injectAddonStyles } from './inject-styles.js';
-import dialogStyles from '../assets/nodula-dialog.css?inline';
+import dialogStyles from '../assets/css/nodula-dialog.css?inline';
 
 let nextDialogId = 0;
 

@@ -43,14 +43,14 @@ function frameworkBuildPlugins() {
     name: 'nodula-framework-types-and-styles',
     async closeBundle() {
       await mkdir(frameworkOutputDirectory, { recursive: true });
-      const cssParts = await Promise.all(frameworkStyles.map((file) => readFile(frameworkSource(`assets/${file}`), 'utf8')));
+      const cssParts = await Promise.all(frameworkStyles.map((file) => readFile(frameworkSource(`assets/css/${file}`), 'utf8')));
       const minified = transform({ filename: 'nodula-framework.css', code: Buffer.from(cssParts.join('\n')), minify: true });
       await Promise.all([
         copyFile(frameworkSource('index.d.ts'), frameworkOutputFile('nodula-core.d.ts')),
         copyFile(frameworkSource('public/README.md'), frameworkOutputFile('README.md')),
         copyFile(frameworkSource('public/LICENSE.md'), frameworkOutputFile('LICENSE.md')),
         writeFile(frameworkOutputFile('nodula-framework.css'), minified.code),
-        ...frameworkStyles.map((file) => copyFile(frameworkSource(`assets/${file}`), frameworkOutputFile(file))),
+        ...frameworkStyles.map((file) => copyFile(frameworkSource(`assets/css/${file}`), frameworkOutputFile(file))),
         copyFile(frameworkSource('assets/vite.config.js'), frameworkOutputFile('vite.config.js')),
         rm(frameworkOutputFile('nodula.js'), { force: true }),
         rm(frameworkOutputFile('nodula.d.ts'), { force: true }),

@@ -23,7 +23,7 @@ import cookieImage from '../assets/images/cookie.webp';
 <template>
   <main class="ui-page page">
     <header class="ui-page__header">
-      <p class="ui-page__eyebrow">Optional package entries</p>
+      <p class="ui-page__eyebrow">Optional framework add-ons </p>
 
             <div class="ui-page__title-row">
       <h1 class="ui-page__title">Add-ons for the parts you need.</h1>
@@ -33,155 +33,180 @@ import cookieImage from '../assets/images/cookie.webp';
     </header>
 
     <section class="ui-section" aria-label="Available Nodula add-ons">
-      <div class="ui-grid ui-grid--2">
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header">
-            <h2 class="ui-card__title">Router</h2>
-            <img class="ui-card__header-image" :src="routerImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">History API navigation and route views from an explicit JavaScript route map.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createRouter } from 'nodula-framework/router';</code></pre>
+      <section class="ui-section" aria-labelledby="addon-ui-title">
+        <header class="ui-section__header">
+          <div>
+            <h2 id="addon-ui-title" class="ui-section__title">UI &amp; interaction</h2>
+            <p class="ui-section__description">Add accessible controls and interaction patterns when your app needs them.</p>
           </div>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Local storage</h2>
-           <img class="ui-card__header-image" :src="storageImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createLocalStorage, createIndexedDB, getCookie, setCookie } from 'nodula-framework/localstorage';</code></pre>
+        </header>
+        <div class="ui-grid ui-grid--2">
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Form</h2>
+            <img class="ui-card__header-image" :src="formImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Reactive form values, validation, touched and dirty state, async submission, and reset helpers.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createForm } from 'nodula-framework/form';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Dialog</h2>
+            <img class="ui-card__header-image" :src="dialogImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Native confirmation dialogs with configurable labels and owner cleanup.</p>
+              <pre class="ui-code-block"><code data-highlight>import { showDialog } from 'nodula-framework/dialog';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see reset button) <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Modal</h2>
+            <img class="ui-card__header-image" :src="modalImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Native modal windows with safe content, close controls, and configurable backdrop dismissal.</p>
+              <pre class="ui-code-block"><code data-highlight>import { showModal } from 'nodula-framework/modal';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see modal button) <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Drawer</h2>
+            <img class="ui-card__header-image" :src="drawerImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Accessible modal side panels that open from the left or right.</p>
+              <pre class="ui-code-block"><code data-highlight>import { showDrawer } from 'nodula-framework/drawer';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see drawer button) <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Navigation</h2>
+            <img class="ui-card__header-image" :src="navigationImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Accessible router-aware internal links and explicitly external HTTP(S) links.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createNavigation } from 'nodula-framework/navigation';</code></pre>
+            </div>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Cookie consent</h2>
+              <img class="ui-card__header-image" :src="cookieImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Manage privacy choices with a floating preference banner and category-level consent callbacks.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createCookieConsent } from 'nodula-framework/cookieconsent';</code></pre>
+            </div>
+            <!-- <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/cookie-consent" target="_blank" rel="noreferrer">Read the cookie consent guide <span aria-hidden="true">↗</span></a></footer>
+          </article> -->
+        </div>
+      </section>
+      <section class="ui-section" aria-labelledby="addon-state-title">
+        <header class="ui-section__header">
+          <div>
+            <h2 id="addon-state-title" class="ui-section__title">State &amp; data</h2>
+            <p class="ui-section__description">Manage reactive state, persistence, server requests, and authentication.</p>
           </div>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Data</h2>
-          <img class="ui-card__header-image" :src="dataImage" alt="" width="64" height="73" aria-hidden="true"></header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Fetch data from a server with method helpers, query parameters, and readable HTTP errors. Try the live request on the data demo page.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';</code></pre>
+        </header>
+        <div class="ui-grid ui-grid--2">
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Store</h2>
+            <img class="ui-card__header-image" :src="storeImage" alt="" width="64" height="73" aria-hidden="true"></header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Deeply reactive proxies for plain objects and arrays, including nested values.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createStore } from 'nodula-framework/store';</code></pre>
+            </div>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Local storage</h2>
+             <img class="ui-card__header-image" :src="storageImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createLocalStorage, createIndexedDB, getCookie, setCookie } from 'nodula-framework/localstorage';</code></pre>
+            </div>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Data</h2>
+            <img class="ui-card__header-image" :src="dataImage" alt="" width="64" height="73" aria-hidden="true"></header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Fetch data from a server with method helpers, query parameters, and readable HTTP errors. Try the live request on the data demo page.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/data">Open data demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Auth</h2>
+            <img class="ui-card__header-image" :src="authImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Reactive authentication state backed by your app's session adapter, with sign-in, sign-out, and optional session refresh.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createAuth } from 'nodula-framework/auth';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/login">Open Auth demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+        </div>
+      </section>
+      <section class="ui-section" aria-labelledby="addon-runtime-title">
+        <header class="ui-section__header">
+          <div>
+            <h2 id="addon-runtime-title" class="ui-section__title">Runtime behavior</h2>
+            <p class="ui-section__description">Add client-side navigation and motion capabilities to app behavior.</p>
           </div>
-          <footer class="ui-card__footer"><a class="ui-link" href="/data">Open data demo <span aria-hidden="true">→</span></a></footer>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Store</h2>
-          <img class="ui-card__header-image" :src="storeImage" alt="" width="64" height="73" aria-hidden="true"></header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Deeply reactive proxies for plain objects and arrays, including nested values.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createStore } from 'nodula-framework/store';</code></pre>
+        </header>
+        <div class="ui-grid ui-grid--2">
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header">
+              <h2 class="ui-card__title">Router</h2>
+              <img class="ui-card__header-image" :src="routerImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">History API navigation and route views from an explicit JavaScript route map.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createRouter } from 'nodula-framework/router';</code></pre>
+            </div>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Animation</h2>
+            <img class="ui-card__header-image" :src="animationImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Web Animations helpers and opt-in enter/leave transitions for routes, conditionals, and keyed lists.</p>
+              <pre class="ui-code-block"><code data-highlight>import { animate, enableLifecycleTransitions } from 'nodula-framework/animation';</code></pre>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="ui-section" aria-labelledby="addon-build-title">
+        <header class="ui-section__header">
+          <div>
+            <h2 id="addon-build-title" class="ui-section__title">Build &amp; integration</h2>
+            <p class="ui-section__description">Connect build-time metadata and browser capabilities to prepare your app for discovery and installation.</p>
           </div>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Animation</h2>
-          <img class="ui-card__header-image" :src="animationImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Web Animations helpers and opt-in enter/leave transitions for routes, conditionals, and keyed lists.</p>
-            <pre class="ui-code-block"><code data-highlight>import { animate, enableLifecycleTransitions } from 'nodula-framework/animation';</code></pre>
-          </div>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Form</h2>
-          <img class="ui-card__header-image" :src="formImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Reactive form values, validation, touched and dirty state, async submission, and reset helpers.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createForm } from 'nodula-framework/form';</code></pre>
-          </div>
-          <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo <span aria-hidden="true">→</span></a></footer>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Dialog</h2>
-          <img class="ui-card__header-image" :src="dialogImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Native confirmation dialogs with configurable labels and owner cleanup.</p>
-            <pre class="ui-code-block"><code data-highlight>import { showDialog } from 'nodula-framework/dialog';</code></pre>
-          </div>
-          <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see reset button) <span aria-hidden="true">→</span></a></footer>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Modal</h2>
-          <img class="ui-card__header-image" :src="modalImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Native modal windows with safe content, close controls, and configurable backdrop dismissal.</p>
-            <pre class="ui-code-block"><code data-highlight>import { showModal } from 'nodula-framework/modal';</code></pre>
-          </div>
-          <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see modal button) <span aria-hidden="true">→</span></a></footer>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Drawer</h2>
-          <img class="ui-card__header-image" :src="drawerImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Accessible modal side panels that open from the left or right.</p>
-            <pre class="ui-code-block"><code data-highlight>import { showDrawer } from 'nodula-framework/drawer';</code></pre>
-          </div>
-          <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open forms demo (see drawer button) <span aria-hidden="true">→</span></a></footer>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Navigation</h2>
-          <img class="ui-card__header-image" :src="navigationImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Accessible router-aware internal links and explicitly external HTTP(S) links.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createNavigation } from 'nodula-framework/navigation';</code></pre>
-          </div>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Auth</h2>
-          <img class="ui-card__header-image" :src="authImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Reactive authentication state backed by your app's session adapter, with sign-in, sign-out, and optional session refresh.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createAuth } from 'nodula-framework/auth';</code></pre>
-          </div>
-          <footer class="ui-card__footer"><a class="ui-link" href="/login">Open Auth demo <span aria-hidden="true">→</span></a></footer>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">SEO</h2>
-          <img class="ui-card__header-image" :src="seoImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Route-aware titles, descriptions, canonical URLs, Open Graph and hreflang metadata, plus Vite build-time sitemap.xml and robots.txt generation.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createSEO } from 'nodula-framework/seo';
-import { nodulaSEO } from 'nodula-framework/seo-vite';</code></pre>
-          </div>
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">PWA</h2>
-            <img class="ui-card__header-image" :src="pwaImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Add installable app metadata, a generated service worker, and build-asset precaching to your Vite app.</p>
-            <pre class="ui-code-block"><code data-highlight>import { nodulaPWA } from 'nodula-framework/pwa';</code></pre>
-          </div>
-          <!-- <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/pwa" target="_blank" rel="noreferrer">Read the PWA guide <span aria-hidden="true">↗</span></a></footer> -->
-        </article>
-
-        <article class="ui-card ui-card--interactive">
-          <header class="ui-card__header"><h2 class="ui-card__title">Cookie consent</h2>
-            <img class="ui-card__header-image" :src="cookieImage" alt="" width="64" height="73" aria-hidden="true">
-          </header>
-          <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Manage privacy choices with a floating preference banner and category-level consent callbacks.</p>
-            <pre class="ui-code-block"><code data-highlight>import { createCookieConsent } from 'nodula-framework/cookieconsent';</code></pre>
-          </div>
-          <!-- <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/cookie-consent" target="_blank" rel="noreferrer">Read the cookie consent guide <span aria-hidden="true">↗</span></a></footer>
-        </article> -->
-      </div>
+        </header>
+        <div class="ui-grid ui-grid--2">
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">SEO</h2>
+            <img class="ui-card__header-image" :src="seoImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Route-aware titles, descriptions, canonical URLs, Open Graph and hreflang metadata, plus Vite build-time sitemap.xml and robots.txt generation.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createSEO } from 'nodula-framework/seo';
+  import { nodulaSEO } from 'nodula-framework/seo-vite';</code></pre>
+            </div>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">PWA</h2>
+              <img class="ui-card__header-image" :src="pwaImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Add installable app metadata, a generated service worker, and build-asset precaching to your Vite app.</p>
+              <pre class="ui-code-block"><code data-highlight>import { nodulaPWA } from 'nodula-framework/pwa';</code></pre>
+            </div>
+            <!-- <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/pwa" target="_blank" rel="noreferrer">Read the PWA guide <span aria-hidden="true">↗</span></a></footer> -->
+          </article>
+        </div>
+      </section>
     </section>
 
     <!-- <a class="button button--dark" href="/">Back to the playground</a> -->

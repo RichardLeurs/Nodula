@@ -1,6 +1,6 @@
 import { onCleanup } from 'nodula-framework';
 import { injectAddonStyles } from './inject-styles.js';
-import notificationStyles from '../assets/nodula-notifications.css?inline';
+import notificationStyles from '../assets/css/nodula-notifications.css?inline';
 
 const notificationTypes = new Set(['error', 'success', 'warning', 'info']);
 const notificationPositions = new Set([

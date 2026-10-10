@@ -96,7 +96,7 @@ function moveAddonCarousel(direction) {
           </h1>
         </div>
 
-          <div class="hero-image"></div>
+          <div class="ui-home-hero-image"></div>
         <p class="ui-page__description ui-home-hero__description">Meet Nodula: A lightweight JavaScript framework built around modular architecture, simplicity and speed. Build your application from small, focused pieces that work together naturally.</p>
         
      
