@@ -2,7 +2,7 @@
 
 Nodula is a lightweight JavaScript framework built for simplicity and speed around modular architecture. Build your application from small, focused pieces that work together naturally.
 
-The Nodula framework is in early alpha status, the framework is working (see the demo app) but it is a work in progress and not a user friendly npm install yet.
+The Nodula framework is in alpha status, the framework is working (see the demo app) but it is a work in progress and not a user friendly npm install yet.
 
 ## Design
 
