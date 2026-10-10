@@ -19,6 +19,7 @@ demo_app/src/assets/*.af-lock-
 demo_app/src/assets/CSS architecture.md
 demo_app/package-lock.json
 demo_app/public/
+!demo_app/.env
 package-lock.json
 tests/
 vitest/
