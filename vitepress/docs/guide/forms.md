@@ -69,8 +69,14 @@ Returns a `FormController<T>` with:
 - Callback errors are rethrown. `submitting()` is reset in `finally`; `submitted()` remains false on failure.
 - Validator errors with non-string or empty messages are ignored. A thrown validator error is propagated.
 - `onSubmit` receives the reactive values object and the submit event when provided.
-- Before `onSubmit`, the add-on passes a detached copy with HTML-sensitive characters escaped in every string value, including strings nested in arrays/plain objects. `form.values` remains raw for editing and validation. This is HTML-context output encoding, not a general sanitizer or a substitute for server-side validation; avoid escaping the submitted values a second time, and use context-appropriate encoding when displaying them elsewhere.
+- Before `onSubmit`, the add-on passes a detached copy with HTML-sensitive characters escaped in every string value, including strings nested in arrays/plain objects. `form.values` remains raw for editing and validation. See [HTML escaping](#html-escaping-on-submit) below.
 - Values are copied when the form is created and when it resets. Non-plain object values such as `Date`, `Map`, and class instances are rejected.
+
+### HTML escaping on submit
+
+The form add-on escapes `&`, `<`, `>`, `"`, and `'` in string values immediately before calling `onSubmit`. For example, `<b>Hi</b>` is submitted as `&lt;b&gt;Hi&lt;/b&gt;`. The escaped values are a detached copy: fields and validators continue using the original `form.values`.
+
+This is HTML-context output encoding—not an HTML sanitizer or a universal security filter. It does not remove markup, validate input, or protect database queries from SQL injection. Avoid escaping the submitted values again, render text with `textContent` where possible, and use context-appropriate encoding when inserting data into other output contexts. Always validate on the server and use parameterized database queries.
 
 ## Native markup example
 
