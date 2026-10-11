@@ -15,7 +15,7 @@ Reactivity, DOM rendering, Helpers
 ### UI & Interaction
 
 
-| Module         | Contents                                                                                            |
+| <div style="width: 100px; ">Module</div>          | Contents                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------------- |
 | Forms          | Reactive form values, validation, touched and dirty state, async submission, and reset helpers      |
 | Dialog         | Native confirmation dialogs with configurable labels and owner cleanup                              |
@@ -27,7 +27,7 @@ Reactivity, DOM rendering, Helpers
 
 ### State & Data
 
-| Module         | Contents                                                                                            |
+| <div style="width: 100px; ">Module</div>        | Contents                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------------- |
 | Localstorage   | Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies              |
 | Data           | Fetch data from a server with method helpers, query parameters, and readable HTTP errors            |
@@ -37,7 +37,7 @@ Reactivity, DOM rendering, Helpers
 ### Runtime behavior
 
 
-| Module         | Contents                                                                                            |
+| <div style="width: 100px; ">Module</div>          | Contents                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------------- |
 | Router         | Hash or History API navigation, route views, and lazy file-based pages and layouts                  |
 | Animation      | Web Animations helpers and opt-in enter/leave transitions for routes, conditionals, and keyed lists |
@@ -45,7 +45,7 @@ Reactivity, DOM rendering, Helpers
 ### Build & Integration
 
 
-| Module         | Contents                                                                                            |
+| <div style="width: 100px; ">Module</div>          | Contents                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------------- |
 | SEO            | Route-aware title, descriptions, canonical, Open Graph, hreflang, sitemap, and robots metadata      |
 | Auth           | Reactive client authentication state connected to an app-provided auth service                      |
