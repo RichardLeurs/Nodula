@@ -16,7 +16,6 @@
       "types": "./dist/nodula/nodula-core.d.ts",
       "import": "./dist/nodula/nodula-core.js"
     },
-    "./nodula-framework.css": "./dist/nodula/css/nodula-framework.css",
     "./dialog.css": "./dist/nodula/css/nodula-dialog.css",
     "./modal.css": "./dist/nodula/css/nodula-modal.css",
     "./drawer.css": "./dist/nodula/css/nodula-drawer.css",

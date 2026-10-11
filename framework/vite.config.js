@@ -1,5 +1,4 @@
-import { copyFile, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { transform } from 'lightningcss';
+import { copyFile, cp, mkdir, rm } from 'node:fs/promises';
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
 import { nodulaPlugin } from './vite-plugin.js';
@@ -48,15 +47,14 @@ function frameworkBuildPlugins() {
         mkdir(frameworkOutputDirectory, { recursive: true }),
         mkdir(frameworkCssOutputDirectory, { recursive: true }),
         rm(fileURLToPath(new URL('../dist/nodula/assets/css', import.meta.url)), { recursive: true, force: true }),
-        ...['nodula-framework.css', ...frameworkStyles].map((file) => rm(frameworkOutputFile(file), { force: true })),
+        rm(frameworkOutputFile('nodula-framework.css'), { force: true }),
+        rm(frameworkCssOutputFile('nodula-framework.css'), { force: true }),
+        ...frameworkStyles.map((file) => rm(frameworkCssOutputFile(file), { force: true })),
       ]);
-      const cssParts = await Promise.all(frameworkStyles.map((file) => readFile(frameworkSource(`assets/css/${file}`), 'utf8')));
-      const minified = transform({ filename: 'nodula-framework.css', code: Buffer.from(cssParts.join('\n')), minify: true });
       await Promise.all([
         copyFile(frameworkSource('index.d.ts'), frameworkOutputFile('nodula-core.d.ts')),
         copyFile(fileURLToPath(new URL('../README.md', import.meta.url)), frameworkOutputFile('README.md')),
         copyFile(fileURLToPath(new URL('../LICENSE.md', import.meta.url)), frameworkOutputFile('LICENSE.md')),
-        writeFile(frameworkCssOutputFile('nodula-framework.css'), minified.code),
         ...frameworkStyles.map((file) => copyFile(frameworkSource(`assets/css/${file}`), frameworkCssOutputFile(file))),
         copyFile(frameworkSource('assets/vite.config.js'), frameworkOutputFile('vite.config.js')),
         rm(frameworkOutputFile('nodula.js'), { force: true }),
