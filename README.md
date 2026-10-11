@@ -17,12 +17,12 @@ Reactivity, DOM rendering, Helpers
 
 | <div style="width: 100px; ">Module</div>          | Contents                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------------- |
+| Navigation     | Accessible router-aware internal links and explicitly external HTTP(S) links                        |
+| Notification   | Show accessible, transient status messages for success, error, warning, and info.                   |
 | Forms          | Reactive form values, validation, touched and dirty state, async submission, and reset helpers      |
 | Dialog         | Native confirmation dialogs with configurable labels and owner cleanup                              |
 | Modal          | Native modal windows with safe content, close controls, and configurable backdrop dismissal         |
 | Drawer         | Accessible modal side panels that open from the left or right                                       |
-| Notification   | Show accessible, transient status messages for success, error, warning, and info.                   |
-| Navigation     | Accessible router-aware internal links and explicitly external HTTP(S) links                        |
 | Cookie Consent | Manage versioned privacy choices with a floating, expandable consent notice (EU GDPR/ePrivacy)      |
 
 ### State & Data
@@ -30,8 +30,8 @@ Reactivity, DOM rendering, Helpers
 | <div style="width: 100px; ">Module</div>        | Contents                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------------- |
 | Localstorage   | Persist signals to localStorage or IndexedDB, and read, set, or delete browser cookies              |
-| Data           | Fetch data from a server with method helpers, query parameters, and readable HTTP errors            |
 | Store          | Deeply reactive proxies for plain objects and arrays, including nested values                       |
+| Data           | Fetch data from a server with method helpers, query parameters, and readable HTTP errors            |
 | Auth           | Reactive client authentication state connected to an app-provided auth service                      |
 
 ### Runtime behavior
@@ -63,7 +63,7 @@ npm run dev
 ```
 
 For a production build, run `npm run build`. This will build the framework to `dist/nodula/` and the demo app to `dist/app/`.
-It also builds the npm package to the /dist/npm directory. The demo app loads that file as the framework package.
+It also builds the npm package to the `/dist/npm` directory. The demo app loads that file as the framework package.
 
 ## VS Code language extension
 

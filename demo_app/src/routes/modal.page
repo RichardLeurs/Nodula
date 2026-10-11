@@ -105,7 +105,7 @@ function showExampleDrawer() {
 
     <div hidden>
       <!-- modal demo -->
-      <section id="modal-content">
+      <dialog id="modal-content">
         <header class="ui-modal__header">
           <h2 class="ui-modal__title">A custom modal header</h2>
           <button class="ui-modal__close" type="button" data-close-modal>Close</button>
@@ -114,9 +114,9 @@ function showExampleDrawer() {
           <p>This modal content is regular HTML declared in the page, below its custom header.</p>
           <p><strong>Interactive content works too:</strong> <a href="/addons">browse available add-ons</a>.</p>
         </div>
-      </section>
+      </dialog>
       <!-- drawer demo -->
-      <section id="drawer-content">
+      <dialog id="drawer-content">
         <header class="ui-drawer__header">
           <h2 class="ui-drawer__title">A custom drawer header</h2>
           <button class="ui-drawer__close" type="button" data-close-drawer>Close panel</button>
@@ -125,12 +125,12 @@ function showExampleDrawer() {
           <p>This drawer content is regular HTML declared in the page, below its custom header.</p>
           <p><strong>Interactive content works too:</strong> <a href="/addons">browse available add-ons</a>.</p>
         </div>
-      </section>
+      </dialog>
     </div>
 
     <!-- <a class="button button--primary" href="/">Back to the playground <span aria-hidden="true"> ↗</span></a> -->
-    <div class="ui-section">
+    <!-- <div class="ui-section">
       <a class="ui-button ui-button--outline" href="/ideas/1">Try a nested idea route <span aria-hidden="true">↗</span></a>
-    </div>
+    </div> -->
   </main>
 </template>
