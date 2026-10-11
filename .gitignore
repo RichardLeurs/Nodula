@@ -16,7 +16,7 @@ benchmark/
 images/
 demo_app/src/assets/*.af
 demo_app/src/assets/*.af-lock-
-demo_app/src/assets/CSS architecture.md
+demo_app/src/assets/css/nodula-ui.css
 demo_app/package-lock.json
 demo_app/public/
 !demo_app/.env
