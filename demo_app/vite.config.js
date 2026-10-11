@@ -1,4 +1,4 @@
-import { copyFile, cp, mkdir, rm } from 'node:fs/promises';
+import { copyFile, cp, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { nodulaPlugin } from '../framework/vite-plugin.js';
@@ -85,16 +85,6 @@ function appBuildConfig() {
         ],
       }),
       {
-        name: 'nodula-clean-app-output',
-        async buildStart() {
-          await Promise.all([
-            rm(appFrameworkOutputDirectory, { recursive: true, force: true }),
-            rm(fileURLToPath(new URL('../dist/app/assets', import.meta.url)), { recursive: true, force: true }),
-            rm(fileURLToPath(new URL('../dist/app/index.html', import.meta.url)), { force: true }),
-          ]);
-        },
-      },
-      {
         name: 'nodula-copy-app-assets',
         async closeBundle() {
           await Promise.all([
@@ -112,7 +102,7 @@ function appBuildConfig() {
     ],
     build: {
       outDir: appOutputDirectory,
-      emptyOutDir: false,
+      emptyOutDir: true,
       minify: 'oxc',
       cssMinify: 'lightningcss',
       rolldownOptions: {

@@ -22,6 +22,8 @@ The root development script builds Nodula core and add-on bundles before startin
 | `npm test` | Run type checks and framework/demo tests through repository scripts. |
 | `npm run build` | Run framework tests/builds, type checks, demo tests/build, and docs build. |
 
+Builds clear their destination before writing fresh output: framework builds clear `dist/nodula/` once before the sequence of core and add-on builds, demo builds clear `dist/app/`, and docs builds clear `dist/vitepress/`. This prevents files left by earlier builds from being included in the next output.
+
 ## Use Nodula's Vite plugin
 
 The published package exposes `nodulaPlugin` from `nodula-framework/vite`. Install Vite and Nodula in an application, then add the plugin to the Vite config:
