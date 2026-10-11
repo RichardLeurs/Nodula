@@ -1,3 +1,4 @@
+/* Provide History/Hash routing and optional Vite-discovered file routes. */
 import { effect, onCleanup, signal } from 'nodula-framework';
 
 function createCenteredStatus(message) {

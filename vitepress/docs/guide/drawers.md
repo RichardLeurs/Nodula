@@ -31,7 +31,7 @@ Opens a side drawer and returns a `DrawerHandle`.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| `content` | `string \| Node` | Yes | String is inserted as text; a DOM node is moved into the drawer body. |
+| `content` | `string \| Node` | Yes | `'#element-id'` temporarily moves that element's children into the drawer and restores the source element when closed. Other strings are inserted as text; DOM nodes and fragments are appended directly when `showHeader` is false. |
 | `options` | `DrawerOptions` | No | Optional title, close label, backdrop behavior, and side. |
 
 `DrawerOptions`:
@@ -41,14 +41,17 @@ Opens a side drawer and returns a `DrawerHandle`.
 | `title` | `string` | `''` | Optional heading. Without one, drawer receives accessible name `Side drawer`. |
 | `btn_close` | `string` | `'Close'` | Visible close-button text and accessible label. |
 | `closeOnBackdrop` | `boolean` | `true` | Whether clicking outside panel area closes the drawer. |
+| `showHeader` | `boolean` | `true` | Whether to render the add-on header/title and close button. Set to `false` for custom drawer markup. |
 | `position` | `'left' \| 'right'` | `'right'` | Which viewport edge the drawer enters from. |
 
 `DrawerHandle` contains `element: HTMLDialogElement`, `close(): void`, and `closed: Promise<void>`. The promise resolves after any supported close path. The add-on exports TypeScript interfaces `DrawerOptions` and `DrawerHandle`. `openDrawer` remains a deprecated alias of `showDrawer`; use `showDrawer` in new code.
 
 ## Behavior and lifecycle
 
-- A string is assigned through `textContent`, so HTML-looking content remains text. A DOM node is appended (moved, not cloned) into the drawer body.
+- A string beginning with `#` is treated as an element ID, not displayed as text. The add-on temporarily replaces the source element with a placeholder, moves its children into the drawer, then restores the element and its children when the drawer closes. If the ID is not found, `showDrawer()` throws `TypeError`. Other strings are assigned through `textContent`, so HTML-looking content remains text. A supplied DOM node is moved, not cloned.
 - The drawer uses `role="dialog"` and `aria-modal="true"`. Its title is connected through `aria-labelledby`; without a title, it uses `aria-label="Side drawer"`.
+- Set `showHeader: false` to omit the generated header, title, and close button. A supplied DOM node or `DocumentFragment` is appended directly inside `<dialog>`, allowing custom header and body siblings. String content remains safely wrapped as text. The drawer keeps an accessible name from `title` (or `Side drawer`); custom close controls should call the returned handle's `close()` method.
+- With `showHeader: false` and an ID reference, every element marked `[data-close-drawer]` closes the drawer automatically. For other supplied nodes/fragments, wire custom close controls to the returned handle's `close()` method.
 - The close button receives focus after opening. Closing restores focus to the previously active connected element when possible.
 - The close button, Escape/native cancel, native close event, and `handle.close()` close the drawer. By default, clicks on the native dialog backdrop also close it; clicks within the drawer panel do not. Set `closeOnBackdrop: false` to disable backdrop dismissal.
 - `position: 'left'` or `'right'` selects panel side and matching CSS class; default is right.
@@ -59,20 +62,25 @@ Opens a side drawer and returns a `DrawerHandle`.
 ## Integration example
 
 ```js
-const content = document.createElement('form');
-const email = document.createElement('input');
-email.type = 'email';
-email.setAttribute('aria-label', 'Email address');
-content.append(email);
-
-const drawer = showDrawer(content, {
+const drawer = showDrawer('#account-drawer', {
   title: 'Account details',
-  btn_close: 'Done',
+  showHeader: false,
   position: 'left',
   closeOnBackdrop: false,
 });
-
 await drawer.closed;
+```
+
+```html
+<div hidden>
+  <section id="account-drawer">
+    <header class="ui-drawer__header">
+      <h2 class="ui-drawer__title">Account details</h2>
+      <button class="ui-drawer__close" type="button" data-close-drawer>Close</button>
+    </header>
+    <div><form><label>Email <input type="email"></label></form></div>
+  </section>
+</div>
 ```
 
 Use text content when no interaction is needed; create DOM elements with safe DOM APIs for interactive content.
@@ -80,9 +88,9 @@ Use text content when no interaction is needed; create DOM elements with safe DO
 ## Errors, limitations, and security
 
 - Content must be a string or DOM node. Invalid content throws `TypeError`.
-- `title` and `btn_close` must be strings, `closeOnBackdrop` must be boolean, and `position` must be `'left'` or `'right'`; invalid options throw `TypeError`.
+- `title` and `btn_close` must be strings, `closeOnBackdrop` and `showHeader` must be booleans, and `position` must be `'left'` or `'right'`; invalid options throw `TypeError`.
 - Calling without a browser `document.body` throws an error. If `showModal()` throws, the drawer is removed and the browser error propagates.
-- A supplied DOM node is moved from its current parent into the drawer. Move it back or create another node if application code needs it elsewhere after closing.
+- A supplied DOM node is moved from its current parent into the drawer. ID references temporarily move their source element's children and restore the source on close. If `showDrawer()` fails after lookup, the source is restored.
 - Drawer UI does not authorize actions or protect data. Enforce permissions and validate protected operations on the server.
 
 ## Examples and related resources

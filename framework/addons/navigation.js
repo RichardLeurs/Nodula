@@ -1,3 +1,4 @@
+/* Build accessible router-aware navigation links and return a disposer. */
 import { effect } from 'nodula-framework';
 
 /** Create router-aware links in a semantic navigation element and return a disposer. */

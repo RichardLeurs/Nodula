@@ -1,3 +1,4 @@
+/* Provide versioned cookie-consent UI, preferences, and gated integrations. */
 import { createRoot, onCleanup } from 'nodula-framework';
 import { createLocalStorage } from 'nodula-framework/localstorage';
 import { injectAddonStyles } from './inject-styles.js';

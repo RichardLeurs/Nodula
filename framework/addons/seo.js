@@ -1,3 +1,4 @@
+/* Manage accessible, route-aware document metadata in the browser. */
 import { effect, signal } from 'nodula-framework';
 
 const HTTP_PROTOCOLS = new Set(['http:', 'https:']);

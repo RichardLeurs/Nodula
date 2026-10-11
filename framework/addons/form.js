@@ -1,3 +1,4 @@
+/* Provide reactive form values, validation, submission, and reset helpers. */
 import { signal } from 'nodula-framework';
 import { createStore } from 'nodula-framework/store';
 
@@ -21,6 +22,23 @@ function equalFormValue(left, right) {
   const rightKeys = Object.keys(right);
   return leftKeys.length === rightKeys.length && leftKeys.every((key) =>
     Object.prototype.hasOwnProperty.call(right, key) && equalFormValue(left[key], right[key]));
+}
+
+function escapeFormHtml(value) {
+  if (typeof value === 'string') {
+    return value.replace(/[&<>"']/g, (character) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    })[character]);
+  }
+  if (Array.isArray(value)) return value.map(escapeFormHtml);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, escapeFormHtml(entry)]));
+  }
+  return value;
 }
 
 /** Create reactive form values, validation, touched state, submission, and reset helpers. */
@@ -87,7 +105,7 @@ export function createForm(initialValues, { validate: validateValues, onSubmit }
 
     setSubmitting(true);
     try {
-      await onSubmit?.(values, event);
+      await onSubmit?.(escapeFormHtml(values), event);
       setSubmitted(true);
       return true;
     } finally {

@@ -1,3 +1,4 @@
+/* Provide Fetch-based request helpers and structured HTTP errors. */
 function appendQueryParams(url, params) {
   if (!params) return;
   const entries = params instanceof URLSearchParams

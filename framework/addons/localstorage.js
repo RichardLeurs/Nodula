@@ -1,3 +1,4 @@
+/* Provide reactive localStorage, IndexedDB, and browser-cookie helpers. */
 import { effect, onCleanup, signal } from 'nodula-framework';
 
 function cookieDocument() {

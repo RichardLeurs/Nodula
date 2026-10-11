@@ -1,3 +1,4 @@
+/* Provide deeply reactive object and array state as an optional add-on. */
 import { batch, signal } from '../reactivity.js';
 
 const STORE_KEYS = Symbol('nodula.store.keys');

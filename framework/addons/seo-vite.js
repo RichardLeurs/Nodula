@@ -1,3 +1,4 @@
+/* Generate route-aware sitemap and robots files during Vite builds. */
 function escapeXML(value) {
   return String(value)
     .replaceAll('&', '&amp;')

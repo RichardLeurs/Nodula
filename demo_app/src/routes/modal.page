@@ -19,15 +19,20 @@ async function showExampleDialog() {
 }
 
 function showExampleModal() {
-  const content = document.createElement('p');
-  content.textContent = 'This modal is provided by the optional Nodula modal add-on.';
-  showModal(content, { title: 'A modal window', btn_close: 'Got it', closeOnBackdrop: false });
+  showModal('#modal-content', { 
+    title: 'A modal window', 
+    showHeader: false, 
+    closeOnBackdrop: false 
+  });
 }
 
 function showExampleDrawer() {
-  const content = document.createElement('p');
-  content.textContent = 'This side panel is a modal drawer. Click outside to dismiss it, or use the close button.';
-  showDrawer(content, { title: 'A side drawer', btn_close: 'Close panel', closeOnBackdrop: false, position: 'left' });
+  showDrawer('#drawer-content', { 
+    title: 'A side drawer', 
+    showHeader: false, 
+    closeOnBackdrop: false, 
+    position: 'left' 
+    });
 }
 </script>
 
@@ -74,8 +79,8 @@ function showExampleDrawer() {
             <!-- <span class="ui-badge ui-badge--primary">Modal</span> -->
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">The optional modal add-on can display interactive DOM content in a centered dialog.</p>
-            <pre class="ui-code-block"><code data-highlight>showModal(content, { title: 'A modal window', closeOnBackdrop: false });</code></pre>
+            <p class="ui-card__description">Pass an element ID to use its existing HTML and custom header and close control.</p>
+            <pre class="ui-code-block"><code data-highlight>showModal('#modal-content', { title: 'A modal window', showHeader: false });</code></pre>
           </div>
           <footer class="ui-card__footer">
             <button class="ui-button ui-button--primary" type="button" @click="showExampleModal()">Open example modal</button>
@@ -88,8 +93,8 @@ function showExampleDrawer() {
             <!-- <span class="ui-badge ui-badge--info">Drawer</span> -->
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Open a side panel with configurable placement and backdrop dismissal.</p>
-            <pre class="ui-code-block"><code data-highlight>showDrawer(content, { title: 'A side drawer', position: 'left' });</code></pre>
+            <p class="ui-card__description">Pass an element ID to use its existing HTML and custom header and close control.</p>
+            <pre class="ui-code-block"><code data-highlight>showDrawer('#drawer-content', { title: 'A side drawer', showHeader: false, position: 'left' });</code></pre>
           </div>
           <footer class="ui-card__footer">
             <button class="ui-button ui-button--primary" type="button" @click="showExampleDrawer()">Open example side drawer</button>
@@ -97,6 +102,31 @@ function showExampleDrawer() {
         </article>
       </div>
     </section>
+
+    <div hidden>
+      <!-- modal demo -->
+      <section id="modal-content">
+        <header class="ui-modal__header">
+          <h2 class="ui-modal__title">A custom modal header</h2>
+          <button class="ui-modal__close" type="button" data-close-modal>Close</button>
+        </header>
+        <div class="ui-modal__body">
+          <p>This modal content is regular HTML declared in the page, below its custom header.</p>
+          <p><strong>Interactive content works too:</strong> <a href="/addons">browse available add-ons</a>.</p>
+        </div>
+      </section>
+      <!-- drawer demo -->
+      <section id="drawer-content">
+        <header class="ui-drawer__header">
+          <h2 class="ui-drawer__title">A custom drawer header</h2>
+          <button class="ui-drawer__close" type="button" data-close-drawer>Close panel</button>
+        </header>
+        <div class="ui-drawer__body">
+          <p>This drawer content is regular HTML declared in the page, below its custom header.</p>
+          <p><strong>Interactive content works too:</strong> <a href="/addons">browse available add-ons</a>.</p>
+        </div>
+      </section>
+    </div>
 
     <!-- <a class="button button--primary" href="/">Back to the playground <span aria-hidden="true"> ↗</span></a> -->
     <div class="ui-section">

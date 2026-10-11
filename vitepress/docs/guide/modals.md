@@ -30,7 +30,7 @@ Opens a modal and returns a `ModalHandle`.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| `content` | `string \| Node` | Yes | String content is inserted as text. A DOM node is appended into the modal body. |
+| `content` | `string \| Node` | Yes | `'#element-id'` temporarily moves that element's children into the modal and restores the source element when closed. Other strings are inserted as text; DOM nodes and fragments are appended directly when `showHeader` is false. |
 | `options` | `ModalOptions` | No | Optional title, close-button label, and backdrop behavior. |
 
 `ModalOptions`:
@@ -40,13 +40,16 @@ Opens a modal and returns a `ModalHandle`.
 | `title` | `string` | `''` | Optional heading. Without a title, dialog gets accessible name `Modal window`. |
 | `btn_close` | `string` | `'Close'` | Visible close button text and accessible label. |
 | `closeOnBackdrop` | `boolean` | `true` | Whether clicking the dialog backdrop closes the modal. |
+| `showHeader` | `boolean` | `true` | Whether to render the add-on's title/header and close button. Set to `false` when content supplies its own header and close control. |
 
 `ModalHandle` contains `element: HTMLDialogElement`, `close(): void`, and `closed: Promise<void>`. The `closed` promise resolves after any supported close path completes. `ModalOptions` and `ModalHandle` are exported TypeScript interfaces. `openModal` remains a deprecated alias of `showModal`; use `showModal` in new code.
 
 ## Behavior and lifecycle
 
-- String content is assigned with `textContent`, so markup-looking strings remain text. A supplied DOM node is moved into the modal body; it is not cloned, so it leaves its previous parent.
+- A string beginning with `#` is treated as an element ID, not displayed as text. The add-on temporarily replaces the source element with a placeholder, moves its children into the modal, then restores the element and its children when the modal closes. If the ID is not found, `showModal()` throws `TypeError`. Other strings are assigned with `textContent`, so markup-looking strings remain text. A supplied DOM node is moved, not cloned.
 - The modal has `role="dialog"` and `aria-modal="true"`. A supplied title is connected with `aria-labelledby`; without one, `aria-label="Modal window"` is used.
+- Set `showHeader: false` to omit the generated header, title, and close button. A supplied DOM node or `DocumentFragment` is appended directly inside `<dialog>` so it can contain sibling custom-header and body elements; string content remains safely wrapped as text. The modal keeps an accessible name from `title` (or `Modal window`); custom close controls should call the returned handle's `close()` method.
+- With `showHeader: false` and an ID reference, every element marked `[data-close-modal]` closes the modal automatically. For other supplied nodes/fragments, wire custom close controls to the returned handle's `close()` method.
 - The close button receives focus when opened. When closed, focus returns to the previously active element if it is still connected and focusable.
 - The close button, Escape/native cancel, native close event, and `handle.close()` close the modal. Backdrop clicks close it by default; set `closeOnBackdrop: false` to disable that path.
 - When opened inside a Nodula root/effect, owner cleanup closes and removes the modal. Outside an owner, call `close()` or allow user dismissal. `closed` resolves on removal.
@@ -56,17 +59,25 @@ Opens a modal and returns a `ModalHandle`.
 ## Integration example
 
 ```js
-const content = document.createElement('p');
-content.textContent = 'Interactive DOM content can be placed here.';
-
-const modal = showModal(content, {
+const modal = showModal('#review-modal', {
   title: 'Review details',
-  btn_close: 'Done',
+  showHeader: false,
   closeOnBackdrop: false,
 });
 
-// Close from application logic, or await user dismissal.
 await modal.closed;
+```
+
+```html
+<div hidden>
+  <section id="review-modal">
+    <header class="ui-modal__header">
+      <h2 class="ui-modal__title">Review details</h2>
+      <button class="ui-modal__close" type="button" data-close-modal>Close</button>
+    </header>
+    <div><p>Interactive HTML content goes below the custom header.</p></div>
+  </section>
+</div>
 ```
 
 Use a string when plain text is sufficient. Construct DOM nodes with safe text APIs when content needs interactive elements.
@@ -74,9 +85,9 @@ Use a string when plain text is sufficient. Construct DOM nodes with safe text A
 ## Errors, limitations, and security
 
 - `content` must be a string or DOM node; invalid content throws `TypeError`.
-- `title` and `btn_close` must be strings, and `closeOnBackdrop` must be a boolean; invalid options throw `TypeError`.
+- `title` and `btn_close` must be strings, and `closeOnBackdrop` and `showHeader` must be booleans; invalid options throw `TypeError`.
 - Calling without a browser `document.body` throws an error. If native `showModal()` throws, the modal is removed and that error propagates.
-- Passing a DOM node transfers that node into the modal. If application code needs it elsewhere afterward, create a replacement or move it back after close.
+- Passing a DOM node transfers that node into the modal. ID references temporarily move their source element's children and restore the source on close. If `showModal()` fails after lookup, the source is restored.
 - Modal presentation is client-side UI, not authorization or validation. Enforce permissions and validate sensitive operations on the server.
 
 ## Examples and related resources

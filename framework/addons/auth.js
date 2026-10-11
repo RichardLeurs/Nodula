@@ -1,3 +1,4 @@
+/* Provide adapter-backed reactive authentication state and access checks. */
 import { signal } from 'nodula-framework';
 
 function requireIdentity(identity, methodName) {

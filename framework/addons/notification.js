@@ -1,3 +1,4 @@
+/* Show accessible, transient success, error, warning, and info notices. */
 import { onCleanup } from 'nodula-framework';
 import { injectAddonStyles } from './inject-styles.js';
 import notificationStyles from '../assets/css/nodula-notifications.css?inline';

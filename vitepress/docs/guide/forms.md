@@ -69,6 +69,7 @@ Returns a `FormController<T>` with:
 - Callback errors are rethrown. `submitting()` is reset in `finally`; `submitted()` remains false on failure.
 - Validator errors with non-string or empty messages are ignored. A thrown validator error is propagated.
 - `onSubmit` receives the reactive values object and the submit event when provided.
+- Before `onSubmit`, the add-on passes a detached copy with HTML-sensitive characters escaped in every string value, including strings nested in arrays/plain objects. `form.values` remains raw for editing and validation. This is HTML-context output encoding, not a general sanitizer or a substitute for server-side validation; avoid escaping the submitted values a second time, and use context-appropriate encoding when displaying them elsewhere.
 - Values are copied when the form is created and when it resets. Non-plain object values such as `Date`, `Map`, and class instances are rejected.
 
 ## Native markup example

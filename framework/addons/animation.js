@@ -1,3 +1,4 @@
+/* Provide Web Animations helpers and opt-in Nodula lifecycle transitions. */
 import { onCleanup, registerLifecycleTransition } from 'nodula-framework';
 
 const activeAnimations = new WeakMap();

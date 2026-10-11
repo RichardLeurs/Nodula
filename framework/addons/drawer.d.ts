@@ -5,6 +5,8 @@ export interface DrawerOptions {
   btn_close?: string;
   /** Whether clicking the backdrop closes the drawer. Defaults to true. */
   closeOnBackdrop?: boolean;
+  /** Whether to render the default title/header and close button. Defaults to true. */
+  showHeader?: boolean;
   /** Which viewport edge the drawer enters from. Defaults to "right". */
   position?: 'left' | 'right';
 }
@@ -21,4 +23,4 @@ export interface DrawerHandle {
 /** Show a modal side drawer containing safe text or an existing DOM node. */
 export function showDrawer(content: string | Node, options?: DrawerOptions): DrawerHandle;
 /** @deprecated Use `showDrawer` instead. */
-export const openDrawer: typeof showDrawer;
+//export const openDrawer: typeof showDrawer;

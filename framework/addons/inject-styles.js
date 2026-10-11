@@ -1,3 +1,4 @@
+/* Internally inject each add-on stylesheet once into the shared style layer. */
 /** Add an add-on stylesheet once, in a layer that app styles can override. */
 export function injectAddonStyles(id, css) {
   if (typeof document === 'undefined' || !document.head || document.querySelector(`style[data-nodula-${id}-styles]`)) return;

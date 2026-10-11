@@ -1,5 +1,7 @@
+/* Provide native side drawers with optional custom DOM and lifecycle cleanup. */
 import { onCleanup } from 'nodula-framework';
 import { injectAddonStyles } from './inject-styles.js';
+import { prepareContent } from './prepare-content.js';
 import drawerStyles from '../assets/css/nodula-drawer.css?inline';
 
 let nextDrawerId = 0;
@@ -9,51 +11,67 @@ export function showDrawer(content, options = {}) {
   if (typeof content !== 'string' && (!content || typeof content.nodeType !== 'number')) {
     throw new TypeError('showDrawer expects text or a DOM node as content.');
   }
-  const { title = '', closeOnBackdrop = true, position = 'right' } = options;
+  const { title = '', closeOnBackdrop = true, position = 'right', showHeader = true } = options;
   const closeText = options.btn_close ?? 'Close';
   if (typeof title !== 'string' || typeof closeText !== 'string' || typeof closeOnBackdrop !== 'boolean' || !['left', 'right'].includes(position)) {
     throw new TypeError('showDrawer title and closeText must be strings, closeOnBackdrop must be a boolean, and position must be "left" or "right".');
+  }
+  if (typeof showHeader !== 'boolean') {
+    throw new TypeError('showDrawer showHeader must be a boolean.');
   }
   if (typeof document === 'undefined' || !document.body) {
     throw new Error('showDrawer requires a browser document.');
   }
   injectAddonStyles('drawer', drawerStyles);
+  const preparedContent = prepareContent(content);
 
   const drawer = document.createElement('dialog');
   drawer.className = `ui-drawer ui-drawer--${position}`;
   drawer.setAttribute('role', 'dialog');
   drawer.setAttribute('aria-modal', 'true');
 
-  const header = document.createElement('header');
-  header.className = 'ui-drawer__header';
-  if (title) {
-    const heading = document.createElement('h2');
-    heading.className = 'ui-drawer__title';
-    heading.id = `ui-drawer-title-${nextDrawerId++}`;
-    heading.textContent = title;
-    drawer.setAttribute('aria-labelledby', heading.id);
-    header.append(heading);
+  let closeButton;
+  if (showHeader) {
+    const header = document.createElement('header');
+    header.className = 'ui-drawer__header';
+    if (title) {
+      const heading = document.createElement('h2');
+      heading.className = 'ui-drawer__title';
+      heading.id = `ui-drawer-title-${nextDrawerId++}`;
+      heading.textContent = title;
+      drawer.setAttribute('aria-labelledby', heading.id);
+      header.append(heading);
+    } else {
+      drawer.setAttribute('aria-label', 'Side drawer');
+    }
+
+    closeButton = document.createElement('button');
+    closeButton.className = 'ui-drawer__close';
+    closeButton.type = 'button';
+    closeButton.textContent = closeText;
+    closeButton.setAttribute('aria-label', closeText);
+    header.append(closeButton);
+    drawer.append(header);
   } else {
-    drawer.setAttribute('aria-label', 'Side drawer');
+    drawer.setAttribute('aria-label', title || 'Side drawer');
+    drawer.setAttribute('tabindex', '-1');
   }
 
-  const closeButton = document.createElement('button');
-  closeButton.className = 'ui-drawer__close';
-  closeButton.type = 'button';
-  closeButton.textContent = closeText;
-  closeButton.setAttribute('aria-label', closeText);
-  header.append(closeButton);
-
-  const body = document.createElement('div');
-  body.className = 'ui-drawer__body';
-  if (typeof content === 'string') body.textContent = content;
-  else body.append(content);
-  drawer.append(header, body);
+  if (!showHeader && typeof preparedContent.content !== 'string') {
+    drawer.append(preparedContent.content);
+  } else {
+    const body = document.createElement('div');
+    body.className = 'ui-drawer__body';
+    if (typeof preparedContent.content === 'string') body.textContent = preparedContent.content;
+    else body.append(preparedContent.content);
+    drawer.append(body);
+  }
 
   const previousFocus = document.activeElement;
   let resolveClosed;
   const closed = new Promise((resolve) => { resolveClosed = resolve; });
   let isClosed = false;
+  let customCloseButtons = [];
 
   const close = () => {
     if (isClosed) return;
@@ -61,9 +79,11 @@ export function showDrawer(content, options = {}) {
     drawer.removeEventListener('cancel', handleCancel);
     drawer.removeEventListener('close', handleClose);
     drawer.removeEventListener('click', handleBackdropClick);
-    closeButton.removeEventListener('click', close);
+    closeButton?.removeEventListener('click', close);
+    customCloseButtons.forEach((button) => button.removeEventListener('click', close));
     if (drawer.open && typeof drawer.close === 'function') drawer.close();
     drawer.remove();
+    preparedContent.restore();
     if (previousFocus?.nodeType === 1 && previousFocus.isConnected && typeof previousFocus.focus === 'function') {
       previousFocus.focus();
     }
@@ -86,15 +106,25 @@ export function showDrawer(content, options = {}) {
   drawer.addEventListener('cancel', handleCancel);
   drawer.addEventListener('close', handleClose);
   drawer.addEventListener('click', handleBackdropClick);
-  closeButton.addEventListener('click', close);
+  closeButton?.addEventListener('click', close);
+  customCloseButtons = preparedContent.isElementReference && !showHeader
+    ? [...drawer.querySelectorAll('[data-close-drawer]')]
+    : [];
+  customCloseButtons.forEach((button) => button.addEventListener('click', close));
   document.body.append(drawer);
 
   try {
     if (typeof drawer.showModal === 'function') drawer.showModal();
     else drawer.setAttribute('open', '');
-    closeButton.focus();
+    if (closeButton) closeButton.focus();
   } catch (error) {
+    drawer.removeEventListener('cancel', handleCancel);
+    drawer.removeEventListener('close', handleClose);
+    drawer.removeEventListener('click', handleBackdropClick);
+    closeButton?.removeEventListener('click', close);
+    customCloseButtons.forEach((button) => button.removeEventListener('click', close));
     drawer.remove();
+    preparedContent.restore();
     throw error;
   }
 
@@ -108,4 +138,4 @@ export function showDrawer(content, options = {}) {
 }
 
 /** @deprecated Use `showDrawer` instead. */
-export const openDrawer = showDrawer;
+//export const openDrawer = showDrawer;

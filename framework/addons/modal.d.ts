@@ -3,8 +3,10 @@ export interface ModalOptions {
   title?: string;
   /** Visible label for the close button. Defaults to "Close". */
   btn_close?: string;
-  /** Whether clicking the backdrop closes the modal. Defaults to true. */
+  /** Whether clicking the dialog backdrop closes the modal. Defaults to true. */
   closeOnBackdrop?: boolean;
+  /** Whether to render the default title and close-button header. Defaults to true. */
+  showHeader?: boolean;
 }
 
 export interface ModalHandle {
@@ -19,4 +21,4 @@ export interface ModalHandle {
 /** Show a modal containing safe text or an existing DOM node. */
 export function showModal(content: string | Node, options?: ModalOptions): ModalHandle;
 /** @deprecated Use `showModal` instead. */
-export const openModal: typeof showModal;
+//export const openModal: typeof showModal;
