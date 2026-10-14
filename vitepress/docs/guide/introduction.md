@@ -53,10 +53,14 @@ Add-ons use distinct package entries, so an app imports only the capabilities it
 |---|---|---|
 | Routing | `nodula-framework/router` | [Routing](/guide/routing) |
 | Navigation UI | `nodula-framework/navigation` | [Navigation](/guide/navigation) |
+| Navigation dropdown | `nodula-framework/navigation-dropdown` | [Navigation dropdown](/guide/navigation-dropdown) |
 | Reactive object/array stores | `nodula-framework/store` | [Stores](/guide/stores) |
 | Forms | `nodula-framework/form` | [Forms](/guide/forms) |
 | Browser persistence | `nodula-framework/localstorage` | [Local Storage](/guide/local-storage) |
 | Fetch client | `nodula-framework/data` | [Data](/guide/data) |
+| Native drag and drop | `nodula-framework/dragdrop` | [Drag and drop](/guide/drag-and-drop) |
+| Accessible file picker and drop zone | `nodula-framework/filedrop` | [File drop](/guide/file-drop) |
+| Vertical sortable lists | `nodula-framework/sortable` | [Sortable lists](/guide/sortable-lists) |
 | Animation | `nodula-framework/animation` | [Animations](/guide/animations) |
 | Dialogs, modals, drawers, notifications | `nodula-framework/dialog`, `/modal`, `/drawer`, `/notifications` | [Dialogs](/guide/dialogs), [Modals](/guide/modals), [Drawers](/guide/drawers), [Notifications](/guide/notification) |
 | Cookie consent | `nodula-framework/cookieconsent` | [Cookie Consent](/guide/cookie-consent) |

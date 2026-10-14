@@ -56,7 +56,7 @@ Run the render benchmark from the repository root:
 npm run benchmark:render
 ```
 
-`framework/render-benchmark.mjs` uses Happy DOM and reports medians and DOM-operation counts for:
+`framework/mjs/render-benchmark.mjs` uses Happy DOM and reports medians and DOM-operation counts for:
 
 - Keyed-list append, removal, and reverse operations for the optimized `list()` helper and a simple baseline implementation.
 - Mounting a 100-row tree.

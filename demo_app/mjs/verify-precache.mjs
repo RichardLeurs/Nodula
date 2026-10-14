@@ -101,7 +101,7 @@ export async function verifyPrecacheFiles(outputDirectory) {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const appOutputDirectory = fileURLToPath(new URL('../dist/app/', import.meta.url));
+  const appOutputDirectory = fileURLToPath(new URL('../../dist/app/', import.meta.url));
   const verifiedEntries = await verifyPrecacheFiles(appOutputDirectory);
   console.info(`PWA build check: verified ${verifiedEntries} precache files in dist/app.`);
 }

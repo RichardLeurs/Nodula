@@ -28,12 +28,16 @@ async function bundleConsumer(entry) {
             'auth',
             'cookieconsent',
             'data',
+            'dragdrop',
+            'sortable',
+            'filedrop',
             'dialog',
             'drawer',
             'form',
             'localstorage',
             'modal',
             'navigation',
+            'navigation-dropdown',
             'notification',
             'pwa',
             'router',
@@ -140,6 +144,12 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   assert.match(navigation, /aria-current/);
   assert.doesNotMatch(navigation, /Unsupported router mode/);
 
+  const navigationDropdown = await bundleConsumer('navigation-dropdown.js');
+  assert.match(navigationDropdown, /createNavigationDropdown/);
+  assert.match(navigationDropdown, /createNavigation/);
+  assert.match(navigationDropdown, /aria-expanded/);
+  assert.doesNotMatch(navigationDropdown, /createDataClient/);
+
   const auth = await bundleConsumer('auth.js');
   assert.match(auth, /treeShakingResult/);
   assert.match(auth, /getSession/);
@@ -149,6 +159,21 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   assert.match(data, /treeShakingResult/);
   assert.match(data, /Data request failed with HTTP/);
   assert.doesNotMatch(data, /createStore expects a plain object or array/);
+
+  const dragdrop = await bundleConsumer('dragdrop.js');
+  assert.match(dragdrop, /treeShakingResult/);
+  assert.match(dragdrop, /createDragSource/);
+  assert.doesNotMatch(dragdrop, /createDataClient/);
+
+  const sortable = await bundleConsumer('sortable.js');
+  assert.match(sortable, /treeShakingResult/);
+  assert.match(sortable, /createSortableList/);
+  assert.doesNotMatch(sortable, /createDataClient/);
+
+  const filedrop = await bundleConsumer('filedrop.js');
+  assert.match(filedrop, /treeShakingResult/);
+  assert.match(filedrop, /createFileDropZone/);
+  assert.match(filedrop, /ui-filedrop/);
 
   const pwa = await bundleConsumer('pwa.js');
   assert.match(pwa, /treeShakingResult/);

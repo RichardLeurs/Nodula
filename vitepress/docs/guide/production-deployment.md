@@ -36,7 +36,7 @@ Preview the built demo locally:
 npm --prefix demo_app run preview
 ```
 
-The demo build runs `demo_app/verify-precache.mjs`, which verifies that every URL in the generated service-worker precache manifest points to a file in `dist/app/`. If verification fails, rebuild and deploy the complete matching output; do not publish an HTML or service worker that points to missing assets. Preview validates the app build, but does not reproduce your production CDN, headers, DNS, API, TLS, or hosting rewrites.
+The demo build runs `demo_app/mjs/verify-precache.mjs`, which verifies that every URL in the generated service-worker precache manifest points to a file in `dist/app/`. If verification fails, rebuild and deploy the complete matching output; do not publish an HTML or service worker that points to missing assets. Preview validates the app build, but does not reproduce your production CDN, headers, DNS, API, TLS, or hosting rewrites.
 
 ## Configure routing fallback
 
@@ -93,4 +93,4 @@ The demo config generates sitemap and robots assets during the Vite build using 
 - [Progressive Web Apps](/guide/pwa) — service worker and Workbox configuration.
 - [Security](/guide/security) and [Authentication](/guide/auth) — server-side trust boundaries.
 - [SEO](/guide/seo) — sitemap, robots, and route metadata.
-- Build verification: `demo_app/verify-precache.mjs` and `demo_app/vitest/verify-precache.test.js`.
+- Build verification: `demo_app/mjs/verify-precache.mjs` and `demo_app/vitest/verify-precache.test.js`.

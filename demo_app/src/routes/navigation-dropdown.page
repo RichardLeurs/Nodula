@@ -1,0 +1,68 @@
+<script>
+import { createRouter } from 'nodula-framework/router';
+import { createNavigationDropdown } from 'nodula-framework/navigation-dropdown';
+
+const demoRouter = createRouter({
+  '/navigation-dropdown': () => document.createTextNode('Navigation dropdown demo'),
+  '/guide': () => document.createTextNode('Guide destination'),
+  '/api': () => document.createTextNode('API destination'),
+}, undefined, { mode: 'history' });
+
+function setupDropdown(element) {
+  if (!element) return;
+  createNavigationDropdown(element, demoRouter, [
+    { label: 'Guide', href: '/guide' },
+    { label: 'API reference', href: '/api' },
+  ], {
+    label: 'Resources',
+    navLabel: 'Resource links',
+    className: 'ui-navigation-dropdown',
+    buttonClassName: 'ui-button ui-button--secondary',
+    panelClassName: 'ui-navigation-dropdown__panel',
+    linkClassName: 'ui-link ui-navigation-dropdown__link',
+  });
+}
+</script>
+
+<template>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Optional navigation add-on</p>
+      <h1 class="ui-page__title">A dropdown that builds on router-aware navigation.</h1>
+      <p class="ui-page__description">Open Resources with the button. Use ArrowDown to open and focus the first link; press Escape to close and return focus. The submenu links use the existing navigation add-on.</p>
+    </header>
+
+    <section class="ui-section" aria-labelledby="navigation-dropdown-demo-title">
+      <h2 id="navigation-dropdown-demo-title" class="ui-section__title">Resource links</h2>
+      <div class="ui-navigation-dropdown-demo" @ref="setupDropdown"></div>
+    </section>
+
+    <section class="ui-section" aria-labelledby="navigation-dropdown-code-title">
+      <h2 id="navigation-dropdown-code-title" class="ui-section__title">Compose with navigation</h2>
+      <pre class="ui-code-block"><code data-highlight>createNavigationDropdown(target, router, [
+  { label: 'Guide', href: '/guide' },
+  { label: 'API reference', href: '/api' },
+], { label: 'Resources' });</code></pre>
+    </section>
+  </main>
+</template>
+
+<style scoped>
+.ui-navigation-dropdown-demo {
+  min-height: 10rem;
+}
+
+.ui-navigation-dropdown :global(.ui-navigation-dropdown__panel) {
+  min-width: 12rem;
+  padding: var(--ui-space-3);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-medium);
+  background: var(--ui-color-surface-raised);
+  box-shadow: var(--ui-shadow-raised);
+}
+
+.ui-navigation-dropdown__link {
+  display: block;
+  padding: var(--ui-space-2) var(--ui-space-3);
+}
+</style>

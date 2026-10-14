@@ -5,7 +5,9 @@ import addonImage from '../assets/images/addon.webp';
 import routerImage from '../assets/images/router.webp';
 import storageImage from '../assets/images/storage.webp';
 import dataImage from '../assets/images/data.webp';
-
+import dragdropImage from '../../../images/dragdrop.webp';
+import filedropImage from '../../../images/filedrop.webp';
+import sortableImage from '../../../images/sortable.webp';
 import storeImage from '../assets/images/store.webp';
 import animationImage from '../assets/images/animation.webp';
 import formImage from '../assets/images/form.webp';
@@ -18,6 +20,7 @@ import seoImage from '../assets/images/seo.webp';
 import pwaImage from '../assets/images/pwa.webp';
 import cookieImage from '../assets/images/cookie.webp';
 import notificationImage from '../assets/images/notification.webp';
+import dropdownImage from '../assets/images/dropdown.webp';
 
 </script>
 
@@ -33,85 +36,7 @@ import notificationImage from '../assets/images/notification.webp';
       <p class="ui-page__description">Nodula keeps its core small. Import an add-on from its own package entry only when your app needs it.</p>
     </header>
 
-    <section class="ui-section" aria-label="Available Nodula add-ons">
-      <section class="ui-section" aria-labelledby="addon-ui-title">
-        <header class="ui-section__header">
-          <div>
-            <h2 id="addon-ui-title" class="ui-section__title">UI &amp; interaction</h2>
-            <p class="ui-section__description">Add accessible controls and interaction patterns when your app needs them.</p>
-          </div>
-        </header>
-        <div class="ui-grid ui-grid--2">
-          <article class="ui-card ui-card--interactive">
-            <header class="ui-card__header"><h2 class="ui-card__title">Form</h2>
-            <img class="ui-card__header-image" :src="formImage" alt="" width="64" height="73" aria-hidden="true">
-            </header>
-            <div class="ui-card__body ui-stack ui-stack--tight">
-              <p class="ui-card__description">Reactive form values, validation, touched and dirty state, async submission, and reset helpers.</p>
-              <pre class="ui-code-block"><code data-highlight>import { createForm } from 'nodula-framework/form';</code></pre>
-            </div>
-            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open Forms demo <span aria-hidden="true">→</span></a></footer>
-          </article>
-          <article class="ui-card ui-card--interactive">
-            <header class="ui-card__header"><h2 class="ui-card__title">Dialog</h2>
-            <img class="ui-card__header-image" :src="dialogImage" alt="" width="64" height="73" aria-hidden="true">
-            </header>
-            <div class="ui-card__body ui-stack ui-stack--tight">
-              <p class="ui-card__description">Native confirmation dialogs with configurable labels and owner cleanup.</p>
-              <pre class="ui-code-block"><code data-highlight>import { showDialog } from 'nodula-framework/dialog';</code></pre>
-            </div>
-            <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Dialog demo (see reset button) <span aria-hidden="true">→</span></a></footer>
-          </article>
-          <article class="ui-card ui-card--interactive">
-            <header class="ui-card__header"><h2 class="ui-card__title">Notification</h2>
-            <img class="ui-card__header-image" :src="notificationImage" alt="" width="64" height="73" aria-hidden="true">
-            </header>
-            <div class="ui-card__body ui-stack ui-stack--tight">
-              <p class="ui-card__description">Accessible, transient status messages with success, error, warning, and informational variants.</p>
-              <pre class="ui-code-block"><code data-highlight>import { showNotification } from 'nodula-framework/notification';</code></pre>
-            </div>
-          </article>
-          <article class="ui-card ui-card--interactive">
-            <header class="ui-card__header"><h2 class="ui-card__title">Modal</h2>
-            <img class="ui-card__header-image" :src="modalImage" alt="" width="64" height="73" aria-hidden="true">
-            </header>
-            <div class="ui-card__body ui-stack ui-stack--tight">
-              <p class="ui-card__description">Native modal windows with safe content, close controls, and configurable backdrop dismissal.</p>
-              <pre class="ui-code-block"><code data-highlight>import { showModal } from 'nodula-framework/modal';</code></pre>
-            </div>
-            <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Modal demo (see modal button) <span aria-hidden="true">→</span></a></footer>
-          </article>
-          <article class="ui-card ui-card--interactive">
-            <header class="ui-card__header"><h2 class="ui-card__title">Drawer</h2>
-            <img class="ui-card__header-image" :src="drawerImage" alt="" width="64" height="73" aria-hidden="true">
-            </header>
-            <div class="ui-card__body ui-stack ui-stack--tight">
-              <p class="ui-card__description">Accessible modal side panels that open from the left or right.</p>
-              <pre class="ui-code-block"><code data-highlight>import { showDrawer } from 'nodula-framework/drawer';</code></pre>
-            </div>
-            <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Drawer demo (see drawer button) <span aria-hidden="true">→</span></a></footer>
-          </article>
-          <article class="ui-card ui-card--interactive">
-            <header class="ui-card__header"><h2 class="ui-card__title">Navigation</h2>
-            <img class="ui-card__header-image" :src="navigationImage" alt="" width="64" height="73" aria-hidden="true">
-            </header>
-            <div class="ui-card__body ui-stack ui-stack--tight">
-              <p class="ui-card__description">Accessible router-aware internal links and explicitly external HTTP(S) links.</p>
-              <pre class="ui-code-block"><code data-highlight>import { createNavigation } from 'nodula-framework/navigation';</code></pre>
-            </div>
-          </article>
-          <article class="ui-card ui-card--interactive">
-            <header class="ui-card__header"><h2 class="ui-card__title">Cookie consent</h2>
-              <img class="ui-card__header-image" :src="cookieImage" alt="" width="64" height="73" aria-hidden="true">
-            </header>
-            <div class="ui-card__body ui-stack ui-stack--tight">
-              <p class="ui-card__description">Manage privacy choices with a floating preference banner and category-level consent callbacks.</p>
-              <pre class="ui-code-block"><code data-highlight>import { createCookieConsent } from 'nodula-framework/cookieconsent';</code></pre>
-            </div>
-            <!-- <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/cookie-consent" target="_blank" rel="noreferrer">Read the cookie consent guide <span aria-hidden="true">↗</span></a></footer>
-          </article> -->
-        </div>
-      </section>
+
       <section class="ui-section" aria-labelledby="addon-state-title">
         <header class="ui-section__header">
           <div>
@@ -158,7 +83,8 @@ import notificationImage from '../assets/images/notification.webp';
           </article>
         </div>
       </section>
-      <section class="ui-section" aria-labelledby="addon-runtime-title">
+
+ <section class="ui-section" aria-labelledby="addon-runtime-title">
         <header class="ui-section__header">
           <div>
             <h2 id="addon-runtime-title" class="ui-section__title">Runtime behavior</h2>
@@ -187,6 +113,132 @@ import notificationImage from '../assets/images/notification.webp';
           </article>
         </div>
       </section>
+
+    <section class="ui-section" aria-label="Available Nodula add-ons">
+      <section class="ui-section" aria-labelledby="addon-ui-title">
+        <header class="ui-section__header">
+          <div>
+            <h2 id="addon-ui-title" class="ui-section__title">UI &amp; interaction</h2>
+            <p class="ui-section__description">Add accessible controls and interaction patterns when your app needs them.</p>
+          </div>
+        </header>
+        <div class="ui-grid ui-grid--2">
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">File drop</h2>
+            <img class="ui-card__header-image" :src="filedropImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Accessible native file picker and drop zone with caller-supplied labels and owner cleanup.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createFileDropZone } from 'nodula-framework/filedrop';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/filedrop">Open File drop demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Drag and drop</h2>
+            <img class="ui-card__header-image" :src="dragdropImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">A small wrapper around native DragEvent and DataTransfer with owner cleanup; your app controls the actual data move.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createDragSource, createDropTarget } from 'nodula-framework/dragdrop';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/dragdrop">Open Drag and drop demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+         
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Sortable lists</h2>
+            <img class="ui-card__header-image" :src="sortableImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Reorder vertical lists with native drag and drop, visible insertion feedback, and accessible Move Up/Down controls.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createSortableList } from 'nodula-framework/sortable';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/sortable">Open Sortable list demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+            <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Notification</h2>
+            <img class="ui-card__header-image" :src="notificationImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Accessible, transient status messages with success, error, warning, and informational variants.</p>
+              <pre class="ui-code-block"><code data-highlight>import { showNotification } from 'nodula-framework/notification';</code></pre>
+            </div>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Navigation</h2>
+            <img class="ui-card__header-image" :src="navigationImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Accessible router-aware internal links and explicitly external HTTP(S) links.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createNavigation } from 'nodula-framework/navigation';</code></pre>
+            </div>
+          </article>
+           <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Navigation dropdown</h2>
+            <img class="ui-card__header-image" :src="dropdownImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">A keyboard-operable disclosure that composes with router-aware navigation links.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createNavigationDropdown } from 'nodula-framework/navigation-dropdown';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/navigation-dropdown">Open Navigation dropdown demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Form</h2>
+            <img class="ui-card__header-image" :src="formImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Reactive form values, validation, touched and dirty state, async submission, and reset helpers.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createForm } from 'nodula-framework/form';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/forms">Open Forms demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Dialog</h2>
+            <img class="ui-card__header-image" :src="dialogImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Native confirmation dialogs with configurable labels and owner cleanup.</p>
+              <pre class="ui-code-block"><code data-highlight>import { showDialog } from 'nodula-framework/dialog';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Dialog demo (see reset button) <span aria-hidden="true">→</span></a></footer>
+          </article>
+        
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Modal</h2>
+            <img class="ui-card__header-image" :src="modalImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Native modal windows with safe content, close controls, and configurable backdrop dismissal.</p>
+              <pre class="ui-code-block"><code data-highlight>import { showModal } from 'nodula-framework/modal';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Modal demo (see modal button) <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Drawer</h2>
+            <img class="ui-card__header-image" :src="drawerImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Accessible modal side panels that open from the left or right.</p>
+              <pre class="ui-code-block"><code data-highlight>import { showDrawer } from 'nodula-framework/drawer';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/modal">Open Drawer demo (see drawer button) <span aria-hidden="true">→</span></a></footer>
+          </article>
+          
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Cookie consent</h2>
+              <img class="ui-card__header-image" :src="cookieImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Manage privacy choices with a floating preference banner and category-level consent callbacks.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createCookieConsent } from 'nodula-framework/cookieconsent';</code></pre>
+            </div>
+            <!-- <footer class="ui-card__footer"><a class="ui-link" href="https://nodula-docs.richardleurs.nl/guide/cookie-consent" target="_blank" rel="noreferrer">Read the cookie consent guide <span aria-hidden="true">↗</span></a></footer>
+          </article> -->
+        </div>
+      </section>
+      
+     
       <section class="ui-section" aria-labelledby="addon-build-title">
         <header class="ui-section__header">
           <div>

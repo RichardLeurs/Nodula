@@ -1,0 +1,168 @@
+<script>
+import { signal } from 'nodula-framework';
+import { createDragSource, createDropTarget } from 'nodula-framework/dragdrop';
+
+const [availableItems, setAvailableItems] = signal([
+  { id: 'fern', label: 'Fern cutting' },
+  { id: 'moss', label: 'Moss sample' },
+  { id: 'seed', label: 'Seed packet' },
+]);
+const [collectionItems, setCollectionItems] = signal([]);
+const [message, setMessage] = signal('Drag an item between zones, or use its Move button.');
+let collectionZoneElement;
+
+function moveItem(itemId, sourceZoneId, targetZoneId) {
+  if (sourceZoneId === targetZoneId) return;
+  if (!['available', 'collection'].includes(sourceZoneId) || !['available', 'collection'].includes(targetZoneId)) return;
+  const sourceItems = sourceZoneId === 'available' ? availableItems() : collectionItems();
+  const item = sourceItems.find((entry) => entry.id === itemId);
+  if (!item) return;
+
+  const targetItems = targetZoneId === 'available' ? availableItems() : collectionItems();
+  if (targetItems.some((entry) => entry.id === itemId)) return;
+  if (sourceZoneId === 'available') {
+    setAvailableItems((current) => current.filter((entry) => entry.id !== itemId));
+    setCollectionItems((current) => [...current, item]);
+  } else {
+    setCollectionItems((current) => current.filter((entry) => entry.id !== itemId));
+    setAvailableItems((current) => [...current, item]);
+  }
+  setMessage(`${item.label} moved to ${targetZoneId === 'available' ? 'Available items' : 'Collection'}.`);
+}
+
+function setupItem(element) {
+  if (!element) return;
+  const itemId = element.dataset.itemId;
+  const sourceZoneId = element.dataset.zoneId;
+  createDragSource(element, {
+    effectAllowed: 'move',
+    getData: () => ({
+      'application/x-nodula-demo-item': JSON.stringify({ itemId, sourceZoneId }),
+    }),
+    getDragImage: () => ({ element, x: 18, y: 12 }),
+    onDragStart: () => {
+      element.classList.add('ui-dragdrop-item--dragging');
+      setMessage(`Dragging ${element.querySelector('span').textContent}.`);
+    },
+    onDragEnd: () => {
+      element.classList.remove('ui-dragdrop-item--dragging');
+      setMessage('Drag ended. Use a Move button if needed.');
+    },
+  });
+}
+
+function setupDropZone(element) {
+  if (!element) return;
+  if (element.dataset.zoneId === 'collection') collectionZoneElement = element;
+  createDropTarget(element, {
+    accepts: ['application/x-nodula-demo-item'],
+    dropEffect: 'move',
+    onDragOver: () => element.classList.add('ui-dragdrop-target--active'),
+    onDragLeave: () => element.classList.remove('ui-dragdrop-target--active'),
+    onDrop: (_event, dataTransfer) => {
+      element.classList.remove('ui-dragdrop-target--active');
+      const { itemId, sourceZoneId } = JSON.parse(dataTransfer.getData('application/x-nodula-demo-item'));
+      moveItem(itemId, sourceZoneId, element.dataset.zoneId);
+    },
+  });
+}
+</script>
+
+<template>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Optional interaction add-on</p>
+      <h1 class="ui-page__title">Native drag and drop, with an accessible alternative.</h1>
+      <p class="ui-page__description">The dragdrop add-on wraps browser drag events and DataTransfer, including a per-item native drag preview. This demo moves items between named zones by updating app-owned state and includes Move buttons and touch alternative.</p>
+    </header>
+
+    <section class="ui-section" aria-labelledby="dragdrop-demo-title">
+      <h2 id="dragdrop-demo-title" class="ui-section__title">Greenhouse board</h2>
+      <p class="ui-section__description" role="status" aria-live="polite">{{ message() }}</p>
+      <div class="ui-grid ui-grid--2">
+        <section class="ui-card ui-dragdrop-target" data-zone-id="available" aria-labelledby="dragdrop-zone-available" @ref="setupDropZone">
+          <h3 id="dragdrop-zone-available" class="ui-card__title">Available items</h3>
+          <ul class="ui-dragdrop-list">
+            <li @for="item of availableItems()" :key="item.id" class="ui-dragdrop-item" :data-item-id="item.id" data-zone-id="available" @ref="setupItem">
+              <span>{{ item.label }}</span>
+              <button class="ui-button ui-button--secondary" type="button" @click="moveItem(item.id, 'available', 'collection')">Move {{ item.label }} to collection</button>
+            </li>
+          </ul>
+        </section>
+        <section class="ui-card ui-dragdrop-target" data-zone-id="collection" aria-labelledby="dragdrop-zone-collection" @ref="setupDropZone">
+          <h3 id="dragdrop-zone-collection" class="ui-card__title">Collection</h3>
+          <ul class="ui-dragdrop-list">
+            <li @for="item of collectionItems()" :key="item.id" class="ui-dragdrop-item" :data-item-id="item.id" data-zone-id="collection" @ref="setupItem">
+              <span>{{ item.label }}</span>
+              <button class="ui-button ui-button--secondary" type="button" @click="moveItem(item.id, 'collection', 'available')">Return {{ item.label }} to available items</button>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <section class="ui-section" aria-labelledby="dragdrop-code-title">
+      <h2 id="dragdrop-code-title" class="ui-section__title">Move between named zones</h2>
+      <pre class="ui-code-block"><code data-highlight>createDragSource(itemElement, {
+  effectAllowed: 'move',
+  getData: () =&gt; ({
+    'application/x-item': JSON.stringify({ itemId, sourceZoneId }),
+  }),
+});
+
+createDropTarget(zoneElement, {
+  accepts: ['application/x-item'],
+  dropEffect: 'move',
+  onDrop: (_event, dataTransfer) =&gt; {
+    const { itemId, sourceZoneId } = JSON.parse(dataTransfer.getData('application/x-item'));
+    moveItem(itemId, sourceZoneId, targetZoneId);
+  },
+});</code></pre>
+    </section>
+  </main>
+</template>
+
+<style scoped>
+.ui-dragdrop-list {
+  display: grid;
+  gap: var(--ui-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-dragdrop-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-3);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  background: var(--ui-color-surface-sunken);
+}
+
+.ui-dragdrop-item[draggable="true"] {
+  cursor: grab;
+}
+
+.ui-dragdrop-item[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.ui-dragdrop-item--dragging {
+  cursor: grabbing;
+  opacity: 0.55;
+}
+
+.ui-dragdrop-target {
+  cursor: default;
+  transition: border-color var(--ui-transition-fast), background-color var(--ui-transition-fast);
+}
+
+.ui-dragdrop-target--active {
+  border-color: var(--ui-color-primary);
+  background: color-mix(in srgb, var(--ui-color-primary) 10%, var(--ui-color-surface));
+  cursor: move;
+}
+</style>

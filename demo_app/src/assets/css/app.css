@@ -14,7 +14,7 @@
   --mono: var(--ui-font-family-mono);
   --ui-font-size-xs: 0.72rem;
   --ui-font-size-caption: 0.78rem;
-  --ui-font-size-sm: 0.8rem;
+  --ui-font-size-sm: 0.9rem;
   --ui-font-size-body-small: 0.84rem;
   --ui-font-size-label: 0.86rem;
   --ui-font-size-control: 0.9rem;
@@ -407,6 +407,67 @@ a {
 .ui-nav-link--active {
   color: var(--ui-color-primary);
   font-weight: var(--ui-font-weight-bold);
+}
+
+/* .ui-nav-dropdown: positions the NodulaUI section disclosure in the header nav. */
+.ui-nav-dropdown {
+  position: relative;
+}
+
+/* .ui-nav-dropdown__button: keeps the disclosure button visually aligned with nav links. */
+.ui-nav-dropdown__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-1);
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Disclosure indicator makes the submenu action visible without changing button name. */
+.ui-nav-dropdown__button::after {
+  width: 0;
+  height: 0;
+  border-top: 0.3em solid currentColor;
+  border-right: 0.25em solid transparent;
+  border-left: 0.25em solid transparent;
+  content: '';
+}
+
+/* .ui-nav-dropdown__panel: displays NodulaUI section links below its trigger. */
+.ui-nav-dropdown__panel {
+  position: absolute;
+  z-index: var(--ui-z-dropdown);
+  top: calc(100% + var(--ui-space-2));
+  left: 0;
+  display: grid;
+  min-width: 13rem;
+  gap: var(--ui-space-1);
+  padding: var(--ui-space-2);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-medium);
+  background: var(--ui-color-surface-raised);
+  box-shadow: var(--ui-shadow-raised);
+}
+
+.ui-nav-dropdown__panel[hidden] {
+  display: none;
+}
+
+/* .ui-nav-dropdown__link: creates a full-width target for each UI section. */
+.ui-nav-dropdown__link {
+  display: block;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-text);
+  text-decoration: none;
+}
+
+.ui-nav-dropdown__link:hover,
+.ui-nav-dropdown__link:focus-visible {
+  background: var(--ui-color-surface-sunken);
+  color: var(--ui-color-primary);
 }
 
 /* .ui-header-actions: groups account, cookie, and theme controls in the header. */
@@ -1717,6 +1778,32 @@ a {
   font: inherit;
 }
 
+.ui-select {
+  appearance: none;
+  padding-inline-end: calc(var(--ui-space-4) + 0.625rem);
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 13px) 50%,
+    calc(100% - 8px) 50%;
+  background-repeat: no-repeat;
+  background-size: 5px 5px;
+}
+
+.ui-select option {
+  padding-inline: var(--ui-space-3);
+}
+
+/* .ui-range: sizes and themes a native range input. */
+.ui-range {
+  width: 100%;
+  min-height: var(--ui-density-input-height);
+  margin: 0;
+  accent-color: var(--ui-color-primary);
+  cursor: pointer;
+}
+
 /* Form controls include text inputs, checkboxes, avatars, and inline links. */
 .ui-input::placeholder,
 .ui-textarea::placeholder {
@@ -1735,7 +1822,8 @@ a {
 }
 
 /* .ui-checkbox: aligns a native checkbox with its label. */
-.ui-checkbox {
+.ui-checkbox,
+.ui-radio {
   display: flex;
   align-items: center;
   gap: var(--ui-density-field-gap);
@@ -1746,6 +1834,14 @@ a {
 
 /* .ui-checkbox__control: sizes and themes the native checkbox input. */
 .ui-checkbox__control {
+  width: var(--ui-size-checkbox);
+  height: var(--ui-size-checkbox);
+  margin: 0;
+  accent-color: var(--ui-color-primary);
+}
+
+/* .ui-radio__control: sizes and themes a native radio input. */
+.ui-radio__control {
   width: var(--ui-size-checkbox);
   height: var(--ui-size-checkbox);
   margin: 0;
@@ -2124,6 +2220,7 @@ a {
 /* .ui-home-addon-carousel__copy: constrains text content within the slide. */
 .ui-home-addon-carousel__copy {
   display: grid;
+  align-self: start;
   gap: var(--ui-density-form-gap);
 }
 

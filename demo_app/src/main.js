@@ -1,5 +1,5 @@
 /*
- * Nodula - demo app
+ * Nodula - Demo app
 
  * A lightweight JavaScript framework built around modular architecture, simplicity and speed. Build your application from small, focused pieces that work together naturally.
 

@@ -3,6 +3,7 @@ import { effect, onCleanup, onMount } from 'nodula-framework';
 import { createRouter } from 'nodula-framework/router';
 import { createSEO } from 'nodula-framework/seo';
 import { createNavigation } from 'nodula-framework/navigation';
+import { createNavigationDropdown } from 'nodula-framework/navigation-dropdown';
 import { enableLifecycleTransitions } from 'nodula-framework/animation';
 import { createLocalStorage } from 'nodula-framework/localstorage';
 import { createCookieConsent, setupGoogleAnalytics } from 'nodula-framework/cookieconsent';
@@ -107,6 +108,7 @@ onMount(() => {
 });
 
 let disposeNavigation;
+let disposeNavigationDropdown;
 let disposeNavigationEffect;
 let navigationElement;
 let authButtonElement;
@@ -172,6 +174,7 @@ async function toggleDemoSignIn() {
 
 function setNavigationElement(element) {
   disposeNavigationEffect?.();
+  disposeNavigationDropdown?.();
   disposeNavigation?.();
   navigationElement = element;
   if (!element) return;
@@ -183,10 +186,14 @@ function setNavigationElement(element) {
 
       { label: 'Add-ons', href: '/addons' },
       { label: 'Data', href: '/data' },
+   
       { label: 'Form', href: '/forms' },
       { label: 'Dialog', href: '/modal' },
+      { label: 'Sortable list', href: '/sortable' },
+      { label: 'Drag & Drop', href: '/dragdrop' },
+     
+      { label: 'File drop', href: '/filedrop' },
       { label: 'Web Components', href: '/web-components' },
-      { label: 'NodulaUI', href: '/democss' },
       //...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
       // { label: 'Demo login', href: '/login' },
       { label: 'Guide', href: 'https://nodula-docs.richardleurs.nl/', external: true },
@@ -198,9 +205,32 @@ function setNavigationElement(element) {
       linkClassName: 'ui-nav-link',
       activeClassName: 'ui-nav-link--active',
     });
+    disposeNavigationDropdown?.();
+    disposeNavigationDropdown = createNavigationDropdown(element, router, [
+      { label: 'Foundation tokens', href: '/democss#tokens-title' },
+      { label: 'Grid layout', href: '/democss#grid-system-title' },
+      { label: 'Flexbox layout', href: '/democss#flexbox-system-title' },
+      { label: 'Typography and density', href: '/democss#type-density-title' },
+      { label: 'Themes', href: '/democss#theme-previews-title' },
+      { label: 'Components', href: '/democss#components' },
+      { label: 'Controls', href: '/democss#controls-title' },
+      { label: 'Forms', href: '/democss#forms-title' },
+      { label: 'Data cards', href: '/democss#data-title' },
+    ], {
+      label: 'NodulaUI',
+      navLabel: 'NodulaUI sections',
+      className: 'ui-nav-dropdown',
+      buttonClassName: 'ui-nav-link ui-nav-dropdown__button',
+      panelClassName: 'ui-nav-dropdown__panel',
+      linkClassName: 'ui-nav-dropdown__link',
+    });
+    const dropdown = element.querySelector('.ui-nav-dropdown');
+    const guideLink = Array.from(element.querySelectorAll('a')).find((link) => link.textContent === 'Guide');
+    if (dropdown && guideLink) element.insertBefore(dropdown, guideLink);
   });
 }
 onCleanup(() => {
+  disposeNavigationDropdown?.();
   disposeNavigation?.();
   disposeNavigationEffect?.();
   disposeAuthButtonEffect?.();

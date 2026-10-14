@@ -1,8 +1,8 @@
 import { Window } from 'happy-dom';
 import { readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
-import { createRoot, effect, onCleanup, signal } from './reactivity.js';
-import { h, list, mount } from './dom.js';
+import { createRoot, effect, onCleanup, signal } from '../reactivity.js';
+import { h, list, mount } from '../dom.js';
 
 const ROW_COUNT = Number(process.env.ROW_COUNT ?? 1000);
 const ROUNDS = Number(process.env.ROUNDS ?? 7);
@@ -157,10 +157,10 @@ function mountTreeReconciler() {
 }
 
 try {
-  const packageData = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+  const packageData = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8'));
   console.log(`Happy DOM ${packageData.devDependencies['happy-dom']}; ${ROW_COUNT} rows; 2 warm-up + ${ROUNDS} rounds × ${ITERATIONS} updates`);
   try {
-    const runtime = await readFile(new URL('../dist/nodula/nodula-core.js', import.meta.url));
+    const runtime = await readFile(new URL('../../dist/nodula/nodula-core.js', import.meta.url));
     console.log(`Core runtime: ${runtime.length} bytes; ${gzipSync(runtime).length} gzip bytes`);
   } catch {
     console.log('Core runtime size unavailable; run npm run build:framework first.');

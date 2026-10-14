@@ -1,0 +1,110 @@
+<script>
+import { onCleanup, signal } from 'nodula-framework';
+import { createFileDropZone } from 'nodula-framework/filedrop';
+
+const [selectionMessage, setSelectionMessage] = signal('No files selected.');
+const previewUrls = new Set();
+let previewContainer = null;
+
+onCleanup(() => {
+  for (const url of previewUrls) URL.revokeObjectURL(url);
+  previewUrls.clear();
+});
+
+function setupFileDropZone(element) {
+  if (!element) return;
+  createFileDropZone(element, {
+    label: 'Add greenhouse photos',
+    description: 'Drop image files here, or choose files from your device.',
+    buttonLabel: 'Choose photos',
+    accept: 'image/*',
+    multiple: true,
+    onStateChange(state) {
+      if (state === 'rejected') setSelectionMessage('Some files were not images and were rejected.');
+    },
+    onFiles(selectedFiles, selectedSource) {
+      const fileDetails = selectedFiles.map(({ name, type, size, lastModified }) => ({ name, type, size, lastModified }));
+      setSelectionMessage(`${fileDetails.length} image${fileDetails.length === 1 ? '' : 's'} accepted via ${selectedSource}: ${fileDetails.map((file) => file.name).join(', ')}.`);
+      const imageFiles = selectedFiles.filter((file) => file.type.startsWith('image/'));
+      for (const file of imageFiles) {
+        const url = URL.createObjectURL(file);
+        previewUrls.add(url);
+        const figure = document.createElement('figure');
+        figure.className = 'ui-filedrop-preview';
+        const image = document.createElement('img');
+        image.src = url;
+        image.alt = `Preview of ${file.name}`;
+        const caption = document.createElement('figcaption');
+        caption.textContent = file.name;
+        figure.append(image, caption);
+        previewContainer?.append(figure);
+      }
+    },
+  });
+}
+
+function setPreviewContainer(element) {
+  previewContainer = element;
+}
+</script>
+
+<template>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Optional file intake add-on</p>
+      <h1 class="ui-page__title">File drop with a backup file picker.</h1>
+      <p class="ui-page__description">The filedrop add-on wraps native file input and browser drop behavior with file type validation, . Labels are supplied by your app, preview, and upload remain application-owned.</p>
+    </header>
+
+    <section class="ui-section" aria-labelledby="filedrop-demo-title">
+      <h2 id="filedrop-demo-title" class="ui-section__title">Greenhouse photos</h2>
+      <div class="ui-stack" @ref="setupFileDropZone"></div>
+      <p class="ui-section__description" role="status" aria-live="polite">{{ selectionMessage() }}</p>
+      <div class="ui-filedrop-previews" aria-label="Image previews" @ref="setPreviewContainer"></div>
+    </section>
+
+    <section class="ui-section" aria-labelledby="filedrop-code-title">
+      <h2 id="filedrop-code-title" class="ui-section__title">Configure the drop zone</h2>
+      <pre class="ui-code-block"><code data-highlight>createFileDropZone(target, {
+  label: 'Add greenhouse photos',
+  description: 'Drop images here, or choose files.',
+  buttonLabel: 'Choose photos',
+  accept: 'image/*',
+  multiple: true,
+  onFiles(files, source) =&gt; addFiles(files, source),
+});</code></pre>
+    </section>
+  </main>
+</template>
+
+<style scoped>
+.ui-filedrop-previews {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: var(--ui-space-4);
+  margin-top: var(--ui-space-4);
+}
+
+.ui-filedrop-preview {
+  display: grid;
+  gap: var(--ui-space-2);
+  min-width: 0;
+  margin: 0;
+}
+
+.ui-filedrop-preview img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  object-fit: cover;
+  background: var(--ui-color-surface-sunken);
+}
+
+.ui-filedrop-preview figcaption {
+  overflow-wrap: anywhere;
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
+}
+</style>

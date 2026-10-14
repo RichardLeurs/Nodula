@@ -449,7 +449,16 @@ function preventSubmit(event) {
             <label class="ui-field__label" for="ui-notes">Notes</label>
             <textarea class="ui-textarea" id="ui-notes" name="notes" rows="3" placeholder="Add an optional note"></textarea>
           </div>
+          <div class="ui-field">
+            <label class="ui-field__label" for="ui-volume">Volume</label>
+            <input class="ui-range" id="ui-volume" name="volume" type="range" min="0" max="100" value="65" />
+          </div>
           <label class="ui-checkbox"><input class="ui-checkbox__control" type="checkbox" checked /><span>Send the user an email invitation</span></label>
+          <div class="ui-field" role="group" aria-labelledby="ui-notification-preference-label">
+            <p class="ui-field__label" id="ui-notification-preference-label">Notification preference</p>
+            <label class="ui-radio"><input class="ui-radio__control" type="radio" name="notification-preference" value="email" checked /><span>Email</span></label>
+            <label class="ui-radio"><input class="ui-radio__control" type="radio" name="notification-preference" value="none" /><span>No notifications</span></label>
+          </div>
         </div>
         <footer class="ui-panel__footer ui-cluster ui-cluster--end">
           <button class="ui-button ui-button--secondary" type="reset">Reset</button>

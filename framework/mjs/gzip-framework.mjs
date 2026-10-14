@@ -3,7 +3,7 @@ import path from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
-const outputDirectory = fileURLToPath(new URL('./dist/nodula/', import.meta.url));
+const outputDirectory = fileURLToPath(new URL('../../dist/nodula/', import.meta.url));
 
 async function gzipDirectory(directory) {
   const entries = await readdir(directory, { withFileTypes: true });

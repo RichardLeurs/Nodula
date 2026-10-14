@@ -13,6 +13,7 @@ const addonNames = [
   'form',
   'localstorage',
   'modal',
+  'navigation-dropdown',
   'navigation',
   'notifications',
   'pwa',
@@ -20,6 +21,7 @@ const addonNames = [
   'seo',
   'seo-vite',
   'store',
+  'sortable',
 ];
 
 export default defineConfig({
