@@ -37,6 +37,7 @@ The framework package is ESM with a core entry, separate optional JavaScript add
 | `nodula-framework/data` | Fetch-based request helpers and HTTP error objects. |
 | `nodula-framework/dragdrop` | Native drag sources and accepted drop targets; app code owns transferred data and resulting state changes. |
 | `nodula-framework/filedrop` | Accessible native file picker/drop zone with configurable file filtering and app-owned file handling. |
+| `nodula-framework/fileupload` | File-drop uploads with XMLHttpRequest progress callbacks and disposable active requests. |
 | `nodula-framework/sortable` | Vertical list reordering with native drag/drop insertion feedback and Move Up/Down controls; app code owns item state and rendering. |
 | `nodula-framework/auth` | Adapter-backed reactive client auth state and UI role/permission checks. |
 | `nodula-framework/dialog`, `modal`, `drawer`, `notifications` | Focused browser UI helpers with documented dismissal and owner cleanup. |

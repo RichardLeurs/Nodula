@@ -77,6 +77,10 @@
       "types": "./dist/nodula/nodula-filedrop.d.ts",
       "import": "./dist/nodula/nodula-filedrop.js"
     },
+    "./fileupload": {
+      "types": "./dist/nodula/nodula-fileupload.d.ts",
+      "import": "./dist/nodula/nodula-fileupload.js"
+    },
     "./localstorage": {
       "types": "./dist/nodula/nodula-localstorage.d.ts",
       "import": "./dist/nodula/nodula-localstorage.js"
@@ -108,7 +112,8 @@
   },
   "scripts": {
     "dev": "npm run install:framework && npm --prefix demo_app run dev",
-    "dev:api": "php -S localhost:8787 -t . api/index.php",
+    "dev:api": "php -S localhost:8787 -t . api/database/index.php",
+    "dev:upload": "php -S localhost:8787 -t . api/upload/index.php",
     "build": "npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run build:app && npm run build:docs",
     "build_test": "npm run test:framework && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run test:demo && npm run build:app && npm run build:docs",
    
@@ -128,6 +133,7 @@
     "build:dragdrop": "vite build --config framework/vite.config.js --mode addon-dragdrop",
     "build:sortable": "vite build --config framework/vite.config.js --mode addon-sortable",
     "build:filedrop": "vite build --config framework/vite.config.js --mode addon-filedrop",
+    "build:fileupload": "vite build --config framework/vite.config.js --mode addon-fileupload",
     "build:localstorage": "vite build --config framework/vite.config.js --mode addon-localstorage",
     "build:data": "vite build --config framework/vite.config.js --mode addon-data",
     "build:pwa": "vite build --config framework/vite.config.js --mode addon-pwa",
@@ -135,7 +141,7 @@
     "build:auth": "vite build --config framework/vite.config.js --mode addon-auth",
     "build:seo": "vite build --config framework/vite.config.js --mode addon-seo",
     "build:seo-vite": "vite build --config framework/vite.config.js --mode addon-seo-vite",
-    "build:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\" && vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:navigation-dropdown && npm run build:dragdrop && npm run build:sortable && npm run build:filedrop && npm run build:localstorage && npm run build:data && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node framework/mjs/gzip-framework.mjs",
+    "build:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\" && vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:navigation-dropdown && npm run build:dragdrop && npm run build:sortable && npm run build:filedrop && npm run build:fileupload && npm run build:localstorage && npm run build:data && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node framework/mjs/gzip-framework.mjs",
     "package:framework": "npm run build:framework && npm run pack:framework",
     "pack:framework": "mkdir -p dist/npm && npm pack --pack-destination dist/npm",
     "install:framework": "npm run package:framework && npm run install:framework:package",

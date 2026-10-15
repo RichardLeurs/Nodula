@@ -193,6 +193,7 @@ function setNavigationElement(element) {
       { label: 'Drag & Drop', href: '/dragdrop' },
      
       { label: 'File drop', href: '/filedrop' },
+      { label: 'File upload', href: '/fileupload' },
       { label: 'Web Components', href: '/web-components' },
       //...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
       // { label: 'Demo login', href: '/login' },

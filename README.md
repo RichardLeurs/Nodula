@@ -12,19 +12,6 @@ Nodula has a small core runtime, with optional add-on modules for extra features
 
 Reactivity, DOM rendering, Helpers    
 
-### UI & Interaction
-
-
-| <div style="width: 100px; ">Module</div>          | Contents                                                                                            |
-| -------------- | --------------------------------------------------------------------------------------------------- |
-| Navigation     | Accessible router-aware internal links and explicitly external HTTP(S) links                        |
-| Notification   | Show accessible, transient status messages for success, error, warning, and info.                   |
-| Forms          | Reactive form values, validation, touched and dirty state, async submission, and reset helpers      |
-| Dialog         | Native confirmation dialogs with configurable labels and owner cleanup                              |
-| Modal          | Native modal windows with safe content, close controls, and configurable backdrop dismissal         |
-| Drawer         | Accessible modal side panels that open from the left or right                                       |
-| Cookie Consent | Manage versioned privacy choices with a floating, expandable consent notice (EU GDPR/ePrivacy)      |
-
 ### State & Data
 
 | <div style="width: 100px; ">Module</div>        | Contents                                                                                            |
@@ -33,6 +20,24 @@ Reactivity, DOM rendering, Helpers
 | Store          | Deeply reactive proxies for plain objects and arrays, including nested values                       |
 | Data           | Fetch data from a server with method helpers, query parameters, and readable HTTP errors            |
 | Auth           | Reactive client authentication state connected to an app-provided auth service                      |
+
+### UI & Interaction
+
+| <div style="width: 100px; ">Module</div>          | Contents                                                                                            |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| File drop | Accessible native file picker and drop zone with caller-supplied labels and owner cleanup |
+| Drag & drop | A small wrapper around native DragEvent and DataTransfer with owner cleanup; your app controls the actual data move |
+| Sortable list | Reorder vertical lists with native drag and drop, visible insertion feedback, and accessible Move Up/Down controls |
+| Notification   | Show accessible, transient status messages for success, error, warning, and info                  |
+| Navigation     | Accessible router-aware internal links and explicitly external HTTP(S) links                        |
+| Dropdown   | A keyboard-operable disclosure that composes with router-aware navigation links                |
+| Form          | Reactive form values, validation, touched and dirty state, async submission, and reset helpers      |
+| Dialog         | Native confirmation dialogs with configurable labels and owner cleanup                              |
+| Modal          | Native modal windows with safe content, close controls, and configurable backdrop dismissal         |
+| Drawer         | Accessible modal side panels that open from the left or right                                       |
+| Cookie Consent | Manage versioned privacy choices with a floating, expandable consent notice (EU GDPR/ePrivacy)      |
+
+
 
 ### Runtime behavior
 

@@ -7,6 +7,7 @@ const routeComponents = {
   '/sortable': { load: () => import('./routes/sortable.page') },
   '/dragdrop': { load: () => import('./routes/dragdrop.page') },
   '/filedrop': { load: () => import('./routes/filedrop.page') },
+  '/fileupload': { load: () => import('./routes/fileupload.page') },
   '/democss': { load: () => import('./routes/democss.page') },
   '/forms': { load: () => import('./routes/forms.page') },
   '/login': { load: () => import('./routes/login.page') },

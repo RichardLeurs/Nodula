@@ -1,0 +1,62 @@
+<script>
+import { createFileUploadZone } from 'nodula-framework/fileupload';
+import { signal } from 'nodula-framework';
+
+const [uploadMessage, setUploadMessage] = signal('Choose or drop files to upload.');
+
+function setupFileUpload(element) {
+  if (!element) return;
+  createFileUploadZone(element, {
+    url: '/api/upload/',
+    label: 'Upload greenhouse photos',
+    description: 'Drop image files here, or choose files from your device.',
+    buttonLabel: 'Choose photos',
+    accept: 'image/*',
+    multiple: true,
+    onProgress(file, progress) {
+      setUploadMessage(`Uploading ${file.name}: ${progress.percent}% (${progress.loaded} of ${progress.total} bytes).`);
+    },
+    onComplete(file, response) {
+      setUploadMessage(`${file.name} uploaded successfully as ${response.name}.`);
+    },
+    onError(file, error) {
+      const zone = element.querySelector('.ui-filedrop');
+      zone?.classList.add('ui-fileupload--error');
+      zone?.style.setProperty('border-color', 'var(--ui-color-danger, #b42318)');
+      zone?.style.setProperty('background-color', 'color-mix(in srgb, var(--ui-color-danger, #b42318) 10%, var(--ui-color-surface, #fff))');
+      setUploadMessage(`Could not upload ${file.name}: ${error.message}`);
+    },
+  });
+}
+</script>
+
+<template>
+  <main class="ui-page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">File upload add-on</p>
+      <h1 class="ui-page__title">Upload files with live progress.</h1>
+      <p class="ui-page__description">The fileupload add-on builds on filedrop and sends each accepted file to a PHP endpoint.</p>
+    </header>
+
+    <section class="ui-section" aria-labelledby="fileupload-title">
+      <h2 id="fileupload-title" class="ui-section__title">Greenhouse photos</h2>
+      <div class="ui-stack" @ref="setupFileUpload"></div>
+      <p class="ui-section__description" role="status" aria-live="polite">{{ uploadMessage() }}</p>
+    </section>
+
+    <section class="ui-section" aria-labelledby="fileupload-config-title">
+      <h2 id="fileupload-config-title" class="ui-section__title">Configure the endpoint</h2>
+      <pre class="ui-code-block"><code data-highlight>createFileUploadZone(target, {
+  url: '/upload/',
+  label: 'Upload photos',
+  description: 'Drop photos or choose files.',
+  buttonLabel: 'Choose photos',
+  accept: 'image/*',
+  multiple: true,
+  onProgress(file, progress) { updateProgress(file, progress.percent); },
+});</code></pre>
+      <p class="ui-section__description">The PHP handler stores generated filenames in <code>/upload/files</code> by default. Set <code>UPLOAD_DIR</code> on the server to use another storage path.</p>
+    </section>
+  </main>
+</template>
+

@@ -16,6 +16,7 @@ const addonOutputs = [
   ['dragdrop', 'nodula-dragdrop.js'],
   ['sortable', 'nodula-sortable.js'],
   ['filedrop', 'nodula-filedrop.js'],
+  ['fileupload', 'nodula-fileupload.js'],
   ['dialog', 'nodula-dialog.js'],
   ['drawer', 'nodula-drawer.js'],
   ['form', 'nodula-form.js'],
@@ -66,6 +67,7 @@ function appBuildConfig() {
     server: {
       proxy: {
         '/api': 'http://localhost:8787',
+        '/upload': 'http://localhost:8787',
       },
     },
     resolve: {
@@ -85,6 +87,7 @@ function appBuildConfig() {
           '/navigation-dropdown',
           '/dragdrop',
           '/filedrop',
+          '/fileupload',
           '/democss',
           '/forms',
           '/modal',

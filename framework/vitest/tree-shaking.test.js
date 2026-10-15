@@ -31,6 +31,7 @@ async function bundleConsumer(entry) {
             'dragdrop',
             'sortable',
             'filedrop',
+            'fileupload',
             'dialog',
             'drawer',
             'form',
@@ -100,6 +101,11 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   const store = await bundleConsumer('store.js');
   assert.match(store, /treeShakingResult/);
   assert.match(store, /createStore expects a plain object or array/);
+
+  const fileUpload = await bundleConsumer('fileupload.js');
+  assert.match(fileUpload, /treeShakingResult/);
+  assert.match(fileUpload, /createFileDropZone/);
+  assert.match(fileUpload, /XMLHttpRequest/);
 
   const storage = await bundleConsumer('localstorage.js');
   assert.match(storage, /treeShakingResult/);

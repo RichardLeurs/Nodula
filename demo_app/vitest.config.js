@@ -22,6 +22,7 @@ const addonNames = [
   'seo-vite',
   'store',
   'sortable',
+  'filedrop',
 ];
 
 export default defineConfig({

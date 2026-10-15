@@ -134,6 +134,14 @@ import dropdownImage from '../assets/images/dropdown.webp';
             <footer class="ui-card__footer"><a class="ui-link" href="/filedrop">Open File drop demo <span aria-hidden="true">→</span></a></footer>
           </article>
           <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">File upload</h2></header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Build on the accessible file drop zone with per-file upload progress and disposable requests.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createFileUploadZone } from 'nodula-framework/fileupload';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/fileupload">Open File upload demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
             <header class="ui-card__header"><h2 class="ui-card__title">Drag and drop</h2>
             <img class="ui-card__header-image" :src="dragdropImage" alt="" width="64" height="73" aria-hidden="true">
             </header>
@@ -145,7 +153,7 @@ import dropdownImage from '../assets/images/dropdown.webp';
           </article>
          
           <article class="ui-card ui-card--interactive">
-            <header class="ui-card__header"><h2 class="ui-card__title">Sortable lists</h2>
+            <header class="ui-card__header"><h2 class="ui-card__title">Sortable list</h2>
             <img class="ui-card__header-image" :src="sortableImage" alt="" width="64" height="73" aria-hidden="true">
             </header>
             
