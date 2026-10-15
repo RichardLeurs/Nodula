@@ -24,3 +24,4 @@ package-lock.json
 vitest/
 vitepress/package-lock.json
 demo_os/
+upload/
