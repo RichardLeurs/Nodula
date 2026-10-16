@@ -432,7 +432,7 @@ a {
   border-top: 0.3em solid currentColor;
   border-right: 0.25em solid transparent;
   border-left: 0.25em solid transparent;
-  content: '';
+  content: "";
 }
 
 /* .ui-nav-dropdown__panel: displays NodulaUI section links below its trigger. */
@@ -481,6 +481,7 @@ a {
 
 /* .ui-auth-toggle: icon button for opening or checking authentication state. */
 .ui-auth-toggle {
+  position: relative;
   display: grid;
   width: 34px;
   min-height: 34px;
@@ -502,11 +503,32 @@ a {
     cursor: wait;
   }
 
-  & svg {
-    display: block;
-    width: 16px;
-    height: 16px;
-  }
+}
+
+.ui-auth-toggle::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  content: "";
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  pointer-events: none;
+}
+
+.ui-auth-toggle[data-auth-state="signed-in"]::before {
+  mask-image: url("../icons/person.svg");
+  -webkit-mask-image: url("../icons/person.svg");
+}
+
+.ui-auth-toggle[data-auth-state="signed-out"]::before,
+.ui-auth-toggle[data-auth-state="busy"]::before {
+  mask-image: url("../icons/person-lock.svg");
+  -webkit-mask-image: url("../icons/person-lock.svg");
 }
 
 /* .ui-auth-toggle__loading: compact progress indicator shown while auth is busy. */
@@ -523,6 +545,7 @@ a {
 
 /* .ui-cookie-settings-toggle: opens cookie-consent preferences from the header. */
 .ui-cookie-settings-toggle {
+  position: relative;
   display: grid;
   width: 34px;
   min-height: 34px;
@@ -539,15 +562,28 @@ a {
     outline-offset: 3px;
   }
 
-  & svg {
-    display: block;
-    width: 16px;
-    height: 16px;
-  }
+}
+
+.ui-cookie-settings-toggle::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  content: "";
+  mask-image: url("../icons/gear.svg");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-image: url("../icons/gear.svg");
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  pointer-events: none;
 }
 
 /* .ui-theme-toggle: switches color scheme; child icons reflect selected theme. */
 .ui-theme-toggle {
+  position: relative;
   display: grid;
   width: 34px;
   min-height: 34px;
@@ -559,7 +595,7 @@ a {
   background: transparent;
   font: var(--ui-font-size-body) var(--ui-font-family-mono);
   cursor: pointer;
-  background-blend-mode: multiply;
+  isolation: isolate;
 
   &:hover {
     border-color: var(--ui-color-primary);
@@ -571,19 +607,33 @@ a {
   }
 }
 
-/* .ui-theme-toggle__sun and .ui-theme-toggle__moon: indicate available themes. */
-/* .ui-theme-toggle__sun and .ui-theme-toggle__moon: represent theme choices. */
-.ui-theme-toggle__sun,
-.ui-theme-toggle__moon {
-  display: block;
+.ui-theme-toggle::before {
+  position: absolute;
   width: 16px;
   height: 16px;
+  background-color: currentColor;
+  content: "";
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
 }
 
-:root[data-theme="dark"] .ui-theme-toggle__moon,
-:root:not([data-theme="light"]) .ui-theme-toggle__moon,
-:root[data-theme="light"] .ui-theme-toggle__sun {
-  display: none;
+:root[data-theme="dark"] .ui-theme-toggle::before,
+:root:not([data-theme="light"]) .ui-theme-toggle::before {
+  mask-image: url("../icons/sun.svg");
+  -webkit-mask-image: url("../icons/sun.svg");
+}
+
+:root[data-theme="light"] .ui-theme-toggle::before {
+  mask-image: url("../icons/moon.svg");
+  -webkit-mask-image: url("../icons/moon.svg");
+}
+
+.ui-theme-toggle::before {
+  pointer-events: none;
 }
 
 /* .ui-site-footer: anchors shared footer content to the app shell width. */
@@ -2586,34 +2636,6 @@ a {
 
 /* -- 09 media query -------------------------------------------------------------------------------- */
 
-/* Wide layouts */
-@media (max-width: 1250px) {
-  .ui-site-header {
-    height: auto;
-    min-height: 78px;
-    flex-wrap: wrap;
-    row-gap: 4px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .ui-brand {
-    order: 1;
-  }
-  .ui-header-actions {
-    order: 2;
-    margin-left: auto;
-  }
-  .ui-site-nav {
-    order: 3;
-    flex: 0 0 100%;
-    width: 100%;
-    flex-wrap: wrap;
-    gap: 0px 15px;
-    margin-left: -10px;
-    padding-left: 0;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .ui-home-carousel--fade-a .ui-home-carousel__line,
   .ui-home-carousel--fade-b .ui-home-carousel__line {
@@ -2640,6 +2662,43 @@ a {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Very wide layouts */
+@media (max-width: 1625px) {
+  .ui-site-header {
+    height: auto;
+    min-height: 78px;
+    flex-wrap: wrap;
+    row-gap: 4px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    /* margin: 0 auto; */
+  }
+  .ui-brand {
+    order: 1;
+  }
+  .ui-header-actions {
+    order: 2;
+    margin-left: auto;
+  }
+  .ui-site-nav {
+    order: 3;
+    flex: 0 0 100%;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 0px 15px;
+    margin-left: -10px;
+    padding-left: 0;
+  }
+}
+/* Wide layouts */
+@media (max-width: 1200px) {
+  .ui-page {
+    padding: 10px;
   }
 }
 

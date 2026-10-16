@@ -1,6 +1,7 @@
 <script>
 import { signal } from 'nodula-framework';
 import { createSortableList } from 'nodula-framework/sortable';
+import sortableImage from '../assets/images/sortable.webp';
 
 const [items, setItems] = signal([
   { id: 'plan', label: 'Plan the greenhouse beds' },
@@ -26,7 +27,13 @@ function setupSortableList(element) {
   <main class="ui-page page">
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Optional sortable-list add-on</p>
-      <h1 class="ui-page__title">Reorder a list with drag and drop or buttons.</h1>
+
+      <div class="ui-page__title-row">  
+       <h1 class="ui-page__title">Reorder a list with drag and drop or buttons.</h1>
+        <img class="ui-page__header-image" :src="sortableImage" alt="" width="128" height="147" aria-hidden="true">
+      </div>
+
+  
       <p class="ui-page__description">The sortable add-on gives vertical lists clear insertion feedback and Move Up/Down controls. Your application owns item data and applies each proposed order.</p>
     </header>
 

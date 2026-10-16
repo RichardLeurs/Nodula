@@ -1,6 +1,7 @@
 <script>
 import { signal } from 'nodula-framework';
 import { createDragSource, createDropTarget } from 'nodula-framework/dragdrop';
+import dragdropImage from '../assets/images/dragdrop.webp';
 
 const [availableItems, setAvailableItems] = signal([
   { id: 'fern', label: 'Fern cutting' },
@@ -71,8 +72,18 @@ function setupDropZone(element) {
 <template>
   <main class="ui-page page">
     <header class="ui-page__header">
-      <p class="ui-page__eyebrow">Optional interaction add-on</p>
-      <h1 class="ui-page__title">Native drag and drop, with an accessible alternative.</h1>
+
+      <p class="ui-page__eyebrow">Optional interaction add-on</p> 
+      <div class="ui-page__title-row">  
+         <h1 class="ui-page__title">Native drag and drop, with an accessible alternative.</h1>
+        <img class="ui-page__header-image" :src="dragdropImage" alt="" width="128" height="147" aria-hidden="true">
+      </div>
+
+    
+   
+
+
+
       <p class="ui-page__description">The dragdrop add-on wraps browser drag events and DataTransfer, including a per-item native drag preview. This demo moves items between named zones by updating app-owned state and includes Move buttons and touch alternative.</p>
     </header>
 

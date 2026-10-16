@@ -13,14 +13,18 @@ npm run dev
 
 The root development script builds Nodula core and add-on bundles before starting Vite for the demo. For available workflows see the root `package.json` scripts; key commands include:
 
-| Command | Purpose |
-|---|---|
-| `npm run dev` | Build framework packages, then start demo Vite server. |
-| `npm run build:framework` | Build core, compiler package entry, and add-on bundles. |
-| `npm run build:app` | Build demo app only; framework bundles must already exist. |
-| `npm run build:docs` | Build VitePress documentation. |
-| `npm test` | Run type checks and framework/demo tests through repository scripts. |
-| `npm run build` | Run framework tests/builds, type checks, demo tests/build, and docs build. |
+| Command                   | Purpose                                                                                                  |
+| ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `npm run dev`             | Build framework packages, then start demo Vite server.                                                   |
+| `npm run build:framework` | Build core, compiler package entry, and add-on bundles.                                                  |
+| `npm run build:app`       | Build demo app only; framework bundles must already exist.                                               |
+| `npm run build:docs`      | Build VitePress documentation.                                                                           |
+| `npm test`                | Run type checks and framework/demo tests through repository scripts.                                     |
+| `npm run build`           | Run framework builds, type checks, demo build, and docs build.                                           |
+| `npm run lint`            | Run Oxlint across repository JavaScript/TypeScript.                                                      |
+| `npm run format`          | Format supported source, Vite config, guide, and package files with Oxfmt.                               |
+| `npm run format:check`    | Check those files without writing changes.                                                               |
+
 
 Builds clear their destination before writing fresh output: framework builds clear `dist/nodula/` once before the sequence of core and add-on builds, demo builds clear `dist/app/`, and docs builds clear `dist/vitepress/`. This prevents files left by earlier builds from being included in the next output.
 
@@ -29,8 +33,8 @@ Builds clear their destination before writing fresh output: framework builds cle
 The published package exposes `nodulaPlugin` from `nodula-framework/vite`. Install Vite and Nodula in an application, then add the plugin to the Vite config:
 
 ```js
-import { defineConfig } from 'vite';
-import { nodulaPlugin } from 'nodula-framework/vite';
+import { defineConfig } from "vite";
+import { nodulaPlugin } from "nodula-framework/vite";
 
 export default defineConfig({
   plugins: [nodulaPlugin()],

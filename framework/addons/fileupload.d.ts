@@ -9,6 +9,8 @@ export interface FileUploadProgress {
 export interface FileUploadOptions extends Omit<FileDropZoneOptions, 'onFiles'> {
   /** Upload endpoint URL. Defaults to `/upload/`. */
   url?: string;
+  /** Maximum accepted file size in bytes. Larger files are rejected before a request is created. */
+  maxFileSize?: number;
   /** Called as request bytes upload; non-computable progress events are ignored. */
   onProgress?: (file: File, progress: FileUploadProgress) => void;
   /** Called with the parsed JSON response after a successful upload. */

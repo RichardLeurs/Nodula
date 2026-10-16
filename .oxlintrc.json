@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["unicorn", "oxc"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2022": true
+  },
+  "ignorePatterns": [
+    "dist/**",
+    "node_modules/**",
+    "**/node_modules/**",
+    "demo_os/**",
+    "framework/vitest/**",
+    "demo_app/vitest/**",
+    "vitepress/docs/.vitepress/cache/**"
+  ]
+}

@@ -153,7 +153,7 @@ export function frameworkBuildConfigForMode(mode) {
   if (mode === 'framework') return frameworkBuildConfig();
   if (mode === 'compiler') return compilerPluginBuildConfig();
   if (mode.startsWith('addon-')) return addonBuildConfig(mode.slice('addon-'.length));
-  throw new Error(`Unknown framework build mode: ${mode}`);
+  throw new Error(`Unknown framework add-on build mode: ${mode}`);
 }
 
 export default defineConfig(({ mode }) => frameworkBuildConfigForMode(mode));

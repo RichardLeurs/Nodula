@@ -20,6 +20,7 @@ import cookieImage from '../assets/images/cookie.webp';
 import notificationImage from '../assets/images/notification.webp';
 import dragdropImage from '../assets/images/dragdrop.webp';
 import filedropImage from '../assets/images/filedrop.webp';
+import fileuploadImage from '../assets/images/fileupload.webp';
 import sortableImage from '../assets/images/sortable.webp';
 
 
@@ -47,6 +48,7 @@ const addonCarouselItems = [
   { title: 'Animation', description: 'Add lightweight Web Animations and lifecycle transitions with reduced-motion support.', image: animationImage },
   
   { title: 'File drop', description: 'Accept files through an accessible native picker or drop zone, then handle files in your app.', image: filedropImage },
+  { title: 'File upload', description: 'Upload accepted files with live progress using the file upload add-on.', image: fileuploadImage },
 { title: 'Drag & Drop', description: 'Use native drag events and DataTransfer to move app-owned items, with keyboard-operable alternatives.', image: dragdropImage },
   { title: 'Sortable lists', description: 'Reorder vertical lists with native drag and drop, clear insertion feedback, and Move Up/Down buttons.', image: sortableImage },
   { title: 'Notification', description: 'Show accessible, transient status messages for success, error, warning, and info.', image: notificationImage },

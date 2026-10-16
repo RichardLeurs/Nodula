@@ -1,6 +1,7 @@
 <script>
 import { onCleanup, signal } from 'nodula-framework';
 import { createFileDropZone } from 'nodula-framework/filedrop';
+import filedropImage from '../assets/images/filedrop.webp';
 
 const [selectionMessage, setSelectionMessage] = signal('No files selected.');
 const previewUrls = new Set();
@@ -52,7 +53,13 @@ function setPreviewContainer(element) {
   <main class="ui-page page">
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Optional file intake add-on</p>
-      <h1 class="ui-page__title">File drop with a backup file picker.</h1>
+
+      <div class="ui-page__title-row">  
+       <h1 class="ui-page__title">File drop with a backup file picker.</h1>
+        <img class="ui-page__header-image" :src="filedropImage" alt="" width="128" height="147" aria-hidden="true">
+      </div>
+
+     
       <p class="ui-page__description">The filedrop add-on wraps native file input and browser drop behavior with file type validation, . Labels are supplied by your app, preview, and upload remain application-owned.</p>
     </header>
 

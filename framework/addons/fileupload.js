@@ -5,12 +5,16 @@ import { createFileDropZone } from 'nodula-framework/filedrop';
 /** Create a file-drop zone that uploads each accepted file and reports progress. */
 export function createFileUploadZone(target, {
   url = '/api/upload/',
+  maxFileSize,
   onProgress,
   onComplete,
   onError,
   ...fileDropOptions
 } = {}) {
   if (typeof url !== 'string' || !url.trim()) throw new TypeError('createFileUploadZone url must be a non-empty string.');
+  if (maxFileSize !== undefined && (!Number.isFinite(maxFileSize) || maxFileSize < 0)) {
+    throw new TypeError('createFileUploadZone maxFileSize must be a non-negative finite number of bytes.');
+  }
   for (const [name, callback] of Object.entries({ onProgress, onComplete, onError })) {
     if (callback !== undefined && typeof callback !== 'function') {
       throw new TypeError(`createFileUploadZone ${name} must be a function.`);
@@ -25,6 +29,11 @@ export function createFileUploadZone(target, {
     onFiles(files, source) {
       fileDropOptions.onFiles?.(files, source);
       for (const file of files) {
+        if (maxFileSize !== undefined && file.size > maxFileSize) {
+          onError?.(file, new Error(`File exceeds the maximum size of ${maxFileSize} bytes.`));
+          continue;
+        }
+
         const request = new XMLHttpRequest();
         const body = new FormData();
         body.append('file', file, file.name);

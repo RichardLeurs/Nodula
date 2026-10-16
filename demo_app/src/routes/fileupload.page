@@ -1,6 +1,7 @@
 <script>
 import { createFileUploadZone } from 'nodula-framework/fileupload';
 import { signal } from 'nodula-framework';
+import fileuploadImage from '../assets/images/fileupload.webp';
 
 const [uploadMessage, setUploadMessage] = signal('Choose or drop files to upload.');
 
@@ -13,6 +14,7 @@ function setupFileUpload(element) {
     buttonLabel: 'Choose photos',
     accept: 'image/*',
     multiple: true,
+    maxFileSize: 10000000,
     onProgress(file, progress) {
       setUploadMessage(`Uploading ${file.name}: ${progress.percent}% (${progress.loaded} of ${progress.total} bytes).`);
     },
@@ -34,7 +36,13 @@ function setupFileUpload(element) {
   <main class="ui-page">
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">File upload add-on</p>
-      <h1 class="ui-page__title">Upload files with live progress.</h1>
+
+     <div class="ui-page__title-row">  
+           <h1 class="ui-page__title">Upload files with live progress.</h1>
+        <img class="ui-page__header-image" :src="fileuploadImage" alt="" width="128" height="147" aria-hidden="true">
+      </div>
+
+
       <p class="ui-page__description">The fileupload add-on builds on filedrop and sends each accepted file to a PHP endpoint.</p>
     </header>
 

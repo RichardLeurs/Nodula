@@ -116,7 +116,8 @@
     "dev:upload": "php -S localhost:8787 -t . api/upload/index.php",
     "build": "npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run build:app && npm run build:docs",
     "build_test": "npm run test:framework && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run test:demo && npm run build:app && npm run build:docs",
-   
+
+
     "build:app": "npm --prefix demo_app run build",
     "build:docs": "node vitepress/build-docs.mjs",
     "build:compiler": "vite build --config framework/vite.config.js --mode compiler",
@@ -141,6 +142,10 @@
     "build:auth": "vite build --config framework/vite.config.js --mode addon-auth",
     "build:seo": "vite build --config framework/vite.config.js --mode addon-seo",
     "build:seo-vite": "vite build --config framework/vite.config.js --mode addon-seo-vite",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
+    "format:check": "oxfmt --check 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
     "build:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\" && vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:navigation-dropdown && npm run build:dragdrop && npm run build:sortable && npm run build:filedrop && npm run build:fileupload && npm run build:localstorage && npm run build:data && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node framework/mjs/gzip-framework.mjs",
     "package:framework": "npm run build:framework && npm run pack:framework",
     "pack:framework": "mkdir -p dist/npm && npm pack --pack-destination dist/npm",
@@ -157,6 +162,8 @@
   "devDependencies": {
     "happy-dom": "^20.14.5",
     "lightningcss": "^1.33.0",
+    "oxfmt": "^0.73.0",
+    "oxlint": "^1.88.0",
     "parse5": "^7.3.0",
     "postcss": "^8.5.28",
     "postcss-selector-parser": "^7.1.6",

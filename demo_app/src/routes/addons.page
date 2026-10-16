@@ -21,6 +21,7 @@ import pwaImage from '../assets/images/pwa.webp';
 import cookieImage from '../assets/images/cookie.webp';
 import notificationImage from '../assets/images/notification.webp';
 import dropdownImage from '../assets/images/dropdown.webp';
+import fileuploadImage from '../assets/images/fileupload.webp';
 
 </script>
 
@@ -134,7 +135,9 @@ import dropdownImage from '../assets/images/dropdown.webp';
             <footer class="ui-card__footer"><a class="ui-link" href="/filedrop">Open File drop demo <span aria-hidden="true">→</span></a></footer>
           </article>
           <article class="ui-card ui-card--interactive">
-            <header class="ui-card__header"><h2 class="ui-card__title">File upload</h2></header>
+            <header class="ui-card__header"><h2 class="ui-card__title">File upload</h2>
+             <img class="ui-card__header-image" :src="fileuploadImage" alt="" width="64" height="73" aria-hidden="true">
+            </header>
             <div class="ui-card__body ui-stack ui-stack--tight">
               <p class="ui-card__description">Build on the accessible file drop zone with per-file upload progress and disposable requests.</p>
               <pre class="ui-code-block"><code data-highlight>import { createFileUploadZone } from 'nodula-framework/fileupload';</code></pre>
