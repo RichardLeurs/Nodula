@@ -130,7 +130,8 @@ onCleanup(() => activeRequest?.abort());
         type="text"
         maxlength="200"
         placeholder="Add a shared idea…"
-        @bind:value="(draft, setDraft)"
+        :value="draft()"
+        @input="setDraft($event.currentTarget.value)"
         aria-label="New server idea"
         :disabled="loading() || busy()"
       />
