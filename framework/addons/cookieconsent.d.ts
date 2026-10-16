@@ -1,4 +1,4 @@
-import type { Accessor } from 'nodula-framework';
+import type { Accessor } from "nodula-framework";
 
 export interface CookieConsentCategory {
   id: string;
@@ -80,7 +80,10 @@ export interface CookieConsent {
   /** Register a new opt-in category; returns a function that removes that category. */
   registerCategory(category: CookieConsentCategory): () => void;
   /** Call with whether category is allowed, initially and whenever that permission changes. */
-  on(category: string, callback: (allowed: boolean, consent: CookieConsentRecord | null) => void): () => void;
+  on(
+    category: string,
+    callback: (allowed: boolean, consent: CookieConsentRecord | null) => void,
+  ): () => void;
   openSettings(): void;
   close(): void;
 }

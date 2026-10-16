@@ -5,7 +5,10 @@
       <span class="ui-badge ui-badge--primary">Dynamic route</span>
     </header>
     <div class="ui-card__body ui-stack ui-stack--tight">
-      <p class="ui-card__description">This page is loaded from a parameterized file route. The route value is decoded and rendered from <code>params.id</code>.</p>
+      <p class="ui-card__description">
+        This page is loaded from a parameterized file route. The route value is decoded and rendered
+        from <code>params.id</code>.
+      </p>
       <pre class="ui-code-block"><code data-highlight>./routes/ideas/[id].page</code></pre>
     </div>
     <footer class="ui-card__footer">

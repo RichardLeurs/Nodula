@@ -9,7 +9,9 @@
   color: var(--ui-color-text, #17232c);
   background: var(--ui-color-surface, #fff);
   text-align: center;
-  transition: border-color 120ms ease, background-color 120ms ease;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
 }
 
 .ui-filedrop__label,
@@ -62,15 +64,27 @@
 
 .ui-filedrop--active {
   border-color: var(--ui-color-primary, #1769aa);
-  background: color-mix(in srgb, var(--ui-color-primary, #1769aa) 10%, var(--ui-color-surface, #fff));
+  background: color-mix(
+    in srgb,
+    var(--ui-color-primary, #1769aa) 10%,
+    var(--ui-color-surface, #fff)
+  );
 }
 
 .ui-filedrop--accepted {
   border-color: var(--ui-color-success, #218838);
-  background: color-mix(in srgb, var(--ui-color-success, #218838) 10%, var(--ui-color-surface, #fff));
+  background: color-mix(
+    in srgb,
+    var(--ui-color-success, #218838) 10%,
+    var(--ui-color-surface, #fff)
+  );
 }
 
 .ui-filedrop--rejected {
   border-color: var(--ui-color-danger, #b42318);
-  background: color-mix(in srgb, var(--ui-color-danger, #b42318) 10%, var(--ui-color-surface, #fff));
+  background: color-mix(
+    in srgb,
+    var(--ui-color-danger, #b42318) 10%,
+    var(--ui-color-surface, #fff)
+  );
 }

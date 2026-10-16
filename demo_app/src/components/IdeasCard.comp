@@ -47,7 +47,7 @@ function addIdea(event) {
       <span class="ui-badge ui-badge--success">{{ doneCount() }} / {{ ideas().length }} done</span>
     </div>
     <p class="ui-ideas-card__status" role="status">{{ status() }}</p>
-    </br>
+    </BR>
     <ul class="ui-ideas-list">
       <li class="ui-ideas-list__item" @for="idea of ideas()" :key="idea.id" :class="idea().done ? 'ui-ideas-list__item ui-ideas-list__item--done' : 'ui-ideas-list__item'">
         <label class="ui-checkbox ui-ideas-list__label">

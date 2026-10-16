@@ -1,75 +1,167 @@
 <script>
-import { effect, onCleanup, signal, visibleIsland } from 'nodula-framework';
+import { effect, onCleanup, signal, visibleIsland } from "nodula-framework";
 
-import DemoCounter from '../components/DemoCounter.comp';
-import routerImage from '../assets/images/router.webp';
-import storageImage from '../assets/images/storage.webp';
-import dataImage from '../assets/images/data.webp';
-import storeImage from '../assets/images/store.webp';
-import animationImage from '../assets/images/animation.webp';
-import formImage from '../assets/images/form.webp';
-import dialogImage from '../assets/images/dialog.webp';
-import modalImage from '../assets/images/modal.webp';
-import drawerImage from '../assets/images/drawer.webp';
-import navigationImage from '../assets/images/navigation.webp';
-import dropdownImage from '../assets/images/dropdown.webp';
-import authImage from '../assets/images/auth.webp';
-import seoImage from '../assets/images/seo.webp';
-import pwaImage from '../assets/images/pwa.webp';
-import cookieImage from '../assets/images/cookie.webp';
-import notificationImage from '../assets/images/notification.webp';
-import dragdropImage from '../assets/images/dragdrop.webp';
-import filedropImage from '../assets/images/filedrop.webp';
-import fileuploadImage from '../assets/images/fileupload.webp';
-import sortableImage from '../assets/images/sortable.webp';
+import DemoCounter from "../components/DemoCounter.comp";
+import routerImage from "../assets/images/router.webp";
+import storageImage from "../assets/images/storage.webp";
+import dataImage from "../assets/images/data.webp";
+import storeImage from "../assets/images/store.webp";
+import animationImage from "../assets/images/animation.webp";
+import formImage from "../assets/images/form.webp";
+import dialogImage from "../assets/images/dialog.webp";
+import modalImage from "../assets/images/modal.webp";
+import drawerImage from "../assets/images/drawer.webp";
+import navigationImage from "../assets/images/navigation.webp";
+import dropdownImage from "../assets/images/dropdown.webp";
+import authImage from "../assets/images/auth.webp";
+import seoImage from "../assets/images/seo.webp";
+import pwaImage from "../assets/images/pwa.webp";
+import cookieImage from "../assets/images/cookie.webp";
+import notificationImage from "../assets/images/notification.webp";
+import dragdropImage from "../assets/images/dragdrop.webp";
+import filedropImage from "../assets/images/filedrop.webp";
+import fileuploadImage from "../assets/images/fileupload.webp";
+import sortableImage from "../assets/images/sortable.webp";
 
-
-const loadExtraCard = () => import('../components/ExtraCard.comp').then((module) => module.default);
-
-
+const loadExtraCard = () => import("../components/ExtraCard.comp").then((module) => module.default);
 
 const carouselItems = [
-  ['Small pieces.', 'Big ideas.'],
-  ['Everything you need.', 'Nothing you don&apos;t'],
-  ['Less overhead.', 'More momentum.'],
-  ['Big apps.', 'Small footprint.'],
-  ['Less framework.', 'More application.'],
-  ['Small core.', 'Infinite possibilities.'],
-  ['Small modules.', 'Big applications.'],
-  ['Modular by nature.', 'Nimble by design.'],
+  ["Small pieces.", "Big ideas."],
+  ["Everything you need.", "Nothing you don&apos;t"],
+  ["Less overhead.", "More momentum."],
+  ["Big apps.", "Small footprint."],
+  ["Less framework.", "More application."],
+  ["Small core.", "Infinite possibilities."],
+  ["Small modules.", "Big applications."],
+  ["Modular by nature.", "Nimble by design."],
 ];
 const [carouselIndex, setCarouselIndex] = signal(0);
 const addonCarouselItems = [
-   { title: 'Store', description: 'Manage deeply reactive state in plain objects and arrays, including nested values.', image: storeImage },
-    { title: 'Local storage', description: 'Persist reactive values with localStorage or IndexedDB, and work with browser cookies.', image: storageImage },
-  { title: 'Data', description: 'Make HTTP requests with method helpers, query parameters, and readable errors.', image: dataImage },
-  { title: 'Auth', description: 'Connect reactive sign-in state and role or permission checks to your session adapter.', image: authImage },
- { title: 'Router', description: 'Navigate with Hash or History API routes, lazy-loaded file-based and code-based routes with route parameters.', image: routerImage },
-  { title: 'Animation', description: 'Add lightweight Web Animations and lifecycle transitions with reduced-motion support.', image: animationImage },
-  
-  { title: 'File drop', description: 'Accept files through an accessible native picker or drop zone, then handle files in your app.', image: filedropImage },
-  { title: 'File upload', description: 'Upload accepted files with live progress using the file upload add-on.', image: fileuploadImage },
-{ title: 'Drag & Drop', description: 'Use native drag events and DataTransfer to move app-owned items, with keyboard-operable alternatives.', image: dragdropImage },
-  { title: 'Sortable lists', description: 'Reorder vertical lists with native drag and drop, clear insertion feedback, and Move Up/Down buttons.', image: sortableImage },
-  { title: 'Notification', description: 'Show accessible, transient status messages for success, error, warning, and info.', image: notificationImage },
-  { title: 'Navigation', description: 'Create accessible router-aware links, including explicitly external destinations.', image: navigationImage },
-  { title: 'Navigation dropdown', description: 'Add a keyboard-operable disclosure menu that composes with router-aware navigation links.', image: dropdownImage },
- 
-  { title: 'Form', description: 'Build reactive forms with validation, field state, async submission, and reset helpers.', image: formImage },
- 
- { title: 'Dialog', description: 'Ask for confirmation with an accessible native dialog and configurable button labels.', image: dialogImage },
-  { title: 'Modal', description: 'Show custom text or interactive DOM content in a native modal window.', image: modalImage },
-  { title: 'Drawer', description: 'Present a modal side panel that enters from the left or right edge.', image: drawerImage },
-  { title: 'Cookie consent', description: 'Manage versioned privacy choices with a floating consent banner.\n(EU GDPR/ePrivacy)', image: cookieImage },
-  
-  { title: 'SEO', description: 'Manage route-aware metadata and generate sitemap.xml and robots.txt during Vite builds.', image: seoImage },
-  { title: 'PWA', description: 'Make your Vite app installable with a generated service worker and precached build assets.', image: pwaImage },
-  
+  {
+    title: "Store",
+    description:
+      "Manage deeply reactive state in plain objects and arrays, including nested values.",
+    image: storeImage,
+  },
+  {
+    title: "Local storage",
+    description:
+      "Persist reactive values with localStorage or IndexedDB, and work with browser cookies.",
+    image: storageImage,
+  },
+  {
+    title: "Data",
+    description: "Make HTTP requests with method helpers, query parameters, and readable errors.",
+    image: dataImage,
+  },
+  {
+    title: "Auth",
+    description:
+      "Connect reactive sign-in state and role or permission checks to your session adapter.",
+    image: authImage,
+  },
+  {
+    title: "Router",
+    description:
+      "Navigate with Hash or History API routes, lazy-loaded file-based and code-based routes with route parameters.",
+    image: routerImage,
+  },
+  {
+    title: "Animation",
+    description:
+      "Add lightweight Web Animations and lifecycle transitions with reduced-motion support.",
+    image: animationImage,
+  },
+
+  {
+    title: "File drop",
+    description:
+      "Accept files through an accessible native picker or drop zone, then handle files in your app.",
+    image: filedropImage,
+  },
+  {
+    title: "File upload",
+    description: "Upload accepted files with live progress using the file upload add-on.",
+    image: fileuploadImage,
+  },
+  {
+    title: "Drag & Drop",
+    description:
+      "Use native drag events and DataTransfer to move app-owned items, with keyboard-operable alternatives.",
+    image: dragdropImage,
+  },
+  {
+    title: "Sortable lists",
+    description:
+      "Reorder vertical lists with native drag and drop, clear insertion feedback, and Move Up/Down buttons.",
+    image: sortableImage,
+  },
+  {
+    title: "Notification",
+    description:
+      "Show accessible, transient status messages for success, error, warning, and info.",
+    image: notificationImage,
+  },
+  {
+    title: "Navigation",
+    description:
+      "Create accessible router-aware links, including explicitly external destinations.",
+    image: navigationImage,
+  },
+  {
+    title: "Navigation dropdown",
+    description:
+      "Add a keyboard-operable disclosure menu that composes with router-aware navigation links.",
+    image: dropdownImage,
+  },
+
+  {
+    title: "Form",
+    description:
+      "Build reactive forms with validation, field state, async submission, and reset helpers.",
+    image: formImage,
+  },
+
+  {
+    title: "Dialog",
+    description:
+      "Ask for confirmation with an accessible native dialog and configurable button labels.",
+    image: dialogImage,
+  },
+  {
+    title: "Modal",
+    description: "Show custom text or interactive DOM content in a native modal window.",
+    image: modalImage,
+  },
+  {
+    title: "Drawer",
+    description: "Present a modal side panel that enters from the left or right edge.",
+    image: drawerImage,
+  },
+  {
+    title: "Cookie consent",
+    description:
+      "Manage versioned privacy choices with a floating consent banner.\n(EU GDPR/ePrivacy)",
+    image: cookieImage,
+  },
+
+  {
+    title: "SEO",
+    description:
+      "Manage route-aware metadata and generate sitemap.xml and robots.txt during Vite builds.",
+    image: seoImage,
+  },
+  {
+    title: "PWA",
+    description:
+      "Make your Vite app installable with a generated service worker and precached build assets.",
+    image: pwaImage,
+  },
 ];
 const [addonCarouselIndex, setAddonCarouselIndex] = signal(0);
 
 function displayCarouselText(text) {
-  return text.replaceAll('&apos;', "'");
+  return text.replaceAll("&apos;", "'");
 }
 
 effect(() => {
@@ -91,9 +183,10 @@ effect(() => {
 });
 
 function moveAddonCarousel(direction) {
-  setAddonCarouselIndex((currentIndex) => (
-    currentIndex + direction + addonCarouselItems.length
-  ) % addonCarouselItems.length);
+  setAddonCarouselIndex(
+    (currentIndex) =>
+      (currentIndex + direction + addonCarouselItems.length) % addonCarouselItems.length,
+  );
 }
 </script>
 
@@ -101,74 +194,147 @@ function moveAddonCarousel(direction) {
   <main class="ui-page page ui-home">
     <section class="ui-home-hero" aria-labelledby="home-title">
       <div class="ui-home-hero__copy">
-        <p class="ui-page__eyebrow"> A modular JavaScript application framework</p>
+        <p class="ui-page__eyebrow">A modular JavaScript application framework</p>
 
-
-              
-        <div :class="carouselIndex() % 2 === 0 ? 'ui-home-carousel ui-home-carousel--fade-a' : 'ui-home-carousel ui-home-carousel--fade-b'">
+        <div
+          :class="
+            carouselIndex() % 2 === 0
+              ? 'ui-home-carousel ui-home-carousel--fade-a'
+              : 'ui-home-carousel ui-home-carousel--fade-b'
+          "
+        >
           <h1 id="home-title" class="ui-home-hero__title" aria-live="polite" aria-atomic="true">
-            <span class="ui-home-carousel__line"><b>{{ displayCarouselText(carouselItems[carouselIndex()][0]) }}</b></span>
-            <span class="ui-home-carousel__line"><b>{{ displayCarouselText(carouselItems[carouselIndex()][1]) }}</b></span>
-            
+            <span class="ui-home-carousel__line"
+              ><b>{{ displayCarouselText(carouselItems[carouselIndex()][0]) }}</b></span
+            >
+            <span class="ui-home-carousel__line"
+              ><b>{{ displayCarouselText(carouselItems[carouselIndex()][1]) }}</b></span
+            >
           </h1>
         </div>
 
-          <div class="ui-home-hero-image"></div>
-        <p class="ui-page__description ui-home-hero__description">Meet Nodula: A lightweight JavaScript framework built around modular architecture, simplicity and speed. Build your application from small, focused pieces that work together naturally.</p>
-        
-     
+        <div class="ui-home-hero-image"></div>
+        <p class="ui-page__description ui-home-hero__description">
+          Meet Nodula: A lightweight JavaScript framework built around modular architecture,
+          simplicity and speed. Build your application from small, focused pieces that work together
+          naturally.
+        </p>
 
-        
         <div class="ui-cluster ui-cluster--wrap">
-          <a class="ui-button ui-button--primary" href="https://sprigjs-docs.richardleurs.nl/" target="_blank" rel="noreferrer">Explore the guide <span aria-hidden="true">↗</span></a>
-          <a class="ui-button ui-button--outline" href="https://github.com/RichardLeurs/nodula" target="_blank" rel="noreferrer">View on GitHub <span aria-hidden="true">↗</span></a>
+          <a
+            class="ui-button ui-button--primary"
+            href="https://sprigjs-docs.richardleurs.nl/"
+            target="_blank"
+            rel="noreferrer"
+            >Explore the guide <span aria-hidden="true">↗</span></a
+          >
+          <a
+            class="ui-button ui-button--outline"
+            href="https://github.com/RichardLeurs/nodula"
+            target="_blank"
+            rel="noreferrer"
+            >View on GitHub <span aria-hidden="true">↗</span></a
+          >
           <!-- <span class="ui-home-hero__note">HTML-first. No JSX required.</span> -->
         </div>
       </div>
 
-
       <div class="ui-home-hero__aside">
-        <section class="ui-panel ui-panel--flat ui-home-specs" aria-labelledby="framework-specs-heading">
-        <header class="ui-panel__header ui-home-specs__header">
-          <div class="ui-cluster"><p class="ui-page__eyebrow">Built to stay lightweight</p></div>
-          <h2 id="framework-specs-heading" class="ui-panel__title">Framework specs</h2>
-        </header>
-        <dl class="ui-home-specs__list">
-          <div class="ui-home-specs__item"><dt>Modular</dt><dd>Only add the framework add-ons you need</dd></div>
-         <div class="ui-home-specs__item"><dt>Routing</dt><dd>Lazy loaded file-based and code-based routes </dd></div>
-          <div class="ui-home-specs__item"><dt>Rendering</dt><dd>Fine-grained reactive DOM</dd></div>
-          <!--  <div class="ui-home-specs__item"><dt>State</dt><dd>Signals and reactive stores</dd></div>
+        <section
+          class="ui-panel ui-panel--flat ui-home-specs"
+          aria-labelledby="framework-specs-heading"
+        >
+          <header class="ui-panel__header ui-home-specs__header">
+            <div class="ui-cluster"><p class="ui-page__eyebrow">Built to stay lightweight</p></div>
+            <h2 id="framework-specs-heading" class="ui-panel__title">Framework specs</h2>
+          </header>
+          <dl class="ui-home-specs__list">
+            <div class="ui-home-specs__item">
+              <dt>Modular</dt>
+              <dd>Only add the framework add-ons you need</dd>
+            </div>
+            <div class="ui-home-specs__item">
+              <dt>Routing</dt>
+              <dd>Lazy loaded file-based and code-based routes</dd>
+            </div>
+            <div class="ui-home-specs__item">
+              <dt>Rendering</dt>
+              <dd>Fine-grained reactive DOM</dd>
+            </div>
+            <!--  <div class="ui-home-specs__item"><dt>State</dt><dd>Signals and reactive stores</dd></div>
           <div class="ui-home-specs__item"><dt>Components</dt><dd>HTML-first <code>.page</code>, no JSX</dd></div>
           <div class="ui-home-specs__item"><dt>Web Components</dt><dd>Use framework independent, native Web Components</dd></div>-->
-          <div class="ui-home-specs__item"><dt>PWA</dt><dd>Build installable, offline-capable applications</dd></div> 
-          <div class="ui-home-specs__item"><dt>Runtime deps</dt><dd>Zero browser-runtime dependencies</dd></div>
-          <div class="ui-home-specs__item"><dt>Framework core size</dt><dd>~ 5 kB gzipped</dd></div>
-        </dl>
-      </section>
+            <div class="ui-home-specs__item">
+              <dt>PWA</dt>
+              <dd>Build installable, offline-capable applications</dd>
+            </div>
+            <div class="ui-home-specs__item">
+              <dt>Runtime deps</dt>
+              <dd>Zero browser-runtime dependencies</dd>
+            </div>
+            <div class="ui-home-specs__item">
+              <dt>Framework core size</dt>
+              <dd>~ 5 kB gzipped</dd>
+            </div>
+          </dl>
+        </section>
 
-    <section class="ui-home-addon-carousel" aria-label="Framework add-ons" aria-roledescription="carousel">
-
-        <header class="ui-home-addon-carousel__header">
-          <p class="ui-page__eyebrow">Optional add-ons</p>
-          <span class="ui-home-addon-carousel__count">{{ addonCarouselIndex() + 1 }} / {{ addonCarouselItems.length }}</span>
-        </header>
-        <article class="ui-home-addon-carousel__slide" role="group" aria-roledescription="slide" aria-live="polite">
-          <img class="ui-home-addon-carousel__image" :src="addonCarouselItems[addonCarouselIndex()].image" alt="" width="128" height="147">
-          <div class="ui-home-addon-carousel__copy">
-            <h2 class="ui-panel__title">{{ addonCarouselItems[addonCarouselIndex()].title }}</h2>
-            <p class="ui-card__description">{{ addonCarouselItems[addonCarouselIndex()].description }}</p>
-          </div>
-        </article>
-        <footer class="ui-home-addon-carousel__footer">
-          <a class="ui-link" href="/addons">Explore all add-ons <span aria-hidden="true">→</span></a>
-          <div class="ui-home-addon-carousel__controls">
-            <button class="ui-button ui-button--outline" type="button" aria-label="Previous add-on" @click="moveAddonCarousel(-1)">←</button>
-            <button class="ui-button ui-button--outline" type="button" aria-label="Next add-on" @click="moveAddonCarousel(1)">→</button>
-          </div>
-        </footer>
-      </section>
+        <section
+          class="ui-home-addon-carousel"
+          aria-label="Framework add-ons"
+          aria-roledescription="carousel"
+        >
+          <header class="ui-home-addon-carousel__header">
+            <p class="ui-page__eyebrow">Optional add-ons</p>
+            <span class="ui-home-addon-carousel__count"
+              >{{ addonCarouselIndex() + 1 }} / {{ addonCarouselItems.length }}</span
+            >
+          </header>
+          <article
+            class="ui-home-addon-carousel__slide"
+            role="group"
+            aria-roledescription="slide"
+            aria-live="polite"
+          >
+            <img
+              class="ui-home-addon-carousel__image"
+              :src="addonCarouselItems[addonCarouselIndex()].image"
+              alt=""
+              width="128"
+              height="147"
+            />
+            <div class="ui-home-addon-carousel__copy">
+              <h2 class="ui-panel__title">{{ addonCarouselItems[addonCarouselIndex()].title }}</h2>
+              <p class="ui-card__description">
+                {{ addonCarouselItems[addonCarouselIndex()].description }}
+              </p>
+            </div>
+          </article>
+          <footer class="ui-home-addon-carousel__footer">
+            <a class="ui-link" href="/addons"
+              >Explore all add-ons <span aria-hidden="true">→</span></a
+            >
+            <div class="ui-home-addon-carousel__controls">
+              <button
+                class="ui-button ui-button--outline"
+                type="button"
+                aria-label="Previous add-on"
+                @click="moveAddonCarousel(-1)"
+              >
+                ←
+              </button>
+              <button
+                class="ui-button ui-button--outline"
+                type="button"
+                aria-label="Next add-on"
+                @click="moveAddonCarousel(1)"
+              >
+                →
+              </button>
+            </div>
+          </footer>
+        </section>
       </div>
-
     </section>
 
     <!-- <section class="ui-section ui-home-examples" aria-labelledby="home-examples-title">

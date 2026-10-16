@@ -1,12 +1,12 @@
 <script>
-import { effect, signal } from 'nodula-framework';
-import { createForm } from 'nodula-framework/form';
-import { animate } from 'nodula-framework/animation';
-import { showDialog } from 'nodula-framework/dialog';
-import { showNotification } from 'nodula-framework/notification';
-import formImage from '../assets/images/form.webp';
-import styles from '../assets/css/form.module.css';
-const [submissionMessage, setSubmissionMessage] = signal('');
+import { effect, signal } from "nodula-framework";
+import { createForm } from "nodula-framework/form";
+import { animate } from "nodula-framework/animation";
+import { showDialog } from "nodula-framework/dialog";
+import { showNotification } from "nodula-framework/notification";
+import formImage from "../assets/images/form.webp";
+import styles from "../assets/css/form.module.css";
+const [submissionMessage, setSubmissionMessage] = signal("");
 let successMessageElement = null;
 
 function setSuccessMessageElement(element) {
@@ -15,40 +15,49 @@ function setSuccessMessageElement(element) {
 
 effect(() => {
   if (submissionMessage() && successMessageElement) {
-    animate(successMessageElement, [
-      { opacity: 0, transform: 'translateY(6px)' },
-      { opacity: 1, transform: 'translateY(0)' },
-    ], { duration: 220, easing: 'ease-out', fill: 'both' });
+    animate(
+      successMessageElement,
+      [
+        { opacity: 0, transform: "translateY(6px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ],
+      { duration: 220, easing: "ease-out", fill: "both" },
+    );
   }
 });
 
-const form = createForm({ name: '', email: '', updates: false }, {
-  validate: (values) => ({
-    ...(!values.name.trim() ? { name: 'Enter your name.' } : {}),
-    ...(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) ? { email: 'Enter a valid email address.' } : {}),
-  }),
-  onSubmit: async (values) => {
-    await Promise.resolve();
-    const name = values.name.trim();
-    setSubmissionMessage(`Thanks, ${name}! Your form was submitted.`);
-    showNotification({
-      type: 'success',
-      title: 'Form submitted',
-      message: `Thanks, ${name}! Your form was submitted successfully.`,
-    });
+const form = createForm(
+  { name: "", email: "", updates: false },
+  {
+    validate: (values) => ({
+      ...(!values.name.trim() ? { name: "Enter your name." } : {}),
+      ...(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)
+        ? { email: "Enter a valid email address." }
+        : {}),
+    }),
+    onSubmit: async (values) => {
+      await Promise.resolve();
+      const name = values.name.trim();
+      setSubmissionMessage(`Thanks, ${name}! Your form was submitted.`);
+      showNotification({
+        type: "success",
+        title: "Form submitted",
+        message: `Thanks, ${name}! Your form was submitted successfully.`,
+      });
+    },
   },
-});
+);
 
 async function resetForm() {
-  const confirmed = await showDialog('Reset this form? Your changes will be cleared.', {
-    title: 'Reset form?',
-    btn_cancel: 'Keep editing',
-    btn_ok: 'Reset form',
+  const confirmed = await showDialog("Reset this form? Your changes will be cleared.", {
+    title: "Reset form?",
+    btn_cancel: "Keep editing",
+    btn_ok: "Reset form",
   });
   if (!confirmed) return;
 
   form.reset();
-  setSubmissionMessage('');
+  setSubmissionMessage("");
 }
 </script>
 
@@ -57,13 +66,22 @@ async function resetForm() {
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Optional form add-on</p>
 
-      <div class="ui-page__title-row">  
+      <div class="ui-page__title-row">
         <h1 class="ui-page__title">A form, with the state included.</h1>
-        <img class="ui-page__header-image" :src="formImage" alt="" width="128" height="147" aria-hidden="true">
+        <img
+          class="ui-page__header-image"
+          :src="formImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
       </div>
 
-   
-      <p class="ui-page__description">This example uses Nodula's <code>createForm</code> for values, validation, touched fields, submission state, and reset—without adding a form library.</p>
+      <p class="ui-page__description">
+        This example uses Nodula's <code>createForm</code> for values, validation, touched fields,
+        submission state, and reset—without adding a form library.
+      </p>
     </header>
 
     <section class="ui-section" aria-labelledby="form-example-title">
@@ -71,34 +89,99 @@ async function resetForm() {
         <header class="ui-panel__header">
           <div>
             <h2 id="form-example-title" class="ui-panel__title">Contact details</h2>
-            <p class="ui-panel__description">Fields marked required must be completed before submission.</p>
+            <p class="ui-panel__description">
+              Fields marked required must be completed before submission.
+            </p>
           </div>
         </header>
         <div class="ui-form__body">
           <div class="ui-field" :class="form.errors.name ? 'ui-field--invalid' : ''">
-            <label class="ui-field__label" for="form-name">Name <span class="ui-field__required" aria-label="required">*</span></label>
-            <input class="ui-input" id="form-name" name="name" type="text" autocomplete="name" placeholder="Jane Smith" :value="form.values.name" @input="form.handleChange('name')($event)" @blur="form.handleBlur('name')()" :aria-invalid="form.errors.name ? 'true' : 'false'" aria-describedby="form-name-error" />
-            <p id="form-name-error" class="ui-field__error" role="alert" @show="Boolean(form.errors.name)">{{ form.errors.name ?? '' }}</p>
+            <label class="ui-field__label" for="form-name"
+              >Name <span class="ui-field__required" aria-label="required">*</span></label
+            >
+            <input
+              class="ui-input"
+              id="form-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              placeholder="Jane Smith"
+              :value="form.values.name"
+              @input="form.handleChange('name')($event)"
+              @blur="form.handleBlur('name')()"
+              :aria-invalid="form.errors.name ? 'true' : 'false'"
+              aria-describedby="form-name-error"
+            />
+            <p
+              id="form-name-error"
+              class="ui-field__error"
+              role="alert"
+              @show="Boolean(form.errors.name)"
+            >
+              {{ form.errors.name ?? "" }}
+            </p>
           </div>
 
           <div class="ui-field" :class="form.errors.email ? 'ui-field--invalid' : ''">
-            <label class="ui-field__label" for="form-email">Email <span class="ui-field__required" aria-label="required">*</span></label>
-            <input class="ui-input" id="form-email" name="email" type="email" autocomplete="email" placeholder="jane@example.com" :value="form.values.email" @input="form.handleChange('email')($event)" @blur="form.handleBlur('email')()" :aria-invalid="form.errors.email ? 'true' : 'false'" aria-describedby="form-email-error" />
-            <p id="form-email-error" class="ui-field__error" role="alert" @show="Boolean(form.errors.email)">{{ form.errors.email ?? '' }}</p>
+            <label class="ui-field__label" for="form-email"
+              >Email <span class="ui-field__required" aria-label="required">*</span></label
+            >
+            <input
+              class="ui-input"
+              id="form-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="jane@example.com"
+              :value="form.values.email"
+              @input="form.handleChange('email')($event)"
+              @blur="form.handleBlur('email')()"
+              :aria-invalid="form.errors.email ? 'true' : 'false'"
+              aria-describedby="form-email-error"
+            />
+            <p
+              id="form-email-error"
+              class="ui-field__error"
+              role="alert"
+              @show="Boolean(form.errors.email)"
+            >
+              {{ form.errors.email ?? "" }}
+            </p>
           </div>
 
           <label class="ui-checkbox">
-            <input class="ui-checkbox__control" name="updates" type="checkbox" :checked="form.values.updates" @change="form.handleChange('updates')($event)" />
+            <input
+              class="ui-checkbox__control"
+              name="updates"
+              type="checkbox"
+              :checked="form.values.updates"
+              @change="form.handleChange('updates')($event)"
+            />
             <span>Send me occasional Nodula updates</span>
           </label>
 
           <div class="ui-cluster ui-cluster--wrap">
-            <button class="ui-button ui-button--primary" type="submit" :disabled="form.submitting()">{{ form.submitting() ? 'Submitting…' : 'Submit example' }}</button>
-            <button class="ui-button ui-button--secondary" type="button" @click="resetForm()">Reset</button>
-            <span class="ui-form__dirty" role="status">{{ form.dirty() ? 'Unsaved changes' : 'No changes yet' }}</span>
+            <button
+              class="ui-button ui-button--primary"
+              type="submit"
+              :disabled="form.submitting()"
+            >
+              {{ form.submitting() ? "Submitting…" : "Submit example" }}
+            </button>
+            <button class="ui-button ui-button--secondary" type="button" @click="resetForm()">
+              Reset
+            </button>
+            <span class="ui-form__dirty" role="status">{{
+              form.dirty() ? "Unsaved changes" : "No changes yet"
+            }}</span>
           </div>
 
-          <div class="ui-alert ui-alert--success ui-form__success" role="status" @ref="setSuccessMessageElement" @show="Boolean(submissionMessage())">
+          <div
+            class="ui-alert ui-alert--success ui-form__success"
+            role="status"
+            @ref="setSuccessMessageElement"
+            @show="Boolean(submissionMessage())"
+          >
             <span class="ui-alert__icon" aria-hidden="true">✓</span>
             <p class="ui-alert__text">{{ submissionMessage() }}</p>
           </div>
@@ -108,7 +191,9 @@ async function resetForm() {
 
     <section class="ui-section" aria-labelledby="form-code-title">
       <h2 id="form-code-title" :class="`${styles.setupTitle} ui-section__title`">Form setup</h2>
-      <p class="ui-section__description">Create a form with initial values, validation, and an async submit handler.</p>
+      <p class="ui-section__description">
+        Create a form with initial values, validation, and an async submit handler.
+      </p>
       <pre class="ui-code-block"><code data-highlight>const form = createForm(initialValues, {
   validate: (values) =&gt; errors,
   onSubmit: async (values) =&gt; save(values),

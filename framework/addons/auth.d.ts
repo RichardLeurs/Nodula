@@ -1,4 +1,4 @@
-export type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated';
+export type AuthStatus = "idle" | "loading" | "authenticated" | "unauthenticated";
 
 /** Identity returned by the app-provided authentication adapter. Session values are opaque to Nodula. */
 export interface AuthIdentity<User, Session = unknown> {

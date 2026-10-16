@@ -1,4 +1,4 @@
-import type { Signal } from 'nodula-framework';
+import type { Signal } from "nodula-framework";
 
 export interface CookieOptions {
   /** Cookie path. Use `/` to make it available throughout the site. */
@@ -10,7 +10,7 @@ export interface CookieOptions {
   /** Lifetime in seconds; zero or a negative value expires the cookie. */
   maxAge?: number;
   /** Cross-site cookie policy. `None` generally requires `secure: true` in browsers. */
-  sameSite?: 'Strict' | 'Lax' | 'None';
+  sameSite?: "Strict" | "Lax" | "None";
   /** Restrict the cookie to secure HTTPS connections. */
   secure?: boolean;
 }
@@ -18,9 +18,16 @@ export interface CookieOptions {
 /** Read and URI-decode a cookie, returning undefined when it is not present. */
 export function getCookie(name: string): string | undefined;
 /** Set a URI-encoded cookie. HttpOnly cookies must be created by a server. */
-export function setCookie(name: string, value: string | number | boolean, options?: CookieOptions): void;
+export function setCookie(
+  name: string,
+  value: string | number | boolean,
+  options?: CookieOptions,
+): void;
 /** Expire a cookie using the supplied path/domain scope. */
-export function deleteCookie(name: string, options?: Omit<CookieOptions, 'expires' | 'maxAge'>): void;
+export function deleteCookie(
+  name: string,
+  options?: Omit<CookieOptions, "expires" | "maxAge">,
+): void;
 
 export interface StorageSignalOptions {
   /** Storage implementation to use. Defaults to window.localStorage when available. */

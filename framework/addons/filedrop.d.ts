@@ -1,5 +1,5 @@
-export type FileDropSource = 'drop' | 'picker';
-export type FileDropZoneState = 'idle' | 'active' | 'accepted' | 'rejected';
+export type FileDropSource = "drop" | "picker";
+export type FileDropZoneState = "idle" | "active" | "accepted" | "rejected";
 
 export interface FileDropStateDetails {
   source?: FileDropSource;
@@ -21,7 +21,7 @@ export interface FileDropZoneOptions {
   /** Receives a snapshot of selected files and whether they came from picker or drop. */
   onFiles: (files: File[], source: FileDropSource) => void;
   /** Override the zone's active, accepted, and rejected state classes. */
-  classNames?: Partial<Record<Exclude<FileDropZoneState, 'idle'>, string>>;
+  classNames?: Partial<Record<Exclude<FileDropZoneState, "idle">, string>>;
   /** Called when zone state changes; rejected files are not passed to onFiles. */
   onStateChange?: (state: FileDropZoneState, details: FileDropStateDetails) => void;
 }

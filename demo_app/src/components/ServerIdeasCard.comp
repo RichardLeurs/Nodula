@@ -1,13 +1,13 @@
 <script>
-import { onCleanup, signal } from 'nodula-framework';
-import { createDataClient, DataError } from 'nodula-framework/data';
+import { onCleanup, signal } from "nodula-framework";
+import { createDataClient, DataError } from "nodula-framework/data";
 
-const api = createDataClient({ baseURL: props['api-base'] ?? '/api/sqlite' });
+const api = createDataClient({ baseURL: props["api-base"] ?? "/api/sqlite" });
 const [ideas, setIdeas] = signal([]);
-const [draft, setDraft] = signal('');
+const [draft, setDraft] = signal("");
 const [loading, setLoading] = signal(true);
 const [busy, setBusy] = signal(false);
-const [status, setStatus] = signal(`Loading ideas from ${props['store-name'] ?? 'SQLite'}…`);
+const [status, setStatus] = signal(`Loading ideas from ${props["store-name"] ?? "SQLite"}…`);
 let activeRequest;
 
 function describeError(error) {
@@ -15,7 +15,7 @@ function describeError(error) {
     const detail = error.data?.details ?? error.data?.error ?? error.message;
     return `API returned HTTP ${error.status}: ${detail}`;
   }
-  return error?.message || 'Could not connect to the PHP API.';
+  return error?.message || "Could not connect to the PHP API.";
 }
 
 async function loadIdeas() {
@@ -24,13 +24,13 @@ async function loadIdeas() {
   activeRequest = controller;
   setLoading(true);
   try {
-    const result = await api.get('/ideas', { signal: controller.signal });
-    if (!Array.isArray(result)) throw new Error('PHP API returned an invalid ideas list.');
+    const result = await api.get("/ideas", { signal: controller.signal });
+    if (!Array.isArray(result)) throw new Error("PHP API returned an invalid ideas list.");
     setIdeas(result);
     props.onData?.(JSON.stringify(result));
-    setStatus(`Connected to ${props['store-name'] ?? 'server-side SQLite'}.`);
+    setStatus(`Connected to ${props["store-name"] ?? "server-side SQLite"}.`);
   } catch (error) {
-    if (error?.name !== 'AbortError') setStatus(describeError(error));
+    if (error?.name !== "AbortError") setStatus(describeError(error));
   } finally {
     if (activeRequest === controller) {
       activeRequest = undefined;
@@ -45,8 +45,8 @@ async function addIdea(event) {
   if (!text || busy()) return;
   setBusy(true);
   try {
-    await api.post('/ideas', { text });
-    setDraft('');
+    await api.post("/ideas", { text });
+    setDraft("");
     await loadIdeas();
   } catch (error) {
     setStatus(describeError(error));
@@ -88,22 +88,60 @@ onCleanup(() => activeRequest?.abort());
 <template>
   <article class="ui-panel ui-panel--raised ui-ideas-card ui-server-ideas-card">
     <div class="ui-ideas-card__heading">
-      <h3 class="ui-card__title">{{ props['store-name'] ?? 'Shared server ideas' }}</h3>
-      <span class="ui-badge ui-badge--success">{{ ideas().filter((idea) => idea.done).length }} / {{ ideas().length }} done</span>
+      <h3 class="ui-card__title">{{ props["store-name"] ?? "Shared server ideas" }}</h3>
+      <span class="ui-badge ui-badge--success"
+        >{{ ideas().filter((idea) => idea.done).length }} / {{ ideas().length }} done</span
+      >
     </div>
     <p class="ui-ideas-card__status" role="status" aria-live="polite">{{ status() }}</p>
     <ul class="ui-ideas-list">
-      <li class="ui-ideas-list__item" @for="idea of ideas()" :key="idea.id" :class="idea().done ? 'ui-ideas-list__item ui-ideas-list__item--done' : 'ui-ideas-list__item'">
+      <li
+        class="ui-ideas-list__item"
+        @for="idea of ideas()"
+        :key="idea.id"
+        :class="
+          idea().done ? 'ui-ideas-list__item ui-ideas-list__item--done' : 'ui-ideas-list__item'
+        "
+      >
         <label class="ui-checkbox ui-ideas-list__label">
-          <input class="ui-checkbox__control" type="checkbox" :checked="idea().done" :disabled="busy()" @change="toggleIdea(idea().id, $event.currentTarget.checked)" />
+          <input
+            class="ui-checkbox__control"
+            type="checkbox"
+            :checked="idea().done"
+            :disabled="busy()"
+            @change="toggleIdea(idea().id, $event.currentTarget.checked)"
+          />
           <span>{{ idea().text }}</span>
         </label>
-        <button class="ui-ideas-list__remove" type="button" :aria-label="'Remove ' + idea().text" :disabled="busy()" @click="removeIdea(idea().id)">×</button>
+        <button
+          class="ui-ideas-list__remove"
+          type="button"
+          :aria-label="'Remove ' + idea().text"
+          :disabled="busy()"
+          @click="removeIdea(idea().id)"
+        >
+          ×
+        </button>
       </li>
     </ul>
     <form class="ui-cluster ui-ideas-card__add" @submit="addIdea($event)">
-      <input class="ui-input" type="text" maxlength="200" placeholder="Add a shared idea…" @bind:value="draft, setDraft" aria-label="New server idea" :disabled="loading() || busy()" />
-      <button class="ui-button ui-button--primary ui-ideas-card__add-button" type="submit" aria-label="Add server idea" :disabled="loading() || busy()">+</button>
+      <input
+        class="ui-input"
+        type="text"
+        maxlength="200"
+        placeholder="Add a shared idea…"
+        @bind:value="(draft, setDraft)"
+        aria-label="New server idea"
+        :disabled="loading() || busy()"
+      />
+      <button
+        class="ui-button ui-button--primary ui-ideas-card__add-button"
+        type="submit"
+        aria-label="Add server idea"
+        :disabled="loading() || busy()"
+      >
+        +
+      </button>
     </form>
   </article>
 </template>

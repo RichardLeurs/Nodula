@@ -1,15 +1,16 @@
-import { createRoot, effect, onCleanup, signal, untrack } from './reactivity.js';
+import { createRoot, effect, onCleanup, signal, untrack } from "./reactivity.js";
 
-const EACH = Symbol('nodula.each');
-const WHEN = Symbol('nodula.when');
-const COMPONENT = Symbol('nodula.component');
-const OUTLET = Symbol('nodula.outlet');
+const EACH = Symbol("nodula.each");
+const WHEN = Symbol("nodula.when");
+const COMPONENT = Symbol("nodula.component");
+const OUTLET = Symbol("nodula.outlet");
 const BINDINGS = new WeakMap();
 const lifecycleTransitions = new Set();
 
 /** Register an optional lifecycle transition hook without adding it to the core runtime. */
 export function registerLifecycleTransition(transition) {
-  if (typeof transition !== 'function') throw new TypeError('Lifecycle transition must be a function.');
+  if (typeof transition !== "function")
+    throw new TypeError("Lifecycle transition must be a function.");
   lifecycleTransitions.add(transition);
   return () => lifecycleTransitions.delete(transition);
 }
@@ -17,10 +18,15 @@ export function registerLifecycleTransition(transition) {
 function runLifecycleTransition(phase, nodes, details = {}) {
   const roots = nodes.filter((node) => node?.nodeType === 1);
   if (!roots.length || !lifecycleTransitions.size) return Promise.resolve();
-  return Promise.all([...lifecycleTransitions].map((transition) => {
-    try { return transition(phase, roots, details); }
-    catch { return undefined; }
-  })).catch(() => undefined);
+  return Promise.all(
+    [...lifecycleTransitions].map((transition) => {
+      try {
+        return transition(phase, roots, details);
+      } catch {
+        return undefined;
+      }
+    }),
+  ).catch(() => undefined);
 }
 
 function removeAfterLeave(nodes, details = {}, canRemove = () => true) {
@@ -31,7 +37,7 @@ function removeAfterLeave(nodes, details = {}, canRemove = () => true) {
     remove();
     return Promise.resolve();
   }
-  return runLifecycleTransition('leave', nodes, details).finally(() => {
+  return runLifecycleTransition("leave", nodes, details).finally(() => {
     remove();
   });
 }
@@ -59,11 +65,11 @@ function createReactiveProps(initialProps) {
 
   return new Proxy(values, {
     get(target, key, receiver) {
-      if (typeof key === 'symbol') return Reflect.get(target, key, receiver);
+      if (typeof key === "symbol") return Reflect.get(target, key, receiver);
       return readerFor(key)[0]().value;
     },
     set(target, key, value) {
-      if (typeof key === 'symbol') return Reflect.set(target, key, value);
+      if (typeof key === "symbol") return Reflect.set(target, key, value);
       const existed = Object.hasOwn(target, key);
       if (existed && Object.is(target[key], value)) return true;
       target[key] = value;
@@ -79,7 +85,7 @@ function createReactiveProps(initialProps) {
       return true;
     },
     has(target, key) {
-      if (typeof key !== 'symbol') readerFor(key)[0]().present;
+      if (typeof key !== "symbol") readerFor(key)[0]();
       return Reflect.has(target, key);
     },
     ownKeys(target) {
@@ -102,34 +108,52 @@ function customElementEventProp(name) {
 }
 
 /** Register a Nodula component as a native custom element. */
-export function defineCustomElement(name, render, { props = [], events = [], shadow = 'open' } = {}) {
-  if (typeof name !== 'string' || !/^[a-z][.0-9_a-z-]*-[.0-9_a-z-]*$/.test(name)) {
-    throw new TypeError('defineCustomElement expects a valid custom element name containing a hyphen.');
+export function defineCustomElement(
+  name,
+  render,
+  { props = [], events = [], shadow = "open" } = {},
+) {
+  if (typeof name !== "string" || !/^[a-z][.0-9_a-z-]*-[.0-9_a-z-]*$/.test(name)) {
+    throw new TypeError(
+      "defineCustomElement expects a valid custom element name containing a hyphen.",
+    );
   }
-  if (typeof render !== 'function') throw new TypeError('defineCustomElement expects a component render function.');
-  if (!Array.isArray(props) || props.some((prop) => typeof prop !== 'string' || !/^[a-zA-Z][\w-]*$/.test(prop))) {
-    throw new TypeError('Custom element props must be an array of valid property names.');
+  if (typeof render !== "function")
+    throw new TypeError("defineCustomElement expects a component render function.");
+  if (
+    !Array.isArray(props) ||
+    props.some((prop) => typeof prop !== "string" || !/^[a-zA-Z][\w-]*$/.test(prop))
+  ) {
+    throw new TypeError("Custom element props must be an array of valid property names.");
   }
-  if (!Array.isArray(events) || events.some((event) => typeof event !== 'string' || !/^[a-z][\w-]*$/.test(event))) {
-    throw new TypeError('Custom element events must be an array of valid event names.');
+  if (
+    !Array.isArray(events) ||
+    events.some((event) => typeof event !== "string" || !/^[a-z][\w-]*$/.test(event))
+  ) {
+    throw new TypeError("Custom element events must be an array of valid event names.");
   }
-  if (shadow !== false && shadow !== 'open' && shadow !== 'closed') {
-    throw new TypeError('Custom element shadow must be false, open, or closed.');
+  if (shadow !== false && shadow !== "open" && shadow !== "closed") {
+    throw new TypeError("Custom element shadow must be false, open, or closed.");
   }
 
   const registry = document.defaultView?.customElements ?? globalThis.customElements;
   const ElementBase = document.defaultView?.HTMLElement ?? globalThis.HTMLElement;
   const CustomEventBase = document.defaultView?.CustomEvent ?? globalThis.CustomEvent;
-  if (!registry || !ElementBase) throw new Error('Custom elements are unavailable in this environment.');
+  if (!registry || !ElementBase)
+    throw new Error("Custom elements are unavailable in this environment.");
   if (registry.get(name)) throw new Error(`Custom element is already registered: ${name}`);
 
   const propertyNames = [...new Set(props.map(customElementPropertyName))];
-  const attributeToProperty = new Map(propertyNames.map((prop) => [customElementAttributeName(prop), prop]));
+  const attributeToProperty = new Map(
+    propertyNames.map((prop) => [customElementAttributeName(prop), prop]),
+  );
   const observedAttributes = [...attributeToProperty.keys()];
   const eventNames = [...new Set(events)];
 
   class NodulaCustomElement extends ElementBase {
-    static get observedAttributes() { return observedAttributes; }
+    static get observedAttributes() {
+      return observedAttributes;
+    }
 
     constructor() {
       super();
@@ -163,15 +187,22 @@ export function defineCustomElement(name, render, { props = [], events = [], sha
 
       for (const eventName of eventNames) {
         this._nodulaProps[customElementEventProp(eventName)] = (detail) => {
-          this.dispatchEvent(new CustomEventBase(eventName, {
-            detail,
-            bubbles: true,
-            composed: true,
-          }));
+          this.dispatchEvent(
+            new CustomEventBase(eventName, {
+              detail,
+              bubbles: true,
+              composed: true,
+            }),
+          );
         };
       }
 
-      const [, dispose] = createRoot(() => append(this._nodulaMountPoint, component(render, () => this._nodulaProps)));
+      const [, dispose] = createRoot(() =>
+        append(
+          this._nodulaMountPoint,
+          component(render, () => this._nodulaProps),
+        ),
+      );
       this._nodulaDispose = dispose;
     }
 
@@ -186,13 +217,19 @@ export function defineCustomElement(name, render, { props = [], events = [], sha
       this._nodulaValues.set(prop, value);
       this._nodulaProps[prop] = value;
 
-      if (!explicit || value === undefined || value !== null && (typeof value === 'object' || typeof value === 'function')) return;
+      if (
+        !explicit ||
+        value === undefined ||
+        (value !== null && (typeof value === "object" || typeof value === "function"))
+      )
+        return;
       const attribute = customElementAttributeName(prop);
       if (value === null || value === false) {
         if (this.hasAttribute(attribute)) this.removeAttribute(attribute);
       } else {
-        const attributeValue = value === true ? '' : String(value);
-        if (this.getAttribute(attribute) !== attributeValue) this.setAttribute(attribute, attributeValue);
+        const attributeValue = value === true ? "" : String(value);
+        if (this.getAttribute(attribute) !== attributeValue)
+          this.setAttribute(attribute, attributeValue);
       }
     }
   }
@@ -201,8 +238,12 @@ export function defineCustomElement(name, render, { props = [], events = [], sha
     Object.defineProperty(NodulaCustomElement.prototype, prop, {
       configurable: true,
       enumerable: true,
-      get() { return this._nodulaValues.get(prop); },
-      set(value) { this._setNodulaProperty(prop, value, true); },
+      get() {
+        return this._nodulaValues.get(prop);
+      },
+      set(value) {
+        this._setNodulaProperty(prop, value, true);
+      },
     });
   }
 
@@ -212,8 +253,11 @@ export function defineCustomElement(name, render, { props = [], events = [], sha
 
 function reconcile(current, next) {
   if (current === next) return current;
-  if (current.nodeType !== next.nodeType ||
-      (current.nodeType === 1 && (current.tagName !== next.tagName || current.namespaceURI !== next.namespaceURI))) {
+  if (
+    current.nodeType !== next.nodeType ||
+    (current.nodeType === 1 &&
+      (current.tagName !== next.tagName || current.namespaceURI !== next.namespaceURI))
+  ) {
     current.replaceWith(next);
     return next;
   }
@@ -221,7 +265,7 @@ function reconcile(current, next) {
   if (current.nodeType === 3 || current.nodeType === 8) {
     if (current.data !== next.data) current.data = next.data;
   } else if (current.nodeType === 1) {
-    for (const attribute of [...current.attributes]) {
+    for (const attribute of Array.from(current.attributes)) {
       if (!next.hasAttribute(attribute.name)) current.removeAttribute(attribute.name);
     }
     for (const attribute of next.attributes) {
@@ -234,8 +278,11 @@ function reconcile(current, next) {
     }
     const oldChildren = [...current.childNodes];
     const newChildren = [...next.childNodes];
-    const keyed = new Map(oldChildren.filter((node) => BINDINGS.get(node)?.key !== undefined)
-      .map((node) => [BINDINGS.get(node).key, node]));
+    const keyed = new Map(
+      oldChildren
+        .filter((node) => BINDINGS.get(node)?.key !== undefined)
+        .map((node) => [BINDINGS.get(node).key, node]),
+    );
     const unkeyed = oldChildren.filter((node) => BINDINGS.get(node)?.key === undefined);
     const retained = new Set();
     let unkeyedIndex = 0;
@@ -273,7 +320,7 @@ function toNode(value) {
     append(container, value);
     return container;
   }
-  return document.createTextNode(value == null || value === false ? '' : String(value));
+  return document.createTextNode(value == null || value === false ? "" : String(value));
 }
 
 function append(parent, child) {
@@ -285,11 +332,17 @@ function append(parent, child) {
   if (child?.[COMPONENT]) {
     const props = createReactiveProps(untrack(child.readProps));
     const slots = child.slots;
-    const [node, dispose] = createRoot(() => toNode(child.render({
-      props,
-      children: slots.default ? slots.default() : undefined,
-      slots,
-    })), { detached: true });
+    const [node, dispose] = createRoot(
+      () =>
+        toNode(
+          child.render({
+            props,
+            children: slots.default ? slots.default() : undefined,
+            slots,
+          }),
+        ),
+      { detached: true },
+    );
     parent.append(node);
     effect(() => {
       const nextProps = child.readProps();
@@ -303,8 +356,8 @@ function append(parent, child) {
   }
 
   if (child?.[OUTLET]) {
-    const start = document.createComment('nodula outlet start');
-    const end = document.createComment('nodula outlet end');
+    const start = document.createComment("nodula outlet start");
+    const end = document.createComment("nodula outlet end");
     parent.append(start, end);
     const state = { start, end, current: null, disposeCurrent: null, active: true };
 
@@ -321,12 +374,12 @@ function append(parent, child) {
 
       if (current) {
         state.disposeCurrent?.();
-        void removeAfterLeave(current.nodes, { type: 'page' });
+        void removeAfterLeave(current.nodes, { type: "page" });
       }
       state.end.parentNode.insertBefore(node, state.end);
       state.current = { value, nodes };
       state.disposeCurrent = dispose;
-      if (lifecycleTransitions.size) void runLifecycleTransition('enter', nodes, { type: 'page' });
+      if (lifecycleTransitions.size) void runLifecycleTransition("enter", nodes, { type: "page" });
     });
 
     onCleanup(() => {
@@ -334,14 +387,18 @@ function append(parent, child) {
       state.disposeCurrent?.();
       for (const node of state.current?.nodes ?? []) node.remove();
     });
-    binding(start).adopt.push((node) => { state.start = node; });
-    binding(end).adopt.push((node) => { state.end = node; });
+    binding(start).adopt.push((node) => {
+      state.start = node;
+    });
+    binding(end).adopt.push((node) => {
+      state.end = node;
+    });
     return;
   }
 
   if (child?.[WHEN]) {
-    const start = document.createComment('nodula if start');
-    const end = document.createComment('nodula if end');
+    const start = document.createComment("nodula if start");
+    const end = document.createComment("nodula if end");
     parent.append(start, end);
     const state = { start, end, activeNodes: [] };
     let selected;
@@ -355,22 +412,31 @@ function append(parent, child) {
       const leavingNodes = state.activeNodes;
       state.activeNodes = [];
       if (leavingNodes.length) {
-        void removeAfterLeave(leavingNodes, { type: 'conditional' }, (node) => !state.activeNodes.includes(node));
+        void removeAfterLeave(
+          leavingNodes,
+          { type: "conditional" },
+          (node) => !state.activeNodes.includes(node),
+        );
       }
       const render = next ? child.yes : child.no;
       if (!render) {
         disposeBranch = null;
         return;
       }
-      const [branch, dispose] = untrack(() => createRoot(() => {
-        const container = state.end.parentNode;
-        return toNode(render());
-      }, { detached: true }));
+      const [branch, dispose] = untrack(() =>
+        createRoot(
+          () => {
+            return toNode(render());
+          },
+          { detached: true },
+        ),
+      );
       const enteringNodes = branch.nodeType === 11 ? [...branch.childNodes] : [branch];
       state.end.parentNode.insertBefore(branch, state.end);
       state.activeNodes = enteringNodes;
       disposeBranch = dispose;
-      if (lifecycleTransitions.size) void runLifecycleTransition('enter', enteringNodes, { type: 'conditional' });
+      if (lifecycleTransitions.size)
+        void runLifecycleTransition("enter", enteringNodes, { type: "conditional" });
     });
 
     onCleanup(() => {
@@ -383,14 +449,18 @@ function append(parent, child) {
       }
       state.activeNodes = [];
     });
-    binding(start).adopt.push((node) => { state.start = node; });
-    binding(end).adopt.push((node) => { state.end = node; });
+    binding(start).adopt.push((node) => {
+      state.start = node;
+    });
+    binding(end).adopt.push((node) => {
+      state.end = node;
+    });
     return;
   }
 
   if (child?.[EACH]) {
-    const start = document.createComment('nodula each start');
-    const end = document.createComment('nodula each end');
+    const start = document.createComment("nodula each start");
+    const end = document.createComment("nodula each end");
     parent.append(start, end);
     const state = { parent, end };
     const rows = new Map();
@@ -407,10 +477,14 @@ function append(parent, child) {
         let created = false;
         if (!row) {
           const [readItem, setItem] = signal(item);
-          const [node, dispose] = createRoot(() => toNode(child.render(readItem)), { detached: true });
+          const [node, dispose] = createRoot(() => toNode(child.render(readItem)), {
+            detached: true,
+          });
           row = { node, dispose, setItem };
           binding(node).key = id;
-          binding(node).adopt.push((adopted) => { row.node = adopted; });
+          binding(node).adopt.push((adopted) => {
+            row.node = adopted;
+          });
           rows.set(id, row);
           created = true;
         } else {
@@ -419,7 +493,7 @@ function append(parent, child) {
         state.parent.insertBefore(row.node, state.end);
         if (created && lifecycleTransitions.size) {
           const enteringNodes = row.node.nodeType === 11 ? [...row.node.childNodes] : [row.node];
-          void runLifecycleTransition('enter', enteringNodes, { type: 'list', key: id });
+          void runLifecycleTransition("enter", enteringNodes, { type: "list", key: id });
         }
       }
 
@@ -427,7 +501,7 @@ function append(parent, child) {
         if (seen.has(id)) continue;
         row.dispose();
         const leavingNodes = row.node.nodeType === 11 ? [...row.node.childNodes] : [row.node];
-        void removeAfterLeave(leavingNodes, { type: 'list', key: id });
+        void removeAfterLeave(leavingNodes, { type: "list", key: id });
         rows.delete(id);
       }
     });
@@ -436,13 +510,17 @@ function append(parent, child) {
       for (const row of rows.values()) row.dispose();
       rows.clear();
     });
-    binding(parent).adopt.push((node) => { state.parent = node; });
-    binding(end).adopt.push((node) => { state.end = node; });
+    binding(parent).adopt.push((node) => {
+      state.parent = node;
+    });
+    binding(end).adopt.push((node) => {
+      state.end = node;
+    });
     return;
   }
 
-  if (typeof child === 'function') {
-    const anchor = document.createComment('nodula dynamic');
+  if (typeof child === "function") {
+    const anchor = document.createComment("nodula dynamic");
     parent.append(anchor);
     const state = { anchor, currentNode: null };
     let disposeCurrent = null;
@@ -450,7 +528,9 @@ function append(parent, child) {
     effect(() => {
       disposeCurrent?.();
       const [nextNode, dispose] = createRoot(() => toNode(child()), { detached: true });
-      binding(nextNode).adopt.push((node) => { state.currentNode = node; });
+      binding(nextNode).adopt.push((node) => {
+        state.currentNode = node;
+      });
       if (state.currentNode) state.currentNode = reconcile(state.currentNode, nextNode);
       else {
         state.anchor.after(nextNode);
@@ -462,7 +542,9 @@ function append(parent, child) {
     onCleanup(() => {
       disposeCurrent?.();
     });
-    binding(anchor).adopt.push((node) => { state.anchor = node; });
+    binding(anchor).adopt.push((node) => {
+      state.anchor = node;
+    });
     return;
   }
 
@@ -473,32 +555,34 @@ export function h(tag, props = {}, ...children) {
   const element = document.createElement(tag);
   const record = binding(element);
   const bindings = [];
-  const isCustomElement = tag.includes('-');
+  const isCustomElement = tag.includes("-");
 
   for (const [key, value] of Object.entries(props ?? {})) {
-    if ((key.startsWith('on:') || key.startsWith('on')) && typeof value === 'function') {
-      const eventName = key.startsWith('on:') ? key.slice(3) : key.slice(2).toLowerCase();
+    if ((key.startsWith("on:") || key.startsWith("on")) && typeof value === "function") {
+      const eventName = key.startsWith("on:") ? key.slice(3) : key.slice(2).toLowerCase();
       element.addEventListener(eventName, value);
       record.listeners.push([eventName, value]);
       onCleanup(() => record.target.removeEventListener(eventName, value));
       continue;
     }
 
-    if (key === 'ref') {
+    if (key === "ref") {
       value(element);
       record.refs.push(value);
       onCleanup(() => value(null));
       continue;
     }
 
-    if (key === 'show') {
+    if (key === "show") {
       continue;
     }
 
-    if (key === 'bind') {
+    if (key === "bind") {
       const { property, read, write } = value;
-      const eventName = property === 'checked' ? 'change' : 'input';
-      const update = () => { record.target[property] = read(); };
+      const eventName = property === "checked" ? "change" : "input";
+      const update = () => {
+        record.target[property] = read();
+      };
       bindings.push(update);
       const listener = (event) => write(event.currentTarget[property]);
       element.addEventListener(eventName, listener);
@@ -508,35 +592,47 @@ export function h(tag, props = {}, ...children) {
       continue;
     }
 
-    const isForcedProperty = key.endsWith('.prop');
+    const isForcedProperty = key.endsWith(".prop");
     const rawPropertyKey = isForcedProperty ? key.slice(0, -5) : key;
     const update = () => {
-      const nextValue = typeof value === 'function' ? value() : value;
+      const nextValue = typeof value === "function" ? value() : value;
       const target = record.target;
-      const isObjectProperty = isCustomElement && nextValue !== null && typeof nextValue === 'object';
-      const isReactiveCustomProperty = isCustomElement && typeof value === 'function';
-      const propertyKey = isForcedProperty || isObjectProperty || isReactiveCustomProperty
-        ? customElementPropertyName(rawPropertyKey)
-        : rawPropertyKey;
-      if (propertyKey === 'className') target.className = nextValue ?? '';
-      else if (propertyKey === 'style' && typeof nextValue === 'object') Object.assign(target.style, nextValue);
-      else if (isForcedProperty || isReactiveCustomProperty || isObjectProperty || propertyKey in target && ['value', 'checked', 'disabled'].includes(propertyKey)) {
+      const isObjectProperty =
+        isCustomElement && nextValue !== null && typeof nextValue === "object";
+      const isReactiveCustomProperty = isCustomElement && typeof value === "function";
+      const propertyKey =
+        isForcedProperty || isObjectProperty || isReactiveCustomProperty
+          ? customElementPropertyName(rawPropertyKey)
+          : rawPropertyKey;
+      if (propertyKey === "className") target.className = nextValue ?? "";
+      else if (propertyKey === "style" && typeof nextValue === "object")
+        Object.assign(target.style, nextValue);
+      else if (
+        isForcedProperty ||
+        isReactiveCustomProperty ||
+        isObjectProperty ||
+        (propertyKey in target && ["value", "checked", "disabled"].includes(propertyKey))
+      ) {
         record.properties.add(propertyKey);
-        target[propertyKey] = nextValue ?? (propertyKey === 'value' ? '' : false);
+        target[propertyKey] = nextValue ?? (propertyKey === "value" ? "" : false);
       } else if (nextValue == null || nextValue === false) target.removeAttribute(propertyKey);
-      else target.setAttribute(propertyKey, nextValue === true ? '' : String(nextValue));
+      else target.setAttribute(propertyKey, nextValue === true ? "" : String(nextValue));
     };
 
-    if (typeof value === 'function') effect(update);
+    if (typeof value === "function") effect(update);
     else update();
   }
 
   children.forEach((child) => append(element, child));
-  if (Object.hasOwn(props ?? {}, 'show')) {
+  if (Object.hasOwn(props ?? {}, "show")) {
     const value = props.show;
     const originalDisplay = element.style.display;
-    const update = () => { record.target.style.display = (typeof value === 'function' ? value() : value) ? originalDisplay : 'none'; };
-    if (typeof value === 'function') effect(update);
+    const update = () => {
+      record.target.style.display = (typeof value === "function" ? value() : value)
+        ? originalDisplay
+        : "none";
+    };
+    if (typeof value === "function") effect(update);
     else update();
   }
   for (const update of bindings) effect(update);
@@ -550,7 +646,7 @@ export function fragment(...children) {
 }
 
 export function mount(target, component) {
-  const container = typeof target === 'string' ? document.querySelector(target) : target;
+  const container = typeof target === "string" ? document.querySelector(target) : target;
   if (!container) throw new Error(`Mount target not found: ${target}`);
 
   const [node, dispose] = createRoot(() => component());
@@ -563,7 +659,7 @@ export function mount(target, component) {
 
 // Only changed rows are created or removed; unchanged nodes keep their identity.
 export function list(items, key, render) {
-  const container = document.createElement('div');
+  const container = document.createElement("div");
   const rows = new Map();
 
   effect(() => {
@@ -623,7 +719,10 @@ export function outlet(view) {
 
 export function slot(slots, name, fallback) {
   const supplied = slots && Object.hasOwn(slots, name) ? slots[name] : undefined;
-  return when(() => true, () => supplied == null ? fallback() : typeof supplied === 'function' ? supplied() : supplied);
+  return when(
+    () => true,
+    () => (supplied == null ? fallback() : typeof supplied === "function" ? supplied() : supplied),
+  );
 }
 
 /** Describe an imported component with reactive props and supplied slots. */

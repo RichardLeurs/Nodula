@@ -1,22 +1,22 @@
 <script>
-import { onCleanup, signal } from 'nodula-framework';
-import { createDataClient, DataError } from 'nodula-framework/data';
-import dataImage from '../assets/images/data.webp';
-import DataTable from '../components/DataTable.comp';
-import IdeasCard from '../components/IdeasCard.comp';
-import ServerIdeasCard from '../components/ServerIdeasCard.comp';
+import { onCleanup, signal } from "nodula-framework";
+import { createDataClient, DataError } from "nodula-framework/data";
+import dataImage from "../assets/images/data.webp";
+import DataTable from "../components/DataTable.comp";
+import IdeasCard from "../components/IdeasCard.comp";
+import ServerIdeasCard from "../components/ServerIdeasCard.comp";
 
-const sampleUrl = 'https://jsonplaceholder.typicode.com/posts/1';
-const pocketbaseApiBase = import.meta.env.VITE_POCKETBASE_API_BASE || '/api/pocketbase';
-const sqliteApiBase = '/api/sqlite';
+const sampleUrl = "https://jsonplaceholder.typicode.com/posts/1";
+const pocketbaseApiBase = import.meta.env.VITE_POCKETBASE_API_BASE || "/api/pocketbase";
+const sqliteApiBase = "/api/sqlite";
 const dataClient = createDataClient();
 const [endpoint, setEndpoint] = signal(sampleUrl);
-const [activeDataTab, setActiveDataTab] = signal('indexeddb');
+const [activeDataTab, setActiveDataTab] = signal("indexeddb");
 const [record, setRecord] = signal(null);
 const [loading, setLoading] = signal(false);
-const [errorMessage, setErrorMessage] = signal('');
-const [sqliteJson, setSqliteJson] = signal('[]');
-const [pocketbaseJson, setPocketbaseJson] = signal('[]');
+const [errorMessage, setErrorMessage] = signal("");
+const [sqliteJson, setSqliteJson] = signal("[]");
+const [pocketbaseJson, setPocketbaseJson] = signal("[]");
 let activeRequest;
 
 async function loadJson(event) {
@@ -26,16 +26,18 @@ async function loadJson(event) {
   activeRequest = controller;
   setLoading(true);
   setRecord(null);
-  setErrorMessage('');
+  setErrorMessage("");
 
   try {
     const result = await dataClient.get(endpoint().trim(), { signal: controller.signal });
     setRecord(result);
   } catch (error) {
-    if (error?.name === 'AbortError') return;
-    setErrorMessage(error instanceof DataError
-      ? `The server returned HTTP ${error.status}: ${error.message}`
-      : error?.message || 'Could not load JSON from that address.');
+    if (error?.name === "AbortError") return;
+    setErrorMessage(
+      error instanceof DataError
+        ? `The server returned HTTP ${error.status}: ${error.message}`
+        : error?.message || "Could not load JSON from that address.",
+    );
   } finally {
     if (activeRequest === controller) {
       activeRequest = undefined;
@@ -53,26 +55,93 @@ onCleanup(() => activeRequest?.abort());
       <p class="ui-page__eyebrow">Optional data add-on</p>
       <div class="ui-page__title-row">
         <h1 class="ui-page__title">Load data from a database.</h1>
-        <img class="ui-page__header-image" :src="dataImage" alt="" width="128" height="147" aria-hidden="true">
+        <img
+          class="ui-page__header-image"
+          :src="dataImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
       </div>
-      <p class="ui-page__description">Explore browser IndexedDB storage, PHP-backed SQLite and PocketBase APIs, and remote JSON requests with <code>nodula-framework/data</code>.</p>
+      <p class="ui-page__description">
+        Explore browser IndexedDB storage, PHP-backed SQLite and PocketBase APIs, and remote JSON
+        requests with <code>nodula-framework/data</code>.
+      </p>
     </header>
 
     <section class="ui-section" aria-label="Data examples">
       <div class="ui-tabs" role="tablist" aria-label="Data examples">
-        <button class="ui-tab" type="button" role="tab" id="data-tab-indexeddb" aria-controls="data-panel-indexeddb" :aria-selected="activeDataTab() === 'indexeddb' ? 'true' : 'false'" :tabindex="activeDataTab() === 'indexeddb' ? 0 : -1" @click="setActiveDataTab('indexeddb')">IndexedDB</button>
-        <button class="ui-tab" type="button" role="tab" id="data-tab-sqlite" aria-controls="data-panel-sqlite" :aria-selected="activeDataTab() === 'sqlite' ? 'true' : 'false'" :tabindex="activeDataTab() === 'sqlite' ? 0 : -1" @click="setActiveDataTab('sqlite')">SQLite</button>
-        <button class="ui-tab" type="button" role="tab" id="data-tab-pocketbase" aria-controls="data-panel-pocketbase" :aria-selected="activeDataTab() === 'pocketbase' ? 'true' : 'false'" :tabindex="activeDataTab() === 'pocketbase' ? 0 : -1" @click="setActiveDataTab('pocketbase')">PocketBase</button>
-        <button class="ui-tab" type="button" role="tab" id="data-tab-json" aria-controls="data-panel-json" :aria-selected="activeDataTab() === 'json' ? 'true' : 'false'" :tabindex="activeDataTab() === 'json' ? 0 : -1" @click="setActiveDataTab('json')">JSON</button>
+        <button
+          class="ui-tab"
+          type="button"
+          role="tab"
+          id="data-tab-indexeddb"
+          aria-controls="data-panel-indexeddb"
+          :aria-selected="activeDataTab() === 'indexeddb' ? 'true' : 'false'"
+          :tabindex="activeDataTab() === 'indexeddb' ? 0 : -1"
+          @click="setActiveDataTab('indexeddb')"
+        >
+          IndexedDB
+        </button>
+        <button
+          class="ui-tab"
+          type="button"
+          role="tab"
+          id="data-tab-sqlite"
+          aria-controls="data-panel-sqlite"
+          :aria-selected="activeDataTab() === 'sqlite' ? 'true' : 'false'"
+          :tabindex="activeDataTab() === 'sqlite' ? 0 : -1"
+          @click="setActiveDataTab('sqlite')"
+        >
+          SQLite
+        </button>
+        <button
+          class="ui-tab"
+          type="button"
+          role="tab"
+          id="data-tab-pocketbase"
+          aria-controls="data-panel-pocketbase"
+          :aria-selected="activeDataTab() === 'pocketbase' ? 'true' : 'false'"
+          :tabindex="activeDataTab() === 'pocketbase' ? 0 : -1"
+          @click="setActiveDataTab('pocketbase')"
+        >
+          PocketBase
+        </button>
+        <button
+          class="ui-tab"
+          type="button"
+          role="tab"
+          id="data-tab-json"
+          aria-controls="data-panel-json"
+          :aria-selected="activeDataTab() === 'json' ? 'true' : 'false'"
+          :tabindex="activeDataTab() === 'json' ? 0 : -1"
+          @click="setActiveDataTab('json')"
+        >
+          JSON
+        </button>
       </div>
 
-      <section class="ui-tab-panel" role="tabpanel" id="data-panel-indexeddb" aria-labelledby="data-tab-indexeddb" @if="activeDataTab() === 'indexeddb'">
+      <section
+        class="ui-tab-panel"
+        role="tabpanel"
+        id="data-panel-indexeddb"
+        aria-labelledby="data-tab-indexeddb"
+        @if="activeDataTab() === 'indexeddb'"
+      >
         <h2 id="data-ideas-title" class="ui-section__title">Data from IndexedDB</h2>
-        <p class="ui-section__description">Add, complete, and remove ideas. Your data is saved in this browser's IndexedDB when available.</p>
+        <p class="ui-section__description">
+          Add, complete, and remove ideas. Your data is saved in this browser's IndexedDB when
+          available.
+        </p>
         <IdeasCard></IdeasCard>
         <h3 id="indexeddb-example-title" class="ui-card__title">How to use IndexedDB</h3>
-        <p class="ui-section__description">Create a reactive signal backed by IndexedDB, then update it with the signal setter.</p>
-        <pre class="ui-code-block"><code data-highlight>import { createIndexedDB } from 'nodula-framework/localstorage';
+        <p class="ui-section__description">
+          Create a reactive signal backed by IndexedDB, then update it with the signal setter.
+        </p>
+        <pre
+          class="ui-code-block"
+        ><code data-highlight>import { createIndexedDB } from 'nodula-framework/localstorage';
 
 const savedIdeas = createIndexedDB('saved-ideas', []);
 const [ideas, setIdeas] = savedIdeas;
@@ -81,16 +150,35 @@ await savedIdeas.ready;
 setIdeas((current) => [...current, { text: 'Plant a garden', done: false }]);</code></pre>
       </section>
 
-      <section class="ui-tab-panel" role="tabpanel" id="data-panel-sqlite" aria-labelledby="data-tab-sqlite" @if="activeDataTab() === 'sqlite'">
+      <section
+        class="ui-tab-panel"
+        role="tabpanel"
+        id="data-panel-sqlite"
+        aria-labelledby="data-tab-sqlite"
+        @if="activeDataTab() === 'sqlite'"
+      >
         <h2 id="sqlite-ideas-title" class="ui-section__title">Data from PHP + SQLite</h2>
-        <p class="ui-section__description">Add, complete, and remove ideas. Your data is saved in a <code>ideas.sqlite3</code> database at <code>/api/sqlite</code> on the server. Do not enter private information.</p>
-        <ServerIdeasCard :api-base="sqliteApiBase" :store-name="'SQLite ideas'" @on:data="setSqliteJson($event)"></ServerIdeasCard>
+        <p class="ui-section__description">
+          Add, complete, and remove ideas. Your data is saved in a
+          <code>ideas.sqlite3</code> database at <code>/api/sqlite</code> on the server. Do not
+          enter private information.
+        </p>
+        <ServerIdeasCard
+          :api-base="sqliteApiBase"
+          :store-name="'SQLite ideas'"
+          @on:data="setSqliteJson($event)"
+        ></ServerIdeasCard>
         <h3 class="ui-card__title">How to use the PHP API</h3>
-        <p class="ui-section__description">PHP reads database configuration on the server, then uses PDO prepared statements with SQLite.</p>
+        <p class="ui-section__description">
+          PHP reads database configuration on the server, then uses PDO prepared statements with
+          SQLite.
+        </p>
 
         <!-- https://sqlite.org/index.html -->
 
-        <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';
+        <pre
+          class="ui-code-block"
+        ><code data-highlight>import { createDataClient } from 'nodula-framework/data';
 
 const api = createDataClient({ baseURL: '/api/sqlite' });
 const ideas = await api.get('/ideas');
@@ -101,52 +189,105 @@ await api.delete(`/ideas/${created.id}`);</code></pre>
         <DataTable :json="sqliteJson()"></DataTable>
       </section>
 
-      <section class="ui-tab-panel" role="tabpanel" id="data-panel-pocketbase" aria-labelledby="data-tab-pocketbase" @if="activeDataTab() === 'pocketbase'">
+      <section
+        class="ui-tab-panel"
+        role="tabpanel"
+        id="data-panel-pocketbase"
+        aria-labelledby="data-tab-pocketbase"
+        @if="activeDataTab() === 'pocketbase'"
+      >
         <h2 class="ui-section__title">Data from PocketBase</h2>
-        <p class="ui-section__description">Add, complete, and remove ideas. Your data is saved in a PocketBase database via /api/pocketbase on the server. Do not enter private information.</p>
-        <!-- https://pocketbase.io/ -->
-        <ServerIdeasCard :api-base="pocketbaseApiBase" :store-name="'PocketBase ideas'" @on:data="setPocketbaseJson($event)"></ServerIdeasCard>
+        <p class="ui-section__description">
+          Add, complete, and remove ideas. Your data is saved in a PocketBase database via
+          /api/pocketbase on the server. Do not enter private information.
+        </p>
+
+        <ServerIdeasCard
+          :api-base="pocketbaseApiBase"
+          :store-name="'PocketBase ideas'"
+          @on:data="setPocketbaseJson($event)"
+        ></ServerIdeasCard>
         <h3 class="ui-card__title">PocketBase rows rendered from JSON</h3>
         <DataTable :json="pocketbaseJson()"></DataTable>
-        <!-- <h3 class="ui-card__title">Server environment configuration</h3> -->
-        <!-- <pre class="ui-code-block"><code data-highlight>POCKETBASE_URL=https://your-pocketbase-host
-POCKETBASE_AUTH_COLLECTION=users
-POCKETBASE_USERNAME=demo-api@example.com
-POCKETBASE_PASSWORD=configure-outside-source-control
-POCKETBASE_IDEAS_COLLECTION=ideas</code></pre> -->
       </section>
 
-      <section class="ui-tab-panel" role="tabpanel" id="data-panel-json" aria-labelledby="data-tab-json" @if="activeDataTab() === 'json'">
+      <section
+        class="ui-tab-panel"
+        role="tabpanel"
+        id="data-panel-json"
+        aria-labelledby="data-tab-json"
+        @if="activeDataTab() === 'json'"
+      >
         <h2 id="data-request-title" class="ui-section__title">Request a JSON resource</h2>
-        <p class="ui-section__description">Request a public JSON endpoint with <code>api.get</code> and render its response.</p>
+        <p class="ui-section__description">
+          Request a public JSON endpoint with <code>api.get</code> and render its response.
+        </p>
         <form class="ui-panel ui-panel--raised ui-data-form" @submit="loadJson($event)">
           <header class="ui-panel__header">
             <div>
               <h3 class="ui-panel__title">JSON endpoint</h3>
-              <p class="ui-panel__description">Enter a public endpoint that allows cross-origin requests.</p>
+              <p class="ui-panel__description">
+                Enter a public endpoint that allows cross-origin requests.
+              </p>
             </div>
           </header>
           <div class="ui-form__body">
             <div class="ui-field">
               <label class="ui-field__label" for="data-endpoint">JSON server address</label>
-              <input id="data-endpoint" class="ui-input" type="url" autocomplete="url" placeholder="https://api.example.com/data" required :value="endpoint()" @input="setEndpoint($event.currentTarget.value)" />
+              <input
+                id="data-endpoint"
+                class="ui-input"
+                type="url"
+                autocomplete="url"
+                placeholder="https://api.example.com/data"
+                required
+                :value="endpoint()"
+                @input="setEndpoint($event.currentTarget.value)"
+              />
             </div>
           </div>
           <footer class="ui-panel__footer ui-cluster ui-cluster--end">
-            <button class="ui-button ui-button--primary" type="submit" :disabled="loading()">{{ loading() ? 'Loading…' : 'Load JSON' }}</button>
+            <button class="ui-button ui-button--primary" type="submit" :disabled="loading()">
+              {{ loading() ? "Loading…" : "Load JSON" }}
+            </button>
           </footer>
         </form>
-        <div class="ui-alert ui-alert--info ui-data-status" role="status" aria-live="polite" @show="loading()"><span class="ui-alert__icon" aria-hidden="true">i</span><p class="ui-alert__text">Loading JSON…</p></div>
-        <div class="ui-alert ui-alert--danger ui-data-error" role="alert" @show="Boolean(errorMessage())"><span class="ui-alert__icon" aria-hidden="true">!</span><p class="ui-alert__text">{{ errorMessage() }}</p></div>
-        <section class="ui-panel ui-panel--bordered ui-data-response" aria-labelledby="data-response-heading" @show="record() !== null">
+        <div
+          class="ui-alert ui-alert--info ui-data-status"
+          role="status"
+          aria-live="polite"
+          @show="loading()"
+        >
+          <span class="ui-alert__icon" aria-hidden="true">i</span>
+          <p class="ui-alert__text">Loading JSON…</p>
+        </div>
+        <div
+          class="ui-alert ui-alert--danger ui-data-error"
+          role="alert"
+          @show="Boolean(errorMessage())"
+        >
+          <span class="ui-alert__icon" aria-hidden="true">!</span>
+          <p class="ui-alert__text">{{ errorMessage() }}</p>
+        </div>
+        <section
+          class="ui-panel ui-panel--bordered ui-data-response"
+          aria-labelledby="data-response-heading"
+          @show="record() !== null"
+        >
           <header class="ui-panel__header">
             <h3 id="data-response-heading" class="ui-panel__title">Server response</h3>
             <span class="ui-badge ui-badge--primary">JSON</span>
           </header>
-          <div class="ui-panel__body ui-data-response__body"><pre class="ui-data-response__code"><code>{{ JSON.stringify(record(), null, 2) }}</code></pre></div>
+          <div class="ui-panel__body ui-data-response__body">
+            <pre
+              class="ui-data-response__code"
+            ><code>{{ JSON.stringify(record(), null, 2) }}</code></pre>
+          </div>
         </section>
         <h3 class="ui-card__title">How to use DataClient</h3>
-        <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';
+        <pre
+          class="ui-code-block"
+        ><code data-highlight>import { createDataClient } from 'nodula-framework/data';
 
 const api = createDataClient();
 const post = await api.get('https://jsonplaceholder.typicode.com/posts/1');</code></pre>

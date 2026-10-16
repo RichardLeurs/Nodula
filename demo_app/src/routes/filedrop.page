@@ -1,9 +1,9 @@
 <script>
-import { onCleanup, signal } from 'nodula-framework';
-import { createFileDropZone } from 'nodula-framework/filedrop';
-import filedropImage from '../assets/images/filedrop.webp';
+import { onCleanup, signal } from "nodula-framework";
+import { createFileDropZone } from "nodula-framework/filedrop";
+import filedropImage from "../assets/images/filedrop.webp";
 
-const [selectionMessage, setSelectionMessage] = signal('No files selected.');
+const [selectionMessage, setSelectionMessage] = signal("No files selected.");
 const previewUrls = new Set();
 let previewContainer = null;
 
@@ -15,27 +15,35 @@ onCleanup(() => {
 function setupFileDropZone(element) {
   if (!element) return;
   createFileDropZone(element, {
-    label: 'Add greenhouse photos',
-    description: 'Drop image files here, or choose files from your device.',
-    buttonLabel: 'Choose photos',
-    accept: 'image/*',
+    label: "Add greenhouse photos",
+    description: "Drop image files here, or choose files from your device.",
+    buttonLabel: "Choose photos",
+    accept: "image/*",
     multiple: true,
     onStateChange(state) {
-      if (state === 'rejected') setSelectionMessage('Some files were not images and were rejected.');
+      if (state === "rejected")
+        setSelectionMessage("Some files were not images and were rejected.");
     },
     onFiles(selectedFiles, selectedSource) {
-      const fileDetails = selectedFiles.map(({ name, type, size, lastModified }) => ({ name, type, size, lastModified }));
-      setSelectionMessage(`${fileDetails.length} image${fileDetails.length === 1 ? '' : 's'} accepted via ${selectedSource}: ${fileDetails.map((file) => file.name).join(', ')}.`);
-      const imageFiles = selectedFiles.filter((file) => file.type.startsWith('image/'));
+      const fileDetails = selectedFiles.map(({ name, type, size, lastModified }) => ({
+        name,
+        type,
+        size,
+        lastModified,
+      }));
+      setSelectionMessage(
+        `${fileDetails.length} image${fileDetails.length === 1 ? "" : "s"} accepted via ${selectedSource}: ${fileDetails.map((file) => file.name).join(", ")}.`,
+      );
+      const imageFiles = selectedFiles.filter((file) => file.type.startsWith("image/"));
       for (const file of imageFiles) {
         const url = URL.createObjectURL(file);
         previewUrls.add(url);
-        const figure = document.createElement('figure');
-        figure.className = 'ui-filedrop-preview';
-        const image = document.createElement('img');
+        const figure = document.createElement("figure");
+        figure.className = "ui-filedrop-preview";
+        const image = document.createElement("img");
         image.src = url;
         image.alt = `Preview of ${file.name}`;
-        const caption = document.createElement('figcaption');
+        const caption = document.createElement("figcaption");
         caption.textContent = file.name;
         figure.append(image, caption);
         previewContainer?.append(figure);
@@ -54,20 +62,35 @@ function setPreviewContainer(element) {
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Optional file intake add-on</p>
 
-      <div class="ui-page__title-row">  
-       <h1 class="ui-page__title">File drop with a backup file picker.</h1>
-        <img class="ui-page__header-image" :src="filedropImage" alt="" width="128" height="147" aria-hidden="true">
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">File drop with a backup file picker.</h1>
+        <img
+          class="ui-page__header-image"
+          :src="filedropImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
       </div>
 
-     
-      <p class="ui-page__description">The filedrop add-on wraps native file input and browser drop behavior with file type validation, . Labels are supplied by your app, preview, and upload remain application-owned.</p>
+      <p class="ui-page__description">
+        The filedrop add-on wraps native file input and browser drop behavior with file type
+        validation, . Labels are supplied by your app, preview, and upload remain application-owned.
+      </p>
     </header>
 
     <section class="ui-section" aria-labelledby="filedrop-demo-title">
       <h2 id="filedrop-demo-title" class="ui-section__title">Greenhouse photos</h2>
       <div class="ui-stack" @ref="setupFileDropZone"></div>
-      <p class="ui-section__description" role="status" aria-live="polite">{{ selectionMessage() }}</p>
-      <div class="ui-filedrop-previews" aria-label="Image previews" @ref="setPreviewContainer"></div>
+      <p class="ui-section__description" role="status" aria-live="polite">
+        {{ selectionMessage() }}
+      </p>
+      <div
+        class="ui-filedrop-previews"
+        aria-label="Image previews"
+        @ref="setPreviewContainer"
+      ></div>
     </section>
 
     <section class="ui-section" aria-labelledby="filedrop-code-title">

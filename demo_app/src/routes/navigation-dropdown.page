@@ -1,28 +1,36 @@
 <script>
-import { createRouter } from 'nodula-framework/router';
-import { createNavigationDropdown } from 'nodula-framework/navigation-dropdown';
-import dropdownImage from '../assets/images/dropdown.webp';
+import { createRouter } from "nodula-framework/router";
+import { createNavigationDropdown } from "nodula-framework/navigation-dropdown";
+import dropdownImage from "../assets/images/dropdown.webp";
 
-
-const demoRouter = createRouter({
-  '/navigation-dropdown': () => document.createTextNode('Navigation dropdown demo'),
-  '/guide': () => document.createTextNode('Guide destination'),
-  '/api': () => document.createTextNode('API destination'),
-}, undefined, { mode: 'history' });
+const demoRouter = createRouter(
+  {
+    "/navigation-dropdown": () => document.createTextNode("Navigation dropdown demo"),
+    "/guide": () => document.createTextNode("Guide destination"),
+    "/api": () => document.createTextNode("API destination"),
+  },
+  undefined,
+  { mode: "history" },
+);
 
 function setupDropdown(element) {
   if (!element) return;
-  createNavigationDropdown(element, demoRouter, [
-    { label: 'Add-ons', href: '/addons' },
-    { label: 'Data', href: '/data' },
-  ], {
-    label: 'Resources',
-    navLabel: 'Resource links',
-    className: 'ui-nav-dropdown',
-    buttonClassName: 'ui-nav-link ui-nav-dropdown__button',
-    panelClassName: 'ui-nav-dropdown__panel',
-    linkClassName: 'ui-nav-dropdown__link',
-  });
+  createNavigationDropdown(
+    element,
+    demoRouter,
+    [
+      { label: "Add-ons", href: "/addons" },
+      { label: "Data", href: "/data" },
+    ],
+    {
+      label: "Resources",
+      navLabel: "Resource links",
+      className: "ui-nav-dropdown",
+      buttonClassName: "ui-nav-link ui-nav-dropdown__button",
+      panelClassName: "ui-nav-dropdown__panel",
+      linkClassName: "ui-nav-dropdown__link",
+    },
+  );
 }
 </script>
 
@@ -30,13 +38,21 @@ function setupDropdown(element) {
   <main class="ui-page page">
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Optional navigation add-on</p>
-  <div class="ui-page__title-row">  
-     <h1 class="ui-page__title">A dropdown that builds on router-aware navigation.</h1>
-        <img class="ui-page__header-image" :src="dropdownImage" alt="" width="128" height="147" aria-hidden="true">
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">A dropdown that builds on router-aware navigation.</h1>
+        <img
+          class="ui-page__header-image"
+          :src="dropdownImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
       </div>
 
-      
-      <p class="ui-page__description">Open Resources with the button. The submenu links use the existing navigation add-on.</p>
+      <p class="ui-page__description">
+        Open Resources with the button. The submenu links use the existing navigation add-on.
+      </p>
     </header>
 
     <section class="ui-section" aria-labelledby="navigation-dropdown-demo-title">
@@ -58,5 +74,4 @@ function setupDropdown(element) {
 .ui-navigation-dropdown-demo {
   min-height: 10rem;
 }
-
 </style>

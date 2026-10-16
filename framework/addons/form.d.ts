@@ -24,4 +24,7 @@ export interface FormController<T extends object> {
 }
 
 /** Create a reactive form controller with optional validation and submit handling. */
-export function createForm<T extends object>(initialValues: T, options?: FormOptions<T>): FormController<T>;
+export function createForm<T extends object>(
+  initialValues: T,
+  options?: FormOptions<T>,
+): FormController<T>;

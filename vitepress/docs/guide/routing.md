@@ -23,6 +23,7 @@ import HomePage from './routes/index.page';
 const router = createRouter({
   '/': HomePage,
   '/about': { load: () => import('./routes/about.page') },
+  '/docs/*path': ({ params }) => document.createTextNode(params.path),
 });
 
 document.querySelector('#app').append(router.view());
@@ -45,18 +46,22 @@ const router = createFileRouter(
 );
 ```
 
+`/docs/*path` is a terminal catch-all pattern. Its `params.path` contains the remaining decoded path segments joined with `/`.
+
 Given this route tree:
 
 ```text
 routes/
 ├── index.page       → /
 ├── guide.page       → /guide
+├── [...path].page   → /<remaining path>
 └── ideas/
     ├── [id].page    → /ideas/:id
+    ├── [...path].page → /ideas/<remaining path>
     └── layout.page  → layout for /ideas/:id
 ```
 
-`index.page` maps to `/`. A `[id].page` segment matches exactly one path segment; its decoded value is passed in `params.id`. A `layout.page` wraps descendant pages and receives `{ params, children }`; render `children` with `<outlet :view="children" />`. Catch-all segments are not supported.
+`index.page` maps to `/`. A `[id].page` segment matches exactly one path segment; its decoded value is passed in `params.id`. A terminal `[...path].page` catches one or more remaining segments and supplies their decoded values as a `/`-joined string in `params.path`. A `layout.page` wraps descendant pages and receives `{ params, children }`; render `children` with `<outlet :view="children" />`.
 
 ## API reference
 
@@ -70,10 +75,14 @@ Creates a router from an explicit route map.
 | `fallback` | `() => Node` | Full-viewport centered `Page not found` element | Creates the node shown when no route matches. The default fallback is styled inline; provide a custom fallback to control its presentation. |
 | `options.mode` | `'hash' \| 'history'` | `'hash'` | Selects hash or History API navigation. Other values throw. |
 | `options.beforeEach` | `NavigationGuard` | None | Optional async or sync guard run before initial render and each navigation. |
+| `options.onError` | `RouteLoadErrorHandler` | Default centered load error | Called when a lazy route, file page, or file layout loader rejects or resolves to an invalid component. Return a DOM `Node` to render custom error UI. |
 
 ```ts
 type NavigationGuard = (context: { to: string; from: string }) =>
   true | false | string | void | Promise<true | false | string | void>;
+
+type RouteLoadErrorContext = { to: string; from?: string; file?: string };
+type RouteLoadErrorHandler = (error: unknown, context: RouteLoadErrorContext) => Node | void;
 
 type LazyRoute = {
   load: () => Promise<Component | { default: Component }>;
@@ -89,16 +98,17 @@ The returned router exposes:
 | `current()` | `string` | Current route path. |
 | `view()` | `Node` | Current route node, fallback, or pending/loading status node. |
 | `navigate(path)` | `(path: string) => void` | Navigates to a same-origin path; throws for empty or cross-origin paths. |
+- `loadError()` | `Accessor<{ error: unknown; context: RouteLoadErrorContext } \| null>` | Current lazy route failure, or `null` when no failure is active. |
 | `navigationPending()` | `boolean` accessor | True while a navigation guard is pending. |
 | `canRender()` | `boolean` accessor | False until the initial guarded route is allowed. |
 
 ### `createFileRouter(files, fallback?, options?)`
 
-Discovers pages and layouts from a Vite `import.meta.glob` result and returns the same `Router` interface. File keys must match the supported `routes/**/*.page` structure. Pages and layouts may be eager modules or lazy loader functions. Duplicate or ambiguous paths and unsupported filenames are rejected.
+Discovers pages and layouts from a Vite `import.meta.glob` result and returns the same `Router` interface. File keys must match the supported `routes/**/*.page` structure. Pages and layouts may be eager modules or lazy loader functions. Duplicate or ambiguous paths and unsupported filenames are rejected. An unmatched route renders the supplied fallback, or the default not-found view; it does not redirect to `/`.
 
 ## Behavior and lifecycle
 
-- Lazy route modules load on first allowed visit and successful modules are cached. Pending routes render an empty node until loaded; a rejected loader logs the load error and renders `Could not load this page.`
+- Lazy route modules load on first allowed visit and successful modules are cached. Pending routes render an empty node until loaded. A failed load is exposed through `router.loadError()` and passed to `onError`. If navigation came from a previously loaded route, the router restores that route and its URL; if the initial route fails, `onError`'s returned node is shown, or the default centered error view is used.
 - File-based routes load matched page and layout modules only after guards allow navigation.
 - A guard returning `true` or `undefined` allows navigation; `false` cancels; a path string redirects. Redirect loops and unsupported return values are reported as guard failures.
 - For the initial route, `canRender()` remains false until the guard allows a route. `navigationPending()` reflects guard execution.
@@ -110,7 +120,8 @@ Discovers pages and layouts from a Vite `import.meta.glob` result and returns th
 - `mode` must be `'hash'` or `'history'`.
 - Navigation paths must be non-empty and same-origin. The router does not navigate to other origins.
 - Lazy loaders must resolve to a component function or a module whose `default` export is a component function. Invalid results display the load-failure node.
-- File routing supports static segments and single-segment parameters only. Catch-all routes are unsupported.
+- Explicit route patterns use `/docs/:id` for a one-segment parameter and `/docs/*path` for a terminal catch-all. File routes use `/docs/[id].page` and `/docs/[...path].page` equivalents.
+- Matching precedence is exact/static, then named parameter, then catch-all; among patterns, the more specific segment earlier in the path wins. One trailing slash is normalized away, except that `/` remains root. Encoded parameter segments are decoded; catch-all segments are decoded individually then joined with `/`. Malformed encoding does not match.
 - Guards are client-side navigation UX, not access control. Enforce authorization in server routes and APIs regardless of hidden pages or guard results.
 - History mode requires SPA fallback configuration on production hosts for direct visits and refreshes.
 

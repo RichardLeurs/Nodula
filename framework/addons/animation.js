@@ -1,21 +1,23 @@
 /* Provide Web Animations helpers and opt-in Nodula lifecycle transitions. */
-import { onCleanup, registerLifecycleTransition } from 'nodula-framework';
+import { onCleanup, registerLifecycleTransition } from "nodula-framework";
 
 const activeAnimations = new WeakMap();
 
 function prefersReducedMotion() {
-  return typeof window !== 'undefined' &&
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 /** Play a Web Animations API animation and cancel any previous Nodula animation on the same element. */
 function startAnimation(element, keyframes, options, owned) {
-  if (!element || typeof element.animate !== 'function') return null;
+  if (!element || typeof element.animate !== "function") return null;
   if (options.respectReducedMotion !== false && prefersReducedMotion()) return null;
 
   activeAnimations.get(element)?.cancel();
-  const { respectReducedMotion = true, ...animationOptions } = options;
+  const { respectReducedMotion: _respectReducedMotion = true, ...animationOptions } = options;
   const animation = element.animate(keyframes, animationOptions);
   activeAnimations.set(element, animation);
 
@@ -45,12 +47,10 @@ export function animate(element, keyframes, options = {}) {
 }
 
 /** Create explicit enter/leave animation methods for an element. */
-export function createTransition(element, {
-  enter,
-  leave,
-  options = {},
-  removeOnLeave = false,
-} = {}) {
+export function createTransition(
+  element,
+  { enter, leave, options = {}, removeOnLeave = false } = {},
+) {
   let currentAnimation = null;
 
   function play(phase) {
@@ -88,16 +88,34 @@ export function createTransition(element, {
 
 const defaultLifecyclePhases = {
   page: {
-    enter: [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }],
-    leave: [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-4px)' }],
+    enter: [
+      { opacity: 0, transform: "translateY(8px)" },
+      { opacity: 1, transform: "translateY(0)" },
+    ],
+    leave: [
+      { opacity: 1, transform: "translateY(0)" },
+      { opacity: 0, transform: "translateY(-4px)" },
+    ],
   },
   conditional: {
-    enter: [{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'translateY(0)' }],
-    leave: [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-2px)' }],
+    enter: [
+      { opacity: 0, transform: "translateY(4px)" },
+      { opacity: 1, transform: "translateY(0)" },
+    ],
+    leave: [
+      { opacity: 1, transform: "translateY(0)" },
+      { opacity: 0, transform: "translateY(-2px)" },
+    ],
   },
   list: {
-    enter: [{ opacity: 0, transform: 'translateX(-6px)' }, { opacity: 1, transform: 'translateX(0)' }],
-    leave: [{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: 'translateX(6px)' }],
+    enter: [
+      { opacity: 0, transform: "translateX(-6px)" },
+      { opacity: 1, transform: "translateX(0)" },
+    ],
+    leave: [
+      { opacity: 1, transform: "translateX(0)" },
+      { opacity: 0, transform: "translateX(6px)" },
+    ],
   },
 };
 
@@ -108,7 +126,14 @@ export function enableLifecycleTransitions({ phases = {}, options = {} } = {}) {
     const keyframes = lifecycle?.[phase];
     if (!keyframes) return;
     const animations = elements
-      .map((element) => startAnimation(element, keyframes, { duration: 180, easing: 'ease-out', fill: 'both', ...options }, false))
+      .map((element) =>
+        startAnimation(
+          element,
+          keyframes,
+          { duration: 180, easing: "ease-out", fill: "both", ...options },
+          false,
+        ),
+      )
       .filter(Boolean);
     return Promise.all(animations.map((animation) => animation.finished.catch(() => undefined)));
   });

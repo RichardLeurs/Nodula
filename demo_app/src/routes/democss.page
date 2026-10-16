@@ -1,22 +1,22 @@
 <script>
-import { signal } from 'nodula-framework';
-import cssImage from '../assets/images/css.webp';
+import { signal } from "nodula-framework";
+import cssImage from "../assets/images/css.webp";
 
 const tokenExamples = [
-  { name: 'Primary', variable: '--ui-color-primary', className: 'ui-token-swatch--primary' },
-  { name: 'Surface', variable: '--ui-color-surface', className: 'ui-token-swatch--surface' },
-  { name: 'Success', variable: '--ui-color-success', className: 'ui-token-swatch--success' },
-  { name: 'Warning', variable: '--ui-color-warning', className: 'ui-token-swatch--warning' },
-  { name: 'Danger', variable: '--ui-color-danger', className: 'ui-token-swatch--danger' },
+  { name: "Primary", variable: "--ui-color-primary", className: "ui-token-swatch--primary" },
+  { name: "Surface", variable: "--ui-color-surface", className: "ui-token-swatch--surface" },
+  { name: "Success", variable: "--ui-color-success", className: "ui-token-swatch--success" },
+  { name: "Warning", variable: "--ui-color-warning", className: "ui-token-swatch--warning" },
+  { name: "Danger", variable: "--ui-color-danger", className: "ui-token-swatch--danger" },
 ];
 
 const people = [
-  { name: 'Maya Chen', role: 'Designer', status: 'Active', statusClass: 'ui-badge--success' },
-  { name: 'Theo Martin', role: 'Developer', status: 'Invited', statusClass: 'ui-badge--warning' },
-  { name: 'Ari Patel', role: 'Administrator', status: 'Active', statusClass: 'ui-badge--primary' },
+  { name: "Maya Chen", role: "Designer", status: "Active", statusClass: "ui-badge--success" },
+  { name: "Theo Martin", role: "Developer", status: "Invited", statusClass: "ui-badge--warning" },
+  { name: "Ari Patel", role: "Administrator", status: "Active", statusClass: "ui-badge--primary" },
 ];
 
-const [activeComponentTab, setActiveComponentTab] = signal('overview');
+const [activeComponentTab, setActiveComponentTab] = signal("overview");
 const [emailUpdatesEnabled, setEmailUpdatesEnabled] = signal(true);
 const [productTipsEnabled, setProductTipsEnabled] = signal(false);
 
@@ -30,11 +30,21 @@ function preventSubmit(event) {
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Nodula UI · CSS architecture demo</p>
 
-      <div class="ui-page__title-row">  
-      <h1 class="ui-page__title">A small, composable UI vocabulary.</h1>
-<img class="ui-page__header-image" :src="cssImage" alt="" width="128" height="147" aria-hidden="true">
-</div>
-      <p class="ui-page__description">A working visual tour of the tokens, layout primitives, components, modifiers, and states described in the CSS architecture. Supports light and dark themes.</p>
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">A small, composable UI vocabulary.</h1>
+        <img
+          class="ui-page__header-image"
+          :src="cssImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
+      </div>
+      <p class="ui-page__description">
+        A working visual tour of the tokens, layout primitives, components, modifiers, and states
+        described in the CSS architecture. Supports light and dark themes.
+      </p>
       <!-- <div class="ui-cluster ui-cluster--wrap" aria-label="Page actions">
         <a class="ui-button ui-button--primary" href="#components">Explore components <span aria-hidden="true">↓</span></a>
         <a class="ui-button ui-button--outline" href="/addons">Browse framework add-ons</a>
@@ -45,7 +55,9 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="tokens-title" class="ui-section__title">Foundation tokens</h2>
-          <p class="ui-section__description">Components use semantic variables instead of hard-coded theme colors.</p>
+          <p class="ui-section__description">
+            Components use semantic variables instead of hard-coded theme colors.
+          </p>
         </div>
         <!-- <span class="ui-badge ui-badge--neutral">Foundation</span> -->
       </div>
@@ -64,7 +76,10 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="grid-system-title" class="ui-section__title">A responsive grid system</h2>
-          <p class="ui-section__description">Choose equal columns for a known layout, or auto-fit when cards should wrap according to available space.</p>
+          <p class="ui-section__description">
+            Choose equal columns for a known layout, or auto-fit when cards should wrap according to
+            available space.
+          </p>
         </div>
       </div>
       <div class="ui-grid ui-grid--2">
@@ -113,14 +128,19 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="flexbox-system-title" class="ui-section__title">Flexbox layout</h2>
-          <p class="ui-section__description">Use flexbox for one-dimensional rows or columns, wrapping groups, and items that grow into available space.</p>
+          <p class="ui-section__description">
+            Use flexbox for one-dimensional rows or columns, wrapping groups, and items that grow
+            into available space.
+          </p>
         </div>
       </div>
       <div class="ui-grid ui-grid--2">
         <article class="ui-panel ui-panel--bordered ui-flexbox-example">
           <div class="ui-stack ui-stack--tight">
             <h3 class="ui-panel__title">Row with wrapping</h3>
-            <p class="ui-panel__description">Items stay in a row, then wrap when the container runs out of room.</p>
+            <p class="ui-panel__description">
+              Items stay in a row, then wrap when the container runs out of room.
+            </p>
             <code class="ui-code">ui-flexbox ui-flexbox--row ui-flexbox--wrap</code>
           </div>
           <div class="ui-flexbox ui-flexbox--row ui-flexbox--wrap">
@@ -133,12 +153,18 @@ function preventSubmit(event) {
         <article class="ui-panel ui-panel--bordered ui-flexbox-example">
           <div class="ui-stack ui-stack--tight">
             <h3 class="ui-panel__title">Row growth and column stacking</h3>
-            <p class="ui-panel__description">A grow item fills remaining row space; column direction stacks content vertically.</p>
-            <code class="ui-code">ui-flexbox--row · ui-flexbox--column · ui-flexbox__item--grow</code>
+            <p class="ui-panel__description">
+              A grow item fills remaining row space; column direction stacks content vertically.
+            </p>
+            <code class="ui-code"
+              >ui-flexbox--row · ui-flexbox--column · ui-flexbox__item--grow</code
+            >
           </div>
           <div class="ui-flexbox ui-flexbox--row ui-flexbox--center">
             <div class="ui-flexbox-demo-item ui-flexbox__item--grow">Flexible content</div>
-            <button class="ui-button ui-button--secondary ui-flexbox__item" type="button">Action</button>
+            <button class="ui-button ui-button--secondary ui-flexbox__item" type="button">
+              Action
+            </button>
           </div>
           <div class="ui-flexbox ui-flexbox--column ui-flexbox--stretch">
             <div class="ui-flexbox-demo-item">First stacked item</div>
@@ -152,7 +178,10 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="type-density-title" class="ui-section__title">Typography, sizing, and density</h2>
-          <p class="ui-section__description">Semantic tokens keep type and control dimensions consistent. Compact density inherits through its container.</p>
+          <p class="ui-section__description">
+            Semantic tokens keep type and control dimensions consistent. Compact density inherits
+            through its container.
+          </p>
         </div>
       </div>
       <div class="ui-grid ui-grid--2">
@@ -160,7 +189,9 @@ function preventSubmit(event) {
           <header class="ui-panel__header">
             <div>
               <h3 class="ui-panel__title">Type scale</h3>
-              <p class="ui-panel__description">Fluid display and heading roles use shared font tokens.</p>
+              <p class="ui-panel__description">
+                Fluid display and heading roles use shared font tokens.
+              </p>
             </div>
           </header>
           <div class="ui-panel__body ui-stack ui-stack--tight">
@@ -168,7 +199,9 @@ function preventSubmit(event) {
             <code class="ui-code">--ui-font-size-display</code>
             <p class="ui-type-sample ui-type-sample--heading">Section heading</p>
             <code class="ui-code">--ui-font-size-heading-2</code>
-            <p class="ui-type-sample ui-type-sample--body">Body copy stays readable at browser zoom.</p>
+            <p class="ui-type-sample ui-type-sample--body">
+              Body copy stays readable at browser zoom.
+            </p>
             <code class="ui-code">--ui-font-size-body · --ui-line-height-body</code>
           </div>
         </article>
@@ -177,14 +210,20 @@ function preventSubmit(event) {
           <header class="ui-panel__header">
             <div>
               <h3 class="ui-panel__title">Sizing and layering</h3>
-              <p class="ui-panel__description">Named dimensions and stacking levels make layout intent visible.</p>
+              <p class="ui-panel__description">
+                Named dimensions and stacking levels make layout intent visible.
+              </p>
             </div>
           </header>
           <div class="ui-panel__body ui-stack">
             <div class="ui-cluster ui-cluster--wrap" aria-label="Control sizes">
-              <button class="ui-button ui-button--secondary ui-button--small" type="button">Small</button>
+              <button class="ui-button ui-button--secondary ui-button--small" type="button">
+                Small
+              </button>
               <button class="ui-button ui-button--secondary" type="button">Medium</button>
-              <button class="ui-button ui-button--secondary ui-button--large" type="button">Large</button>
+              <button class="ui-button ui-button--secondary ui-button--large" type="button">
+                Large
+              </button>
             </div>
             <code class="ui-code">--ui-size-control-small · medium · large</code>
             <div class="ui-layer-scale" aria-label="Stacking layer token examples">
@@ -193,7 +232,9 @@ function preventSubmit(event) {
               <span class="ui-layer-scale__item">Overlay <code>--ui-z-overlay: 50</code></span>
               <span class="ui-layer-scale__item">Tooltip <code>--ui-z-tooltip: 70</code></span>
             </div>
-            <p class="ui-field__description">Illustrates token ordering; browser top-layer dialogs sit outside this scale.</p>
+            <p class="ui-field__description">
+              Illustrates token ordering; browser top-layer dialogs sit outside this scale.
+            </p>
           </div>
         </article>
       </div>
@@ -202,7 +243,10 @@ function preventSubmit(event) {
         <header class="ui-panel__header">
           <div>
             <h3 class="ui-panel__title">Comfortable and compact density</h3>
-            <p class="ui-panel__description">Set <code>data-density="compact"</code> on a container to shrink descendant controls, fields, and panel spacing.</p>
+            <p class="ui-panel__description">
+              Set <code>data-density="compact"</code> on a container to shrink descendant controls,
+              fields, and panel spacing.
+            </p>
           </div>
         </header>
         <div class="ui-density-comparison">
@@ -217,7 +261,11 @@ function preventSubmit(event) {
               <span class="ui-badge ui-badge--neutral">Default spacing</span>
             </div>
           </section>
-          <section class="ui-density-preview" data-density="compact" aria-labelledby="compact-density-title">
+          <section
+            class="ui-density-preview"
+            data-density="compact"
+            aria-labelledby="compact-density-title"
+          >
             <h4 id="compact-density-title" class="ui-field__label">Compact</h4>
             <label class="ui-field">
               <span class="ui-field__label">Workspace</span>
@@ -236,7 +284,10 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="theme-previews-title" class="ui-section__title">Light and dark themes</h2>
-          <p class="ui-section__description">Compare the same semantic UI components in both palettes, independent of the active site theme.</p>
+          <p class="ui-section__description">
+            Compare the same semantic UI components in both palettes, independent of the active site
+            theme.
+          </p>
         </div>
       </div>
       <div class="ui-grid ui-grid--2 ui-theme-preview-grid">
@@ -252,7 +303,10 @@ function preventSubmit(event) {
           </div>
           <div class="ui-alert ui-alert--success" role="status">
             <span class="ui-alert__icon" aria-hidden="true">✓</span>
-            <div class="ui-alert__content"><strong class="ui-alert__title">All changes saved</strong><p class="ui-alert__text">Your workspace is up to date.</p></div>
+            <div class="ui-alert__content">
+              <strong class="ui-alert__title">All changes saved</strong>
+              <p class="ui-alert__text">Your workspace is up to date.</p>
+            </div>
           </div>
           <label class="ui-field">
             <span class="ui-field__label">Workspace name</span>
@@ -272,7 +326,10 @@ function preventSubmit(event) {
           </div>
           <div class="ui-alert ui-alert--success" role="status">
             <span class="ui-alert__icon" aria-hidden="true">✓</span>
-            <div class="ui-alert__content"><strong class="ui-alert__title">All changes saved</strong><p class="ui-alert__text">Your workspace is up to date.</p></div>
+            <div class="ui-alert__content">
+              <strong class="ui-alert__title">All changes saved</strong>
+              <p class="ui-alert__text">Your workspace is up to date.</p>
+            </div>
           </div>
           <label class="ui-field">
             <span class="ui-field__label">Workspace name</span>
@@ -286,7 +343,9 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="components-title" class="ui-section__title">Actions and feedback</h2>
-          <p class="ui-section__description">Variants and states share consistent names across components.</p>
+          <p class="ui-section__description">
+            Variants and states share consistent names across components.
+          </p>
         </div>
       </div>
       <div class="ui-grid ui-grid--2">
@@ -305,10 +364,16 @@ function preventSubmit(event) {
               <button class="ui-button ui-button--ghost" type="button">Ghost</button>
             </div>
             <div class="ui-cluster ui-cluster--wrap" aria-label="Button states">
-              <button class="ui-button ui-button--primary ui-button--small" type="button">Small</button>
+              <button class="ui-button ui-button--primary ui-button--small" type="button">
+                Small
+              </button>
               <button class="ui-button ui-button--primary" type="button">Medium</button>
-              <button class="ui-button ui-button--primary ui-button--large" type="button">Large</button>
-              <button class="ui-button ui-button--secondary" type="button" disabled>Disabled</button>
+              <button class="ui-button ui-button--primary ui-button--large" type="button">
+                Large
+              </button>
+              <button class="ui-button ui-button--secondary" type="button" disabled>
+                Disabled
+              </button>
             </div>
           </div>
         </article>
@@ -317,13 +382,18 @@ function preventSubmit(event) {
           <header class="ui-panel__header">
             <div>
               <h3 class="ui-panel__title">Alerts and badges</h3>
-              <p class="ui-panel__description">Color communicates status; text carries the meaning.</p>
+              <p class="ui-panel__description">
+                Color communicates status; text carries the meaning.
+              </p>
             </div>
           </header>
           <div class="ui-panel__body ui-stack">
             <div class="ui-alert ui-alert--info" role="status">
               <span class="ui-alert__icon" aria-hidden="true">i</span>
-              <div class="ui-alert__content"><strong class="ui-alert__title">Info</strong><p class="ui-alert__text">Your workspace is up to date.</p></div>
+              <div class="ui-alert__content">
+                <strong class="ui-alert__title">Info</strong>
+                <p class="ui-alert__text">Your workspace is up to date.</p>
+              </div>
             </div>
             <div class="ui-cluster ui-cluster--wrap" aria-label="Status badges">
               <span class="ui-badge ui-badge--neutral">Neutral</span>
@@ -341,7 +411,9 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="controls-title" class="ui-section__title">Tabs, switches, and progress</h2>
-          <p class="ui-section__description">Selection and progress controls keep native semantics and visible state.</p>
+          <p class="ui-section__description">
+            Selection and progress controls keep native semantics and visible state.
+          </p>
         </div>
       </div>
       <div class="ui-grid ui-grid--2">
@@ -354,17 +426,68 @@ function preventSubmit(event) {
           </header>
           <div class="ui-panel__body ui-stack">
             <div class="ui-tabs" role="tablist" aria-label="Component preview tabs">
-              <button class="ui-tab" type="button" role="tab" id="ui-tab-overview" aria-controls="ui-tab-panel-overview" :aria-selected="activeComponentTab() === 'overview' ? 'true' : 'false'" :tabindex="activeComponentTab() === 'overview' ? 0 : -1" @click="setActiveComponentTab('overview')">Overview</button>
-              <button class="ui-tab" type="button" role="tab" id="ui-tab-activity" aria-controls="ui-tab-panel-activity" :aria-selected="activeComponentTab() === 'activity' ? 'true' : 'false'" :tabindex="activeComponentTab() === 'activity' ? 0 : -1" @click="setActiveComponentTab('activity')">Activity</button>
-              <button class="ui-tab" type="button" role="tab" id="ui-tab-settings" aria-controls="ui-tab-panel-settings" :aria-selected="activeComponentTab() === 'settings' ? 'true' : 'false'" :tabindex="activeComponentTab() === 'settings' ? 0 : -1" @click="setActiveComponentTab('settings')">Settings</button>
+              <button
+                class="ui-tab"
+                type="button"
+                role="tab"
+                id="ui-tab-overview"
+                aria-controls="ui-tab-panel-overview"
+                :aria-selected="activeComponentTab() === 'overview' ? 'true' : 'false'"
+                :tabindex="activeComponentTab() === 'overview' ? 0 : -1"
+                @click="setActiveComponentTab('overview')"
+              >
+                Overview
+              </button>
+              <button
+                class="ui-tab"
+                type="button"
+                role="tab"
+                id="ui-tab-activity"
+                aria-controls="ui-tab-panel-activity"
+                :aria-selected="activeComponentTab() === 'activity' ? 'true' : 'false'"
+                :tabindex="activeComponentTab() === 'activity' ? 0 : -1"
+                @click="setActiveComponentTab('activity')"
+              >
+                Activity
+              </button>
+              <button
+                class="ui-tab"
+                type="button"
+                role="tab"
+                id="ui-tab-settings"
+                aria-controls="ui-tab-panel-settings"
+                :aria-selected="activeComponentTab() === 'settings' ? 'true' : 'false'"
+                :tabindex="activeComponentTab() === 'settings' ? 0 : -1"
+                @click="setActiveComponentTab('settings')"
+              >
+                Settings
+              </button>
             </div>
-            <div class="ui-tab-panel" role="tabpanel" id="ui-tab-panel-overview" aria-labelledby="ui-tab-overview" @if="activeComponentTab() === 'overview'">
+            <div
+              class="ui-tab-panel"
+              role="tabpanel"
+              id="ui-tab-panel-overview"
+              aria-labelledby="ui-tab-overview"
+              @if="activeComponentTab() === 'overview'"
+            >
               <p class="ui-card__description">A concise summary of the current workspace.</p>
             </div>
-            <div class="ui-tab-panel" role="tabpanel" id="ui-tab-panel-activity" aria-labelledby="ui-tab-activity" @if="activeComponentTab() === 'activity'">
+            <div
+              class="ui-tab-panel"
+              role="tabpanel"
+              id="ui-tab-panel-activity"
+              aria-labelledby="ui-tab-activity"
+              @if="activeComponentTab() === 'activity'"
+            >
               <p class="ui-card__description">Recent updates appear here as they happen.</p>
             </div>
-            <div class="ui-tab-panel" role="tabpanel" id="ui-tab-panel-settings" aria-labelledby="ui-tab-settings" @if="activeComponentTab() === 'settings'">
+            <div
+              class="ui-tab-panel"
+              role="tabpanel"
+              id="ui-tab-panel-settings"
+              aria-labelledby="ui-tab-settings"
+              @if="activeComponentTab() === 'settings'"
+            >
               <p class="ui-card__description">Workspace preferences live in this panel.</p>
             </div>
           </div>
@@ -374,17 +497,39 @@ function preventSubmit(event) {
           <header class="ui-panel__header">
             <div>
               <h3 class="ui-panel__title">Switches</h3>
-              <p class="ui-panel__description">Labeled native checkboxes expose their checked state to assistive technology.</p>
+              <p class="ui-panel__description">
+                Labeled native checkboxes expose their checked state to assistive technology.
+              </p>
             </div>
           </header>
           <div class="ui-panel__body ui-stack">
             <label class="ui-switch">
-              <span class="ui-switch__copy"><strong>Email updates</strong><span class="ui-field__description">Get a summary of workspace changes.</span></span>
-              <input class="ui-switch__control" type="checkbox" role="switch" :checked="emailUpdatesEnabled()" @change="setEmailUpdatesEnabled($event.currentTarget.checked)" />
+              <span class="ui-switch__copy"
+                ><strong>Email updates</strong
+                ><span class="ui-field__description"
+                  >Get a summary of workspace changes.</span
+                ></span
+              >
+              <input
+                class="ui-switch__control"
+                type="checkbox"
+                role="switch"
+                :checked="emailUpdatesEnabled()"
+                @change="setEmailUpdatesEnabled($event.currentTarget.checked)"
+              />
             </label>
             <label class="ui-switch">
-              <span class="ui-switch__copy"><strong>Product tips</strong><span class="ui-field__description">Show occasional tips in the app.</span></span>
-              <input class="ui-switch__control" type="checkbox" role="switch" :checked="productTipsEnabled()" @change="setProductTipsEnabled($event.currentTarget.checked)" />
+              <span class="ui-switch__copy"
+                ><strong>Product tips</strong
+                ><span class="ui-field__description">Show occasional tips in the app.</span></span
+              >
+              <input
+                class="ui-switch__control"
+                type="checkbox"
+                role="switch"
+                :checked="productTipsEnabled()"
+                @change="setProductTipsEnabled($event.currentTarget.checked)"
+              />
             </label>
           </div>
         </article>
@@ -392,9 +537,16 @@ function preventSubmit(event) {
 
       <article class="ui-panel ui-panel--bordered ui-progress-panel">
         <div class="ui-panel__body ui-stack">
-          <div class="ui-cluster ui-cluster--wrap ui-progress-heading"><strong>Workspace setup</strong><span class="ui-badge ui-badge--primary">3 of 5 complete</span></div>
-          <progress class="ui-progress" value="60" max="100" aria-label="Workspace setup progress">60%</progress>
-          <p class="ui-field__description">Add a profile photo and invite your team to finish setup.</p>
+          <div class="ui-cluster ui-cluster--wrap ui-progress-heading">
+            <strong>Workspace setup</strong
+            ><span class="ui-badge ui-badge--primary">3 of 5 complete</span>
+          </div>
+          <progress class="ui-progress" value="60" max="100" aria-label="Workspace setup progress">
+            60%
+          </progress>
+          <p class="ui-field__description">
+            Add a profile photo and invite your team to finish setup.
+          </p>
         </div>
       </article>
     </section>
@@ -403,17 +555,28 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="loading-states-title" class="ui-section__title">Empty and loading states</h2>
-          <p class="ui-section__description">Explain what is happening and offer a clear next step.</p>
+          <p class="ui-section__description">
+            Explain what is happening and offer a clear next step.
+          </p>
         </div>
       </div>
       <div class="ui-grid ui-grid--2">
-        <article class="ui-panel ui-panel--bordered ui-state-card" aria-labelledby="empty-state-title">
+        <article
+          class="ui-panel ui-panel--bordered ui-state-card"
+          aria-labelledby="empty-state-title"
+        >
           <span class="ui-state-card__icon" aria-hidden="true">＋</span>
           <h3 id="empty-state-title" class="ui-panel__title">No projects yet</h3>
-          <p class="ui-panel__description">Create a project to organize work and invite collaborators.</p>
+          <p class="ui-panel__description">
+            Create a project to organize work and invite collaborators.
+          </p>
           <button class="ui-button ui-button--primary" type="button">Create project</button>
         </article>
-        <article class="ui-panel ui-panel--bordered ui-state-card" aria-labelledby="loading-state-title" aria-busy="true">
+        <article
+          class="ui-panel ui-panel--bordered ui-state-card"
+          aria-labelledby="loading-state-title"
+          aria-busy="true"
+        >
           <h3 id="loading-state-title" class="ui-panel__title">Loading activity</h3>
           <p class="ui-panel__description">Fetching the latest workspace updates.</p>
           <div class="ui-skeleton" aria-hidden="true"></div>
@@ -426,38 +589,100 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="forms-title" class="ui-section__title">Form building blocks</h2>
-          <p class="ui-section__description">Semantic labels, controls, descriptions, and visible focus states.</p>
+          <p class="ui-section__description">
+            Semantic labels, controls, descriptions, and visible focus states.
+          </p>
         </div>
       </div>
       <form class="ui-panel ui-panel" @submit="preventSubmit($event)">
         <div class="ui-form__body">
           <div class="ui-field">
-            <label class="ui-field__label" for="ui-name">Name <span class="ui-field__required" aria-label="required">*</span></label>
-            <input class="ui-input" id="ui-name" name="name" type="text" autocomplete="name" placeholder="e.g. Alex Morgan" aria-describedby="ui-name-help" />
-            <p id="ui-name-help" class="ui-field__description">This name will appear in your workspace.</p>
+            <label class="ui-field__label" for="ui-name"
+              >Name <span class="ui-field__required" aria-label="required">*</span></label
+            >
+            <input
+              class="ui-input"
+              id="ui-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              placeholder="e.g. Alex Morgan"
+              aria-describedby="ui-name-help"
+            />
+            <p id="ui-name-help" class="ui-field__description">
+              This name will appear in your workspace.
+            </p>
           </div>
           <div class="ui-field ui-field--invalid">
             <label class="ui-field__label" for="ui-email">Email address</label>
-            <input class="ui-input ui-input--invalid" id="ui-email" name="email" type="email" value="not-an-email" placeholder="alex@example.com" aria-invalid="true" aria-describedby="ui-email-error" />
+            <input
+              class="ui-input ui-input--invalid"
+              id="ui-email"
+              name="email"
+              type="email"
+              value="not-an-email"
+              placeholder="alex@example.com"
+              aria-invalid="true"
+              aria-describedby="ui-email-error"
+            />
             <p id="ui-email-error" class="ui-field__error">Enter a valid email address.</p>
           </div>
           <div class="ui-field">
             <label class="ui-field__label" for="ui-role">Role</label>
-            <select class="ui-select" id="ui-role" name="role"><option>Member</option><option>Administrator</option><option>Viewer</option></select>
+            <select class="ui-select" id="ui-role" name="role">
+              <option>Member</option>
+              <option>Administrator</option>
+              <option>Viewer</option>
+            </select>
           </div>
           <div class="ui-field">
             <label class="ui-field__label" for="ui-notes">Notes</label>
-            <textarea class="ui-textarea" id="ui-notes" name="notes" rows="3" placeholder="Add an optional note"></textarea>
+            <textarea
+              class="ui-textarea"
+              id="ui-notes"
+              name="notes"
+              rows="3"
+              placeholder="Add an optional note"
+            ></textarea>
           </div>
           <div class="ui-field">
             <label class="ui-field__label" for="ui-volume">Volume</label>
-            <input class="ui-range" id="ui-volume" name="volume" type="range" min="0" max="100" value="65" />
+            <input
+              class="ui-range"
+              id="ui-volume"
+              name="volume"
+              type="range"
+              min="0"
+              max="100"
+              value="65"
+            />
           </div>
-          <label class="ui-checkbox"><input class="ui-checkbox__control" type="checkbox" checked /><span>Send the user an email invitation</span></label>
+          <label class="ui-checkbox"
+            ><input class="ui-checkbox__control" type="checkbox" checked /><span
+              >Send the user an email invitation</span
+            ></label
+          >
           <div class="ui-field" role="group" aria-labelledby="ui-notification-preference-label">
-            <p class="ui-field__label" id="ui-notification-preference-label">Notification preference</p>
-            <label class="ui-radio"><input class="ui-radio__control" type="radio" name="notification-preference" value="email" checked /><span>Email</span></label>
-            <label class="ui-radio"><input class="ui-radio__control" type="radio" name="notification-preference" value="none" /><span>No notifications</span></label>
+            <p class="ui-field__label" id="ui-notification-preference-label">
+              Notification preference
+            </p>
+            <label class="ui-radio"
+              ><input
+                class="ui-radio__control"
+                type="radio"
+                name="notification-preference"
+                value="email"
+                checked
+              /><span>Email</span></label
+            >
+            <label class="ui-radio"
+              ><input
+                class="ui-radio__control"
+                type="radio"
+                name="notification-preference"
+                value="none"
+              /><span>No notifications</span></label
+            >
           </div>
         </div>
         <footer class="ui-panel__footer ui-cluster ui-cluster--end">
@@ -471,35 +696,73 @@ function preventSubmit(event) {
       <div class="ui-section__header">
         <div>
           <h2 id="data-title" class="ui-section__title">Cards and data</h2>
-          <p class="ui-section__description">Compose a compact summary card with a responsive table.</p>
+          <p class="ui-section__description">
+            Compose a compact summary card with a responsive table.
+          </p>
         </div>
         <span class="ui-badge ui-badge--success">3 members</span>
       </div>
       <div class="ui-grid ui-grid--3">
         <article class="ui-card ui-card--interactive">
-          <div class="ui-card__header"><span class="ui-avatar ui-avatar--primary" aria-hidden="true">MC</span><span class="ui-badge ui-badge--success">Active</span></div>
-          <div class="ui-card__body ui-stack ui-stack--tight"><h3 class="ui-card__title">Maya Chen</h3><p class="ui-card__description">Product designer</p></div>
-          <footer class="ui-card__footer"><a class="ui-link" href="#members">View profile <span aria-hidden="true">→</span></a></footer>
+          <div class="ui-card__header">
+            <span class="ui-avatar ui-avatar--primary" aria-hidden="true">MC</span
+            ><span class="ui-badge ui-badge--success">Active</span>
+          </div>
+          <div class="ui-card__body ui-stack ui-stack--tight">
+            <h3 class="ui-card__title">Maya Chen</h3>
+            <p class="ui-card__description">Product designer</p>
+          </div>
+          <footer class="ui-card__footer">
+            <a class="ui-link" href="#members">View profile <span aria-hidden="true">→</span></a>
+          </footer>
         </article>
         <article class="ui-card ui-card--interactive">
-          <div class="ui-card__header"><span class="ui-avatar ui-avatar--success" aria-hidden="true">TP</span><span class="ui-badge ui-badge--warning">Invited</span></div>
-          <div class="ui-card__body ui-stack ui-stack--tight"><h3 class="ui-card__title">Theo Park</h3><p class="ui-card__description">Frontend developer</p></div>
-          <footer class="ui-card__footer"><a class="ui-link" href="#members">View profile <span aria-hidden="true">→</span></a></footer>
+          <div class="ui-card__header">
+            <span class="ui-avatar ui-avatar--success" aria-hidden="true">TP</span
+            ><span class="ui-badge ui-badge--warning">Invited</span>
+          </div>
+          <div class="ui-card__body ui-stack ui-stack--tight">
+            <h3 class="ui-card__title">Theo Park</h3>
+            <p class="ui-card__description">Frontend developer</p>
+          </div>
+          <footer class="ui-card__footer">
+            <a class="ui-link" href="#members">View profile <span aria-hidden="true">→</span></a>
+          </footer>
         </article>
         <article class="ui-card ui-card--interactive">
-          <div class="ui-card__header"><span class="ui-avatar ui-avatar--info" aria-hidden="true">AP</span><span class="ui-badge ui-badge--primary">Admin</span></div>
-          <div class="ui-card__body ui-stack ui-stack--tight"><h3 class="ui-card__title">Ari Patel</h3><p class="ui-card__description">Workspace administrator</p></div>
-          <footer class="ui-card__footer"><a class="ui-link" href="#members">View profile <span aria-hidden="true">→</span></a></footer>
+          <div class="ui-card__header">
+            <span class="ui-avatar ui-avatar--info" aria-hidden="true">AP</span
+            ><span class="ui-badge ui-badge--primary">Admin</span>
+          </div>
+          <div class="ui-card__body ui-stack ui-stack--tight">
+            <h3 class="ui-card__title">Ari Patel</h3>
+            <p class="ui-card__description">Workspace administrator</p>
+          </div>
+          <footer class="ui-card__footer">
+            <a class="ui-link" href="#members">View profile <span aria-hidden="true">→</span></a>
+          </footer>
         </article>
       </div>
       <div id="members" class="ui-panel ui-panel--bordered ui-table-panel">
         <div class="ui-table-wrap">
           <table class="ui-table">
-            <caption class="ui-table__caption">Workspace members</caption>
-            <thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Status</th></tr></thead>
+            <caption class="ui-table__caption">
+              Workspace members
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
             <tbody>
               <tr @for="person of people" :key="person.name">
-                <th scope="row">{{ person.name }}</th><td>{{ person.role }}</td><td><span :class="'ui-badge ' + person.statusClass">{{ person.status }}</span></td>
+                <th scope="row">{{ person.name }}</th>
+                <td>{{ person.role }}</td>
+                <td>
+                  <span :class="'ui-badge ' + person.statusClass">{{ person.status }}</span>
+                </td>
               </tr>
             </tbody>
           </table>

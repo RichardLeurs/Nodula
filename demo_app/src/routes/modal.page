@@ -1,38 +1,38 @@
 <script>
-import { signal } from 'nodula-framework';
-import { showDialog } from 'nodula-framework/dialog';
-import { showModal } from 'nodula-framework/modal';
-import { showDrawer } from 'nodula-framework/drawer';
-import addonImage from '../assets/images/addon.webp';
-import modalImage from '../assets/images/modal.webp';
-import drawerImage from '../assets/images/drawer.webp';
-import dialogImage from '../assets/images/dialog.webp';
+import { signal } from "nodula-framework";
+import { showDialog } from "nodula-framework/dialog";
+import { showModal } from "nodula-framework/modal";
+import { showDrawer } from "nodula-framework/drawer";
+import addonImage from "../assets/images/addon.webp";
+import modalImage from "../assets/images/modal.webp";
+import drawerImage from "../assets/images/drawer.webp";
+import dialogImage from "../assets/images/dialog.webp";
 
 const [count, setCount] = signal(0);
 
 async function showExampleDialog() {
-  await showDialog('Continue with this action?', {
-    title: 'Confirmation dialog',
-    btn_cancel: 'Keep editing',
-    btn_ok: 'Continue',
+  await showDialog("Continue with this action?", {
+    title: "Confirmation dialog",
+    btn_cancel: "Keep editing",
+    btn_ok: "Continue",
   });
 }
 
 function showExampleModal() {
-  showModal('#modal-content', { 
-    title: 'A modal window', 
-    showHeader: false, 
-    closeOnBackdrop: false 
+  showModal("#modal-content", {
+    title: "A modal window",
+    showHeader: false,
+    closeOnBackdrop: false,
   });
 }
 
 function showExampleDrawer() {
-  showDrawer('#drawer-content', { 
-    title: 'A side drawer', 
-    showHeader: false, 
-    closeOnBackdrop: false, 
-    position: 'left' 
-    });
+  showDrawer("#drawer-content", {
+    title: "A side drawer",
+    showHeader: false,
+    closeOnBackdrop: false,
+    position: "left",
+  });
 }
 </script>
 
@@ -43,11 +43,35 @@ function showExampleDrawer() {
       <div class="ui-page__title-row">
         <h1 class="ui-page__title">Dialogs, modals, and drawers.</h1>
         <!-- <img class="ui-page__header-image" :src="addonImage" alt="" width="128" height="147" aria-hidden="true"> -->
-        <img class="ui-page__header-image" :src="dialogImage" alt="" width="128" height="145" aria-hidden="true">
-        <img class="ui-page__header-image" :src="modalImage" alt="" width="128" height="145" aria-hidden="true">
-        <img class="ui-page__header-image" :src="drawerImage" alt="" width="128" height="145" aria-hidden="true">
+        <img
+          class="ui-page__header-image"
+          :src="dialogImage"
+          alt=""
+          width="128"
+          height="145"
+          aria-hidden="true"
+        />
+        <img
+          class="ui-page__header-image"
+          :src="modalImage"
+          alt=""
+          width="128"
+          height="145"
+          aria-hidden="true"
+        />
+        <img
+          class="ui-page__header-image"
+          :src="drawerImage"
+          alt=""
+          width="128"
+          height="145"
+          aria-hidden="true"
+        />
       </div>
-      <p class="ui-page__description">Use a confirmation dialog for a focused yes-or-no choice, a modal for custom content, or a drawer for a side panel.</p>
+      <p class="ui-page__description">
+        Use a confirmation dialog for a focused yes-or-no choice, a modal for custom content, or a
+        drawer for a side panel.
+      </p>
     </header>
 
     <!-- <div class="template-demo">
@@ -62,28 +86,39 @@ function showExampleDrawer() {
             <h2 class="ui-card__title">Confirmation dialog</h2>
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Ask for confirmation with a message and Cancel/OK choices. The result resolves to true or false.</p>
-            <pre class="ui-code-block"><code data-highlight>await showDialog('Continue with this action?', { title: 'Confirmation dialog' });</code></pre>
+            <p class="ui-card__description">
+              Ask for confirmation with a message and Cancel/OK choices. The result resolves to true
+              or false.
+            </p>
+            <pre
+              class="ui-code-block"
+            ><code data-highlight>await showDialog('Continue with this action?', { title: 'Confirmation dialog' });</code></pre>
           </div>
           <footer class="ui-card__footer">
-            <button class="ui-button ui-button--primary" type="button" @click="showExampleDialog()">Open example dialog</button>
+            <button class="ui-button ui-button--primary" type="button" @click="showExampleDialog()">
+              Open example dialog
+            </button>
           </footer>
         </article>
 
         <article class="ui-card">
           <header class="ui-card__header">
-       
             <h2 class="ui-card__title">Modal window</h2>
-             
-          
+
             <!-- <span class="ui-badge ui-badge--primary">Modal</span> -->
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Pass an element ID to use its existing HTML and custom header and close control.</p>
-            <pre class="ui-code-block"><code data-highlight>showModal('#modal-content', { title: 'A modal window', showHeader: false });</code></pre>
+            <p class="ui-card__description">
+              Pass an element ID to use its existing HTML and custom header and close control.
+            </p>
+            <pre
+              class="ui-code-block"
+            ><code data-highlight>showModal('#modal-content', { title: 'A modal window', showHeader: false });</code></pre>
           </div>
           <footer class="ui-card__footer">
-            <button class="ui-button ui-button--primary" type="button" @click="showExampleModal()">Open example modal</button>
+            <button class="ui-button ui-button--primary" type="button" @click="showExampleModal()">
+              Open example modal
+            </button>
           </footer>
         </article>
 
@@ -93,11 +128,17 @@ function showExampleDrawer() {
             <!-- <span class="ui-badge ui-badge--info">Drawer</span> -->
           </header>
           <div class="ui-card__body ui-stack ui-stack--tight">
-            <p class="ui-card__description">Pass an element ID to use its existing HTML and custom header and close control.</p>
-            <pre class="ui-code-block"><code data-highlight>showDrawer('#drawer-content', { title: 'A side drawer', showHeader: false, position: 'left' });</code></pre>
+            <p class="ui-card__description">
+              Pass an element ID to use its existing HTML and custom header and close control.
+            </p>
+            <pre
+              class="ui-code-block"
+            ><code data-highlight>showDrawer('#drawer-content', { title: 'A side drawer', showHeader: false, position: 'left' });</code></pre>
           </div>
           <footer class="ui-card__footer">
-            <button class="ui-button ui-button--primary" type="button" @click="showExampleDrawer()">Open example side drawer</button>
+            <button class="ui-button ui-button--primary" type="button" @click="showExampleDrawer()">
+              Open example side drawer
+            </button>
           </footer>
         </article>
       </div>
@@ -112,7 +153,10 @@ function showExampleDrawer() {
         </header>
         <div class="ui-modal__body">
           <p>This modal content is regular HTML declared in the page, below its custom header.</p>
-          <p><strong>Interactive content works too:</strong> <a href="/addons">browse available add-ons</a>.</p>
+          <p>
+            <strong>Interactive content works too:</strong>
+            <a href="/addons">browse available add-ons</a>.
+          </p>
         </div>
       </dialog>
       <!-- drawer demo -->
@@ -123,7 +167,10 @@ function showExampleDrawer() {
         </header>
         <div class="ui-drawer__body">
           <p>This drawer content is regular HTML declared in the page, below its custom header.</p>
-          <p><strong>Interactive content works too:</strong> <a href="/addons">browse available add-ons</a>.</p>
+          <p>
+            <strong>Interactive content works too:</strong>
+            <a href="/addons">browse available add-ons</a>.
+          </p>
         </div>
       </dialog>
     </div>

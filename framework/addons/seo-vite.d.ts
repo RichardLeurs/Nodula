@@ -1,9 +1,9 @@
-import type { Plugin } from 'vite';
+import type { Plugin } from "vite";
 
 export interface SEORouteDefinition {
   path: string;
   /** Sitemap change frequency. */
-  changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+  changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   /** Sitemap priority between 0 and 1. */
   priority?: number;
   /** Explicit last modified date. */

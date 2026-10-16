@@ -1,5 +1,5 @@
 <script>
-import { demoAuth } from '../demo-auth.js';
+import { demoAuth } from "../demo-auth.js";
 </script>
 
 <template>
@@ -7,7 +7,10 @@ import { demoAuth } from '../demo-auth.js';
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Protected demo route</p>
       <h1 class="ui-page__title">Admin</h1>
-      <p class="ui-page__description">Welcome, {{ demoAuth.user()?.name }}. The router guard allowed this page because the demo Auth state has the administrator role.</p>
+      <p class="ui-page__description">
+        Welcome, {{ demoAuth.user()?.name }}. The router guard allowed this page because the demo
+        Auth state has the administrator role.
+      </p>
     </header>
 
     <section class="ui-section" aria-labelledby="admin-access-title">
@@ -15,14 +18,19 @@ import { demoAuth } from '../demo-auth.js';
         <header class="ui-panel__header">
           <div>
             <h2 id="admin-access-title" class="ui-panel__title">Administrator access</h2>
-            <p class="ui-panel__description">Your demo identity passed the client-side route guard.</p>
+            <p class="ui-panel__description">
+              Your demo identity passed the client-side route guard.
+            </p>
           </div>
           <span class="ui-badge ui-badge--success">Authenticated</span>
         </header>
         <div class="ui-panel__body ui-stack">
           <div class="ui-alert ui-alert--warning" role="note">
             <span class="ui-alert__icon" aria-hidden="true">!</span>
-            <p class="ui-alert__text"><strong>Demo only:</strong> auth state is held in client memory. A real app must authenticate and authorize requests on its server.</p>
+            <p class="ui-alert__text">
+              <strong>Demo only:</strong> auth state is held in client memory. A real app must
+              authenticate and authorize requests on its server.
+            </p>
           </div>
           <div class="ui-cluster ui-cluster--wrap">
             <a class="ui-button ui-button--secondary" href="/">Back home</a>

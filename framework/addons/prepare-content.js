@@ -1,7 +1,7 @@
 /* Internally resolve element-ID content and restore its source after overlays close. */
 /** Resolve #id content references and restore the source element after the overlay closes. */
 export function prepareContent(content) {
-  if (typeof content !== 'string' || !content.startsWith('#')) {
+  if (typeof content !== "string" || !content.startsWith("#")) {
     return { content, isElementReference: false, restore() {} };
   }
 
@@ -11,7 +11,7 @@ export function prepareContent(content) {
   }
 
   const parent = source.parentNode;
-  const placeholder = document.createComment('overlay content source');
+  const placeholder = document.createComment("overlay content source");
   parent.replaceChild(placeholder, source);
   const nodes = [...source.childNodes];
   const fragment = document.createDocumentFragment();

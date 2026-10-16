@@ -1,5 +1,13 @@
-export type DragEffectAllowed = 'none' | 'copy' | 'copyLink' | 'copyMove' | 'link' | 'linkMove' | 'move' | 'all';
-export type DragDropEffect = 'copy' | 'link' | 'move';
+export type DragEffectAllowed =
+  | "none"
+  | "copy"
+  | "copyLink"
+  | "copyMove"
+  | "link"
+  | "linkMove"
+  | "move"
+  | "all";
+export type DragDropEffect = "copy" | "link" | "move";
 
 export interface DragImageOptions {
   /** Element used for native drag feedback; should be rendered when dragstart fires. */

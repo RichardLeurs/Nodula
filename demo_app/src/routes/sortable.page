@@ -1,15 +1,15 @@
 <script>
-import { signal } from 'nodula-framework';
-import { createSortableList } from 'nodula-framework/sortable';
-import sortableImage from '../assets/images/sortable.webp';
+import { signal } from "nodula-framework";
+import { createSortableList } from "nodula-framework/sortable";
+import sortableImage from "../assets/images/sortable.webp";
 
 const [items, setItems] = signal([
-  { id: 'plan', label: 'Plan the greenhouse beds' },
-  { id: 'prepare', label: 'Prepare the soil' },
-  { id: 'plant', label: 'Plant seedlings' },
-  { id: 'water', label: 'Water and record growth' },
+  { id: "plan", label: "Plan the greenhouse beds" },
+  { id: "prepare", label: "Prepare the soil" },
+  { id: "plant", label: "Plant seedlings" },
+  { id: "water", label: "Water and record growth" },
 ]);
-const [message, setMessage] = signal('Drag an item, or use its Move Up/Down buttons.');
+const [message, setMessage] = signal("Drag an item, or use its Move Up/Down buttons.");
 
 function setupSortableList(element) {
   if (!element) return;
@@ -17,7 +17,7 @@ function setupSortableList(element) {
     onReorder(itemIds) {
       const itemsById = new Map(items().map((item) => [item.id, item]));
       setItems(itemIds.map((id) => itemsById.get(id)));
-      setMessage('List order updated.');
+      setMessage("List order updated.");
     },
   });
 }
@@ -28,24 +28,52 @@ function setupSortableList(element) {
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">Optional sortable-list add-on</p>
 
-      <div class="ui-page__title-row">  
-       <h1 class="ui-page__title">Reorder a list with drag and drop or buttons.</h1>
-        <img class="ui-page__header-image" :src="sortableImage" alt="" width="128" height="147" aria-hidden="true">
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">Reorder a list with drag and drop or buttons.</h1>
+        <img
+          class="ui-page__header-image"
+          :src="sortableImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
       </div>
 
-  
-      <p class="ui-page__description">The sortable add-on gives vertical lists clear insertion feedback and Move Up/Down controls. Your application owns item data and applies each proposed order.</p>
+      <p class="ui-page__description">
+        The sortable add-on gives vertical lists clear insertion feedback and Move Up/Down controls.
+        Your application owns item data and applies each proposed order.
+      </p>
     </header>
 
     <section class="ui-section" aria-labelledby="sortable-demo-title">
       <h2 id="sortable-demo-title" class="ui-section__title">Greenhouse task order</h2>
       <p class="ui-section__description" role="status" aria-live="polite">{{ message() }}</p>
       <ol class="ui-sortable-list" aria-label="Greenhouse tasks" @ref="setupSortableList">
-        <li @for="item of items()" :key="item.id" class="ui-sortable-item" :data-sortable-id="item.id">
+        <li
+          @for="item of items()"
+          :key="item.id"
+          class="ui-sortable-item"
+          :data-sortable-id="item.id"
+        >
           <span class="ui-sortable-item__label">{{ item.label }}</span>
           <div class="ui-sortable-item__controls">
-            <button class="ui-button ui-button--secondary" type="button" data-sortable-up :aria-label="'Move ' + item.label + ' up'">Move up</button>
-            <button class="ui-button ui-button--secondary" type="button" data-sortable-down :aria-label="'Move ' + item.label + ' down'">Move down</button>
+            <button
+              class="ui-button ui-button--secondary"
+              type="button"
+              data-sortable-up
+              :aria-label="'Move ' + item.label + ' up'"
+            >
+              Move up
+            </button>
+            <button
+              class="ui-button ui-button--secondary"
+              type="button"
+              data-sortable-down
+              :aria-label="'Move ' + item.label + ' down'"
+            >
+              Move down
+            </button>
           </div>
         </li>
       </ol>

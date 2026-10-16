@@ -1,34 +1,40 @@
 <script>
-import { signal } from 'nodula-framework';
-import { createDragSource, createDropTarget } from 'nodula-framework/dragdrop';
-import dragdropImage from '../assets/images/dragdrop.webp';
+import { signal } from "nodula-framework";
+import { createDragSource, createDropTarget } from "nodula-framework/dragdrop";
+import dragdropImage from "../assets/images/dragdrop.webp";
 
 const [availableItems, setAvailableItems] = signal([
-  { id: 'fern', label: 'Fern cutting' },
-  { id: 'moss', label: 'Moss sample' },
-  { id: 'seed', label: 'Seed packet' },
+  { id: "fern", label: "Fern cutting" },
+  { id: "moss", label: "Moss sample" },
+  { id: "seed", label: "Seed packet" },
 ]);
 const [collectionItems, setCollectionItems] = signal([]);
-const [message, setMessage] = signal('Drag an item between zones, or use its Move button.');
+const [message, setMessage] = signal("Drag an item between zones, or use its Move button.");
 let collectionZoneElement;
 
 function moveItem(itemId, sourceZoneId, targetZoneId) {
   if (sourceZoneId === targetZoneId) return;
-  if (!['available', 'collection'].includes(sourceZoneId) || !['available', 'collection'].includes(targetZoneId)) return;
-  const sourceItems = sourceZoneId === 'available' ? availableItems() : collectionItems();
+  if (
+    !["available", "collection"].includes(sourceZoneId) ||
+    !["available", "collection"].includes(targetZoneId)
+  )
+    return;
+  const sourceItems = sourceZoneId === "available" ? availableItems() : collectionItems();
   const item = sourceItems.find((entry) => entry.id === itemId);
   if (!item) return;
 
-  const targetItems = targetZoneId === 'available' ? availableItems() : collectionItems();
+  const targetItems = targetZoneId === "available" ? availableItems() : collectionItems();
   if (targetItems.some((entry) => entry.id === itemId)) return;
-  if (sourceZoneId === 'available') {
+  if (sourceZoneId === "available") {
     setAvailableItems((current) => current.filter((entry) => entry.id !== itemId));
     setCollectionItems((current) => [...current, item]);
   } else {
     setCollectionItems((current) => current.filter((entry) => entry.id !== itemId));
     setAvailableItems((current) => [...current, item]);
   }
-  setMessage(`${item.label} moved to ${targetZoneId === 'available' ? 'Available items' : 'Collection'}.`);
+  setMessage(
+    `${item.label} moved to ${targetZoneId === "available" ? "Available items" : "Collection"}.`,
+  );
 }
 
 function setupItem(element) {
@@ -36,33 +42,35 @@ function setupItem(element) {
   const itemId = element.dataset.itemId;
   const sourceZoneId = element.dataset.zoneId;
   createDragSource(element, {
-    effectAllowed: 'move',
+    effectAllowed: "move",
     getData: () => ({
-      'application/x-nodula-demo-item': JSON.stringify({ itemId, sourceZoneId }),
+      "application/x-nodula-demo-item": JSON.stringify({ itemId, sourceZoneId }),
     }),
     getDragImage: () => ({ element, x: 18, y: 12 }),
     onDragStart: () => {
-      element.classList.add('ui-dragdrop-item--dragging');
-      setMessage(`Dragging ${element.querySelector('span').textContent}.`);
+      element.classList.add("ui-dragdrop-item--dragging");
+      setMessage(`Dragging ${element.querySelector("span").textContent}.`);
     },
     onDragEnd: () => {
-      element.classList.remove('ui-dragdrop-item--dragging');
-      setMessage('Drag ended. Use a Move button if needed.');
+      element.classList.remove("ui-dragdrop-item--dragging");
+      setMessage("Drag ended. Use a Move button if needed.");
     },
   });
 }
 
 function setupDropZone(element) {
   if (!element) return;
-  if (element.dataset.zoneId === 'collection') collectionZoneElement = element;
+  if (element.dataset.zoneId === "collection") collectionZoneElement = element;
   createDropTarget(element, {
-    accepts: ['application/x-nodula-demo-item'],
-    dropEffect: 'move',
-    onDragOver: () => element.classList.add('ui-dragdrop-target--active'),
-    onDragLeave: () => element.classList.remove('ui-dragdrop-target--active'),
+    accepts: ["application/x-nodula-demo-item"],
+    dropEffect: "move",
+    onDragOver: () => element.classList.add("ui-dragdrop-target--active"),
+    onDragLeave: () => element.classList.remove("ui-dragdrop-target--active"),
     onDrop: (_event, dataTransfer) => {
-      element.classList.remove('ui-dragdrop-target--active');
-      const { itemId, sourceZoneId } = JSON.parse(dataTransfer.getData('application/x-nodula-demo-item'));
+      element.classList.remove("ui-dragdrop-target--active");
+      const { itemId, sourceZoneId } = JSON.parse(
+        dataTransfer.getData("application/x-nodula-demo-item"),
+      );
       moveItem(itemId, sourceZoneId, element.dataset.zoneId);
     },
   });
@@ -72,40 +80,81 @@ function setupDropZone(element) {
 <template>
   <main class="ui-page page">
     <header class="ui-page__header">
-
-      <p class="ui-page__eyebrow">Optional interaction add-on</p> 
-      <div class="ui-page__title-row">  
-         <h1 class="ui-page__title">Native drag and drop, with an accessible alternative.</h1>
-        <img class="ui-page__header-image" :src="dragdropImage" alt="" width="128" height="147" aria-hidden="true">
+      <p class="ui-page__eyebrow">Optional interaction add-on</p>
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">Native drag and drop, with an accessible alternative.</h1>
+        <img
+          class="ui-page__header-image"
+          :src="dragdropImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
       </div>
 
-    
-   
-
-
-
-      <p class="ui-page__description">The dragdrop add-on wraps browser drag events and DataTransfer, including a per-item native drag preview. This demo moves items between named zones by updating app-owned state and includes Move buttons and touch alternative.</p>
+      <p class="ui-page__description">
+        The dragdrop add-on wraps browser drag events and DataTransfer, including a per-item native
+        drag preview. This demo moves items between named zones by updating app-owned state and
+        includes Move buttons and touch alternative.
+      </p>
     </header>
 
     <section class="ui-section" aria-labelledby="dragdrop-demo-title">
       <h2 id="dragdrop-demo-title" class="ui-section__title">Greenhouse board</h2>
       <p class="ui-section__description" role="status" aria-live="polite">{{ message() }}</p>
       <div class="ui-grid ui-grid--2">
-        <section class="ui-card ui-dragdrop-target" data-zone-id="available" aria-labelledby="dragdrop-zone-available" @ref="setupDropZone">
+        <section
+          class="ui-card ui-dragdrop-target"
+          data-zone-id="available"
+          aria-labelledby="dragdrop-zone-available"
+          @ref="setupDropZone"
+        >
           <h3 id="dragdrop-zone-available" class="ui-card__title">Available items</h3>
           <ul class="ui-dragdrop-list">
-            <li @for="item of availableItems()" :key="item.id" class="ui-dragdrop-item" :data-item-id="item.id" data-zone-id="available" @ref="setupItem">
+            <li
+              @for="item of availableItems()"
+              :key="item.id"
+              class="ui-dragdrop-item"
+              :data-item-id="item.id"
+              data-zone-id="available"
+              @ref="setupItem"
+            >
               <span>{{ item.label }}</span>
-              <button class="ui-button ui-button--secondary" type="button" @click="moveItem(item.id, 'available', 'collection')">Move {{ item.label }} to collection</button>
+              <button
+                class="ui-button ui-button--secondary"
+                type="button"
+                @click="moveItem(item.id, 'available', 'collection')"
+              >
+                Move to collection
+              </button>
             </li>
           </ul>
         </section>
-        <section class="ui-card ui-dragdrop-target" data-zone-id="collection" aria-labelledby="dragdrop-zone-collection" @ref="setupDropZone">
+        <section
+          class="ui-card ui-dragdrop-target"
+          data-zone-id="collection"
+          aria-labelledby="dragdrop-zone-collection"
+          @ref="setupDropZone"
+        >
           <h3 id="dragdrop-zone-collection" class="ui-card__title">Collection</h3>
           <ul class="ui-dragdrop-list">
-            <li @for="item of collectionItems()" :key="item.id" class="ui-dragdrop-item" :data-item-id="item.id" data-zone-id="collection" @ref="setupItem">
+            <li
+              @for="item of collectionItems()"
+              :key="item.id"
+              class="ui-dragdrop-item"
+              :data-item-id="item.id"
+              data-zone-id="collection"
+              @ref="setupItem"
+            >
               <span>{{ item.label }}</span>
-              <button class="ui-button ui-button--secondary" type="button" @click="moveItem(item.id, 'collection', 'available')">Return {{ item.label }} to available items</button>
+              <button
+                class="ui-button ui-button--secondary"
+                type="button"
+                @click="moveItem(item.id, 'collection', 'available')"
+              >
+                Return to available items
+              </button>
             </li>
           </ul>
         </section>
@@ -168,7 +217,9 @@ createDropTarget(zoneElement, {
 
 .ui-dragdrop-target {
   cursor: default;
-  transition: border-color var(--ui-transition-fast), background-color var(--ui-transition-fast);
+  transition:
+    border-color var(--ui-transition-fast),
+    background-color var(--ui-transition-fast);
 }
 
 .ui-dragdrop-target--active {

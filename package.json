@@ -1,15 +1,15 @@
 {
   "name": "nodula-framework",
   "version": "0.1.0",
-  "license": "GPL-3.0-or-later",
   "private": false,
+  "license": "GPL-3.0-or-later",
   "files": [
     "dist/nodula"
   ],
+  "type": "module",
   "sideEffects": [
     "**/*.css"
   ],
-  "type": "module",
   "types": "dist/nodula/nodula-core.d.ts",
   "exports": {
     ".": {
@@ -116,8 +116,6 @@
     "dev:upload": "php -S localhost:8787 -t . api/upload/index.php",
     "build": "npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run build:app && npm run build:docs",
     "build_test": "npm run test:framework && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run test:demo && npm run build:app && npm run build:docs",
-
-
     "build:app": "npm --prefix demo_app run build",
     "build:docs": "node vitepress/build-docs.mjs",
     "build:compiler": "vite build --config framework/vite.config.js --mode compiler",
@@ -144,8 +142,8 @@
     "build:seo-vite": "vite build --config framework/vite.config.js --mode addon-seo-vite",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "format": "oxfmt 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
-    "format:check": "oxfmt --check 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
+    "format": "oxfmt 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md,page,comp}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
+    "format:check": "oxfmt --check 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md,page,comp}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
     "build:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\" && vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:navigation-dropdown && npm run build:dragdrop && npm run build:sortable && npm run build:filedrop && npm run build:fileupload && npm run build:localstorage && npm run build:data && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node framework/mjs/gzip-framework.mjs",
     "package:framework": "npm run build:framework && npm run pack:framework",
     "pack:framework": "mkdir -p dist/npm && npm pack --pack-destination dist/npm",
@@ -172,6 +170,10 @@
     "vite-plugin-pwa": "^1.3.0",
     "vitest": "^5.0.3"
   },
+  "peerDependencies": {
+    "vite": "^8.3.1",
+    "vite-plugin-pwa": "^1.3.0"
+  },
   "peerDependenciesMeta": {
     "vite-plugin-pwa": {
       "optional": true
@@ -179,9 +181,5 @@
     "vite": {
       "optional": true
     }
-  },
-  "peerDependencies": {
-    "vite": "^8.3.1",
-    "vite-plugin-pwa": "^1.3.0"
   }
 }

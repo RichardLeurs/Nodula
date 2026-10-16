@@ -1,7 +1,9 @@
-export type AnimationPhase = Keyframe[] | {
-  keyframes: Keyframe[];
-  options?: KeyframeAnimationOptions;
-};
+export type AnimationPhase =
+  | Keyframe[]
+  | {
+      keyframes: Keyframe[];
+      options?: KeyframeAnimationOptions;
+    };
 
 export interface AnimateOptions extends KeyframeAnimationOptions {
   /** Skip motion when the user requests reduced motion. Defaults to true. */
@@ -16,7 +18,7 @@ export interface TransitionOptions {
   removeOnLeave?: boolean;
 }
 
-export type LifecycleTransitionType = 'page' | 'conditional' | 'list';
+export type LifecycleTransitionType = "page" | "conditional" | "list";
 export interface LifecycleTransitionPhases {
   enter?: AnimationPhase;
   leave?: AnimationPhase;
@@ -27,9 +29,16 @@ export interface LifecycleTransitionOptions {
 }
 
 /** Play a Web Animation, canceling an earlier Nodula animation on this element. */
-export function animate(element: Element, keyframes: Keyframe[], options?: AnimateOptions): Animation | null;
+export function animate(
+  element: Element,
+  keyframes: Keyframe[],
+  options?: AnimateOptions,
+): Animation | null;
 /** Create enter/leave methods for an element, with optional removal after leave. */
-export function createTransition(element: Element, options?: TransitionOptions): {
+export function createTransition(
+  element: Element,
+  options?: TransitionOptions,
+): {
   enter(): Animation | null;
   leave(): Promise<boolean>;
   cancel(): void;

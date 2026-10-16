@@ -8,7 +8,7 @@ export interface DrawerOptions {
   /** Whether to render the default title/header and close button. Defaults to true. */
   showHeader?: boolean;
   /** Which viewport edge the drawer enters from. Defaults to "right". */
-  position?: 'left' | 'right';
+  position?: "left" | "right";
 }
 
 export interface DrawerHandle {

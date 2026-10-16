@@ -1,7 +1,7 @@
 <script>
-import { signal } from 'nodula-framework';
-import webcompImage from '../assets/images/webcomp.webp';
-const [selectedIcon, setSelectedIcon] = signal('');
+import { signal } from "nodula-framework";
+import webcompImage from "../assets/images/webcomp.webp";
+const [selectedIcon, setSelectedIcon] = signal("");
 
 function selectIcon(icon) {
   setSelectedIcon(icon);
@@ -9,16 +9,26 @@ function selectIcon(icon) {
 </script>
 
 <template>
-   <main class="ui-page page">
+  <main class="ui-page page">
     <header class="ui-page__header">
-      
       <p class="ui-page__eyebrow">Nodula + Web Components</p>
-         <div class="ui-page__title-row">  
-      <h1 class="ui-page__title">Bring a custom Web Component into the page.</h1>
-      <img class="ui-page__header-image" :src="webcompImage" alt="" width="128" height="147" aria-hidden="true">
-</div>
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">Bring a custom Web Component into the page.</h1>
+        <img
+          class="ui-page__header-image"
+          :src="webcompImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
+      </div>
 
-      <p class="ui-page__description">This page uses Iconify’s external <code>&lt;iconify-icon&gt;</code> custom element inside a Nodula template. Nodula creates the tag and reactively passes its icon property; the buttons below update that property through a signal.</p>
+      <p class="ui-page__description">
+        This page uses Iconify’s external <code>&lt;iconify-icon&gt;</code> custom element inside a
+        Nodula template. Nodula creates the tag and reactively passes its icon property; the buttons
+        below update that property through a signal.
+      </p>
     </header>
 
     <section class="ui-section" aria-labelledby="iconify-heading">
@@ -26,28 +36,49 @@ function selectIcon(icon) {
         <header class="ui-card__header">
           <div class="ui-stack ui-stack--tight">
             <h2 id="iconify-heading" class="ui-card__title">Choose an icon</h2>
-            <p class="ui-card__description">Iconify loads each icon on demand. The icon name below is passed to the custom element as a property.</p>
+            <p class="ui-card__description">
+              Iconify loads each icon on demand. The icon name below is passed to the custom element
+              as a property.
+            </p>
           </div>
           <span class="ui-badge ui-badge--primary">External element</span>
         </header>
 
         <div class="ui-card__body ui-stack">
           <div class="ui-cluster ui-cluster--wrap" aria-label="Choose an icon">
-            <button class="ui-icon-picker__button" type="button" aria-label="Select rocket icon" @click="selectIcon('mdi:rocket-launch')">
+            <button
+              class="ui-icon-picker__button"
+              type="button"
+              aria-label="Select rocket icon"
+              @click="selectIcon('mdi:rocket-launch')"
+            >
               <iconify-icon icon="mdi:rocket-launch" aria-hidden="true"></iconify-icon>
             </button>
-            <button class="ui-icon-picker__button" type="button" aria-label="Select leaf icon" @click="selectIcon('mdi:leaf')">
+            <button
+              class="ui-icon-picker__button"
+              type="button"
+              aria-label="Select leaf icon"
+              @click="selectIcon('mdi:leaf')"
+            >
               <iconify-icon icon="mdi:leaf" aria-hidden="true"></iconify-icon>
             </button>
-            <button class="ui-icon-picker__button" type="button" aria-label="Select heart icon" @click="selectIcon('mdi:heart')">
+            <button
+              class="ui-icon-picker__button"
+              type="button"
+              aria-label="Select heart icon"
+              @click="selectIcon('mdi:heart')"
+            >
               <iconify-icon icon="mdi:heart" aria-hidden="true"></iconify-icon>
             </button>
           </div>
 
           <div class="ui-icon-picker__selection" role="status" aria-live="polite">
             <span>Selected icon:</span>
-            <code>{{ selectedIcon() || 'Choose one above' }}</code>
-            <iconify-icon :icon="selectedIcon() || 'mdi:cursor-default-click-outline'" aria-hidden="true"></iconify-icon>
+            <code>{{ selectedIcon() || "Choose one above" }}</code>
+            <iconify-icon
+              :icon="selectedIcon() || 'mdi:cursor-default-click-outline'"
+              aria-hidden="true"
+            ></iconify-icon>
           </div>
         </div>
       </article>
@@ -55,8 +86,12 @@ function selectIcon(icon) {
 
     <section class="ui-section" aria-labelledby="web-component-code-title">
       <h2 id="web-component-code-title" class="ui-section__title">Use a custom element</h2>
-      <p class="ui-section__description">Register the element once, then use its reactive properties directly in your template.</p>
-      <pre class="ui-code-block"><code data-highlight>&lt;!-- Register the element once from your app entry --&gt;
+      <p class="ui-section__description">
+        Register the element once, then use its reactive properties directly in your template.
+      </p>
+      <pre
+        class="ui-code-block"
+      ><code data-highlight>&lt;!-- Register the element once from your app entry --&gt;
 import 'iconify-icon';
 
 &lt;!-- Use it directly in a .page template --&gt;

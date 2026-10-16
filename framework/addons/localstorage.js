@@ -1,21 +1,21 @@
 /* Provide reactive localStorage, IndexedDB, and browser-cookie helpers. */
-import { effect, onCleanup, signal } from 'nodula-framework';
+import { effect, onCleanup, signal } from "nodula-framework";
 
 function cookieDocument() {
-  if (typeof document === 'undefined' || !document) {
-    throw new Error('Cookie helpers are only available in a browser document.');
+  if (typeof document === "undefined" || !document) {
+    throw new Error("Cookie helpers are only available in a browser document.");
   }
   return document;
 }
 
 function validateCookieName(name) {
-  if (typeof name !== 'string' || !name.trim()) {
-    throw new TypeError('Cookie names must be non-empty strings.');
+  if (typeof name !== "string" || !name.trim()) {
+    throw new TypeError("Cookie names must be non-empty strings.");
   }
 }
 
 function validateCookieAttribute(value, attribute) {
-  if (typeof value !== 'string' || /[;\r\n]/.test(value)) {
+  if (typeof value !== "string" || /[;\r\n]/.test(value)) {
     throw new TypeError(`Cookie ${attribute} must be a string without semicolons or line breaks.`);
   }
 }
@@ -23,31 +23,33 @@ function validateCookieAttribute(value, attribute) {
 function serializeCookieOptions(options = {}) {
   const attributes = [];
   if (options.path !== undefined) {
-    validateCookieAttribute(options.path, 'path');
+    validateCookieAttribute(options.path, "path");
     attributes.push(`Path=${options.path}`);
   }
   if (options.domain !== undefined) {
-    validateCookieAttribute(options.domain, 'domain');
+    validateCookieAttribute(options.domain, "domain");
     attributes.push(`Domain=${options.domain}`);
   }
   if (options.expires !== undefined) {
     const expires = options.expires instanceof Date ? options.expires : new Date(options.expires);
-    if (Number.isNaN(expires.getTime())) throw new TypeError('Cookie expires must be a valid date.');
+    if (Number.isNaN(expires.getTime()))
+      throw new TypeError("Cookie expires must be a valid date.");
     attributes.push(`Expires=${expires.toUTCString()}`);
   }
   if (options.maxAge !== undefined) {
-    if (!Number.isInteger(options.maxAge)) throw new TypeError('Cookie maxAge must be an integer number of seconds.');
+    if (!Number.isInteger(options.maxAge))
+      throw new TypeError("Cookie maxAge must be an integer number of seconds.");
     attributes.push(`Max-Age=${options.maxAge}`);
   }
   if (options.sameSite !== undefined) {
     const sameSite = String(options.sameSite).toLowerCase();
-    if (!['strict', 'lax', 'none'].includes(sameSite)) {
-      throw new TypeError('Cookie sameSite must be Strict, Lax, or None.');
+    if (!["strict", "lax", "none"].includes(sameSite)) {
+      throw new TypeError("Cookie sameSite must be Strict, Lax, or None.");
     }
     attributes.push(`SameSite=${sameSite[0].toUpperCase()}${sameSite.slice(1)}`);
   }
-  if (options.secure) attributes.push('Secure');
-  return attributes.length ? `; ${attributes.join('; ')}` : '';
+  if (options.secure) attributes.push("Secure");
+  return attributes.length ? `; ${attributes.join("; ")}` : "";
 }
 
 /** Read and URI-decode a cookie, returning undefined when it is not present. */
@@ -56,7 +58,7 @@ export function getCookie(name) {
   const cookieString = cookieDocument().cookie;
   const encodedName = encodeURIComponent(name);
   for (const entry of cookieString.split(/;\s*/)) {
-    const separator = entry.indexOf('=');
+    const separator = entry.indexOf("=");
     if (separator < 0 || entry.slice(0, separator) !== encodedName) continue;
     const value = entry.slice(separator + 1);
     try {
@@ -76,13 +78,13 @@ export function setCookie(name, value, options = {}) {
 
 /** Expire a cookie using the supplied path/domain scope. */
 export function deleteCookie(name, options = {}) {
-  const { expires, maxAge, ...scopeOptions } = options;
-  setCookie(name, '', { ...scopeOptions, expires: new Date(0) });
+  const { expires: _expires, maxAge: _maxAge, ...scopeOptions } = options;
+  setCookie(name, "", { ...scopeOptions, expires: new Date(0) });
 }
 
 function defaultStorage() {
   try {
-    return typeof window === 'undefined' ? undefined : window.localStorage;
+    return typeof window === "undefined" ? undefined : window.localStorage;
   } catch {
     return undefined;
   }
@@ -100,8 +102,8 @@ function decodeStoredValue(storage, key, fallback) {
 
 /** Create a reactive signal persisted as JSON in localStorage when it is available. */
 export function createLocalStorage(key, initialValue, { storage = defaultStorage() } = {}) {
-  if (typeof key !== 'string' || !key.trim()) {
-    throw new TypeError('createLocalStorage expects a non-empty storage key.');
+  if (typeof key !== "string" || !key.trim()) {
+    throw new TypeError("createLocalStorage expects a non-empty storage key.");
   }
 
   const [read, write] = signal(decodeStoredValue(storage, key, initialValue));
@@ -129,15 +131,17 @@ function defaultIndexedDB() {
 function requestResult(request) {
   return new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error('IndexedDB request failed.'));
+    request.onerror = () => reject(request.error ?? new Error("IndexedDB request failed."));
   });
 }
 
 function transactionComplete(transaction) {
   return new Promise((resolve, reject) => {
     transaction.oncomplete = resolve;
-    transaction.onabort = () => reject(transaction.error ?? new Error('IndexedDB transaction aborted.'));
-    transaction.onerror = () => reject(transaction.error ?? new Error('IndexedDB transaction failed.'));
+    transaction.onabort = () =>
+      reject(transaction.error ?? new Error("IndexedDB transaction aborted."));
+    transaction.onerror = () =>
+      reject(transaction.error ?? new Error("IndexedDB transaction failed."));
   });
 }
 
@@ -156,22 +160,23 @@ function openDatabase(indexedDB, databaseName, storeName) {
       if (!database.objectStoreNames.contains(storeName)) database.createObjectStore(storeName);
     };
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error('Could not open IndexedDB.'));
+    request.onerror = () => reject(request.error ?? new Error("Could not open IndexedDB."));
   });
 }
 
 /** Create a reactive signal persisted asynchronously in IndexedDB. */
-export function createIndexedDB(key, initialValue, {
-  indexedDB = defaultIndexedDB(),
-  databaseName = 'nodula-framework',
-} = {}) {
-  if (typeof key !== 'string' || !key.trim()) {
-    throw new TypeError('createIndexedDB expects a non-empty storage key.');
+export function createIndexedDB(
+  key,
+  initialValue,
+  { indexedDB = defaultIndexedDB(), databaseName = "nodula-framework" } = {},
+) {
+  if (typeof key !== "string" || !key.trim()) {
+    throw new TypeError("createIndexedDB expects a non-empty storage key.");
   }
-  if (typeof databaseName !== 'string' || !databaseName.trim()) {
-    throw new TypeError('createIndexedDB expects a non-empty database name.');
+  if (typeof databaseName !== "string" || !databaseName.trim()) {
+    throw new TypeError("createIndexedDB expects a non-empty database name.");
   }
-  const storeName = 'signals';
+  const storeName = "signals";
 
   const [read, write] = signal(initialValue);
   let database;
@@ -185,7 +190,7 @@ export function createIndexedDB(key, initialValue, {
   async function persist(value) {
     if (!database || disposed) return;
     try {
-      const transaction = database.transaction(storeName, 'readwrite');
+      const transaction = database.transaction(storeName, "readwrite");
       const completed = transactionComplete(transaction);
       transaction.objectStore(storeName).put(value, key);
       await completed;
@@ -211,7 +216,7 @@ export function createIndexedDB(key, initialValue, {
   }
 
   const readyPromise = (async () => {
-    if (!indexedDB || typeof indexedDB.open !== 'function') {
+    if (!indexedDB || typeof indexedDB.open !== "function") {
       ready = true;
       return;
     }
@@ -223,7 +228,7 @@ export function createIndexedDB(key, initialValue, {
         return;
       }
 
-      const transaction = database.transaction(storeName, 'readonly');
+      const transaction = database.transaction(storeName, "readonly");
       const completed = transactionComplete(transaction);
       const objectStore = transaction.objectStore(storeName);
       const [storedKey, storedValue] = await Promise.all([
@@ -256,7 +261,7 @@ export function createIndexedDB(key, initialValue, {
   }
 
   const storedSignal = Object.assign([read, setValue], { ready: readyPromise });
-  Object.defineProperty(storedSignal, 'available', { enumerable: true, get: () => available });
+  Object.defineProperty(storedSignal, "available", { enumerable: true, get: () => available });
   return storedSignal;
 }
 

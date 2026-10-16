@@ -1,9 +1,9 @@
-import type { Accessor } from 'nodula-framework';
+import type { Accessor } from "nodula-framework";
 
 export interface NavigationRouter {
   current: Accessor<string>;
   navigate(path: string): void;
-  mode: 'hash' | 'history';
+  mode: "hash" | "history";
 }
 
 export interface NavigationItem {
@@ -13,7 +13,7 @@ export interface NavigationItem {
   /** Treat href as an absolute HTTP(S) URL and leave it to the browser instead of the router. */
   external?: boolean;
   /** External-link browsing context. Defaults to `_blank`; `_self` opens in the current tab. */
-  target?: '_blank' | '_self';
+  target?: "_blank" | "_self";
 }
 
 export interface NavigationOptions {

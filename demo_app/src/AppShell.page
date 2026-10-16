@@ -1,40 +1,41 @@
 <script>
-import { effect, onCleanup, onMount } from 'nodula-framework';
-import { createRouter } from 'nodula-framework/router';
-import { createSEO } from 'nodula-framework/seo';
-import { createNavigation } from 'nodula-framework/navigation';
-import { createNavigationDropdown } from 'nodula-framework/navigation-dropdown';
-import { enableLifecycleTransitions } from 'nodula-framework/animation';
-import { createLocalStorage } from 'nodula-framework/localstorage';
-import { createCookieConsent, setupGoogleAnalytics } from 'nodula-framework/cookieconsent';
-import cookieConsentImage from './assets/images/cookie.webp';
-import { demoAuth, initializeDemoAuth, navigateDemoRoute, protectDemoAdminRoute, setDemoRouter, signOutDemoAdmin } from './demo-auth.js';
-import { notFound, routes } from './routes.js';
+import { effect, onCleanup, onMount } from "nodula-framework";
+import { createRouter } from "nodula-framework/router";
+import { createSEO } from "nodula-framework/seo";
+import { createNavigation } from "nodula-framework/navigation";
+import { createNavigationDropdown } from "nodula-framework/navigation-dropdown";
+import { enableLifecycleTransitions } from "nodula-framework/animation";
+import { createLocalStorage } from "nodula-framework/localstorage";
+import { createCookieConsent, setupGoogleAnalytics } from "nodula-framework/cookieconsent";
+import  cookieConsentImage from "./assets/images/cookie.webp";
+import { demoAuth,initializeDemoAuth,navigateDemoRoute,protectDemoAdminRoute,setDemoRouter,signOutDemoAdmin} from "./demo-auth.js";
+import { notFound, routes } from "./routes.js";
 
 // Filerouter based on pages in /routes
 const router = createRouter(routes, notFound, {
-  mode: 'history',
+  mode: "history",
   beforeEach: protectDemoAdminRoute,
 });
 
 const seo = createSEO(router, {
-  siteUrl: 'https://nodula.richardleurs.nl',
+  siteUrl: "https://nodula.richardleurs.nl",
   defaults: {
-    title: 'Nodula | A small framework for big ideas',
-    description: 'Nodula is a lightweight JavaScript framework built around modular architecture, simplicity and speed.',
-    keywords: 'framework, javascript, lightweight, modular, fast, small, modern, web application',
-    author:'Richard Leurs',
-    robots: 'index, follow',
+    title: "Nodula | A small framework for big ideas",
+    description:
+      "Nodula is a lightweight JavaScript framework built around modular architecture, simplicity and speed.",
+    keywords: "framework, javascript, lightweight, modular, fast, small, modern, web application",
+    author: "Richard Leurs",
+    robots: "index, follow",
     openGraph: {
-      siteName: 'Nodula',
-      type: 'website',
-      image: 'https://nodula.richardleurs.nl/assets/bg-nodula.webp',
+      siteName: "Nodula",
+      type: "website",
+      image: "https://nodula.richardleurs.nl/assets/bg-nodula.webp",
     },
   },
 });
 
 setDemoRouter(router);
-enableLifecycleTransitions({ options: { duration: 500, easing: 'ease-out' } });
+enableLifecycleTransitions({ options: { duration: 500, easing: "ease-out" } });
 
 let consent;
 let siteHeaderElement;
@@ -44,55 +45,57 @@ function setSiteHeaderElement(element) {
 }
 
 function updateSiteHeaderScrollState() {
-  siteHeaderElement?.classList.toggle('ui-site-header--scrolled', window.scrollY > 0);
+  siteHeaderElement?.classList.toggle("ui-site-header--scrolled", window.scrollY > 0);
 }
 
 onCleanup(() => consent?.close());
-onCleanup(() => window.removeEventListener('scroll', updateSiteHeaderScrollState));
+onCleanup(() => window.removeEventListener("scroll", updateSiteHeaderScrollState));
 
 onMount(() => {
   updateSiteHeaderScrollState();
-  window.addEventListener('scroll', updateSiteHeaderScrollState, { passive: true });
+  window.addEventListener("scroll", updateSiteHeaderScrollState, { passive: true });
 
   consent = createCookieConsent({
-  siteName: 'Nodula',
-  image: cookieConsentImage,
-  //description: 'We use necessary storage to keep the demo working. \nOptional analytics remains disabled unless you choose it. \nYou can change or withdraw your choice at any time using Cookie settings.',
-  labels: {
-    title: 'Your privacy choices',
-    bannerDescription: 'We use necessary local storage to keep the demo working.\nOptional analytics remains disabled unless you choose it.\nYou can change or withdraw your choice at any time using Cookie settings.',
-    preferences: 'Choose your cookie preferences',
-    necessary: 'Necessary',
-    necessaryDescription: 'Required to run this demo. Always active.',
-    analytics: 'Analytics',
-    analyticsDescription: 'Helps us understand which Nodula pages visitors use. Shares data with Google Analytics.',
-    personalization: 'Personalisation',
-    personalizationDescription: 'Remembers preferences that make the Nodula demo more useful.',
-    marketing: 'Marketing',
-    marketingDescription: 'Measures the effectiveness of Nodula announcements and campaigns.',
-    btn_acceptAll: 'Accept all',
-    btn_reject: 'Reject non-essential',
-    btn_manage: 'Manage preferences',
-    btn_save: 'Save preferences',
-    btn_cancel: 'Cancel',
-    btn_settings: 'Cookie settings',
-    privacyPolicy: 'Privacy policy',
-  },
-//   categories: [
-//   {
-//     id: 'another',
-//     label: 'this is an extra category',
-//     description: 'explain what it is',
-//   },
-// ],
-  showAnalytics: true,
-  showPersonalization: false,
-  showMarketing: false,
-  privacyPolicyUrl: 'https://nodula-docs.richardleurs.nl/guide/privacy.html',
-  showSettingsButton: false
+    siteName: "Nodula",
+    image: cookieConsentImage,
+    //description: 'We use necessary storage to keep the demo working. \nOptional analytics remains disabled unless you choose it. \nYou can change or withdraw your choice at any time using Cookie settings.',
+    labels: {
+      title: "Your privacy choices",
+      bannerDescription:
+        "We use necessary local storage to keep the demo working.\nOptional analytics remains disabled unless you choose it.\nYou can change or withdraw your choice at any time using Cookie settings.",
+      preferences: "Choose your cookie preferences",
+      necessary: "Necessary",
+      necessaryDescription: "Required to run this demo. Always active.",
+      analytics: "Analytics",
+      analyticsDescription:
+        "Helps us understand which Nodula pages visitors use. Shares data with Google Analytics.",
+      personalization: "Personalisation",
+      personalizationDescription: "Remembers preferences that make the Nodula demo more useful.",
+      marketing: "Marketing",
+      marketingDescription: "Measures the effectiveness of Nodula announcements and campaigns.",
+      btn_acceptAll: "Accept all",
+      btn_reject: "Reject non-essential",
+      btn_manage: "Manage preferences",
+      btn_save: "Save preferences",
+      btn_cancel: "Cancel",
+      btn_settings: "Cookie settings",
+      privacyPolicy: "Privacy policy",
+    },
+    //   categories: [
+    //   {
+    //     id: 'another',
+    //     label: 'this is an extra category',
+    //     description: 'explain what it is',
+    //   },
+    // ],
+    showAnalytics: true,
+    showPersonalization: false,
+    showMarketing: false,
+    privacyPolicyUrl: "https://nodula-docs.richardleurs.nl/guide/privacy.html",
+    showSettingsButton: false,
   });
 
-  const GA_ID = 'G-7TZGDGCGKJ';
+  const GA_ID = "G-7TZGDGCGKJ";
   setupGoogleAnalytics(consent, GA_ID);
 });
 
@@ -110,14 +113,26 @@ function setAuthButtonElement(element) {
 
   disposeAuthButtonEffect = effect(() => {
     const status = demoAuth.status();
-    const signedIn = status === 'authenticated';
-    const busy = status === 'idle' || status === 'loading';
-    const tooltipText = element.closest('.ui-tooltip')?.querySelector('.ui-tooltip-text');
-    element.dataset.authState = busy ? 'busy' : signedIn ? 'signed-in' : 'signed-out';
+    const signedIn = status === "authenticated";
+    const busy = status === "idle" || status === "loading";
+    const tooltipText = element.closest(".ui-tooltip")?.querySelector(".ui-tooltip-text");
+    element.dataset.authState = busy ? "busy" : signedIn ? "signed-in" : "signed-out";
     element.disabled = busy;
-    element.setAttribute('aria-label', busy ? 'Checking demo authentication status' : signedIn ? 'Sign out of the demo administrator account' : 'Sign in as the demo administrator');
-    element.setAttribute('aria-busy', busy ? 'true' : 'false');
-    if (tooltipText) tooltipText.textContent = busy ? 'Checking sign-in status…' : signedIn ? 'Sign out' : 'Sign in';
+    element.setAttribute(
+      "aria-label",
+      busy
+        ? "Checking demo authentication status"
+        : signedIn
+          ? "Sign out of the demo administrator account"
+          : "Sign in as the demo administrator",
+    );
+    element.setAttribute("aria-busy", busy ? "true" : "false");
+    if (tooltipText)
+      tooltipText.textContent = busy
+        ? "Checking sign-in status…"
+        : signedIn
+          ? "Sign out"
+          : "Sign in";
   });
 }
 
@@ -126,13 +141,13 @@ async function toggleDemoSignIn() {
     await initializeDemoAuth();
     if (demoAuth.isAuthenticated()) {
       await signOutDemoAdmin();
-      router.navigate('/');
+      router.navigate("/");
       return;
     }
 
-    router.navigate('/login');
+    router.navigate("/login");
   } catch (error) {
-    console.error('Demo authentication action failed:', error);
+    console.error("Demo authentication action failed:", error);
   }
 }
 
@@ -144,53 +159,60 @@ function setNavigationElement(element) {
   if (!element) return;
 
   disposeNavigationEffect = effect(() => {
-    const isAdmin = demoAuth.status() === 'authenticated' && demoAuth.user()?.role === 'admin';
+    const isAdmin = demoAuth.status() === "authenticated" && demoAuth.user()?.role === "admin";
     const items = [
-      { label: 'Home', href: '/' },
+      { label: "Home", href: "/" },
 
-      { label: 'Add-ons', href: '/addons' },
-      { label: 'Data', href: '/data' },
-   
-      { label: 'Form', href: '/forms' },
-      { label: 'Dialog', href: '/modal' },
-      { label: 'Sortable list', href: '/sortable' },
-      { label: 'Drag & Drop', href: '/dragdrop' },
-     
-   //   { label: 'File drop', href: '/filedrop' },
-      { label: 'File upload', href: '/fileupload' },
-      { label: 'Web Components', href: '/web-components' },
+      { label: "Add-ons", href: "/addons" },
+      { label: "Data", href: "/data" },
+
+      { label: "Form", href: "/forms" },
+      { label: "Dialog", href: "/modal" },
+      { label: "Sortable list", href: "/sortable" },
+      { label: "Drag & Drop", href: "/dragdrop" },
+
+      //   { label: 'File drop', href: '/filedrop' },
+      { label: "File upload", href: "/fileupload" },
+      { label: "Web Components", href: "/web-components" },
       //...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
       // { label: 'Demo login', href: '/login' },
-      { label: 'Guide', href: 'https://nodula-docs.richardleurs.nl/', external: true },
+      { label: "Guide", href: "https://nodula-docs.richardleurs.nl/", external: true },
     ];
 
     disposeNavigation?.();
     disposeNavigation = createNavigation(element, router, items, {
-      label: 'Main navigation',
-      linkClassName: 'ui-nav-link',
-      activeClassName: 'ui-nav-link--active',
+      label: "Main navigation",
+      linkClassName: "ui-nav-link",
+      activeClassName: "ui-nav-link--active",
     });
     disposeNavigationDropdown?.();
-    disposeNavigationDropdown = createNavigationDropdown(element, router, [
-      { label: 'Foundation tokens', href: '/democss#tokens-title' },
-      { label: 'Grid layout', href: '/democss#grid-system-title' },
-      { label: 'Flexbox layout', href: '/democss#flexbox-system-title' },
-      { label: 'Typography and density', href: '/democss#type-density-title' },
-      { label: 'Themes', href: '/democss#theme-previews-title' },
-      { label: 'Components', href: '/democss#components' },
-      { label: 'Controls', href: '/democss#controls-title' },
-      { label: 'Forms', href: '/democss#forms-title' },
-      { label: 'Data cards', href: '/democss#data-title' },
-    ], {
-      label: 'NodulaUI',
-      navLabel: 'NodulaUI sections',
-      className: 'ui-nav-dropdown',
-      buttonClassName: 'ui-nav-link ui-nav-dropdown__button',
-      panelClassName: 'ui-nav-dropdown__panel',
-      linkClassName: 'ui-nav-dropdown__link',
-    });
-    const dropdown = element.querySelector('.ui-nav-dropdown');
-    const guideLink = Array.from(element.querySelectorAll('a')).find((link) => link.textContent === 'Guide');
+    disposeNavigationDropdown = createNavigationDropdown(
+      element,
+      router,
+      [
+        { label: "Foundation tokens", href: "/democss#tokens-title" },
+        { label: "Grid layout", href: "/democss#grid-system-title" },
+        { label: "Flexbox layout", href: "/democss#flexbox-system-title" },
+        { label: "Typography and density", href: "/democss#type-density-title" },
+        { label: "Themes", href: "/democss#theme-previews-title" },
+        { label: "Components", href: "/democss#components" },
+        { label: "Controls", href: "/democss#controls-title" },
+        { label: "Forms", href: "/democss#forms-title" },
+        { label: "Data cards", href: "/democss#data-title" },
+      ],
+      {
+        label: "NodulaUI",
+        navLabel: "NodulaUI sections",
+        className: "ui-nav-dropdown",
+        buttonClassName: "ui-nav-link ui-nav-dropdown__button",
+        panelClassName: "ui-nav-dropdown__panel",
+        linkClassName: "ui-nav-dropdown__link",
+      },
+    );
+    const dropdown = element.querySelector(".ui-nav-dropdown");
+    const guideLink = Array.from(element.querySelectorAll("a")).find(
+      (link) => link.textContent === "Guide",
+    );
     if (dropdown && guideLink) element.insertBefore(dropdown, guideLink);
   });
 }
@@ -201,27 +223,27 @@ onCleanup(() => {
   disposeAuthButtonEffect?.();
   seo.dispose();
 });
-const [theme, setTheme] = createLocalStorage('nodula-theme', 'dark');
+const [theme, setTheme] = createLocalStorage("nodula-theme", "dark");
 
 effect(() => {
   document.documentElement.dataset.theme = theme();
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme() === 'light' ? '#f5f8f1' : '#101b25');
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", theme() === "light" ? "#f5f8f1" : "#101b25");
 });
 
 function toggleTheme() {
-  const next = theme() === 'dark' ? 'light' : 'dark';
+  const next = theme() === "dark" ? "light" : "dark";
   setTheme(next);
 }
 
 function openCookieSettings() {
   consent?.openSettings();
 }
-
 </script>
 
 <template>
   <div class="ui-app">
-
     <header class="ui-site-header" @ref="setSiteHeaderElement">
       <a class="ui-brand" href="/" aria-label="Nodula home">
         <!-- <span class="ui-brand__mark" aria-hidden="true">s</span> -->
@@ -231,24 +253,45 @@ function openCookieSettings() {
       </a>
       <nav class="ui-site-nav" @ref="setNavigationElement"></nav>
       <div class="ui-header-actions">
-        <div class="ui-tooltip"><span class="ui-tooltip-text">Sign-in</span>
-        <button class="ui-auth-toggle" type="button" @click="toggleDemoSignIn()" @ref="setAuthButtonElement" aria-label="Checking demo authentication status" aria-busy="true"> </button>
-     </div>
-        <div class="ui-tooltip"><span class="ui-tooltip-text">Cookie settings</span>
-          <button class="ui-cookie-settings-toggle" type="button" @click="consent.openSettings()" aria-label="Open cookie settings"></button>
+        <div class="ui-tooltip">
+          <span class="ui-tooltip-text">Sign-in</span>
+          <button
+            class="ui-auth-toggle"
+            type="button"
+            @click="toggleDemoSignIn()"
+            @ref="setAuthButtonElement"
+            aria-label="Checking demo authentication status"
+            aria-busy="true"
+          ></button>
         </div>
-  <div class="ui-tooltip"><span class="ui-tooltip-text">{{ theme() === 'dark' ? 'Light mode' : 'Dark mode' }}</span>
-     <button class="ui-theme-toggle" type="button" @click="toggleTheme()" :aria-label="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" :aria-pressed="theme() === 'light' ? 'true' : 'false'"></button>
-</div>
-</div>
-    <!-- <a class="ui-github-link" href="https://vite.dev/" target="_blank" rel="noreferrer">Made for the web <span aria-hidden="true"> ↗</span></a> -->
+        <div class="ui-tooltip">
+          <span class="ui-tooltip-text">Cookie settings</span>
+          <button
+            class="ui-cookie-settings-toggle"
+            type="button"
+            @click="consent.openSettings()"
+            aria-label="Open cookie settings"
+          ></button>
+        </div>
+        <div class="ui-tooltip">
+          <span class="ui-tooltip-text">{{ theme() === "dark" ? "Light mode" : "Dark mode" }}</span>
+          <button
+            class="ui-theme-toggle"
+            type="button"
+            @click="toggleTheme()"
+            :aria-label="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+            :aria-pressed="theme() === 'light' ? 'true' : 'false'"
+          ></button>
+        </div>
+      </div>
+      <!-- <a class="ui-github-link" href="https://vite.dev/" target="_blank" rel="noreferrer">Made for the web <span aria-hidden="true"> ↗</span></a> -->
     </header>
     <div class="route-view">
       <outlet :view="router.view()" />
     </div>
     <footer class="ui-site-footer">
       <span>A small framework for big ideas </span>
-       <span>This site is build with Nodula</span>
+      <span>This site is build with Nodula</span>
       <span>Copyright © Richard Leurs 2026 | GNU General Public License v3 </span>
     </footer>
   </div>

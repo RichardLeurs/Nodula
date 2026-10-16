@@ -1,4 +1,4 @@
-import type { FileDropZoneOptions } from 'nodula-framework/filedrop';
+import type { FileDropZoneOptions } from "nodula-framework/filedrop";
 
 export interface FileUploadProgress {
   loaded: number;
@@ -6,7 +6,7 @@ export interface FileUploadProgress {
   percent: number;
 }
 
-export interface FileUploadOptions extends Omit<FileDropZoneOptions, 'onFiles'> {
+export interface FileUploadOptions extends Omit<FileDropZoneOptions, "onFiles"> {
   /** Upload endpoint URL. Defaults to `/upload/`. */
   url?: string;
   /** Maximum accepted file size in bytes. Larger files are rejected before a request is created. */
@@ -18,7 +18,7 @@ export interface FileUploadOptions extends Omit<FileDropZoneOptions, 'onFiles'> 
   /** Called for HTTP errors, network errors, and invalid JSON responses. */
   onError?: (file: File, error: Error) => void;
   /** Optional observer called before each selected file starts uploading. */
-  onFiles?: FileDropZoneOptions['onFiles'];
+  onFiles?: FileDropZoneOptions["onFiles"];
 }
 
 /** Append a file-drop zone that uploads each accepted file; returns an idempotent disposer. */

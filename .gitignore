@@ -7,6 +7,9 @@
 .env
 .env.*
 .DS_Store
+.prettierignore
+.oxfmtrc.json
+.oxlintrc.json
 node_modules
 scripts/
 api/

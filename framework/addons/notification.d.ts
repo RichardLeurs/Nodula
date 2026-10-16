@@ -1,5 +1,11 @@
-export type NotificationType = 'error' | 'success' | 'warning' | 'info';
-export type NotificationPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+export type NotificationType = "error" | "success" | "warning" | "info";
+export type NotificationPosition =
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
 
 export interface NotificationOptions {
   /** Visual and accessible notification variant. Defaults to "info". */

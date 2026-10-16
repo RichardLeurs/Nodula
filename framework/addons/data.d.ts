@@ -1,6 +1,11 @@
-export interface DataRequestOptions extends Omit<RequestInit, 'body'> {
+export interface DataRequestOptions extends Omit<RequestInit, "body"> {
   /** Query parameters appended to the request URL. Array values become repeated keys. */
-  params?: URLSearchParams | Record<string, string | number | boolean | readonly (string | number | boolean)[] | null | undefined>;
+  params?:
+    | URLSearchParams
+    | Record<
+        string,
+        string | number | boolean | readonly (string | number | boolean)[] | null | undefined
+      >;
   /** Request body; plain objects and arrays are JSON-serialized automatically. */
   body?: BodyInit | object | null;
 }
@@ -19,11 +24,29 @@ export interface DataClient {
   fetch<T = unknown>(path: string | URL, options?: DataRequestOptions): Promise<T>;
   /** Alias for `fetch`. */
   request<T = unknown>(path: string | URL, options?: DataRequestOptions): Promise<T>;
-  get<T = unknown>(path: string | URL, options?: Omit<DataRequestOptions, 'method' | 'body'>): Promise<T>;
-  post<T = unknown>(path: string | URL, body?: DataRequestOptions['body'], options?: Omit<DataRequestOptions, 'method' | 'body'>): Promise<T>;
-  put<T = unknown>(path: string | URL, body?: DataRequestOptions['body'], options?: Omit<DataRequestOptions, 'method' | 'body'>): Promise<T>;
-  patch<T = unknown>(path: string | URL, body?: DataRequestOptions['body'], options?: Omit<DataRequestOptions, 'method' | 'body'>): Promise<T>;
-  delete<T = unknown>(path: string | URL, options?: Omit<DataRequestOptions, 'method' | 'body'>): Promise<T>;
+  get<T = unknown>(
+    path: string | URL,
+    options?: Omit<DataRequestOptions, "method" | "body">,
+  ): Promise<T>;
+  post<T = unknown>(
+    path: string | URL,
+    body?: DataRequestOptions["body"],
+    options?: Omit<DataRequestOptions, "method" | "body">,
+  ): Promise<T>;
+  put<T = unknown>(
+    path: string | URL,
+    body?: DataRequestOptions["body"],
+    options?: Omit<DataRequestOptions, "method" | "body">,
+  ): Promise<T>;
+  patch<T = unknown>(
+    path: string | URL,
+    body?: DataRequestOptions["body"],
+    options?: Omit<DataRequestOptions, "method" | "body">,
+  ): Promise<T>;
+  delete<T = unknown>(
+    path: string | URL,
+    options?: Omit<DataRequestOptions, "method" | "body">,
+  ): Promise<T>;
 }
 
 /** Create a configurable Fetch client with JSON handling and common HTTP methods. */

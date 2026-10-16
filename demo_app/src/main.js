@@ -19,17 +19,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import AppShell from './AppShell.page';
-import { mount } from 'nodula-framework';
+import AppShell from "./AppShell.page";
+import { mount } from "nodula-framework";
 
-import './assets/css/app.css';
+import "./assets/css/app.css";
 //import './assets/css/nodula-ui.css';
 
-import { installDemoCodeHighlighting } from './highlight-demo-code.js';
+import { installDemoCodeHighlighting } from "./highlight-demo-code.js";
 
-import 'iconify-icon';
+import "iconify-icon";
 
-mount('#app', AppShell);
+mount("#app", AppShell);
 installDemoCodeHighlighting();
 
 console.log("Nodula demo app | Copyright © Richard Leurs 2026");

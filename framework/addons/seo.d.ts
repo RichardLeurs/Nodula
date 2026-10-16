@@ -1,4 +1,4 @@
-import type { Accessor } from 'nodula-framework';
+import type { Accessor } from "nodula-framework";
 
 export type SEOMetadataValue = string | null | undefined | Accessor<string | null | undefined>;
 export interface SEOOpenGraph {
@@ -31,7 +31,7 @@ export interface SEORouteContext {
   /** Decoded dynamic route parameters. */
   params: Readonly<Record<string, string>>;
   router: {
-    mode: 'hash' | 'history';
+    mode: "hash" | "history";
     current: Accessor<string>;
     navigate(path: string): void;
   };
@@ -53,4 +53,4 @@ export interface SEOController {
 }
 
 /** Manage title, description, keywords, author, canonical, Open Graph, robots, and hreflang head tags. */
-export function createSEO(router: SEORouteContext['router'], options?: SEOOptions): SEOController;
+export function createSEO(router: SEORouteContext["router"], options?: SEOOptions): SEOController;

@@ -9,4 +9,7 @@ export interface SortableListOptions {
  * Buttons marked data-sortable-up or data-sortable-down are handled by delegation.
  * Returns an idempotent disposer; Nodula owners also dispose automatically.
  */
-export function createSortableList(list: HTMLOListElement | HTMLUListElement, options: SortableListOptions): () => void;
+export function createSortableList(
+  list: HTMLOListElement | HTMLUListElement,
+  options: SortableListOptions,
+): () => void;

@@ -1,31 +1,36 @@
 <script>
-import { createFileUploadZone } from 'nodula-framework/fileupload';
-import { signal } from 'nodula-framework';
-import fileuploadImage from '../assets/images/fileupload.webp';
+import { createFileUploadZone } from "nodula-framework/fileupload";
+import { signal } from "nodula-framework";
+import fileuploadImage from "../assets/images/fileupload.webp";
 
-const [uploadMessage, setUploadMessage] = signal('Choose or drop files to upload.');
+const [uploadMessage, setUploadMessage] = signal("Choose or drop files to upload.");
 
 function setupFileUpload(element) {
   if (!element) return;
   createFileUploadZone(element, {
-    url: '/api/upload/',
-    label: 'Upload greenhouse photos',
-    description: 'Drop image files here, or choose files from your device.',
-    buttonLabel: 'Choose photos',
-    accept: 'image/*',
+    url: "/api/upload/",
+    label: "Upload greenhouse photos",
+    description: "Drop image files here, or choose files from your device.",
+    buttonLabel: "Choose photos",
+    accept: "image/*",
     multiple: true,
     maxFileSize: 10000000,
     onProgress(file, progress) {
-      setUploadMessage(`Uploading ${file.name}: ${progress.percent}% (${progress.loaded} of ${progress.total} bytes).`);
+      setUploadMessage(
+        `Uploading ${file.name}: ${progress.percent}% (${progress.loaded} of ${progress.total} bytes).`,
+      );
     },
     onComplete(file, response) {
       setUploadMessage(`${file.name} uploaded successfully as ${response.name}.`);
     },
     onError(file, error) {
-      const zone = element.querySelector('.ui-filedrop');
-      zone?.classList.add('ui-fileupload--error');
-      zone?.style.setProperty('border-color', 'var(--ui-color-danger, #b42318)');
-      zone?.style.setProperty('background-color', 'color-mix(in srgb, var(--ui-color-danger, #b42318) 10%, var(--ui-color-surface, #fff))');
+      const zone = element.querySelector(".ui-filedrop");
+      zone?.classList.add("ui-fileupload--error");
+      zone?.style.setProperty("border-color", "var(--ui-color-danger, #b42318)");
+      zone?.style.setProperty(
+        "background-color",
+        "color-mix(in srgb, var(--ui-color-danger, #b42318) 10%, var(--ui-color-surface, #fff))",
+      );
       setUploadMessage(`Could not upload ${file.name}: ${error.message}`);
     },
   });
@@ -37,13 +42,21 @@ function setupFileUpload(element) {
     <header class="ui-page__header">
       <p class="ui-page__eyebrow">File upload add-on</p>
 
-     <div class="ui-page__title-row">  
-           <h1 class="ui-page__title">Upload files with live progress.</h1>
-        <img class="ui-page__header-image" :src="fileuploadImage" alt="" width="128" height="147" aria-hidden="true">
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">Upload files with live progress.</h1>
+        <img
+          class="ui-page__header-image"
+          :src="fileuploadImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
       </div>
 
-
-      <p class="ui-page__description">The fileupload add-on builds on filedrop and sends each accepted file to a PHP endpoint.</p>
+      <p class="ui-page__description">
+        The fileupload add-on builds on filedrop and sends each accepted file to a PHP endpoint.
+      </p>
     </header>
 
     <section class="ui-section" aria-labelledby="fileupload-title">
@@ -63,8 +76,10 @@ function setupFileUpload(element) {
   multiple: true,
   onProgress(file, progress) { updateProgress(file, progress.percent); },
 });</code></pre>
-      <p class="ui-section__description">The PHP handler stores generated filenames in <code>/upload/files</code> by default. Set <code>UPLOAD_DIR</code> on the server to use another storage path.</p>
+      <p class="ui-section__description">
+        The PHP handler stores generated filenames in <code>/upload/files</code> by default. Set
+        <code>UPLOAD_DIR</code> on the server to use another storage path.
+      </p>
     </section>
   </main>
 </template>
-

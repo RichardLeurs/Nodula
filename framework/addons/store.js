@@ -1,17 +1,33 @@
 /* Provide deeply reactive object and array state as an optional add-on. */
-import { batch, signal } from '../reactivity.js';
+import { batch, signal } from "../reactivity.js";
 
-const STORE_KEYS = Symbol('nodula.store.keys');
-const ARRAY_MUTATORS = new Set(['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse', 'fill', 'copyWithin']);
+const STORE_KEYS = Symbol("nodula.store.keys");
+const ARRAY_MUTATORS = new Set([
+  "push",
+  "pop",
+  "shift",
+  "unshift",
+  "splice",
+  "sort",
+  "reverse",
+  "fill",
+  "copyWithin",
+]);
 
 function isStoreObject(value) {
-  return value !== null && typeof value === 'object' &&
-    (Array.isArray(value) || Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    (Array.isArray(value) ||
+      Object.getPrototypeOf(value) === Object.prototype ||
+      Object.getPrototypeOf(value) === null)
+  );
 }
 
 /** Create a deeply reactive proxy over a plain object or array. */
 export function createStore(initialValue) {
-  if (!isStoreObject(initialValue)) throw new TypeError('createStore expects a plain object or array.');
+  if (!isStoreObject(initialValue))
+    throw new TypeError("createStore expects a plain object or array.");
   const proxies = new WeakMap();
   const targets = new WeakMap();
   const subscriptions = new WeakMap();
@@ -56,8 +72,9 @@ export function createStore(initialValue) {
           if (!changed) return false;
           if (!existed || !Object.is(previous, raw)) publish(object, key);
           if (!existed) publish(object, STORE_KEYS);
-          if (Array.isArray(object) && key !== 'length' && object.length !== length) publish(object, 'length');
-          if (Array.isArray(object) && key === 'length' && raw < length) {
+          if (Array.isArray(object) && key !== "length" && object.length !== length)
+            publish(object, "length");
+          if (Array.isArray(object) && key === "length" && raw < length) {
             for (let index = raw; index < length; index += 1) publish(object, String(index));
             publish(object, STORE_KEYS);
           }
