@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Internally resolve element-ID content and restore its source after overlays close. */
 /** Resolve #id content references and restore the source element after the overlay closes. */
 export function prepareContent(content) {
@@ -21,6 +23,9 @@ export function prepareContent(content) {
   return {
     content: fragment,
     isElementReference: true,
+    /**
+     * Put the original content back where the placeholder was. Runs once.
+     */
     restore() {
       if (restored) return;
       restored = true;

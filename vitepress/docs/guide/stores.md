@@ -46,7 +46,8 @@ The returned proxy has the same TypeScript shape as `T`. `createStore` throws a 
 ## Behavior and lifecycle
 
 - Reads of properties, the `in` operator, and own-key enumeration (for example, `Object.keys(state)`) are tracked by active `effect()` and `computed()` computations.
-- Assignments notify dependents when a property's value changes. Adding or deleting a property also updates effects tracking key enumeration or property presence.
+- Assignments and `Object.defineProperty()` notify dependents when a property's value changes. Adding or deleting a property also updates effects tracking key enumeration or property presence.
+- Every store shares one proxy per object. Assigning one store (or a nested store value) into another stores the underlying object, so `parent.child = child` keeps `parent.child === child`, and writes through either path notify readers of both. Calling `createStore()` with a store, or twice with the same object, returns the same proxy.
 - Nested plain objects and arrays are recursively proxied. Repeated reads of the same nested object return the same proxy.
 - Array mutators (`push`, `pop`, `shift`, `unshift`, `splice`, `sort`, `reverse`, `fill`, and `copyWithin`) batch notifications until the mutation completes.
 - Effects created inside `createRoot()` are disposed with that root. An `effect()` created outside a root returns its own stop function. The store itself has no subscription or disposal handle.

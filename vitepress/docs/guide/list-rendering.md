@@ -101,6 +101,14 @@ document.querySelector('#app').append(listElement);
 
 Use `each()` when composing rows inside `h()` or compiled template rendering; use `list()` when a standalone keyed `div` container fits the DOM structure.
 
+`list()` limits, compared with `each()`:
+
+- It always creates its own `<div>` wrapper, so it cannot render rows directly inside a `<ul>`, `<table>`, or `<select>`.
+- `render(item, index)` runs once per key. If an item object is replaced under the same key, or its position changes, the row keeps the item and `index` it was created with. Read row fields from signals or a store, or use `each()`, whose rows receive a reactive item accessor.
+- Each row must render a single node; lifecycle (enter/leave) transitions are not applied.
+
+New code should prefer `each()`; `list()` remains supported for existing standalone containers.
+
 ### Keep conditions inside rows
 
 Put `@if` on a child or wrapper inside the loop row. A loop directive and `@if`/`@else` cannot be placed on the same element:

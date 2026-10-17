@@ -1,6 +1,8 @@
 import type { Accessor } from "nodula-framework";
 
 export interface NavigationRouter {
+  /** Optional history base path; internal links are prefixed with it. */
+  base?: string;
   current: Accessor<string>;
   navigate(path: string): void;
   mode: "hash" | "history";

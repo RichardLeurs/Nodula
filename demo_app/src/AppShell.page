@@ -245,7 +245,7 @@ function openCookieSettings() {
 <template>
   <div class="ui-app">
     <header class="ui-site-header" @ref="setSiteHeaderElement">
-      <a class="ui-brand" href="/" aria-label="Nodula home">
+      <a class="ui-brand" href="/">
         <!-- <span class="ui-brand__mark" aria-hidden="true">s</span> -->
         <span class="ui-brand__logo" aria-hidden="true"></span>
         <span class="ui-brand__name"><b>Nodula</b></span>

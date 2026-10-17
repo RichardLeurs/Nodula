@@ -41,7 +41,13 @@ export interface IndexedDBSignalOptions {
   databaseName?: string;
 }
 
-export type IndexedDBSignal<T> = Signal<T> & { ready: Promise<void>; readonly available: boolean };
+export type IndexedDBSignal<T> = Signal<T> & {
+  ready: Promise<void>;
+  readonly available: boolean;
+  /** Reason the last IndexedDB open, read or write failed, or null after a successful one. Reactive and read-only. */
+  /** Error with a stable `code` (nodula-storage-*) and the browser error as `cause`, or null. */
+  readonly lastError: (Error & { code?: string; cause?: unknown }) | null;
+};
 
 /** Create a reactive signal initialized from and persisted to localStorage as JSON. */
 export function createLocalStorage<T>(
@@ -52,7 +58,7 @@ export function createLocalStorage<T>(
 /** @deprecated Use `createLocalStorage` instead. */
 export const createStorageSignal: typeof createLocalStorage;
 
-/** Create a reactive signal hydrated from and persisted to IndexedDB. Await `ready` before reading `available` or relying on persisted hydration. */
+/** Create a reactive signal hydrated from and persisted to IndexedDB. `ready` settles when the first open attempt settles or is blocked by another connection; `available` may turn true later, once a blocked open succeeds. */
 export function createIndexedDB<T>(
   key: string,
   initialValue: T,

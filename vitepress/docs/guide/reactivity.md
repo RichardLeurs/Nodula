@@ -51,7 +51,7 @@ setShowLeft(false); // effect switches from left to right dependency
 stop();
 ```
 
-The setter skips notifications when new value is `Object.is`-equal to current value. Signal updates notify dependent computations synchronously; `batch(fn)` groups writes and flushes dependent work when the callback completes.
+The setter skips notifications when new value is `Object.is`-equal to current value. Because a function argument is always treated as an updater, store a function value by wrapping it: `setHandler(() => handler)`. `computed()` does this for you, so a computed callback may return a function. Signal updates notify dependent computations synchronously; `batch(fn)` groups writes and flushes dependent work when the callback completes.
 
 ### Computed values
 
@@ -140,7 +140,9 @@ Signals suit individual values and derived state. For deeply reactive plain obje
 
 - Read signals by calling their accessor: `count()`. Passing the accessor itself does not read or track its value.
 - Effects track only reads made during their synchronous execution. Reads deferred to a later timer or promise callback are not automatically tracked by the original effect run.
-- Avoid writing a signal on every execution of an effect that also reads that signal unless the update has a clear stopping condition; otherwise it can schedule repeated work.
+- An effect that writes a signal it reads re-runs until the value settles. Give the write a clear stopping condition: a computation that re-runs 100 times in one update throws a cycle error instead of hanging.
+- If an effect throws during an update, the remaining queued effects still run and the first error is rethrown from the write that triggered them. Likewise, every cleanup runs on disposal even if one throws; the first error is rethrown afterwards.
+- Computed values settle before effects run, so an effect that reads both a signal and a computed derived from it sees consistent values.
 - `computed()` has no independent disposal method. Its internal effect is owned by the scope active when it is created.
 - Core `signal()` does not recursively proxy object properties. Use `createStore()` when nested object/array property changes need reactive tracking.
 - `onCleanup()` outside an active root/effect throws. Put resource setup and cleanup inside an owned scope.

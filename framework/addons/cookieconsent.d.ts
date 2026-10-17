@@ -42,7 +42,7 @@ export interface CookieConsentOptions {
   storageKey?: string;
   /** Optional Storage implementation; defaults to window.localStorage. */
   storage?: Storage | null;
-  /** Responsible site or organisation name. Defaults to the current hostname. */
+  /** @deprecated Accepted and validated for compatibility, but not rendered. Put site context in `description` or `labels.consent`. */
   siteName?: string;
   /** Specific summary of why the site uses cookies or similar technologies. */
   description?: string;

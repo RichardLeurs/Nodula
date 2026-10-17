@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Generate route-aware sitemap and robots files during Vite builds. */
 function escapeXML(value) {
   return String(value)
@@ -8,6 +10,12 @@ function escapeXML(value) {
     .replaceAll("'", "&apos;");
 }
 
+/**
+ * Check the build options and their routes, priorities and dates.
+ *
+ * @param {object} options
+ * @throws {TypeError} For an invalid site URL, route list, route entry, or robots value.
+ */
 function validateOptions(options) {
   if (!options || typeof options !== "object" || Array.isArray(options)) {
     throw new TypeError("nodulaSEO expects an options object.");
@@ -65,6 +73,13 @@ function validateOptions(options) {
   }
 }
 
+/**
+ * Resolve a route path against the site origin, without query or fragment.
+ *
+ * @param {URL} site
+ * @param {string} path
+ * @returns {string}
+ */
 function routeURL(site, path) {
   const url = new URL(path, site);
   url.search = "";
@@ -72,6 +87,13 @@ function routeURL(site, path) {
   return url.href;
 }
 
+/**
+ * Build the sitemap XML for the routes.
+ *
+ * @param {string} siteUrl
+ * @param {Array<string | { path: string, lastmod?: string, priority?: number }>} routes
+ * @returns {string}
+ */
 function createSitemap(siteUrl, routes) {
   const site = new URL(siteUrl);
   const entries = routes.map((route) => {
@@ -94,6 +116,14 @@ function createSitemap(siteUrl, routes) {
   );
 }
 
+/**
+ * Build the robots.txt content, pointing at the sitemap.
+ *
+ * @param {string} siteUrl
+ * @param {string} sitemapFilename
+ * @param {string | false | undefined} robots Custom rules, or false to skip the file.
+ * @returns {string | null} Null when robots.txt is disabled.
+ */
 function createRobots(siteUrl, sitemapFilename, robots) {
   if (robots === false) return null;
   const rules = robots ?? "User-agent: *\nAllow: /";
@@ -119,6 +149,9 @@ export function nodulaSEO(options) {
   return {
     name: "nodula-seo-static-files",
     apply: "build",
+    /**
+     * Emit the generated sitemap and robots.txt files into the build output.
+     */
     generateBundle() {
       this.emitFile({ type: "asset", fileName: sitemapFilename, source: sitemap });
       if (robots !== null)

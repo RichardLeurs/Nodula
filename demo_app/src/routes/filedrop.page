@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { onCleanup, signal } from "nodula-framework";
 import { createFileDropZone } from "nodula-framework/filedrop";
@@ -12,6 +13,11 @@ onCleanup(() => {
   previewUrls.clear();
 });
 
+/**
+ * Create the demo file drop zone. Accepted images get a preview.
+ *
+ * @param {HTMLElement | null} element
+ */
 function setupFileDropZone(element) {
   if (!element) return;
   createFileDropZone(element, {
@@ -20,10 +26,21 @@ function setupFileDropZone(element) {
     buttonLabel: "Choose photos",
     accept: "image/*",
     multiple: true,
+    /**
+     * Show a message when files are rejected.
+     *
+     * @param {"idle" | "active" | "accepted" | "rejected"} state
+     */
     onStateChange(state) {
       if (state === "rejected")
         setSelectionMessage("Some files were not images and were rejected.");
     },
+    /**
+     * Describe the accepted files, and add a preview for each image.
+     *
+     * @param {File[]} selectedFiles
+     * @param {"picker" | "drop"} selectedSource
+     */
     onFiles(selectedFiles, selectedSource) {
       const fileDetails = selectedFiles.map(({ name, type, size, lastModified }) => ({
         name,
@@ -52,6 +69,11 @@ function setupFileDropZone(element) {
   });
 }
 
+/**
+ * Remember the element that holds the image previews.
+ *
+ * @param {HTMLElement | null} element
+ */
 function setPreviewContainer(element) {
   previewContainer = element;
 }
@@ -88,6 +110,7 @@ function setPreviewContainer(element) {
       </p>
       <div
         class="ui-filedrop-previews"
+        role="group"
         aria-label="Image previews"
         @ref="setPreviewContainer"
       ></div>

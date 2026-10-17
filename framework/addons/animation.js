@@ -1,8 +1,15 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Provide Web Animations helpers and opt-in Nodula lifecycle transitions. */
 import { onCleanup, registerLifecycleTransition } from "nodula-framework";
 
 const activeAnimations = new WeakMap();
 
+/**
+ * Whether the user has asked for reduced motion.
+ *
+ * @returns {boolean} False when `matchMedia` is unavailable.
+ */
 function prefersReducedMotion() {
   return (
     typeof window !== "undefined" &&
@@ -21,6 +28,9 @@ function startAnimation(element, keyframes, options, owned) {
   const animation = element.animate(keyframes, animationOptions);
   activeAnimations.set(element, animation);
 
+  /**
+   * Forget the animation for this element once it finishes or is cancelled.
+   */
   const clearActiveAnimation = () => {
     if (activeAnimations.get(element) === animation) activeAnimations.delete(element);
   };
@@ -53,6 +63,12 @@ export function createTransition(
 ) {
   let currentAnimation = null;
 
+  /**
+   * Play one phase of the transition and remember its animation.
+   *
+   * @param {Keyframe[] | object | undefined} phase
+   * @returns {Animation | null}
+   */
   function play(phase) {
     if (!phase) return null;
     const config = Array.isArray(phase) ? { keyframes: phase } : phase;
@@ -60,6 +76,11 @@ export function createTransition(
     return currentAnimation;
   }
 
+  /**
+   * Play the leave animation and remove the element when it finishes, if `removeOnLeave` is set.
+   *
+   * @returns {Promise<boolean>} True when the leave animation ran.
+   */
   async function leaveElement() {
     const animation = play(leave);
     if (!animation) {
@@ -79,6 +100,9 @@ export function createTransition(
   return {
     enter: () => play(enter),
     leave: leaveElement,
+    /**
+     * Cancel the current transition animation, if any.
+     */
     cancel() {
       currentAnimation?.cancel();
       currentAnimation = null;

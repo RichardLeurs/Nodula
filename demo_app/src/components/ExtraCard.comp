@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <template>
   <article class="ui-card ui-extra-card">
     <span class="ui-extra-card__icon" aria-hidden="true">✳</span>

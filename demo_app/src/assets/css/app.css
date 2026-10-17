@@ -142,10 +142,10 @@
   --ui-tooltip-background: #eee;
   --ui-tooltip-text-color: #333;
 
-  --ui-color-success: #198754;
+  --ui-color-success: #75b798;
   --ui-color-warning: #ffc107;
-  --ui-color-danger: #dc3545;
-  --ui-color-info: #0d6efd;
+  --ui-color-danger: #ea868f;
+  --ui-color-info: #6ea8fe;
 
   /* --message-red: #dc3545;
   --message-green: #198754;
@@ -154,7 +154,7 @@
   --message-orange: #ff7107; */
 
   --ui-color-focus: #68b9e8;
-  --ui-color-disabled: #778681;
+  --ui-color-disabled: #8a9b95;
 
   --ui-syntax-keyword: #d58de8;
   --ui-syntax-string: #91d0f3;
@@ -206,7 +206,7 @@
   --ui-tooltip-background: #20332f;
   --ui-tooltip-text-color: #edf2eb;
 
-  --ui-color-success: #198754;
+  --ui-color-success: #146c43;
   --ui-color-warning: #ffc107;
   --ui-color-danger: #dc3545;
   --ui-color-info: #0d6efd;
@@ -1210,7 +1210,7 @@ a {
   --ui-color-text-inverse: #ffffff;
   --ui-color-primary: #38633b;
   --ui-color-primary-hover: #2c5031;
-  --ui-color-success: #198754;
+  --ui-color-success: #146c43;
   --ui-color-skeleton: #8b9aa8;
   --ui-color-skeleton-highlight: #a7b4bf;
   --ui-color-focus: #38633b;
@@ -1233,11 +1233,11 @@ a {
   --ui-color-text-inverse: #102332;
   --ui-color-primary: #68b9e8;
   --ui-color-primary-hover: #91d0f3;
-  --ui-color-success: #198754;
+  --ui-color-success: #75b798;
   --ui-color-skeleton: #354b65;
   --ui-color-skeleton-highlight: #526b89;
   --ui-color-focus: #68b9e8;
-  --ui-color-disabled: #778681;
+  --ui-color-disabled: #8a9b95;
   --ui-shadow-raised: 0 12px 32px rgba(0, 0, 0, 0.2);
   color-scheme: dark;
 }

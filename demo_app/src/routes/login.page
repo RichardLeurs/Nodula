@@ -1,9 +1,15 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { signal } from "nodula-framework";
 import { demoAuth, initializeDemoAuth, navigateDemoRoute } from "../demo-auth.js";
 
 const [message, setMessage] = signal("");
 
+/**
+ * Sign in as the demo administrator and go to the admin page. A failure is shown as a message.
+ *
+ * @returns {Promise<void>}
+ */
 async function signInAsDemoAdmin() {
   message("");
   try {

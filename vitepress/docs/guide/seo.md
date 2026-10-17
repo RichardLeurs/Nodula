@@ -74,7 +74,7 @@ Creates a controller that tracks a Nodula router and manages matching head eleme
 | `options.defaults` | `SEOMetadata` or resolver | Metadata applied on every route unless overridden. |
 | `options.routes` | `Record<string, SEOMetadata or resolver>` | Route-pattern metadata. Supports `:id` and `[id]` parameter segments. |
 
-A metadata resolver receives `{ path, params, router }`. `path` excludes query and fragment; `params` contains decoded route parameters. Static route patterns take precedence over parameterized patterns. Patterns must start with `/`; a trailing slash on the current path is accepted for matching.
+A metadata resolver receives `{ path, params, router }`. `path` excludes query and fragment; `params` contains decoded route parameters. Patterns use the router's syntax: `:id` or `[id]` for one segment, and a terminal `*path` or `[...path]` catch-all for one or more remaining segments (decoded individually and joined with `/` in `params.path`; a trailing slash is not included). Patterns are ranked like the router: segments are compared left to right and static beats parameter beats catch-all, so for `/a/b` the pattern `/a/:b` wins over `/:a/b` regardless of declaration order. A catch-all segment that is not last throws during setup. Patterns must start with `/`; a trailing slash on the current path is accepted for matching.
 
 ### `SEOMetadata`
 
@@ -84,16 +84,17 @@ A metadata resolver receives `{ path, params, router }`. `path` excludes query a
 | `description` | `string \| null \| undefined \| Accessor` | Sets `meta[name="description"]`. |
 | `keywords` | `string \| null \| undefined \| Accessor` | Sets `meta[name="keywords"]`. |
 | `author` | `string \| null \| undefined \| Accessor` | Sets `meta[name="author"]`. |
-| `canonical` | `string \| null \| undefined \| Accessor` | Sets `link[rel="canonical"]`. If the field is absent, URL is generated from the active route and `siteUrl`; query and fragment are excluded. Explicit `null` omits the tag. |
+| `canonical` | `string \| null \| undefined \| Accessor` | Sets `link[rel="canonical"]`. If the field is absent, URL is generated from the active route and `siteUrl` (including the router's `base`, when set); query and fragment are excluded. Explicit `null` omits the tag. |
 | `robots` | `string \| null \| undefined \| Accessor` | Sets `meta[name="robots"]`. |
 | `openGraph` | `SEOOpenGraph` | Sets supported Open Graph tags: `title`, `description`, `url`, `type`, `image`, `siteName`, and `locale`. Title/description/URL fall back to corresponding resolved metadata; type defaults to `website`. |
+| `twitter` | `SEOTwitter` | Opt-in `twitter:*` card tags: `card`, `site`, `title`, `description`, and `image`. Without this object no Twitter tags are emitted. Title, description and image fall back to Open Graph values; `card` defaults to `summary_large_image` when an image is set, otherwise `summary`. |
 | `hreflang` | `{ lang, href }[]` | Adds `link[rel="alternate"]` entries for language variants. Invalid entries without string language and href are skipped. |
 
 Metadata fields accept signal accessors as well as static values. `defaults` and each route entry may also be resolver functions. Route metadata overrides defaults; `openGraph` fields merge by property with defaults instead of replacing the entire object. `null` or `undefined` omits an individual tag (except an absent canonical, which triggers generated canonical behavior).
 
 The returned controller exposes:
 
-- `seo.update(metadata)` — merges page-local overrides into metadata for the current route. Overrides reset when the route changes.
+- `seo.update(metadata)` — merges page-local overrides into metadata for the current route. Pass an object or a function (re-read reactively). Successive calls merge, including individual `openGraph` fields; overrides reset when the route changes.
 - `seo.dispose()` — stops reactive updates and restores head elements to their pre-controller state. Safe to call more than once.
 
 Call `dispose()` when the owning app root is torn down. The head manager restores existing matching elements and removes tags it created. Calling `update()` after disposal throws. Invalid router/options, route patterns, metadata container shapes, or a non-HTTP(S) `siteUrl` throw errors during setup; a missing `document.head` also throws.

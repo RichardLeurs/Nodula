@@ -192,7 +192,12 @@ export function registerLifecycleTransition(
   ) => void | Promise<void>,
 ): Dispose;
 /** Defer loading a component until its placeholder becomes visible. */
+export interface VisibleIslandOptions {
+  /** Text shown when the loader fails. Defaults to English; the element keeps code "nodula-island-load-failed". */
+  errorText?: string;
+}
 export function visibleIsland(
   loader: () => Promise<Component>,
   placeholder?: string,
+  options?: VisibleIslandOptions,
 ): HTMLDivElement;

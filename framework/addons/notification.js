@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Show accessible, transient success, error, warning, and info notices. */
 import { onCleanup } from "nodula-framework";
 import { injectAddonStyles } from "./inject-styles.js";
@@ -15,6 +17,12 @@ const notificationPositions = new Set([
 const containers = new Map();
 let nextNotificationId = 0;
 
+/**
+ * Get the live-region container for a position, creating and attaching it on first use.
+ *
+ * @param {string} position Screen position, for example `"top-right"`.
+ * @returns {HTMLElement}
+ */
 function getContainer(position) {
   let container = containers.get(position);
   if (container?.isConnected) return container;
@@ -108,6 +116,9 @@ export function showNotification(options = {}) {
     resolveClosed = resolve;
   });
 
+  /**
+   * Remove the notification and clear its timers. Runs once.
+   */
   const remove = () => {
     if (closedResolved) return;
     closedResolved = true;
@@ -123,10 +134,18 @@ export function showNotification(options = {}) {
     resolveClosed();
   };
 
+  /**
+   * Remove the notification when its closing animation ends.
+   *
+   * @param {AnimationEvent} event
+   */
   const handleAnimationEnd = (event) => {
     if (event.target === element && isClosing) remove();
   };
 
+  /**
+   * Start closing the notification. It is removed when its closing animation ends, or at once when animations are unavailable.
+   */
   const close = () => {
     if (isClosing || closedResolved) return;
     isClosing = true;

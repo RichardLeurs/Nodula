@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { signal } from "nodula-framework";
 import { createDragSource, createDropTarget } from "nodula-framework/dragdrop";
@@ -12,6 +13,13 @@ const [collectionItems, setCollectionItems] = signal([]);
 const [message, setMessage] = signal("Drag an item between zones, or use its Move button.");
 let collectionZoneElement;
 
+/**
+ * Move an item between the available and collection zones. Nothing changes for an unknown item or a duplicate.
+ *
+ * @param {string} itemId
+ * @param {"available" | "collection"} sourceZoneId
+ * @param {"available" | "collection"} targetZoneId
+ */
 function moveItem(itemId, sourceZoneId, targetZoneId) {
   if (sourceZoneId === targetZoneId) return;
   if (
@@ -37,6 +45,11 @@ function moveItem(itemId, sourceZoneId, targetZoneId) {
   );
 }
 
+/**
+ * Make a demo item a drag source. Its data is the item id and its zone.
+ *
+ * @param {HTMLElement | null} element
+ */
 function setupItem(element) {
   if (!element) return;
   const itemId = element.dataset.itemId;
@@ -58,6 +71,11 @@ function setupItem(element) {
   });
 }
 
+/**
+ * Make a demo zone a drop target. The collection zone is remembered for its Move buttons.
+ *
+ * @param {HTMLElement | null} element
+ */
 function setupDropZone(element) {
   if (!element) return;
   if (element.dataset.zoneId === "collection") collectionZoneElement = element;

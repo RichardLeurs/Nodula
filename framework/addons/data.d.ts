@@ -54,6 +54,8 @@ export function createDataClient(options?: DataClientOptions): DataClient;
 
 /** HTTP error containing the response and its parsed response body. */
 export class DataError extends Error {
+  /** Stable translation key: "nodula-data-http-error". See framework/i18n/en.json. */
+  readonly code: "nodula-data-http-error";
   readonly status: number;
   readonly response: Response;
   readonly data: unknown;

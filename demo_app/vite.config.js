@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 import { copyFile, cp, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
@@ -34,6 +36,11 @@ const addonOutputs = [
 ];
 const runtimeEntry = fileURLToPath(new URL("../dist/nodula/nodula-core.js", import.meta.url));
 
+/**
+ * Build configuration for the demo app: framework bundles are aliased to their built files, kept external, and copied into the app output.
+ *
+ * @returns {object} A Vite configuration.
+ */
 function appBuildConfig() {
   const bundledAddonEntries = addonOutputs.map(([, output]) =>
     fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)),
@@ -58,6 +65,12 @@ function appBuildConfig() {
       replacement: fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)),
     })),
   ];
+  /**
+   * Choose the output path for a bundled asset: CSS and images go to their own folders, other files to `assets/`.
+   *
+   * @param {{ name?: string, originalFileName?: string }} assetInfo
+   * @returns {string} Output file name pattern.
+   */
   const appAssetFileNames = (assetInfo) => {
     const name = assetInfo.name ?? "";
     if (name.endsWith(".css")) return "assets/css/[name]-[hash][extname]";
@@ -104,6 +117,9 @@ function appBuildConfig() {
       }),
       {
         name: "nodula-copy-app-assets",
+        /**
+         * Copy the logo and the framework bundles into the app output once the build is written.
+         */
         async closeBundle() {
           await mkdir(appFrameworkOutputDirectory, { recursive: true });
           await Promise.all([
@@ -133,6 +149,11 @@ function appBuildConfig() {
   };
 }
 
+/**
+ * Return the demo app Vite configuration.
+ *
+ * @returns {object}
+ */
 export function demoAppBuildConfig() {
   return appBuildConfig();
 }

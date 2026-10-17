@@ -28,3 +28,5 @@ vitest/
 vitepress/package-lock.json
 demo_os/
 upload/
+CLAUDE.md 
+.claude/ 

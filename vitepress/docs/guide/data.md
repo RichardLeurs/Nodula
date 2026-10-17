@@ -83,7 +83,7 @@ try {
 }
 ```
 
-`DataError` covers HTTP error responses. Fetch/network failures and malformed JSON remain separate errors so applications can handle them according to their transport and UI needs.
+`DataError` covers HTTP error responses. If an error response declares JSON but its body does not parse (for example a proxy's HTML 502 page), `DataError` still carries the status and `error.data` holds the raw text. Fetch/network failures, and malformed JSON in a success response, remain separate errors so applications can handle them according to their transport and UI needs.
 
 ## Browser, CORS, and security boundaries
 

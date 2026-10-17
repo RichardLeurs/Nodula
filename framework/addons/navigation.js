@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Build accessible router-aware navigation links and return a disposer. */
 import { effect } from "nodula-framework";
 
@@ -62,7 +64,12 @@ export function createNavigation(target, router, items, options = {}) {
   const links = normalizedItems.map((item) => {
     const link = document.createElement("a");
     link.textContent = item.label;
-    link.href = item.external || router.mode === "history" ? item.href : `#${item.href}`;
+    // History routers served under a base path need it in the real href.
+    link.href = item.external
+      ? item.href
+      : router.mode === "history"
+        ? `${router.base ?? ""}${item.href}`
+        : `#${item.href}`;
     if (item.external) {
       link.target = item.target;
       if (item.target === "_blank") link.rel = "noopener noreferrer";

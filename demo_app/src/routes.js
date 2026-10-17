@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 const routeComponents = {
   "/": { load: () => import("./routes/index.page") },
   "/addons": { load: () => import("./routes/addons.page") },
@@ -15,16 +17,9 @@ const routeComponents = {
   "/web-components": { load: () => import("./routes/web-components.page") },
 };
 
-function createIdeaRoute(path) {
-  const encodedId = path.slice("/ideas/".length);
-  let id;
-  try {
-    id = decodeURIComponent(encodedId);
-  } catch {
-    return undefined;
-  }
-
-  return {
+export const routes = {
+  ...routeComponents,
+  "/ideas/:id": {
     load: async () => {
       const [pageModule, layoutModule] = await Promise.all([
         import("./routes/ideas/[id].page"),
@@ -34,19 +29,14 @@ function createIdeaRoute(path) {
       const layout = layoutModule.default;
       return ({ params }) => layout({ children: page({ params }) });
     },
-    context: { params: { id } },
-  };
-}
-
-export const routes = new Proxy(routeComponents, {
-  get(target, path) {
-    if (typeof path !== "string") return undefined;
-    if (Object.hasOwn(target, path)) return target[path];
-    if (/^\/ideas\/[^/]+$/.test(path)) return createIdeaRoute(path);
-    return undefined;
   },
-});
+};
 
+/**
+ * Create the not-found view for unmatched routes.
+ *
+ * @returns {HTMLDivElement}
+ */
 export function notFound() {
   const element = document.createElement("div");
   element.className = "ui-route-not-found";

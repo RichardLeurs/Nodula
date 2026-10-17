@@ -1,43 +1,131 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 import { parseFragment } from "parse5";
 import { createHash } from "node:crypto";
 import postcss from "postcss";
 import selectorParser from "postcss-selector-parser";
 
+/**
+ * Generate the scope attribute name for a component file.
+ *
+ * The name is a short hash of the file id, so the same file always gets the same attribute.
+ *
+ * @param {string} id Component file path.
+ * @returns {string} For example `data-nodula-scope-1a2b3c4d5e`.
+ */
 function scopeAttributeFor(id) {
   const hash = createHash("sha256").update(id).digest("hex").slice(0, 10);
   return `data-nodula-scope-${hash}`;
 }
 
+const DOCUMENT_ROOT_TAGS = new Set(["html", "body"]);
+
+// :root, html and body sit outside every component, so a scope attribute could never match them.
+/**
+ * Whether a selector compound targets `html`, `body`, or `:root`.
+ *
+ * Those elements are outside every component, so their selectors are never scoped.
+ *
+ * @param {object[]} compound Parsed selector nodes.
+ * @returns {boolean}
+ */
+function isDocumentRoot(compound) {
+  return compound.some(
+    (node) =>
+      (node.type === "tag" && DOCUMENT_ROOT_TAGS.has(node.value.toLowerCase())) ||
+      (node.type === "pseudo" && node.value === ":root"),
+  );
+}
+
+/** Replace a `:global(...)` or `:deep(...)` pseudo in a compound with its inner selector nodes. */
+function unwrapPseudo(compound, pseudo) {
+  if (pseudo.nodes.length !== 1) throw new Error(`${pseudo.value}() accepts one selector.`);
+  const index = compound.indexOf(pseudo);
+  const inner = pseudo.nodes[0].nodes.map((node) => node.clone());
+  return [...compound.slice(0, index), ...inner, ...compound.slice(index + 1)];
+}
+
+/**
+ * Rewrite one CSS selector so only its last compound matches this component.
+ *
+ * Document roots stay global. `:global()` opts a part out of scoping. `:deep()` reaches elements
+ * rendered by child components, so the scope attribute goes before it.
+ *
+ * @param {string} selector A single selector, not a selector list.
+ * @param {string} attribute Scope attribute name, as `data-nodula-scope-…`.
+ * @returns {string} The rewritten selector.
+ */
 function scopeSelector(selector, attribute) {
   const scopeNode = selectorParser.attribute({ attribute });
   const selectorNode = selectorParser().astSync(selector);
 
   selectorNode.each((currentSelector) => {
-    let compoundStart = 0;
-    const compounds = [];
-    currentSelector.each((node, index) => {
+    // Split into compounds so attributes are placed by compound, not by shifting node indices.
+    const parts = [];
+    let compound = [];
+    for (const node of currentSelector.nodes) {
       if (node.type === "combinator") {
-        compounds.push([compoundStart, index]);
-        compoundStart = index + 1;
+        parts.push({ compound, combinator: node });
+        compound = [];
+      } else compound.push(node);
+    }
+    parts.push({ compound, combinator: null });
+
+    let deepIndex = -1;
+    parts.forEach((part, index) => {
+      /**
+       * Find the pseudo node with the given name in a compound.
+       */
+      const special = (name) =>
+        part.compound.find((node) => node.type === "pseudo" && node.value === name);
+      const global = special(":global");
+      const deep = special(":deep");
+      part.scopeable = !global && !deep && !isDocumentRoot(part.compound);
+      if (global) part.compound = unwrapPseudo(part.compound, global);
+      if (deep) {
+        part.compound = unwrapPseudo(part.compound, deep);
+        if (deepIndex < 0) deepIndex = index;
       }
     });
-    compounds.push([compoundStart, currentSelector.nodes.length]);
 
-    for (const [start, end] of compounds) {
-      if (start === end) continue;
-      const nodes = currentSelector.nodes.slice(start, end);
-      if (nodes.some((node) => node.type === "attribute" && node.attribute === attribute)) continue;
-      const pseudoElement = nodes.find(
+    // Scope only the last compound before any :deep(), so ancestors outside the component still match.
+    const limit = deepIndex < 0 ? parts.length : deepIndex;
+    const target = parts
+      .slice(0, limit)
+      .findLast((part) => part.scopeable && part.compound.length);
+    if (target) {
+      const pseudoElement = target.compound.findIndex(
         (node) => node.type === "pseudo" && node.value.startsWith("::"),
       );
-      if (pseudoElement) currentSelector.insertBefore(pseudoElement, scopeNode.clone());
-      else currentSelector.insertAfter(nodes.at(-1), scopeNode.clone());
+      const at = pseudoElement < 0 ? target.compound.length : pseudoElement;
+      target.compound.splice(at, 0, scopeNode.clone());
+    } else if (deepIndex >= 0) {
+      // A leading :deep() still needs an anchor inside the component.
+      parts.unshift({
+        compound: [scopeNode.clone()],
+        combinator: selectorParser.combinator({ value: " " }),
+      });
+    }
+
+    currentSelector.removeAll();
+    for (const part of parts) {
+      for (const node of part.compound) currentSelector.append(node);
+      if (part.combinator) currentSelector.append(part.combinator);
     }
   });
 
   return selectorNode.toString();
 }
 
+/**
+ * Scope every rule in a stylesheet to one component.
+ *
+ * Rules inside keyframes are left alone.
+ *
+ * @param {string} css Stylesheet source.
+ * @param {string} attribute Scope attribute name.
+ * @returns {string} The rewritten stylesheet.
+ */
 function scopeStyles(css, attribute) {
   const root = postcss.parse(css);
   root.walkRules((rule) => {
@@ -51,12 +139,24 @@ function scopeStyles(css, attribute) {
   return root.toString();
 }
 
+/**
+ * Split a component file into its `<script>`, `<template>` and `<style>` blocks.
+ *
+ * Only those three top-level elements are allowed.
+ *
+ * @param {string} source Component file source.
+ * @param {string} componentName Basename, used in error messages.
+ * @returns {{ scripts: string[], templates: object[], styles: Array<{ content: string, scoped: boolean, module: boolean }> }}
+ * @throws {Error} For unexpected top-level elements, duplicate or invalid style attributes, or a template count other than one.
+ */
 function collectBlocks(source, componentName) {
   const document = parseFragment(source, { sourceCodeLocationInfo: true });
   const blocks = { scripts: [], templates: [], styles: [] };
 
   for (const node of document.childNodes) {
     if (node.nodeName === "#text" && !node.value.trim()) continue;
+    // HTML comments are allowed above the blocks, for example a copyright notice.
+    if (node.nodeName === "#comment") continue;
     const name = node.tagName;
     if (!["script", "template", "style"].includes(name)) {
       throw new Error(
@@ -104,6 +204,15 @@ function collectBlocks(source, componentName) {
   return blocks;
 }
 
+/**
+ * Strip the optional braces from a template expression and check that it is not empty.
+ *
+ * @param {string} value Attribute or interpolation value.
+ * @param {string} componentName Basename, used in error messages.
+ * @param {string} context Attribute or directive name, used in error messages.
+ * @returns {string} The trimmed JavaScript expression.
+ * @throws {Error} If the expression is empty.
+ */
 function parseExpression(value, componentName, context) {
   const expression = value
     .trim()
@@ -113,25 +222,91 @@ function parseExpression(value, componentName, context) {
   return expression;
 }
 
+/** Return the index of the `}` that closes a template-literal `${` interpolation starting at `index`. */
+function findInterpolationEnd(expression, index) {
+  let depth = 1;
+  while (index < expression.length) {
+    const character = expression[index];
+    if (character === "'" || character === '"' || character === "`") {
+      index = skipQuoted(expression, index);
+      continue;
+    }
+    if (character === "{") depth += 1;
+    else if (character === "}" && --depth === 0) return index;
+    index += 1;
+  }
+  return index;
+}
+
+/** Return the index just past the string or template literal that starts at `index`. */
+function skipQuoted(expression, index) {
+  const quote = expression[index++];
+  while (index < expression.length) {
+    const character = expression[index];
+    if (character === "\\") {
+      index += 2;
+      continue;
+    }
+    if (quote === "`" && character === "$" && expression[index + 1] === "{") {
+      index = findInterpolationEnd(expression, index + 2) + 1;
+      continue;
+    }
+    index += 1;
+    if (character === quote) break;
+  }
+  return index;
+}
+
+/**
+ * Rewrite loop item references in a JavaScript expression to call their reactive accessors.
+ *
+ * Quoted text is kept as written. Object keys are not rewritten, while shorthand properties such as
+ * `{ item }` expand to `{ item: accessor }`. Spreads are rewritten.
+ *
+ * @param {string} expression JavaScript expression.
+ * @param {Map<string, string>} loopVariables Loop variable name to accessor expression.
+ * @returns {string} The rewritten expression.
+ */
 function bindLoopVariables(expression, loopVariables) {
   let result = "";
   let index = 0;
   let previousSignificant = "";
+  // Open brackets let us tell object literals ({ item }) from calls and arrays (f(a, item)).
+  const brackets = [];
 
   while (index < expression.length) {
     const character = expression[index];
 
-    // Preserve quoted text so item names in class strings and labels remain literal.
-    if (character === "'" || character === '"' || character === "`") {
-      const quote = character;
-      const start = index++;
+    // Template literals keep their text, but ${…} holds real expressions that need rewriting.
+    if (character === "`") {
+      let literal = "`";
+      index += 1;
       while (index < expression.length) {
-        if (expression[index] === "\\") {
+        const next = expression[index];
+        if (next === "\\") {
+          literal += expression.slice(index, index + 2);
           index += 2;
           continue;
         }
-        if (expression[index++] === quote) break;
+        if (next === "$" && expression[index + 1] === "{") {
+          const end = findInterpolationEnd(expression, index + 2);
+          literal += `\${${bindLoopVariables(expression.slice(index + 2, end), loopVariables)}}`;
+          index = end + 1;
+          continue;
+        }
+        literal += next;
+        index += 1;
+        if (next === "`") break;
       }
+      result += literal;
+      previousSignificant = "value";
+      continue;
+    }
+
+    // Preserve quoted text so item names in class strings and labels remain literal.
+    if (character === "'" || character === '"') {
+      const start = index;
+      index = skipQuoted(expression, index);
       result += expression.slice(start, index);
       previousSignificant = "value";
       continue;
@@ -143,15 +318,37 @@ function bindLoopVariables(expression, loopVariables) {
       const identifier = expression.slice(start, index);
       const accessor = previousSignificant === "." ? null : loopVariables.get(identifier);
       if (accessor) {
-        result += accessor;
-        const call = expression.slice(index).match(/^\s*\(\s*\)/);
-        if (call) index += call[0].length;
+        const following = expression.slice(index).match(/^\s*(.)?/)[1];
+        const inObjectLiteral =
+          brackets.at(-1) === "{" && (previousSignificant === "{" || previousSignificant === ",");
+        if (inObjectLiteral && following === ":") {
+          // Object keys are names, not references to the loop variable.
+          result += identifier;
+        } else if (inObjectLiteral && (following === "}" || following === ",")) {
+          // Expand { item } so the key keeps its name while the value reads the accessor.
+          result += `${identifier}: ${accessor}`;
+        } else {
+          result += accessor;
+          const call = expression.slice(index).match(/^\s*\(\s*\)/);
+          if (call) index += call[0].length;
+        }
       } else {
         result += identifier;
       }
       previousSignificant = "value";
       continue;
     }
+
+    // Spread (`...item`) reads the variable; only a single `.` marks property access.
+    if (expression.startsWith("...", index)) {
+      result += "...";
+      previousSignificant = "...";
+      index += 3;
+      continue;
+    }
+
+    if ("{([".includes(character)) brackets.push(character);
+    else if ("})]".includes(character)) brackets.pop();
 
     result += character;
     if (!/\s/.test(character)) previousSignificant = character;
@@ -160,6 +357,16 @@ function bindLoopVariables(expression, loopVariables) {
   return result;
 }
 
+/**
+ * Compile text containing `{{ expression }}` placeholders into a render expression.
+ *
+ * A single placeholder compiles to its accessor. Mixed text compiles to a function that joins the parts.
+ *
+ * @param {string} text Text node value.
+ * @param {string} componentName Basename, used in error messages.
+ * @param {Map<string, string>} loopVariables Loop variable accessors in scope.
+ * @returns {string} JavaScript source for the text node.
+ */
 function compileText(text, componentName, loopVariables) {
   const parts = [];
   const interpolation = /\{\{([\s\S]+?)\}\}/g;
@@ -175,12 +382,21 @@ function compileText(text, componentName, loopVariables) {
   }
   if (lastIndex < text.length) parts.push(JSON.stringify(text.slice(lastIndex)));
   if (!parts.length) return JSON.stringify(text);
-  if (parts.length === 1 && typeof parts[0] === "string" && parts[0].startsWith("() => "))
-    return parts[0];
   if (parts.length === 1) return parts[0];
   return `() => [${parts.map((part) => `(${part})`).join(", ")}].map((part) => typeof part === 'function' ? part() : part).join('')`;
 }
 
+/**
+ * Compile one element attribute or directive into an entry of the props object.
+ *
+ * Handles `@show`, `@ref`, `@on:event`, `@bind`, `bind:value`, `:attribute` and plain attributes.
+ *
+ * @param {{ name: string, value: string }} attribute Parsed attribute.
+ * @param {string} componentName Basename, used in error messages.
+ * @param {Map<string, string>} loopVariables Loop variable accessors in scope.
+ * @returns {string | null} A props entry, or null when the attribute produces none.
+ * @throws {Error} For malformed or unsupported directives.
+ */
 function compileAttribute(attribute, componentName, loopVariables) {
   const { name, value } = attribute;
   if (name === "@show") {
@@ -254,6 +470,8 @@ function compileAttribute(attribute, componentName, loopVariables) {
   return `${JSON.stringify(propName)}: ${JSON.stringify(value)}`;
 }
 
+// Per-compile state. compileNodulaComponent saves and restores it, so a nested compile
+// (for example from a tool that compiles an imported component mid-build) cannot clobber its caller.
 let loopIndex = 0;
 let usesWhen = false;
 let usesFragment = false;
@@ -262,10 +480,44 @@ let usesOutlet = false;
 let currentScopeAttribute = null;
 let importedComponents = new Map();
 
+/**
+ * Capture the per-compile state so a nested compile can restore it.
+ *
+ * @returns {object}
+ */
+function snapshotCompileState() {
+  return { loopIndex, usesWhen, usesFragment, usesSlot, usesOutlet, currentScopeAttribute, importedComponents };
+}
+
+/**
+ * Restore per-compile state captured by `snapshotCompileState`.
+ *
+ * @param {object} state
+ */
+function restoreCompileState(state) {
+  ({ loopIndex, usesWhen, usesFragment, usesSlot, usesOutlet, currentScopeAttribute, importedComponents } = state);
+}
+
+/**
+ * Return the component identifier for an imported `.comp` tag, if the tag names one.
+ *
+ * @param {string} tagName Element tag name.
+ * @returns {string | undefined}
+ */
 function componentNameForTag(tagName) {
   return importedComponents.get(tagName.toLowerCase());
 }
 
+/**
+ * Compile one attribute of an imported component tag into a prop or callback prop.
+ *
+ * Directives that belong to the element (`@if`, `@else`) produce nothing.
+ *
+ * @param {{ name: string, value: string }} attribute Parsed attribute.
+ * @param {string} componentName Basename, used in error messages.
+ * @param {Map<string, string>} loopVariables Loop variable accessors in scope.
+ * @returns {string | null}
+ */
 function compileComponentAttribute(attribute, componentName, loopVariables) {
   const { name, value } = attribute;
   if (["@if", "@else"].includes(name)) return null;
@@ -306,6 +558,17 @@ function compileComponentAttribute(attribute, componentName, loopVariables) {
   return `${JSON.stringify(name)}: ${JSON.stringify(value)}`;
 }
 
+/**
+ * Compile an imported component tag into a `component(...)` descriptor.
+ *
+ * Child nodes become the default slot, and `<slot @slot="name">` children become named slots.
+ *
+ * @param {object} node Parsed element node.
+ * @param {string} importedName Identifier of the imported component.
+ * @param {string} componentName Basename, used in error messages.
+ * @param {Map<string, string>} loopVariables Loop variable accessors in scope.
+ * @returns {string} JavaScript source for the descriptor.
+ */
 function compileComponentNode(node, importedName, componentName, loopVariables) {
   const props = node.attrs
     .filter((attribute) => !["each", "@for", "key", ":key"].includes(attribute.name))
@@ -355,6 +618,14 @@ function compileComponentNode(node, importedName, componentName, loopVariables) 
   return `component(${importedName}, () => ({ ${props.join(", ")} }), { ${slotEntries.join(", ")} })`;
 }
 
+/**
+ * Compile a list of sibling nodes, grouping adjacent `@if` / `@else` branches and keyed loops.
+ *
+ * @param {object[]} nodes Parsed sibling nodes.
+ * @param {string} componentName Basename, used in error messages.
+ * @param {Map<string, string>} loopVariables Loop variable accessors in scope.
+ * @returns {string[]} JavaScript source for each child, with empty text removed.
+ */
 function compileChildren(nodes, componentName, loopVariables) {
   const children = [];
   for (let index = 0; index < nodes.length; index += 1) {
@@ -384,6 +655,18 @@ function compileChildren(nodes, componentName, loopVariables) {
   return children;
 }
 
+/**
+ * Compile one parsed element or text node into a `h(…)` call or other render expression.
+ *
+ * Handles `@if`, `@for` / `each`, `<template>` fragments, `<slot>`, `<outlet>`, and imported component tags.
+ *
+ * @param {object} node Parsed node.
+ * @param {string} componentName Basename, used in error messages.
+ * @param {Map<string, string>} [loopVariables] Loop variable accessors in scope.
+ * @param {boolean} [pairedElse] Whether this node is the `@else` branch of the preceding `@if`.
+ * @returns {string} JavaScript source for the node.
+ * @throws {Error} For directive combinations the compiler does not support.
+ */
 function compileNode(node, componentName, loopVariables = new Map(), pairedElse = false) {
   if (node.nodeName === "#text") return compileText(node.value, componentName, loopVariables);
   if (node.nodeName === "#comment") return "null";
@@ -570,11 +853,20 @@ function compileNode(node, componentName, loopVariables = new Map(), pairedElse 
   return element;
 }
 
+/**
+ * Remove the import statements from a component script and collect them.
+ *
+ * Handles multi-line named imports and side-effect imports. Imports of `.comp` files are recorded so their tags compile to components.
+ *
+ * @param {string} script Script source.
+ * @returns {{ imports: string[], body: string, components: Map<string, string>, importsNodula: boolean }}
+ */
 function extractImports(script) {
   const imports = [];
   const components = new Map();
   const body = script.replace(
-    /^\s*import\s+[^\n;]+\s+from\s+['"][^'"]+['"];?\s*$/gm,
+    // Covers multi-line named imports and side-effect imports (`import "x"`).
+    /^[ \t]*import\s+(?:[\w$*{},\s]+?\s*\bfrom\s*)?['"][^'"\n]+['"][ \t]*;?[ \t]*$/gm,
     (statement) => {
       imports.push(statement.trim());
       const componentImport = statement.match(
@@ -594,7 +886,33 @@ function extractImports(script) {
   return { imports, body, components, importsNodula };
 }
 
+/**
+ * Compile a `.page` or `.comp` file into a JavaScript module.
+ *
+ * The compile state is saved and restored, so a nested compile does not disturb its caller.
+ *
+ * @param {string} source File source.
+ * @param {string} [id] File path, used for the scope attribute and error messages.
+ * @returns {string} The generated module source.
+ * @throws {Error} For invalid templates, directives or imports.
+ */
 export function compileNodulaComponent(source, id = "Anonymous.comp") {
+  const saved = snapshotCompileState();
+  try {
+    return compileComponent(source, id);
+  } finally {
+    restoreCompileState(saved);
+  }
+}
+
+/**
+ * Compile a component file. Called by `compileNodulaComponent`, which manages the compile state.
+ *
+ * @param {string} source File source.
+ * @param {string} id File path.
+ * @returns {string} The generated module source.
+ */
+function compileComponent(source, id) {
   const componentName = id.split(/[\\/]/).pop();
   const blocks = collectBlocks(source, componentName);
   loopIndex = 0;
@@ -656,6 +974,15 @@ export function compileNodulaComponent(source, id = "Anonymous.comp") {
   return `${generatedImports.join("\n")}${styleImport}\nexport function ${component}({ params = {}, children, slots = {}, props = {} } = {}) {\n${body}\nreturn ${roots[0]};\n}\nexport default ${component};`;
 }
 
+/**
+ * Compile the `<style>` block of a component file.
+ *
+ * `scoped` blocks are rewritten to the component’s scope attribute. `module` blocks are returned unchanged for Vite CSS Modules.
+ *
+ * @param {string} source File source.
+ * @param {string} id File path.
+ * @returns {{ css: string, scoped: boolean, attribute?: string, module?: boolean }}
+ */
 export function compileNodulaStyle(source, id) {
   const styleBlock = collectBlocks(source, id.split(/[\\/]/).pop()).styles[0];
   if (!styleBlock) return { css: "", scoped: false };

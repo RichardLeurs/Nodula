@@ -1,6 +1,16 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Provide adapter-backed reactive authentication state and access checks. */
 import { signal } from "nodula-framework";
 
+/**
+ * Check that an adapter result is an identity with a user, or null.
+ *
+ * @param {unknown} identity Result of an adapter method.
+ * @param {string} methodName Adapter method name, used in the error message.
+ * @returns {object} The identity.
+ * @throws {TypeError} If the result has no `user`, or `user` is null.
+ */
 function requireIdentity(identity, methodName) {
   if (
     !identity ||
@@ -13,6 +23,12 @@ function requireIdentity(identity, methodName) {
   return identity;
 }
 
+/**
+ * Collect a user’s roles from `role` and `roles`. Non-string entries are ignored.
+ *
+ * @param {object} identityUser
+ * @returns {Set<string>}
+ */
 function getUserRoles(identityUser) {
   const roles = new Set();
   if (typeof identityUser?.role === "string") roles.add(identityUser.role);
@@ -24,6 +40,12 @@ function getUserRoles(identityUser) {
   return roles;
 }
 
+/**
+ * Collect a user’s direct permissions. Non-string entries are ignored.
+ *
+ * @param {object} identityUser
+ * @returns {Set<string>}
+ */
 function getUserPermissions(identityUser) {
   if (!Array.isArray(identityUser?.permissions)) return new Set();
   return new Set(identityUser.permissions.filter((permission) => typeof permission === "string"));
@@ -69,14 +91,37 @@ export function createAuth(adapter, options = {}) {
   const [error, setError] = signal(null);
   let operationId = 0;
 
+  // The known identity stays valid while a refresh is loading, so guards do not flicker to false.
+  // Sign-out is the exception: access is revoked as soon as it starts.
+  let signingOut = false;
+  /**
+   * Whether checks may treat the user as signed in.
+   *
+   * A refresh keeps the identity. Sign-out revokes it as soon as it starts.
+   */
+  function hasIdentity() {
+    return user() !== null && !signingOut && (status() === "authenticated" || status() === "loading");
+  }
+
+  /**
+   * Whether the current identity has a role.
+   *
+   * @param {string} role
+   * @returns {boolean}
+   */
   function hasRole(role) {
-    if (typeof role !== "string" || user() === null || status() !== "authenticated") return false;
+    if (typeof role !== "string" || !hasIdentity()) return false;
     return getUserRoles(user()).has(role);
   }
 
+  /**
+   * Whether the current identity has a permission, directly or through a role.
+   *
+   * @param {string} permission
+   * @returns {boolean}
+   */
   function hasPermission(permission) {
-    if (typeof permission !== "string" || user() === null || status() !== "authenticated")
-      return false;
+    if (typeof permission !== "string" || !hasIdentity()) return false;
     const identityUser = user();
     if (getUserPermissions(identityUser).has(permission)) return true;
     for (const role of getUserRoles(identityUser)) {
@@ -85,6 +130,11 @@ export function createAuth(adapter, options = {}) {
     return false;
   }
 
+  /**
+   * Store an identity, or clear it when `identity` is null.
+   *
+   * @param {{ user: object, session?: unknown } | null} identity
+   */
   function setIdentity(identity) {
     if (identity === null) {
       setUser(null);
@@ -98,6 +148,13 @@ export function createAuth(adapter, options = {}) {
     setStatus("authenticated");
   }
 
+  /**
+   * Run an adapter operation and track its status. Only the newest operation updates state.
+   *
+   * @param {() => Promise<unknown>} operation
+   * @param {(result: unknown) => void} onSuccess Applies a successful result.
+   * @returns {Promise<unknown>} The operation result.
+   */
   async function run(operation, onSuccess) {
     const currentOperation = ++operationId;
     setStatus("loading");
@@ -116,6 +173,11 @@ export function createAuth(adapter, options = {}) {
     }
   }
 
+  /**
+   * Load the current session through the adapter.
+   *
+   * @returns {Promise<object | null>}
+   */
   async function initialize() {
     return run(async () => {
       const identity = await adapter.getSession();
@@ -123,6 +185,12 @@ export function createAuth(adapter, options = {}) {
     }, setIdentity);
   }
 
+  /**
+   * Sign in through the adapter.
+   *
+   * @param {unknown} credentials Passed to `adapter.signIn` unchanged.
+   * @returns {Promise<object>}
+   */
   async function signIn(credentials) {
     return run(
       async () => requireIdentity(await adapter.signIn(credentials), "signIn"),
@@ -130,13 +198,31 @@ export function createAuth(adapter, options = {}) {
     );
   }
 
+  /**
+   * Sign out through the adapter and clear the identity on success.
+   *
+   * Role and permission checks stop as soon as sign-out starts.
+   *
+   * @returns {Promise<null>}
+   */
   async function signOut() {
-    return run(async () => {
-      await adapter.signOut(session());
-      return null;
-    }, setIdentity);
+    signingOut = true;
+    try {
+      return await run(async () => {
+        await adapter.signOut(session());
+        return null;
+      }, setIdentity);
+    } finally {
+      signingOut = false;
+    }
   }
 
+  /**
+   * Refresh the session through `adapter.refreshSession`. The previous identity is kept while loading.
+   *
+   * @returns {Promise<object | null>}
+   * @throws {Error} If the adapter does not provide `refreshSession`.
+   */
   async function refresh() {
     if (typeof adapter.refreshSession !== "function") {
       throw new Error("This auth adapter does not provide refreshSession.");

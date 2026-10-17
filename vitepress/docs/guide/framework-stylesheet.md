@@ -2,7 +2,7 @@
 
 The framework build emits each optional add-on stylesheet separately under `dist/nodula/css/`. Import only styles your application uses:
 
-Also available are the individual add-on stylesheet from `nodula-framework/dialog.css`, `nodula-framework/notifications.css`, `nodula-framework/modal.css`, `nodula-framework/drawer.css`, or `nodula-framework/cookieconsent.css`. 
+Also available are the individual add-on stylesheets: `nodula-framework/dialog.css`, `nodula-framework/notifications.css`, `nodula-framework/modal.css`, `nodula-framework/drawer.css`, `nodula-framework/cookieconsent.css`, `nodula-framework/filedrop.css`, and `nodula-framework/sortable.css`. Add-ons inject their own styles at runtime, so importing these is only needed when you want to load or override them ahead of time. 
 
 Each stylesheet contains the styles for its corresponding add-on, including its theme and reduced-motion rules where applicable.
 

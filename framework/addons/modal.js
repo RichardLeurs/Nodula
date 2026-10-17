@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Provide native modal dialogs with DOM/ID content and custom-header support. */
 import { onCleanup } from "nodula-framework";
 import { injectAddonStyles } from "./inject-styles.js";
@@ -82,6 +84,9 @@ export function showModal(content, options = {}) {
   let isClosed = false;
   let customCloseButtons = [];
 
+  /**
+   * Close the modal once and remove its listeners. Restores the custom content and focus.
+   */
   const close = () => {
     if (isClosed) return;
     isClosed = true;
@@ -103,13 +108,34 @@ export function showModal(content, options = {}) {
     resolveClosed();
   };
 
+  /**
+   * Handle the native cancel event by cancelling it and closing the modal.
+   *
+   * @param {Event} event
+   */
   const handleCancel = (event) => {
     event.preventDefault();
     close();
   };
+  /**
+   * Clean up when the native dialog closes.
+   */
   const handleClose = () => close();
+  /**
+   * Close the modal when a click lands outside its box, if closing on the backdrop is enabled.
+   *
+   * @param {MouseEvent} event
+   */
   const handleBackdropClick = (event) => {
-    if (closeOnBackdrop && event.target === modal) close();
+    // Clicks on the dialog's padding also target the dialog, so only close outside its box.
+    if (!closeOnBackdrop || event.target !== modal) return;
+    const bounds = modal.getBoundingClientRect();
+    const clickedOutside =
+      event.clientX < bounds.left ||
+      event.clientX > bounds.right ||
+      event.clientY < bounds.top ||
+      event.clientY > bounds.bottom;
+    if (clickedOutside) close();
   };
 
   modal.addEventListener("cancel", handleCancel);

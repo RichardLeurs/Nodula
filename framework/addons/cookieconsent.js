@@ -1,8 +1,12 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Provide versioned cookie-consent UI, preferences, and gated integrations. */
 import { createRoot, onCleanup } from "nodula-framework";
-import { createLocalStorage } from "nodula-framework/localstorage";
+import { createLocalStorage, deleteCookie } from "nodula-framework/localstorage";
 import { injectAddonStyles } from "./inject-styles.js";
 import cookieConsentStyles from "../assets/css/nodula-cookieconsent.css?inline";
+
+let nextCookieConsentId = 0;
 
 const defaultCategories = [
   {
@@ -22,6 +26,12 @@ const defaultCategories = [
   },
 ];
 
+/**
+ * Throw a TypeError unless `id` is a lowercase identifier that is not reserved.
+ *
+ * @param {unknown} id
+ * @throws {TypeError}
+ */
 function validateCategoryId(id) {
   if (
     typeof id !== "string" ||
@@ -34,6 +44,13 @@ function validateCategoryId(id) {
   }
 }
 
+/**
+ * Check a custom category and return a copy with only its id, label and description.
+ *
+ * @param {object} category
+ * @returns {{ id: string, label: string, description: string }}
+ * @throws {TypeError} For a malformed category.
+ */
 function validateCategory(category) {
   if (!category || typeof category !== "object" || Array.isArray(category)) {
     throw new TypeError("registerCategory expects an id and category options.");
@@ -50,6 +67,17 @@ function validateCategory(category) {
   return { id: category.id, label: category.label, description: category.description };
 }
 
+/**
+ * Read a stored consent record and return it normalized to the current categories, or null when it is invalid or from another version.
+ *
+ * A category that is no longer visible is treated as denied.
+ *
+ * @param {unknown} value Parsed stored value.
+ * @param {string} version Current consent version.
+ * @param {Map<string, object>} categories
+ * @param {Set<string>} visibleCategories
+ * @returns {object | null}
+ */
 function validateConsent(value, version, categories, visibleCategories) {
   if (
     !value ||
@@ -66,6 +94,14 @@ function validateConsent(value, version, categories, visibleCategories) {
   return { version, necessary: true, choices, timestamp: value.timestamp };
 }
 
+/**
+ * Create a `type="button"` element with a label and a click handler.
+ *
+ * @param {string} label
+ * @param {string} className
+ * @param {() => void} onClick
+ * @returns {HTMLButtonElement}
+ */
 function createButton(label, className, onClick) {
   const button = document.createElement("button");
   button.type = "button";
@@ -75,13 +111,13 @@ function createButton(label, className, onClick) {
   return button;
 }
 
-function createDisclosureButton(label, className, onClick, expanded, controls) {
-  const button = createButton(label, className, onClick);
-  button.setAttribute("aria-expanded", String(expanded));
-  button.setAttribute("aria-controls", controls);
-  return button;
-}
-
+/**
+ * Call one consent listener. A listener that throws is logged and does not affect the others.
+ *
+ * @param {(allowed: boolean, consent: object | null) => void} callback
+ * @param {boolean} allowed
+ * @param {object | null} currentConsent
+ */
 function notifyListener(callback, allowed, currentConsent) {
   try {
     callback(allowed, currentConsent);
@@ -100,12 +136,15 @@ export function setupGoogleAnalytics(consent, measurementId) {
   }
 
   let googleTagLoaded = false;
-  let googleTagScript;
 
-  // Queue consent as denied before any Google tag can run.
+  // Queue consent as denied before any Google tag can run. Under Consent Mode, window.gtag
+  // stays defined after revocation so app calls keep working; the denied state is honoured.
   window.dataLayer = window.dataLayer || [];
   window.gtag =
     window.gtag ||
+    /**
+     * Queue a Google tag command on `window.dataLayer`, as gtag.js does before it loads.
+     */
     function gtag() {
       window.dataLayer.push(arguments);
     };
@@ -116,8 +155,6 @@ export function setupGoogleAnalytics(consent, measurementId) {
     ad_user_data: "denied",
     ad_personalization: "denied",
   });
-  window.gtag("js", new Date());
-  window.gtag("config", measurementId);
 
   return consent.on("analytics", (allowed) => {
     window.gtag("consent", "update", {
@@ -125,19 +162,37 @@ export function setupGoogleAnalytics(consent, measurementId) {
     });
 
     if (!allowed) {
-      googleTagScript?.remove();
-      googleTagScript = null;
-      googleTagLoaded = false;
+      deleteGoogleAnalyticsCookies();
       return;
     }
+    // gtag.js keeps running once loaded (removing its <script> does not unload it),
+    // so load it once; later grants only update consent.
     if (googleTagLoaded) return;
 
     googleTagLoaded = true;
-    googleTagScript = document.createElement("script");
+    // Queued after the grant, so the first page view is sent with consent already granted.
+    window.gtag("js", new Date());
+    window.gtag("config", measurementId);
+    const googleTagScript = document.createElement("script");
     googleTagScript.async = true;
     googleTagScript.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
     document.head.append(googleTagScript);
   });
+}
+
+/** Expire Google Analytics cookies (_ga, _ga_*, _gid, _gat*) for this host and its parent domains. */
+function deleteGoogleAnalyticsCookies() {
+  const names = document.cookie
+    .split(/;\s*/)
+    .map((entry) => entry.split("=")[0])
+    .filter((name) => /^(_ga|_gid|_gat)(_|$)/.test(name));
+  if (!names.length) return;
+  // GA usually sets cookies on the highest possible domain, so try every parent domain too.
+  const labels = location.hostname.split(".");
+  const domains = [undefined, ...labels.slice(0, -1).map((_, index) => labels.slice(index).join("."))];
+  for (const name of names) {
+    for (const domain of domains) deleteCookie(name, domain ? { path: "/", domain } : { path: "/" });
+  }
 }
 
 /** Create a consent manager with a floating notice, preference UI, and localStorage-backed decisions. */
@@ -236,6 +291,9 @@ export function createCookieConsent(options = {}) {
   const [[readStoredConsent, writeStoredConsent], disposeStorage] = createRoot(() =>
     createLocalStorage(storageKey, null, storage === undefined ? {} : { storage }),
   );
+  /**
+   * The current consent record, or null when there is no valid decision.
+   */
   const consent = () =>
     validateConsent(readStoredConsent(), version, categoryMap, visibleCategories);
   const listeners = new Map();
@@ -243,6 +301,9 @@ export function createCookieConsent(options = {}) {
   let render;
   let visiblePanel = null;
   let closed = false;
+  // Each view nominates the element that receives focus after a re-render replaces the old one.
+  let focusTarget = null;
+  const idPrefix = `ui-cookie-consent-${nextCookieConsentId++}`;
 
   injectAddonStyles("cookieconsent", cookieConsentStyles);
   const element = document.createElement("section");
@@ -250,6 +311,14 @@ export function createCookieConsent(options = {}) {
   element.setAttribute("aria-label", labels.consent ?? "Cookie consent");
   document.body.append(element);
 
+  /**
+   * Save a decision. Categories that are missing or not visible are denied.
+   *
+   * @param {Record<string, boolean>} [choices]
+   * @returns {object | null} The stored consent record.
+   * @throws {TypeError} For a malformed choices object or a non-boolean choice.
+   * @throws {Error} For an unknown category, or after `close()`.
+   */
   function setConsent(choices = {}) {
     if (closed) throw new Error("Cookie consent manager is closed.");
     if (!choices || typeof choices !== "object" || Array.isArray(choices)) {
@@ -277,14 +346,23 @@ export function createCookieConsent(options = {}) {
     return consent();
   }
 
+  /**
+   * Accept every visible category.
+   */
   function acceptAll() {
     return setConsent(Object.fromEntries([...visibleCategories].map((id) => [id, true])));
   }
 
+  /**
+   * Reject every optional category.
+   */
   function rejectNonEssential() {
     return setConsent({});
   }
 
+  /**
+   * Remove the stored decision and show the banner again.
+   */
   function revokeConsent() {
     if (closed) throw new Error("Cookie consent manager is closed.");
     writeStoredConsent(null);
@@ -295,12 +373,28 @@ export function createCookieConsent(options = {}) {
     }
   }
 
+  /**
+   * Whether a category is currently allowed. `necessary` is always allowed.
+   *
+   * @param {string} id
+   * @returns {boolean}
+   */
   function hasConsent(id) {
     if (id === "necessary") return true;
     if (!categoryMap.has(id)) return false;
     return consent()?.choices[id] === true;
   }
 
+  /**
+   * Subscribe to changes in a category’s permission.
+   *
+   * The callback runs at once with the current value, and again each time it changes. The subscription ends with the owner.
+   *
+   * @param {string} id Category id, or `"necessary"`.
+   * @param {(allowed: boolean, consent: object | null) => void} callback
+   * @returns {() => void} Unsubscribes.
+   * @throws {Error} For an unknown category, or after `close()`.
+   */
   function on(id, callback) {
     if (closed) throw new Error("Cookie consent manager is closed.");
     if (id !== "necessary" && !categoryMap.has(id))
@@ -311,6 +405,9 @@ export function createCookieConsent(options = {}) {
     if (!callbacks) listeners.set(id, (callbacks = new Map()));
     const listener = { unsubscribe: null, previous: hasConsent(id) };
     notifyListener(callback, listener.previous, consent());
+    /**
+     * Remove this callback from its category.
+     */
     const unsubscribe = () => {
       callbacks.delete(callback);
       if (!callbacks.size) listeners.delete(id);
@@ -325,6 +422,13 @@ export function createCookieConsent(options = {}) {
     return unsubscribe;
   }
 
+  /**
+   * Add a custom category to the preferences. The existing decision is cleared, so the banner asks again.
+   *
+   * @param {{ id: string, label: string, description: string }} category
+   * @returns {() => void} Removes the category. It runs once; later calls and calls after `close()` do nothing.
+   * @throws {Error} If the id is already registered, or after `close()`.
+   */
   function registerCategory(category) {
     if (closed) throw new Error("Cookie consent manager is closed.");
     const validated = validateCategory(category);
@@ -338,7 +442,10 @@ export function createCookieConsent(options = {}) {
       choicesChanged = true;
     }
     render();
+    let registered = true;
     return () => {
+      if (!registered || closed) return;
+      registered = false;
       const hasDecision = Boolean(consent());
       categoryMap.delete(validated.id);
       visibleCategories.delete(validated.id);
@@ -351,6 +458,9 @@ export function createCookieConsent(options = {}) {
     };
   }
 
+  /**
+   * Tell each subscriber whose permission has changed since it was last notified.
+   */
   function notifyListeners() {
     if (!choicesChanged) return;
     choicesChanged = false;
@@ -365,16 +475,25 @@ export function createCookieConsent(options = {}) {
     }
   }
 
+  /**
+   * Render the preferences view with a checkbox for each visible category.
+   *
+   * Focus is moved to the heading.
+   *
+   * @returns {HTMLElement}
+   */
   function renderPreferences() {
     const panel = document.createElement("div");
     panel.className = "ui-cookie-consent__preferences";
-    panel.id = "ui-cookie-consent-preferences";
-    panel.setAttribute("aria-labelledby", "ui-cookie-consent-preferences-title");
+    panel.id = `${idPrefix}-preferences`;
+    panel.setAttribute("aria-labelledby", `${idPrefix}-preferences-title`);
     const heading = document.createElement("h3");
     heading.className = "ui-cookie-consent__title";
-    heading.id = "ui-cookie-consent-preferences-title";
+    heading.id = `${idPrefix}-preferences-title`;
+    heading.tabIndex = -1;
     heading.textContent = labels.preferences ?? "Cookie preferences";
     panel.append(heading);
+    focusTarget = heading;
 
     const necessary = document.createElement("div");
     necessary.className = "ui-cookie-consent__category";
@@ -439,6 +558,11 @@ export function createCookieConsent(options = {}) {
     return panel;
   }
 
+  /**
+   * Render the first-layer banner with accept, reject and manage actions.
+   *
+   * @returns {HTMLElement}
+   */
   function renderBanner() {
     const panel = document.createElement("div");
     panel.className = "ui-cookie-consent__banner";
@@ -480,27 +604,27 @@ export function createCookieConsent(options = {}) {
         rejectNonEssential,
       ),
     );
-    actions.append(
-      createDisclosureButton(
-        labels.btn_manage ?? "Manage preferences",
-        "ui-cookie-consent__button",
-        () => {
-          visiblePanel = "preferences";
-          render();
-        },
-        visiblePanel === "preferences",
-        "ui-cookie-consent-preferences",
-      ),
+    // The preferences view replaces the banner, so this is a plain button, not a disclosure.
+    const manage = createButton(
+      labels.btn_manage ?? "Manage preferences",
+      "ui-cookie-consent__button",
+      () => {
+        visiblePanel = "preferences";
+        render();
+      },
     );
+    actions.append(manage);
     panel.append(actions);
+    focusTarget = manage;
     return panel;
   }
 
-  render = function render() {
-    if (closed) return;
-    element.replaceChildren();
-    const current = consent();
-    notifyListeners();
+  /**
+   * Render the view for the current state: preferences, banner, or the settings button after a decision.
+   *
+   * @param {object | null} current The current consent record.
+   */
+  function renderView(current) {
     if (visiblePanel === "preferences") {
       element.append(renderPreferences());
       return;
@@ -512,26 +636,42 @@ export function createCookieConsent(options = {}) {
     }
     visiblePanel = null;
     if (!showSettingsButton) return;
-    element.append(
-      createDisclosureButton(
-        labels.btn_settings ?? "Cookie settings",
-        "ui-cookie-consent__settings",
-        () => {
-          visiblePanel = "preferences";
-          render();
-        },
-        false,
-        "ui-cookie-consent-preferences",
-      ),
+    const settings = createButton(
+      labels.btn_settings ?? "Cookie settings",
+      "ui-cookie-consent__settings",
+      () => {
+        visiblePanel = "preferences";
+        render();
+      },
     );
+    element.append(settings);
+    focusTarget = settings;
+  }
+
+  render = function render({ focus = false } = {}) {
+    if (closed) return;
+    // replaceChildren() drops the focused button, so carry focus into the new view.
+    const keepFocus = focus || element.contains(document.activeElement);
+    element.replaceChildren();
+    focusTarget = null;
+    const current = consent();
+    notifyListeners();
+    renderView(current);
+    if (keepFocus) focusTarget?.focus();
   };
 
+  /**
+   * Open the preferences view and move focus to it. Does nothing after `close()`.
+   */
   function openSettings() {
     if (closed) return;
     visiblePanel = "preferences";
-    render();
+    render({ focus: true });
   }
 
+  /**
+   * Close the manager: end every subscription, remove the element and release storage. Safe to call more than once.
+   */
   function close() {
     if (closed) return;
     closed = true;

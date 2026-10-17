@@ -28,6 +28,7 @@ async function bundleConsumer(entry) {
             'auth',
             'cookieconsent',
             'data',
+            'resource',
             'dragdrop',
             'sortable',
             'filedrop',
@@ -126,6 +127,12 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   assert.match(dialog, /treeShakingResult/);
   assert.doesNotMatch(dialog, /createTransition/);
   assert.doesNotMatch(dialog, /translateY\(8px\)/);
+
+  const resource = await bundleConsumer('resource.js');
+  assert.match(resource, /treeShakingResult/);
+  assert.match(resource, /createResource expects a fetcher function/);
+  assert.doesNotMatch(resource, /createStore expects a plain object or array/);
+  assert.doesNotMatch(resource, /createLocalStorage/);
 
   const notification = await bundleConsumer('notification.js');
   assert.match(notification, /treeShakingResult/);

@@ -72,7 +72,7 @@ The helper also exports `NavigationRouter`, `NavigationItem`, and `NavigationOpt
 ## Behavior and lifecycle
 
 - If `target` is not a `<nav>`, the helper appends a new semantic `<nav>` inside it. If `target` is already a `<nav>`, generated links are appended directly to it.
-- Hash-mode internal links receive `#`-prefixed `href` values; history-mode links use their path directly. Router changes update `aria-current="page"` and `activeClassName` reactively. Active matching is exact against `router.current()`.
+- Hash-mode internal links receive `#`-prefixed `href` values; history-mode links use their path directly, prefixed with `router.base` when the router has a base path (`/guide` → `/app/guide`). Router changes update `aria-current="page"` and `activeClassName` reactively. Active matching is exact against `router.current()`.
 - External links are not active and are left to browser navigation. By default they open in a new tab with `rel="noopener noreferrer"`; `target: '_self'` opens in the current tab.
 - The disposer stops route tracking and removes generated links. For a created `<nav>`, it removes the nav; for an existing `<nav>`, it restores its previous `aria-label` and removes the class tokens listed by `className` (including any matching tokens that were already present), while leaving unrelated children and classes intact.
 - When rebuilding navigation from reactive app state, dispose the previous instance before creating the replacement, as the demo shell does.

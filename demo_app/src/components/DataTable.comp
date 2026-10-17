@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { effect, signal } from "nodula-framework";
 
@@ -6,6 +7,12 @@ const [rows, setRows] = signal([]);
 const [errorMessage, setErrorMessage] = signal("");
 const [hasNoJsonRows, setHasNoJsonRows] = signal(false);
 
+/**
+ * Format a table cell for display. Objects are shown as JSON, and null or undefined as an empty string.
+ *
+ * @param {unknown} value
+ * @returns {string}
+ */
 function formatCell(value) {
   if (value == null) return "";
   if (typeof value === "object") return JSON.stringify(value);

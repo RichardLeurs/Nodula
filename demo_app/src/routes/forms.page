@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { effect, signal } from "nodula-framework";
 import { createForm } from "nodula-framework/form";
@@ -9,6 +10,11 @@ import styles from "../assets/css/form.module.css";
 const [submissionMessage, setSubmissionMessage] = signal("");
 let successMessageElement = null;
 
+/**
+ * Remember the element that shows the success message, so it can be animated.
+ *
+ * @param {HTMLElement | null} element
+ */
 function setSuccessMessageElement(element) {
   successMessageElement = element;
 }
@@ -29,6 +35,10 @@ effect(() => {
 const form = createForm(
   { name: "", email: "", updates: false },
   {
+    // Element IDs become form-name, form-email and their error elements.
+    idPrefix: "form",
+    // The success message is shown with textContent, so the raw name is safe to display.
+    escapeHtml: false,
     validate: (values) => ({
       ...(!values.name.trim() ? { name: "Enter your name." } : {}),
       ...(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)
@@ -48,6 +58,23 @@ const form = createForm(
   },
 );
 
+// Field helpers: stable IDs, the visible error, and ARIA attributes for each control.
+const nameField = form.field("name");
+const emailField = form.field("email");
+// The error element is always rendered, so the control may reference it; no description element exists.
+/**
+ * The `aria-describedby` value for a field, or null when it has none.
+ *
+ * @param {object} field A field from `form.field()`.
+ * @returns {string | null}
+ */
+const describedBy = (field) => field.attributes()["aria-describedby"] ?? null;
+
+/**
+ * Ask for confirmation, then reset the form and clear the success message.
+ *
+ * @returns {Promise<void>}
+ */
 async function resetForm() {
   const confirmed = await showDialog("Reset this form? Your changes will be cleared.", {
     title: "Reset form?",
@@ -95,57 +122,57 @@ async function resetForm() {
           </div>
         </header>
         <div class="ui-form__body">
-          <div class="ui-field" :class="form.errors.name ? 'ui-field--invalid' : ''">
-            <label class="ui-field__label" for="form-name"
+          <div class="ui-field" :class="nameField.invalid() ? 'ui-field--invalid' : ''">
+            <label class="ui-field__label" :for="nameField.ids.control"
               >Name <span class="ui-field__required" aria-label="required">*</span></label
             >
             <input
               class="ui-input"
-              id="form-name"
+              :id="nameField.ids.control"
               name="name"
               type="text"
               autocomplete="name"
               placeholder="Jane Smith"
-              :value="form.values.name"
+              :value="nameField.value()"
               @input="form.handleChange('name')($event)"
               @blur="form.handleBlur('name')()"
-              :aria-invalid="form.errors.name ? 'true' : 'false'"
-              aria-describedby="form-name-error"
+              :aria-invalid="nameField.invalid() ? 'true' : 'false'"
+              :aria-describedby="describedBy(nameField)"
             />
             <p
-              id="form-name-error"
+              :id="nameField.ids.error"
               class="ui-field__error"
               role="alert"
-              @show="Boolean(form.errors.name)"
+              @show="nameField.invalid()"
             >
-              {{ form.errors.name ?? "" }}
+              {{ nameField.visibleError() ?? "" }}
             </p>
           </div>
 
-          <div class="ui-field" :class="form.errors.email ? 'ui-field--invalid' : ''">
-            <label class="ui-field__label" for="form-email"
+          <div class="ui-field" :class="emailField.invalid() ? 'ui-field--invalid' : ''">
+            <label class="ui-field__label" :for="emailField.ids.control"
               >Email <span class="ui-field__required" aria-label="required">*</span></label
             >
             <input
               class="ui-input"
-              id="form-email"
+              :id="emailField.ids.control"
               name="email"
               type="email"
               autocomplete="email"
               placeholder="jane@example.com"
-              :value="form.values.email"
+              :value="emailField.value()"
               @input="form.handleChange('email')($event)"
               @blur="form.handleBlur('email')()"
-              :aria-invalid="form.errors.email ? 'true' : 'false'"
-              aria-describedby="form-email-error"
+              :aria-invalid="emailField.invalid() ? 'true' : 'false'"
+              :aria-describedby="describedBy(emailField)"
             />
             <p
-              id="form-email-error"
+              :id="emailField.ids.error"
               class="ui-field__error"
               role="alert"
-              @show="Boolean(form.errors.email)"
+              @show="emailField.invalid()"
             >
-              {{ form.errors.email ?? "" }}
+              {{ emailField.visibleError() ?? "" }}
             </p>
           </div>
 
@@ -195,9 +222,12 @@ async function resetForm() {
         Create a form with initial values, validation, and an async submit handler.
       </p>
       <pre class="ui-code-block"><code data-highlight>const form = createForm(initialValues, {
+  idPrefix: "form",
   validate: (values) =&gt; errors,
   onSubmit: async (values) =&gt; save(values),
-});</code></pre>
+});
+const email = form.field("email");
+// email.ids.control, email.ids.error; email.visibleError(); email.attributes()</code></pre>
     </section>
     <!-- <a class="button button--dark" href="/guide">Back to the guide</a> -->
   </main>

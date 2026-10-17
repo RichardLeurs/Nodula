@@ -10,6 +10,14 @@ export interface SEOOpenGraph {
   siteName?: SEOMetadataValue;
   locale?: SEOMetadataValue;
 }
+export interface SEOTwitter {
+  /** Card type; defaults to "summary_large_image" when an image is set, otherwise "summary". */
+  card?: SEOMetadataValue;
+  site?: SEOMetadataValue;
+  title?: SEOMetadataValue;
+  description?: SEOMetadataValue;
+  image?: SEOMetadataValue;
+}
 export interface SEOLanguageAlternate {
   lang: SEOMetadataValue;
   href: SEOMetadataValue;
@@ -23,6 +31,8 @@ export interface SEOMetadata {
   canonical?: SEOMetadataValue;
   robots?: SEOMetadataValue;
   openGraph?: SEOOpenGraph;
+  /** Opt-in twitter:* card tags; title, description and image fall back to Open Graph values. */
+  twitter?: SEOTwitter;
   hreflang?: SEOLanguageAlternate[];
 }
 export interface SEORouteContext {
@@ -32,6 +42,8 @@ export interface SEORouteContext {
   params: Readonly<Record<string, string>>;
   router: {
     mode: "hash" | "history";
+    /** History base path; included in generated canonical URLs. */
+    base?: string;
     current: Accessor<string>;
     navigate(path: string): void;
   };
@@ -47,7 +59,7 @@ export interface SEOOptions {
 }
 export interface SEOController {
   /** Merge page-local metadata into the current route metadata. */
-  update(metadata: SEOMetadata): void;
+  update(metadata: SEOMetadata | (() => SEOMetadata)): void;
   /** Stop reactive route updates and restore pre-existing head elements. */
   dispose(): void;
 }

@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Internally inject each add-on stylesheet once into the shared style layer. */
 /** Add an add-on stylesheet once, in a layer that app styles can override. */
 export function injectAddonStyles(id, css) {

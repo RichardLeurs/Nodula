@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Provide accessible native confirmation dialogs with boolean results. */
 import { onCleanup } from "nodula-framework";
 import { injectAddonStyles } from "./inject-styles.js";
@@ -72,6 +74,11 @@ export function showDialog(message, options = {}) {
     document.body.append(dialog);
 
     let settled = false;
+    /**
+     * Settle the dialog once, remove its listeners, close it and resolve the promise.
+     *
+     * @param {boolean} accepted True for OK, false for cancel or dismissal.
+     */
     const finish = (accepted) => {
       if (settled) return;
       settled = true;
@@ -93,21 +100,45 @@ export function showDialog(message, options = {}) {
       resolve(accepted);
     };
 
+    /**
+     * Handle the native cancel event (Escape or a browser cancel) by cancelling it and settling as declined.
+     *
+     * @param {Event} event
+     */
     const handleCancel = (event) => {
       event.preventDefault();
       finish(false);
     };
+    /**
+     * Settle as declined when the native dialog closes without an answer.
+     */
     const handleClose = () => finish(false);
+    /**
+     * Decline the dialog on Escape.
+     *
+     * @param {KeyboardEvent} event
+     */
     const handleKeydown = (event) => {
       if (event.key === "Escape") {
         event.preventDefault();
         finish(false);
       }
     };
+    /**
+     * Decline the dialog when the click lands on the backdrop, which is the dialog element itself.
+     *
+     * @param {MouseEvent} event
+     */
     const handleBackdropClick = (event) => {
       if (event.target === dialog) finish(false);
     };
+    /**
+     * Decline the dialog from the cancel button.
+     */
     const handleCancelClick = () => finish(false);
+    /**
+     * Accept the dialog from the OK button.
+     */
     const handleOkClick = () => finish(true);
 
     dialog.addEventListener("cancel", handleCancel);
@@ -132,6 +163,11 @@ export function showDialog(message, options = {}) {
       // Dialogs may be used outside a Nodula root; they still clean up when the user responds.
     }
 
+    /**
+     * Settle the dialog with an error when it cannot be shown, removing its listeners.
+     *
+     * @param {unknown} error
+     */
     function rejectDialog(error) {
       if (settled) return;
       settled = true;

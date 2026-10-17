@@ -39,7 +39,7 @@ Opens a modal and returns a `ModalHandle`.
 |---|---|---|---|
 | `title` | `string` | `''` | Optional heading. Without a title, dialog gets accessible name `Modal window`. |
 | `btn_close` | `string` | `'Close'` | Visible close button text and accessible label. |
-| `closeOnBackdrop` | `boolean` | `true` | Whether clicking the dialog backdrop closes the modal. |
+| `closeOnBackdrop` | `boolean` | `true` | Whether clicking the dialog backdrop (outside the dialog box) closes the modal. Clicks on the dialog's own padding do not close it. |
 | `showHeader` | `boolean` | `true` | Whether to render the add-on's title/header and close button. Set to `false` when content supplies its own header and close control. |
 
 `ModalHandle` contains `element: HTMLDialogElement`, `close(): void`, and `closed: Promise<void>`. The `closed` promise resolves after any supported close path completes. `ModalOptions` and `ModalHandle` are exported TypeScript interfaces. `openModal` remains a deprecated alias of `showModal`; use `showModal` in new code.

@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 import hljs from "highlight.js/lib/core";
 import javascript from "highlight.js/lib/languages/javascript";
 import xml from "highlight.js/lib/languages/xml";
@@ -12,6 +14,13 @@ const supportedLanguages = ["javascript", "html", "css"];
 const candidateSelector =
   ".guide-code pre code, .addon-card code[data-highlight], .ui-code-block code[data-highlight]";
 
+/**
+ * Syntax-highlight one code element. Each element is highlighted once.
+ *
+ * An explicit language outside the supported list leaves the element unchanged. Without one, the language is detected.
+ *
+ * @param {HTMLElement} element
+ */
 function highlightCodeElement(element) {
   if (element.dataset.highlighted === "yes") return;
   const codeText = element.textContent ?? "";
@@ -31,11 +40,22 @@ function highlightCodeElement(element) {
   if (result.language) element.dataset.highlightLanguage = result.language;
 }
 
+/**
+ * Highlight the code elements in or under a node, including the node itself.
+ *
+ * @param {Element | Document} root
+ */
 function highlightWithin(root) {
   if (root instanceof Element && root.matches(candidateSelector)) highlightCodeElement(root);
   root.querySelectorAll?.(candidateSelector).forEach(highlightCodeElement);
 }
 
+/**
+ * Highlight the code blocks under `root` now, and again whenever content is added or changed.
+ *
+ * @param {Element | null} [root] Defaults to the app root element.
+ * @returns {() => void} Stops observing changes.
+ */
 export function installDemoCodeHighlighting(root = document.querySelector(".ui-app")) {
   if (!root) return () => {};
 

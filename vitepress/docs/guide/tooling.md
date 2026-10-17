@@ -43,6 +43,8 @@ export default defineConfig({
 
 The plugin handles `.page` and `.comp` modules. It compiles their templates and style blocks into JavaScript/CSS that Vite bundles. The repository implementation lives at `framework/vite-plugin.js`; its `load()` hook reads those files and calls the component/style compiler. See [Single-File Components](/guide/templates) for supported syntax.
 
+Compile errors are rethrown with the full file path (`/path/to/Card.comp: …`) and the `id` set, so the Vite error overlay points at the right file. Only a trailing Nodula query (`?nodula-style`, `?nodula-style-scoped`, `?nodula-style-module`) is parsed from module ids; a `?` in a directory or file name is part of the path. Generated style modules register their component as a watch dependency with `this.addWatchFile()`, so editing a `.comp` file also refreshes its extracted CSS.
+
 ### Package and peer dependency boundary
 
 The package exports the plugin at `nodula-framework/vite` and declares Vite as an optional peer dependency. Install a compatible Vite version in the consuming project when using this plugin. Applications using only browser runtime APIs do not need to import the Vite entry at runtime.

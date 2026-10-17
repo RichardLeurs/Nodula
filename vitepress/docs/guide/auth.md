@@ -94,7 +94,7 @@ Returned `AuthController` API:
 | `error()` | `Error \| null` | Most recent failed operation error; cleared when a new operation starts. |
 | `initialize()` | `Promise<AuthIdentity \| null>` | Calls `adapter.getSession()` and restores signed-in or signed-out state. |
 | `signIn(credentials)` | `Promise<AuthIdentity>` | Delegates credentials to adapter and stores returned identity. |
-| `signOut()` | `Promise<null>` | Calls `adapter.signOut(currentSession)` and clears identity on success. |
+| `signOut()` | `Promise<null>` | Calls `adapter.signOut(currentSession)` and clears identity on success. `hasRole` and `hasPermission` return `false` as soon as sign-out starts, not only after it finishes. |
 | `refresh()` | `Promise<AuthIdentity \| null>` | Calls optional `adapter.refreshSession(currentSession)`. Rejects if adapter does not implement it. |
 | `hasRole(role)` | `boolean` | Checks `user.role` and string entries in `user.roles`; false while unauthenticated or for non-string input. |
 | `hasPermission(permission)` | `boolean` | Checks string entries in `user.permissions` and configured permissions for user's roles; false while unauthenticated or for non-string input. |

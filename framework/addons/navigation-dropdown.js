@@ -1,9 +1,16 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Compose a button disclosure with Nodula's router-aware navigation links. */
 import { onCleanup } from "nodula-framework";
 import { createNavigation } from "nodula-framework/navigation";
 
 let dropdownId = 0;
 
+/**
+ * Register a dispose function with the current owner. Outside an owner the caller must call it.
+ *
+ * @param {() => void} dispose
+ */
 function registerCleanup(dispose) {
   try {
     onCleanup(dispose);
@@ -75,6 +82,12 @@ export function createNavigationDropdown(target, router, items, options = {}) {
   });
   target.append(wrapper);
 
+  /**
+   * Open or close the panel and keep `aria-expanded` in step.
+   *
+   * @param {boolean} open
+   * @param {{ returnFocus?: boolean }} [options] Move focus back to the button when closing.
+   */
   function setOpen(open, { returnFocus = false } = {}) {
     isOpen = open;
     button.setAttribute("aria-expanded", String(open));
@@ -82,10 +95,18 @@ export function createNavigationDropdown(target, router, items, options = {}) {
     if (returnFocus) button.focus();
   }
 
+  /**
+   * Toggle the panel from the button.
+   */
   function handleButtonClick() {
     setOpen(!isOpen);
   }
 
+  /**
+   * Open the panel with ArrowDown and move focus to its first link.
+   *
+   * @param {KeyboardEvent} event
+   */
   function handleButtonKeydown(event) {
     if (event.key === "ArrowDown") {
       event.preventDefault();
@@ -94,6 +115,11 @@ export function createNavigationDropdown(target, router, items, options = {}) {
     }
   }
 
+  /**
+   * Close the open panel on Escape and return focus to the button.
+   *
+   * @param {KeyboardEvent} event
+   */
   function handleDocumentKeydown(event) {
     if (event.key === "Escape" && isOpen) {
       event.preventDefault();
@@ -101,6 +127,11 @@ export function createNavigationDropdown(target, router, items, options = {}) {
     }
   }
 
+  /**
+   * Close the panel after a link inside it is chosen, or after a click outside the dropdown.
+   *
+   * @param {MouseEvent} event
+   */
   function handleClick(event) {
     const clickedLink = event.target?.closest?.("a");
     if (clickedLink && panel.contains(clickedLink)) setOpen(false);
@@ -113,6 +144,9 @@ export function createNavigationDropdown(target, router, items, options = {}) {
   document.addEventListener("click", handleClick);
   document.addEventListener("keydown", handleDocumentKeydown);
 
+  /**
+   * Remove the listeners, the navigation links and the wrapper. Safe to call more than once.
+   */
   const dispose = () => {
     if (disposed) return;
     disposed = true;

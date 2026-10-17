@@ -71,11 +71,13 @@ Creates a router from an explicit route map.
 
 | Argument / option | Type | Default | Description |
 |---|---|---|---|
-| `routes` | `Record<string, RouteDefinition>` | Required | Maps paths to component functions or lazy route entries. |
+| `routes` | `Record<string, RouteDefinition>` | Required | Maps path patterns to component functions or lazy route entries. The map is read once when the router is created; add routes by pattern rather than with a dynamic `Proxy`. |
 | `fallback` | `() => Node` | Full-viewport centered `Page not found` element | Creates the node shown when no route matches. The default fallback is styled inline; provide a custom fallback to control its presentation. |
 | `options.mode` | `'hash' \| 'history'` | `'hash'` | Selects hash or History API navigation. Other values throw. |
+| `options.base` | `string` | `''` | History mode only. Serves the app under a path prefix such as `'/app'` (a trailing slash is ignored). Route patterns, `current()`, guards and `navigate()` use app-relative paths; the router adds and strips the base. Using it in hash mode or without a leading `/` throws. |
 | `options.beforeEach` | `NavigationGuard` | None | Optional async or sync guard run before initial render and each navigation. |
 | `options.onError` | `RouteLoadErrorHandler` | Default centered load error | Called when a lazy route, file page, or file layout loader rejects or resolves to an invalid component. Return a DOM `Node` to render custom error UI. |
+| `options.labels` | `RouterLabels` | English defaults | Text for the framework's own messages: `checking`, `navigationBlocked`, `loadFailed`, and `notFound`. Each key is optional; unknown keys and empty strings throw. The default not-found view uses `notFound`; a custom `fallback` replaces that view entirely. Each message keeps its `data-nodula-code` (except `checking` and `navigationBlocked`). |
 
 ```ts
 type NavigationGuard = (context: { to: string; from: string }) =>
@@ -84,9 +86,12 @@ type NavigationGuard = (context: { to: string; from: string }) =>
 type RouteLoadErrorContext = { to: string; from?: string; file?: string };
 type RouteLoadErrorHandler = (error: unknown, context: RouteLoadErrorContext) => Node | void;
 
+type RouteContext = ComponentContext & { params: Record<string, string> };
+type RouteComponent = (context: RouteContext) => Node;
+
 type LazyRoute = {
-  load: () => Promise<Component | { default: Component }>;
-  context?: ComponentContext;
+  load: () => Promise<RouteComponent | { default: RouteComponent }>;
+  context?: ComponentContext; // merged with the matched params when rendering
 };
 ```
 
@@ -95,10 +100,11 @@ The returned router exposes:
 | Member | Type | Behavior |
 |---|---|---|
 | `mode` | `'hash' \| 'history'` | Active routing mode. |
+| `base` | `string` | Normalized base path without a trailing slash, or `''`. |
 | `current()` | `string` | Current route path. |
 | `view()` | `Node` | Current route node, fallback, or pending/loading status node. |
 | `navigate(path)` | `(path: string) => void` | Navigates to a same-origin path; throws for empty or cross-origin paths. |
-- `loadError()` | `Accessor<{ error: unknown; context: RouteLoadErrorContext } \| null>` | Current lazy route failure, or `null` when no failure is active. |
+| `loadError()` | `Accessor<{ error: unknown; context: RouteLoadErrorContext } \| null>` | Current lazy route failure, or `null` when no failure is active. The next navigation clears it. |
 | `navigationPending()` | `boolean` accessor | True while a navigation guard is pending. |
 | `canRender()` | `boolean` accessor | False until the initial guarded route is allowed. |
 
@@ -108,10 +114,11 @@ Discovers pages and layouts from a Vite `import.meta.glob` result and returns th
 
 ## Behavior and lifecycle
 
-- Lazy route modules load on first allowed visit and successful modules are cached. Pending routes render an empty node until loaded. A failed load is exposed through `router.loadError()` and passed to `onError`. If navigation came from a previously loaded route, the router restores that route and its URL; if the initial route fails, `onError`'s returned node is shown, or the default centered error view is used.
+- Lazy route modules load on first allowed visit and successful modules are cached. Pending routes render an empty node until loaded. A failed load is exposed through `router.loadError()` and passed to `onError`; without `onError` it is logged with `console.error`. Failures are not cached, so visiting the route again retries the load. If navigation came from a previously loaded route, the router restores that route and its URL; if the initial route fails, `onError`'s returned node is shown, or the default centered error view is used.
 - File-based routes load matched page and layout modules only after guards allow navigation.
 - A guard returning `true` or `undefined` allows navigation; `false` cancels; a path string redirects. Redirect loops and unsupported return values are reported as guard failures.
 - For the initial route, `canRender()` remains false until the guard allows a route. `navigationPending()` reflects guard execution.
+- In hash mode, a query string inside the hash (`#/search?q=x`) is not part of the route path: `current()` is `/search`. Read the query from `window.location.hash` if needed.
 - History mode intercepts ordinary same-origin links. External links, modified clicks, downloads, links opening a new window, and same-page anchors remain browser-controlled.
 - The router removes its `popstate` or `hashchange` listener on owner disposal. History mode also removes its document click listener. Pending guards and lazy loads do not update a disposed router.
 
@@ -133,4 +140,4 @@ Discovers pages and layouts from a Vite `import.meta.glob` result and returns th
 
 ## Hosting history routes
 
-In History API mode, production hosting must serve the app’s entry HTML for unknown page paths. Without that fallback, a direct visit or refresh of `/guide` can return a server 404 before the client router starts. Vite development and preview servers provide SPA fallback; hash mode does not require path-based fallback.
+In History API mode, production hosting must serve the app’s entry HTML for unknown page paths. When the app lives in a subdirectory, set `base` (for example `{ mode: 'history', base: '/app' }`) and configure the fallback for that subdirectory only; same-origin links outside the base are left to the browser. Without that fallback, a direct visit or refresh of `/guide` can return a server 404 before the client router starts. Vite development and preview servers provide SPA fallback; hash mode does not require path-based fallback.

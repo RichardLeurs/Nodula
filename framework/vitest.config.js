@@ -1,8 +1,16 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 import { nodulaPlugin } from "./vite-plugin.js";
 
 const projectRoot = fileURLToPath(new URL("..", import.meta.url));
+/**
+ * Resolve a path relative to this config file.
+ *
+ * @param {string} path
+ * @returns {string} Absolute file path.
+ */
 const source = (path) => fileURLToPath(new URL(path, import.meta.url));
 const addonNames = [
   "animation",
@@ -21,6 +29,7 @@ const addonNames = [
   "seo",
   "seo-vite",
   "store",
+  "resource",
   "sortable",
   "filedrop",
 ];

@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { signal } from 'nodula-framework';
 import { createIndexedDB } from 'nodula-framework/localstorage';
@@ -13,6 +14,9 @@ const [ideas, setIdeas] = storedIdeas;
 const [draft, setDraft] = signal('');
 const [ready, setReady] = signal(false);
 const [status, setStatus] = signal('Loading saved ideas…');
+/**
+ * The number of ideas marked done.
+ */
 const doneCount = () => ideas().filter((idea) => idea.done).length;
 
 void storedIdeas.ready.then(() => {
@@ -20,14 +24,30 @@ void storedIdeas.ready.then(() => {
   setStatus(storedIdeas.available ? 'IndexedDB available.' : 'IndexedDB not available.');
 });
 
+/**
+ * Mark one idea done or not done.
+ *
+ * @param {number} id
+ * @param {boolean} checked
+ */
 function toggleIdea(id, checked) {
   setIdeas((current) => current.map((idea) => idea.id === id ? { ...idea, done: checked } : idea));
 }
 
+/**
+ * Remove one idea.
+ *
+ * @param {number} id
+ */
 function removeIdea(id) {
   setIdeas((current) => current.filter((idea) => idea.id !== id));
 }
 
+/**
+ * Add the draft as a new idea. Ignored while the saved ideas are still loading or the draft is empty.
+ *
+ * @param {SubmitEvent} event
+ */
 function addIdea(event) {
   event.preventDefault();
   const text = draft().trim();

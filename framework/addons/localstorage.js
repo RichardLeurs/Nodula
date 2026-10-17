@@ -1,6 +1,14 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Provide reactive localStorage, IndexedDB, and browser-cookie helpers. */
 import { effect, onCleanup, signal } from "nodula-framework";
 
+/**
+ * Return the document used for cookies.
+ *
+ * @returns {Document}
+ * @throws {Error} Outside a browser document.
+ */
 function cookieDocument() {
   if (typeof document === "undefined" || !document) {
     throw new Error("Cookie helpers are only available in a browser document.");
@@ -8,18 +16,36 @@ function cookieDocument() {
   return document;
 }
 
+/**
+ * Throw a TypeError unless a cookie name is a non-empty string.
+ *
+ * @param {unknown} name
+ */
 function validateCookieName(name) {
   if (typeof name !== "string" || !name.trim()) {
     throw new TypeError("Cookie names must be non-empty strings.");
   }
 }
 
+/**
+ * Throw a TypeError unless a cookie attribute is a string without `;` or line breaks.
+ *
+ * @param {unknown} value
+ * @param {string} attribute Attribute name, used in the message.
+ */
 function validateCookieAttribute(value, attribute) {
   if (typeof value !== "string" || /[;\r\n]/.test(value)) {
     throw new TypeError(`Cookie ${attribute} must be a string without semicolons or line breaks.`);
   }
 }
 
+/**
+ * Build the attribute part of a Set-Cookie value from the options.
+ *
+ * @param {object} [options] Path, domain, expires, maxAge, sameSite, secure.
+ * @returns {string} For example `; Path=/; Max-Age=3600`.
+ * @throws {TypeError} For an invalid option.
+ */
 function serializeCookieOptions(options = {}) {
   const attributes = [];
   if (options.path !== undefined) {
@@ -82,6 +108,11 @@ export function deleteCookie(name, options = {}) {
   setCookie(name, "", { ...scopeOptions, expires: new Date(0) });
 }
 
+/**
+ * Return `window.localStorage`, or undefined when it is blocked or unavailable.
+ *
+ * @returns {Storage | undefined}
+ */
 function defaultStorage() {
   try {
     return typeof window === "undefined" ? undefined : window.localStorage;
@@ -90,13 +121,30 @@ function defaultStorage() {
   }
 }
 
+// Returns the decoded value, or the fallback. `corrupt` is true only when an entry exists but its text cannot be parsed.
+/**
+ * Read and parse a stored JSON value.
+ *
+ * A missing key, storage that cannot be read, and text that cannot be parsed all fall back to the initial value. Only text that cannot be parsed counts as corrupt.
+ *
+ * @param {Storage | undefined} storage
+ * @param {string} key
+ * @param {unknown} fallback
+ * @returns {{ value: unknown, corrupt: boolean }}
+ */
 function decodeStoredValue(storage, key, fallback) {
-  if (!storage) return fallback;
+  if (!storage) return { value: fallback, corrupt: false };
+  let stored;
   try {
-    const stored = storage.getItem(key);
-    return stored === null ? fallback : JSON.parse(stored);
+    stored = storage.getItem(key);
   } catch {
-    return fallback;
+    return { value: fallback, corrupt: false };
+  }
+  if (stored === null) return { value: fallback, corrupt: false };
+  try {
+    return { value: JSON.parse(stored), corrupt: false };
+  } catch {
+    return { value: fallback, corrupt: true };
   }
 }
 
@@ -106,20 +154,34 @@ export function createLocalStorage(key, initialValue, { storage = defaultStorage
     throw new TypeError("createLocalStorage expects a non-empty storage key.");
   }
 
-  const [read, write] = signal(decodeStoredValue(storage, key, initialValue));
+  const decoded = decodeStoredValue(storage, key, initialValue);
+  const [read, write] = signal(decoded.value);
+  // Creation must not replace an entry we could not decode; the first real change overwrites it.
+  let keepCorruptEntry = decoded.corrupt;
   effect(() => {
+    const value = read();
     if (!storage) return;
+    if (keepCorruptEntry) {
+      keepCorruptEntry = false;
+      return;
+    }
     try {
-      const serialized = JSON.stringify(read());
+      const serialized = JSON.stringify(value);
       if (serialized !== undefined) storage.setItem(key, serialized);
-    } catch {
-      // Storage can be blocked, full, or unable to serialize this value; keep the signal usable in memory.
+    } catch (error) {
+      // Storage can be blocked or full, or the value may not be JSON-serializable. The signal stays usable in memory.
+      console.error(`Nodula: localStorage value "${key}" could not be saved.`, error);
     }
   });
 
   return [read, write];
 }
 
+/**
+ * Return `globalThis.indexedDB`, or undefined when it is blocked or unavailable.
+ *
+ * @returns {IDBFactory | undefined}
+ */
 function defaultIndexedDB() {
   try {
     return globalThis.indexedDB;
@@ -128,24 +190,73 @@ function defaultIndexedDB() {
   }
 }
 
+// Browser IndexedDB errors have a numeric `code` that cannot be replaced, so the failure is wrapped:
+// the message and name are kept, the original is the `cause`, and `code` is the nodula- code.
+/**
+ * Give a storage failure a `nodula-` code while keeping its message and name.
+ *
+ * A browser error keeps its message and becomes the `cause`. Errors that already carry a nodula code are returned unchanged.
+ *
+ * @param {unknown} error
+ * @param {string} code
+ * @param {string} fallback Message used when the error has none.
+ * @returns {Error & { code: string }}
+ */
+function storageError(error, code, fallback) {
+  if (typeof error?.code === "string" && error.code.startsWith("nodula-")) return error;
+  const failure = new Error(error?.message || fallback);
+  failure.name = error?.name ?? "Error";
+  failure.code = code;
+  if (error) failure.cause = error;
+  return failure;
+}
+
+/**
+ * Resolve with the result of an IDB request, or reject with a coded storage error.
+ *
+ * @param {IDBRequest} request
+ * @returns {Promise<unknown>}
+ */
 function requestResult(request) {
   return new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error("IndexedDB request failed."));
+    request.onerror = () =>
+      reject(storageError(request.error, "nodula-storage-request-failed", "IndexedDB request failed."));
   });
 }
 
+/**
+ * Resolve when an IDB transaction completes, or reject with a coded storage error when it aborts or fails.
+ *
+ * @param {IDBTransaction} transaction
+ * @returns {Promise<void>}
+ */
 function transactionComplete(transaction) {
   return new Promise((resolve, reject) => {
     transaction.oncomplete = resolve;
     transaction.onabort = () =>
-      reject(transaction.error ?? new Error("IndexedDB transaction aborted."));
+      reject(
+        storageError(transaction.error, "nodula-storage-transaction-aborted", "IndexedDB transaction aborted."),
+      );
     transaction.onerror = () =>
-      reject(transaction.error ?? new Error("IndexedDB transaction failed."));
+      reject(
+        storageError(transaction.error, "nodula-storage-transaction-failed", "IndexedDB transaction failed."),
+      );
   });
 }
 
-function openDatabase(indexedDB, databaseName, storeName) {
+/**
+ * Open the database, creating the object store on the first upgrade.
+ *
+ * A blocked open keeps waiting. `onBlocked` is called when that happens.
+ *
+ * @param {IDBFactory} indexedDB
+ * @param {string} databaseName
+ * @param {string} storeName
+ * @param {() => void} [onBlocked]
+ * @returns {Promise<IDBDatabase>}
+ */
+function openDatabase(indexedDB, databaseName, storeName, onBlocked) {
   return new Promise((resolve, reject) => {
     let request;
     try {
@@ -159,8 +270,11 @@ function openDatabase(indexedDB, databaseName, storeName) {
       const database = request.result;
       if (!database.objectStoreNames.contains(storeName)) database.createObjectStore(storeName);
     };
+    // Another connection holds an older version. The request keeps waiting; the caller decides whether to continue.
+    request.onblocked = () => onBlocked?.();
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error("Could not open IndexedDB."));
+    request.onerror = () =>
+      reject(storageError(request.error, "nodula-storage-open-failed", "Could not open IndexedDB."));
   });
 }
 
@@ -186,16 +300,28 @@ export function createIndexedDB(
   let pendingWrite = false;
   let firstEffectRun = true;
   let disposed = false;
+  // The most recent IndexedDB failure, or null after a successful open or write.
+  const [lastError, setLastError] = signal(null);
 
+  /**
+   * Write a value to IndexedDB. Does nothing before a successful read, so an unreadable store is never overwritten.
+   *
+   * A failure is recorded in `lastError` and the signal stays usable in memory.
+   *
+   * @param {unknown} value
+   */
   async function persist(value) {
-    if (!database || disposed) return;
+    // Write only after a successful read, so a store we could not read is never overwritten.
+    if (!database || !available || disposed) return;
     try {
       const transaction = database.transaction(storeName, "readwrite");
-      const completed = transactionComplete(transaction);
       transaction.objectStore(storeName).put(value, key);
-      await completed;
-    } catch {
+      // Attach the completion handler after issuing requests, so a synchronous throw cannot leave a dangling promise.
+      await transactionComplete(transaction);
+      setLastError(null);
+    } catch (error) {
       // IndexedDB can be unavailable, blocked, or unable to store this value; keep the signal usable in memory.
+      setLastError(storageError(error, "nodula-storage-write-failed", "IndexedDB write failed."));
     }
   }
 
@@ -210,33 +336,68 @@ export function createIndexedDB(
     if (ready) void persist(value);
   });
 
+  /**
+   * Write the signal, and mark it as changed so a later hydration does not overwrite the edit.
+   *
+   * @param {unknown} nextValue A value or an updater.
+   * @returns {unknown} The stored value.
+   */
   function setValue(nextValue) {
     pendingWrite = true;
     return write(nextValue);
   }
 
-  const readyPromise = (async () => {
+  // A blocked open settles `ready` as memory-only instead of waiting indefinitely. The request
+  // stays pending, so if it succeeds later the stored value is hydrated and `available` turns true.
+  let markBlocked;
+  const blocked = new Promise((resolve) => {
+    markBlocked = resolve;
+  });
+  /**
+   * Settle `ready` in memory when another connection blocks the open. The open keeps waiting.
+   */
+  const onBlocked = () => {
+    if (ready) return;
+    ready = true;
+    markBlocked();
+  };
+
+  /**
+   * Open the database, read the stored value, and set `available`.
+   *
+   * When another tab upgrades the database, this connection is closed and the signal continues in memory.
+   */
+  const connection = (async () => {
     if (!indexedDB || typeof indexedDB.open !== "function") {
       ready = true;
       return;
     }
 
     try {
-      database = await openDatabase(indexedDB, databaseName, storeName);
+      database = await openDatabase(indexedDB, databaseName, storeName, onBlocked);
+      // Another tab is upgrading the database: release this connection so it can proceed, then stay in memory.
+      const opened = database;
+      opened.onversionchange = () => {
+        opened.close();
+        if (database === opened) {
+          database = undefined;
+          available = false;
+        }
+      };
       if (disposed) {
         database.close();
         return;
       }
 
       const transaction = database.transaction(storeName, "readonly");
-      const completed = transactionComplete(transaction);
       const objectStore = transaction.objectStore(storeName);
       const [storedKey, storedValue] = await Promise.all([
         requestResult(objectStore.getKey(key)),
         requestResult(objectStore.get(key)),
-        completed,
+        transactionComplete(transaction),
       ]);
       available = true;
+      setLastError(null);
       if (!pendingWrite && storedKey !== undefined) {
         hydrating = true;
         write(storedValue);
@@ -244,12 +405,14 @@ export function createIndexedDB(
       }
       ready = true;
       if (pendingWrite || storedKey === undefined) await persist(read());
-    } catch {
+    } catch (error) {
       hydrating = false;
       ready = true;
+      setLastError(storageError(error, "nodula-storage-unavailable", "IndexedDB is unavailable."));
       // Keep the initial or latest in-memory signal value when IndexedDB cannot be opened or read.
     }
   })();
+  const readyPromise = Promise.race([connection, blocked]);
 
   try {
     onCleanup(() => {
@@ -262,6 +425,8 @@ export function createIndexedDB(
 
   const storedSignal = Object.assign([read, setValue], { ready: readyPromise });
   Object.defineProperty(storedSignal, "available", { enumerable: true, get: () => available });
+  // Read-only and reactive: the reason the last IndexedDB open, read or write failed, or null.
+  Object.defineProperty(storedSignal, "lastError", { enumerable: true, get: () => lastError() });
   return storedSignal;
 }
 

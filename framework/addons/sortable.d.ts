@@ -2,6 +2,19 @@
 export interface SortableListOptions {
   /** Receives the proposed complete item ID order; update application-owned state in this callback. */
   onReorder: (itemIds: string[]) => void;
+  /**
+   * Live-region message after a reorder, or `false` to disable the built-in announcement.
+   * Defaults to "Moved to position {position} of {total}."; supply a function to localize it.
+   */
+  announce?: false | ((details: SortableAnnouncement) => string);
+}
+
+export interface SortableAnnouncement {
+  /** data-sortable-id of the moved row. */
+  id: string;
+  /** New 1-based position. */
+  position: number;
+  total: number;
 }
 
 /**

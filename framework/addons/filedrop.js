@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Provide an accessible native file picker and file-drop target. */
 import { onCleanup } from "nodula-framework";
 import { injectAddonStyles } from "./inject-styles.js";
@@ -5,12 +7,22 @@ import fileDropStyles from "../assets/css/nodula-filedrop.css?inline";
 
 let nextFileDropId = 0;
 
+/**
+ * Throw a TypeError unless `element` is a DOM element.
+ *
+ * @param {unknown} element
+ */
 function assertElement(element) {
   if (!element || element.nodeType !== 1 || typeof element.addEventListener !== "function") {
     throw new TypeError("createFileDropZone expects a target element.");
   }
 }
 
+/**
+ * Register a dispose function with the current owner. Outside an owner the caller must call it.
+ *
+ * @param {() => void} dispose
+ */
 function registerCleanup(dispose) {
   try {
     onCleanup(dispose);
@@ -108,18 +120,40 @@ export function createFileDropZone(
     accepted: classNames.accepted ?? "ui-filedrop--accepted",
     rejected: classNames.rejected ?? "ui-filedrop--rejected",
   };
+  /**
+   * Set the zone state and its classes, and report the change to `onStateChange`.
+   *
+   * Every picked or dropped batch is reported, even when the state does not change.
+   *
+   * @param {"idle" | "active" | "accepted" | "rejected"} state
+   * @param {object} [details]
+   */
   const setState = (state, details = {}) => {
-    if (currentState === state) return;
+    // Repeated dragover/leave events are noise, but every picked or dropped batch is reported.
+    if (currentState === state && (state === "active" || state === "idle") && !details.accepted)
+      return;
     for (const className of Object.values(stateClasses))
       zone.classList.remove(...className.split(/\s+/));
     if (state !== "idle") zone.classList.add(...stateClasses[state].split(/\s+/));
     currentState = state;
     onStateChange?.(state, details);
   };
+  /**
+   * Return the files to consider: all of them, or only the first when `multiple` is false.
+   *
+   * @param {FileList | File[] | null | undefined} files
+   * @returns {File[]}
+   */
   const filesFor = (files) => {
     const selected = Array.from(files ?? []);
     return multiple ? selected : selected.slice(0, 1);
   };
+  /**
+   * Whether a file matches the `accept` rules: MIME types, `type/*` wildcards, or extensions.
+   *
+   * @param {File} file
+   * @returns {boolean}
+   */
   const acceptsFile = (file) => {
     if (accept === undefined) return true;
     return accept
@@ -132,6 +166,12 @@ export function createFileDropZone(
         return file.type.toLowerCase() === rule;
       });
   };
+  /**
+   * Split the selected files into accepted and rejected groups.
+   *
+   * @param {FileList | File[] | null | undefined} files
+   * @returns {{ accepted: File[], rejected: File[] }}
+   */
   const partitionFiles = (files) => {
     const selected = filesFor(files);
     return {
@@ -139,40 +179,76 @@ export function createFileDropZone(
       rejected: selected.filter((file) => !acceptsFile(file)),
     };
   };
+  /**
+   * Handle files chosen in the native picker, then clear the input so the same file can be chosen again.
+   */
   const handlePickerChange = () => {
     const { accepted, rejected } = partitionFiles(input.files);
+    const state = rejected.length ? "rejected" : accepted.length ? "accepted" : "idle";
     try {
       if (accepted.length) onFiles(accepted, "picker");
-      const state = rejected.length ? "rejected" : accepted.length ? "accepted" : "idle";
-      setState(state, { accepted, rejected, source: "picker" });
     } finally {
       input.value = "";
+      setState(state, { accepted, rejected, source: "picker" });
     }
   };
+  /**
+   * Whether a drag event carries files.
+   *
+   * @param {DragEvent} event
+   * @returns {boolean}
+   */
   const hasFiles = (event) => Array.from(event.dataTransfer?.types ?? []).includes("Files");
+  /**
+   * Show the active state when a file drag enters the zone.
+   *
+   * @param {DragEvent} event
+   */
   const handleDragEnter = (event) => {
     if (!hasFiles(event)) return;
     event.preventDefault();
     setState("active", { source: "drop" });
   };
+  /**
+   * Accept a file drag and show the copy cursor.
+   *
+   * @param {DragEvent} event
+   */
   const handleDragOver = (event) => {
     if (!hasFiles(event)) return;
     event.preventDefault();
     if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
     setState("active", { source: "drop" });
   };
+  /**
+   * Return to idle when a drag leaves the zone, unless it moves onto one of its children.
+   *
+   * @param {DragEvent} event
+   */
   const handleDragLeave = (event) => {
     if (event.relatedTarget && zone.contains(event.relatedTarget)) return;
     setState("idle", { source: "drop" });
   };
+  /**
+   * Handle dropped files: accepted ones go to `onFiles`, and the state reflects the result.
+   *
+   * @param {DragEvent} event
+   */
   const handleDrop = (event) => {
     if (!hasFiles(event)) return;
     event.preventDefault();
     const { accepted, rejected } = partitionFiles(event.dataTransfer?.files);
-    if (accepted.length) onFiles(accepted, "drop");
     const state = rejected.length ? "rejected" : accepted.length ? "accepted" : "idle";
-    setState(state, { accepted, rejected, source: "drop" });
+    // A throwing onFiles must not leave the zone stuck in the active state.
+    try {
+      if (accepted.length) onFiles(accepted, "drop");
+    } finally {
+      setState(state, { accepted, rejected, source: "drop" });
+    }
   };
+  /**
+   * Open the native file picker from the button.
+   */
   const handleButtonClick = () => input.click();
 
   input.addEventListener("change", handlePickerChange);
@@ -182,6 +258,9 @@ export function createFileDropZone(
   zone.addEventListener("dragleave", handleDragLeave);
   zone.addEventListener("drop", handleDrop);
 
+  /**
+   * Remove the listeners and the zone element. Safe to call more than once.
+   */
   const dispose = () => {
     if (disposed) return;
     disposed = true;

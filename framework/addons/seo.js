@@ -1,33 +1,74 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Manage accessible, route-aware document metadata in the browser. */
 import { effect, signal } from "nodula-framework";
 
 const HTTP_PROTOCOLS = new Set(["http:", "https:"]);
 
+/**
+ * Throw a TypeError unless `value` is a plain object.
+ *
+ * @param {unknown} value
+ * @param {string} name Option name, used in the message.
+ */
 function assertRecord(value, name) {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new TypeError(`${name} must be an object.`);
   }
 }
 
+/**
+ * Return a metadata value, calling it first when it is a function or accessor.
+ *
+ * @param {unknown} value
+ * @returns {unknown}
+ */
 function readValue(value) {
   return typeof value === "function" ? value() : value;
 }
 
+/**
+ * Normalize a route path: drop the query and hash, add a leading `/`, and collapse repeated slashes.
+ *
+ * @param {string} path
+ * @returns {string}
+ */
 function normalizePath(path) {
   const pathname = String(path).split(/[?#]/, 1)[0] || "/";
   if (!pathname.startsWith("/")) return `/${pathname}`;
   return pathname.replace(/\/{2,}/g, "/");
 }
 
+/**
+ * Compile a route pattern, such as `/docs/:id` or `/docs/*path`, to a regular expression.
+ *
+ * @param {string} pattern
+ * @returns {{ pattern: string, names: string[], ranks: number[], regex: RegExp }}
+ * @throws {TypeError} If the pattern does not start with `/`.
+ */
 function compileRoutePattern(pattern) {
   if (typeof pattern !== "string" || !pattern.startsWith("/")) {
     throw new TypeError(`SEO route patterns must start with '/': ${String(pattern)}`);
   }
   const names = [];
   const segments = normalizePath(pattern).split("/").filter(Boolean);
+  // 0 static, 1 parameter, 2 catch-all; used to rank patterns like the router does.
+  const ranks = [];
+  let restName = null;
   const source = segments
-    .map((segment) => {
+    .map((segment, index) => {
+      const catchAll = segment.match(/^\*([\w$]+)$|^\[\.\.\.([\w$]+)\]$/);
+      if (catchAll) {
+        if (index !== segments.length - 1)
+          throw new TypeError(`SEO route catch-all segment must be last: ${pattern}`);
+        restName = catchAll[1] ?? catchAll[2];
+        names.push(restName);
+        ranks.push(2);
+        // Lazy, so an optional trailing slash is not captured into the value.
+        return "(.+?)";
+      }
       const parameter = segment.match(/^:([\w$]+)$|^\[([\w$]+)\]$/);
+      ranks.push(parameter ? 1 : 0);
       if (parameter) {
         names.push(parameter[1] ?? parameter[2]);
         return "([^/]+)";
@@ -35,57 +76,89 @@ function compileRoutePattern(pattern) {
       return segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     })
     .join("/");
-  return {
-    pattern,
-    names,
-    regex: new RegExp(`^/${source}/?$`),
-    staticSegments: segments.length - names.length,
-  };
+  return { pattern, names, restName, ranks, regex: new RegExp(`^/${source}/?$`) };
 }
 
+/** Static beats parameter beats catch-all, compared left to right, so `/a/:b` wins over `/:a/b`. */
+function compareRoutes(left, right) {
+  const length = Math.min(left.ranks.length, right.ranks.length);
+  for (let index = 0; index < length; index += 1) {
+    const difference = left.ranks[index] - right.ranks[index];
+    if (difference) return difference;
+  }
+  return right.ranks.length - left.ranks.length;
+}
+
+/**
+ * Find the first route pattern that matches a path, and its decoded parameters.
+ *
+ * @param {string} path
+ * @param {object[]} routes Compiled and ranked route patterns.
+ * @returns {{ route: object, params: Record<string, string> } | null}
+ */
 function resolveRoute(path, routes) {
   for (const route of routes) {
     const match = route.regex.exec(path);
     if (!match) continue;
     const params = Object.create(null);
-    for (let index = 0; index < route.names.length; index += 1) {
+    /**
+     * Decode a URI component, keeping the raw text if it is malformed.
+     */
+    const decode = (value) => {
       try {
-        params[route.names[index]] = decodeURIComponent(match[index + 1]);
+        return decodeURIComponent(value);
       } catch {
-        params[route.names[index]] = match[index + 1];
+        return value;
       }
+    };
+    for (let index = 0; index < route.names.length; index += 1) {
+      const name = route.names[index];
+      const value = match[index + 1];
+      // Catch-all segments are decoded one by one, so an encoded `%2F` is not confused with a separator.
+      params[name] =
+        name === route.restName ? value.split("/").map(decode).join("/") : decode(value);
     }
     return { route, params };
   }
   return null;
 }
 
-function resolveField(value) {
-  return readValue(value);
-}
-
+/**
+ * Resolve every field of a metadata object, calling accessors and functions.
+ *
+ * @param {object | Function | null | undefined} metadata
+ * @returns {object}
+ */
 function resolveMetadata(metadata) {
   if (metadata == null) return {};
   if (typeof metadata === "function") metadata = metadata();
   assertRecord(metadata, "SEO metadata");
   const resolved = {};
   for (const [key, value] of Object.entries(metadata)) {
-    if (key === "openGraph" && value && typeof value === "object") {
-      resolved.openGraph = Object.fromEntries(
-        Object.entries(value).map(([field, fieldValue]) => [field, resolveField(fieldValue)]),
+    if ((key === "openGraph" || key === "twitter") && value && typeof value === "object") {
+      resolved[key] = Object.fromEntries(
+        Object.entries(value).map(([field, fieldValue]) => [field, readValue(fieldValue)]),
       );
     } else if (key === "hreflang" && Array.isArray(value)) {
       resolved.hreflang = value.map((entry) => ({
-        lang: resolveField(entry.lang),
-        href: resolveField(entry.href),
+        lang: readValue(entry.lang),
+        href: readValue(entry.href),
       }));
     } else {
-      resolved[key] = resolveField(value);
+      resolved[key] = readValue(value);
     }
   }
   return resolved;
 }
 
+/**
+ * Build the canonical URL for a path on the site origin, without query or fragment.
+ *
+ * @param {string | undefined} siteUrl Defaults to the current origin.
+ * @param {string} path
+ * @returns {string}
+ * @throws {TypeError} If the site is not HTTP or HTTPS.
+ */
 function createCanonicalURL(siteUrl, path) {
   const base = new URL(siteUrl ?? window.location.origin, window.location.href);
   if (!HTTP_PROTOCOLS.has(base.protocol))
@@ -96,9 +169,23 @@ function createCanonicalURL(siteUrl, path) {
   return canonical.href;
 }
 
+/**
+ * Create the manager that writes SEO tags into `<head>` and restores what it changed.
+ *
+ * It reuses matching existing tags, removes duplicates, and returns the original elements when it is disposed.
+ *
+ * @param {HTMLHeadElement} head
+ * @returns {{ set: Function, deactivateExcept: Function, restore: Function }}
+ */
 function makeHeadManager(head) {
   const records = new Map();
 
+  /**
+   * Record an element’s parent, position, attributes and text so it can be restored.
+   *
+   * @param {Element} element
+   * @returns {object}
+   */
   function snapshot(element) {
     return {
       element,
@@ -109,6 +196,16 @@ function makeHeadManager(head) {
     };
   }
 
+  /**
+   * Get the record for a managed tag, creating the tag if no match exists.
+   *
+   * Duplicate matches are removed.
+   *
+   * @param {string} key
+   * @param {string} tagName
+   * @param {() => Element[]} findMatches
+   * @returns {object}
+   */
   function getRecord(key, tagName, findMatches) {
     if (records.has(key)) return records.get(key);
     const matches = findMatches();
@@ -127,6 +224,16 @@ function makeHeadManager(head) {
     return record;
   }
 
+  /**
+   * Create or update a managed tag and mark it active.
+   *
+   * @param {string} key
+   * @param {string} tagName
+   * @param {() => Element[]} findMatches
+   * @param {Record<string, string>} attributes
+   * @param {string} [text]
+   * @returns {object}
+   */
   function set(key, tagName, findMatches, attributes, text) {
     const record = getRecord(key, tagName, findMatches);
     record.active = true;
@@ -145,6 +252,11 @@ function makeHeadManager(head) {
     return record;
   }
 
+  /**
+   * Restore every managed tag whose key is not in `activeKeys`.
+   *
+   * @param {Set<string>} activeKeys
+   */
   function deactivateExcept(activeKeys) {
     for (const [key, record] of records) {
       if (activeKeys.has(key)) continue;
@@ -153,6 +265,11 @@ function makeHeadManager(head) {
     }
   }
 
+  /**
+   * Restore one managed tag to the state it had before this manager touched it.
+   *
+   * @param {object} record
+   */
   function restoreRecord(record) {
     if (record.created) {
       record.element.remove();
@@ -173,6 +290,9 @@ function makeHeadManager(head) {
     }
   }
 
+  /**
+   * Restore every managed tag, newest first.
+   */
   function restore() {
     for (const record of [...records.values()].reverse()) restoreRecord(record);
     records.clear();
@@ -181,6 +301,13 @@ function makeHeadManager(head) {
   return { set, deactivateExcept, restore };
 }
 
+/**
+ * Check that a metadata object or resolver has the expected shape.
+ *
+ * @param {unknown} metadata
+ * @param {string} name Option name, used in the message.
+ * @throws {TypeError}
+ */
 function validateMetadata(metadata, name) {
   if (typeof metadata === "function") return;
   assertRecord(metadata, name);
@@ -211,10 +338,7 @@ export function createSEO(router, options = {}) {
       }
       return { ...compileRoutePattern(pattern), metadata };
     })
-    .sort(
-      (left, right) =>
-        right.staticSegments - left.staticSegments || right.names.length - left.names.length,
-    );
+    .sort(compareRoutes);
 
   if (options.siteUrl !== undefined) {
     if (typeof options.siteUrl !== "string")
@@ -226,10 +350,19 @@ export function createSEO(router, options = {}) {
 
   const manager = makeHeadManager(document.head);
   const [revision, setRevision] = signal(0);
-  let pageOverride = null;
+  // Page-local overrides in call order; functions are re-read on every apply.
+  let pageOverrides = [];
   let currentPath;
   let disposed = false;
 
+  /**
+   * Return a finder for the elements of `tagName` whose `attribute` equals `value`.
+   *
+   * @param {string} tagName
+   * @param {string} attribute
+   * @param {string} value
+   * @returns {() => Element[]}
+   */
   function findTag(tagName, attribute, value) {
     return () =>
       [...document.head.querySelectorAll(tagName)].filter(
@@ -237,11 +370,14 @@ export function createSEO(router, options = {}) {
       );
   }
 
+  /**
+   * Resolve the metadata for the current route and write its tags. Runs whenever the route or metadata changes.
+   */
   function applyMetadata() {
     const path = normalizePath(router.current());
     if (path !== currentPath) {
       currentPath = path;
-      pageOverride = null;
+      pageOverrides = [];
     }
     revision();
 
@@ -256,7 +392,12 @@ export function createSEO(router, options = {}) {
       typeof defaults === "function" ? defaults(context) : defaults,
     );
     const resolvedRoute = resolveMetadata(routeMetadata);
-    const resolvedOverride = resolveMetadata(pageOverride);
+    const resolvedOverride = { openGraph: {} };
+    for (const override of pageOverrides) {
+      const { openGraph, ...fields } = resolveMetadata(override);
+      Object.assign(resolvedOverride, fields);
+      Object.assign(resolvedOverride.openGraph, openGraph);
+    }
     const metadata = {
       ...resolvedDefaults,
       ...resolvedRoute,
@@ -266,16 +407,27 @@ export function createSEO(router, options = {}) {
         ...resolvedRoute.openGraph,
         ...resolvedOverride.openGraph,
       },
+      twitter:
+        resolvedDefaults.twitter || resolvedRoute.twitter || resolvedOverride.twitter
+          ? {
+              ...resolvedDefaults.twitter,
+              ...resolvedRoute.twitter,
+              ...resolvedOverride.twitter,
+            }
+          : undefined,
     };
     const canonical =
       metadata.canonical === undefined
-        ? createCanonicalURL(options.siteUrl, path)
+        ? createCanonicalURL(options.siteUrl, `${router.base ?? ""}${path}`)
         : metadata.canonical;
     const og = metadata.openGraph ?? {};
     const title = metadata.title;
     const description = metadata.description;
 
     const activeKeys = new Set();
+    /**
+     * Write one managed tag and record that it is active for this route.
+     */
     const set = (key, tagName, finder, attributes, text) => {
       activeKeys.add(key);
       manager.set(key, tagName, finder, attributes, text);
@@ -324,6 +476,22 @@ export function createSEO(router, options = {}) {
         set(property, "meta", findTag("meta", "property", property), { property, content });
     }
 
+    // Twitter cards are opt-in: no twitter:* tags unless metadata supplies a twitter object.
+    if (metadata.twitter) {
+      const twitter = metadata.twitter;
+      const twitterValues = {
+        "twitter:card":
+          twitter.card ?? (twitter.image ?? og.image ? "summary_large_image" : "summary"),
+        "twitter:site": twitter.site,
+        "twitter:title": twitter.title ?? og.title ?? title,
+        "twitter:description": twitter.description ?? og.description ?? description,
+        "twitter:image": twitter.image ?? og.image,
+      };
+      for (const [name, content] of Object.entries(twitterValues)) {
+        if (content != null) set(name, "meta", findTag("meta", "name", name), { name, content });
+      }
+    }
+
     const languages = Array.isArray(metadata.hreflang) ? metadata.hreflang : [];
     for (const entry of languages) {
       if (!entry || typeof entry.lang !== "string" || typeof entry.href !== "string") continue;
@@ -349,11 +517,11 @@ export function createSEO(router, options = {}) {
   const stopEffect = effect(applyMetadata);
 
   return {
-    /** Replace the current route metadata with additional page-local metadata. */
+    /** Merge page-local metadata over the current route's metadata until the route changes. */
     update(metadata) {
       if (disposed) throw new Error("Cannot update disposed SEO metadata.");
       validateMetadata(metadata, "SEO update");
-      pageOverride = { ...pageOverride, ...metadata };
+      pageOverrides = [...pageOverrides, metadata];
       setRevision((value) => value + 1);
     },
     /** Remove listeners/effects and restore the head elements as they were. */

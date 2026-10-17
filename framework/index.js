@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 console.log(
   "This app is built with the Nodula javascript framework | See https://nodula.richardleurs.nl for more info | Copyright © Richard Leurs 2026",
 );
@@ -31,6 +33,12 @@ export { visibleIsland } from "./island.js";
 /** Load a global stylesheet once and return its link element. */
 export const Nodula = /* @__PURE__ */ Object.freeze({
   defineCustomElement,
+  /**
+   * Load a global stylesheet once and return its link element.
+   *
+   * @param {string} href Stylesheet URL, resolved against the document base URI.
+   * @returns {HTMLLinkElement} The existing or newly appended `<link rel="stylesheet">`.
+   */
   css(href) {
     const absoluteHref = new URL(href, document.baseURI).href;
     const existing = [...document.querySelectorAll('link[rel="stylesheet"]')].find(

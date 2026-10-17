@@ -59,7 +59,7 @@ For custom elements, use dashed event names and dispatch native `CustomEvent` in
 
 ## Use events with core DOM helpers
 
-`h()` uses event properties such as `onClick`, `onInput`, `onChange`, and `onSubmit`:
+`h()` uses event properties such as `onClick`, `onInput`, `onChange`, and `onSubmit`. A function prop is an event only when its name is `on` followed by an uppercase letter (`onClick` → `click`) or uses the `on:name` form (`on:custom-event`); props such as `one`, `online`, or `only` stay attributes:
 
 ```js
 import { h, mount, signal } from 'nodula-framework';

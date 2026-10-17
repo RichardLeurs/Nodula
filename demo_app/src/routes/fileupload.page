@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { createFileUploadZone } from "nodula-framework/fileupload";
 import { signal } from "nodula-framework";
@@ -5,6 +6,11 @@ import fileuploadImage from "../assets/images/fileupload.webp";
 
 const [uploadMessage, setUploadMessage] = signal("Choose or drop files to upload.");
 
+/**
+ * Create the demo upload zone. Accepted files are uploaded to `/api/upload/`.
+ *
+ * @param {HTMLElement | null} element
+ */
 function setupFileUpload(element) {
   if (!element) return;
   createFileUploadZone(element, {
@@ -15,14 +21,32 @@ function setupFileUpload(element) {
     accept: "image/*",
     multiple: true,
     maxFileSize: 10000000,
+    /**
+     * Show the upload progress of a file.
+     *
+     * @param {File} file
+     * @param {{ percent: number, loaded: number, total: number }} progress
+     */
     onProgress(file, progress) {
       setUploadMessage(
         `Uploading ${file.name}: ${progress.percent}% (${progress.loaded} of ${progress.total} bytes).`,
       );
     },
+    /**
+     * Show the server name of an uploaded file.
+     *
+     * @param {File} file
+     * @param {{ name: string }} response
+     */
     onComplete(file, response) {
       setUploadMessage(`${file.name} uploaded successfully as ${response.name}.`);
     },
+    /**
+     * Mark the zone as failed and show the error for a file.
+     *
+     * @param {File} file
+     * @param {Error} error
+     */
     onError(file, error) {
       const zone = element.querySelector(".ui-filedrop");
       zone?.classList.add("ui-fileupload--error");

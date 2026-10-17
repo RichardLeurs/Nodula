@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { createRouter } from "nodula-framework/router";
 import { createNavigationDropdown } from "nodula-framework/navigation-dropdown";
@@ -13,6 +14,11 @@ const demoRouter = createRouter(
   { mode: "history" },
 );
 
+/**
+ * Mount the demo navigation dropdown into an element, once the element exists.
+ *
+ * @param {HTMLElement | null} element
+ */
 function setupDropdown(element) {
   if (!element) return;
   createNavigationDropdown(

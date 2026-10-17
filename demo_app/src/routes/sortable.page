@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { signal } from "nodula-framework";
 import { createSortableList } from "nodula-framework/sortable";
@@ -11,9 +12,21 @@ const [items, setItems] = signal([
 ]);
 const [message, setMessage] = signal("Drag an item, or use its Move Up/Down buttons.");
 
+/**
+ * Enable sorting on the demo list once its element exists.
+ *
+ * @param {HTMLElement | null} element
+ */
 function setupSortableList(element) {
   if (!element) return;
   createSortableList(element, {
+    // This page already announces changes through its own status message.
+    announce: false,
+    /**
+     * Store the new order of the items and update the status message.
+     *
+     * @param {string[]} itemIds
+     */
     onReorder(itemIds) {
       const itemsById = new Map(items().map((item) => [item.id, item]));
       setItems(itemIds.map((id) => itemsById.get(id)));
@@ -62,7 +75,7 @@ function setupSortableList(element) {
               class="ui-button ui-button--secondary"
               type="button"
               data-sortable-up
-              :aria-label="'Move ' + item.label + ' up'"
+              :aria-label="'Move up ' + item.label"
             >
               Move up
             </button>
@@ -70,7 +83,7 @@ function setupSortableList(element) {
               class="ui-button ui-button--secondary"
               type="button"
               data-sortable-down
-              :aria-label="'Move ' + item.label + ' down'"
+              :aria-label="'Move down ' + item.label"
             >
               Move down
             </button>

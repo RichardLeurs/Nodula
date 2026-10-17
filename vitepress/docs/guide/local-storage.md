@@ -59,11 +59,11 @@ Creates a signal pair `[read, write]` persisted as JSON in localStorage.
 | `initialValue` | `T` | Required | Used when no saved value exists or saved JSON cannot be parsed. |
 | `options.storage` | `Storage \| null` | `window.localStorage` when accessible | Selects a compatible storage implementation. `null` creates a memory-only signal. |
 
-The returned reader is `() => T`. The writer accepts either a value or updater `(current: T) => T`, and returns the new value. If storage access or JSON serialization fails, the signal remains usable in memory but is not persisted.
+The returned reader is `() => T`. The writer accepts either a value or updater `(current: T) => T`, and returns the new value. If storage access or JSON serialization fails, the signal remains usable in memory but is not persisted; the serialization failure is logged with `console.error`. If the saved text cannot be parsed, creating the signal keeps that entry untouched until the signal is first changed, so corrupt data is not silently replaced.
 
 ### `createIndexedDB(key, initialValue, options?)`
 
-Creates a signal tuple `[read, write]` with `ready: Promise<void>` and a read-only `available: boolean` property.
+Creates a signal tuple `[read, write]` with `ready: Promise<void>` and a read-only `available: boolean` property. The IndexedDB variant also exposes a read-only, reactive `lastError` (the reason the last open, read or write failed, or `null` after a successful one).
 
 | Argument / option | Type | Default | Behavior |
 |---|---|---|---|
@@ -72,7 +72,9 @@ Creates a signal tuple `[read, write]` with `ready: Promise<void>` and a read-on
 | `options.indexedDB` | `IDBFactory \| null` | `globalThis.indexedDB` when accessible | IndexedDB factory; `null` or unavailable IndexedDB leaves the signal memory-only. |
 | `options.databaseName` | `string` | `'nodula-framework'` | Non-empty database name; otherwise throws `TypeError`. |
 
-The add-on creates a `signals` object store. Await `ready` before relying on persisted hydration or reading `available`; `available` becomes true only if opening the database and its initial read succeed. If a value is changed before hydration finishes, that in-memory update takes precedence over the saved record and is persisted after opening. Storage failures do not disable the in-memory signal.
+The add-on creates a `signals` object store. `ready` settles when the first open attempt settles, or as soon as the open is blocked by another connection (for example, another tab holding an older version). `available` becomes true only once opening and the initial read succeed. A blocked open is not abandoned: if it succeeds later, the stored value is hydrated and `available` turns true, so `ready` never waits indefinitely on a blocked open. If a value is changed before hydration finishes, that in-memory update takes precedence over the saved record and is persisted after opening. Storage failures do not disable the in-memory signal.
+
+When another tab upgrades the database, this tab closes its connection so the upgrade can proceed. The signal then continues in memory and `available` becomes `false`; reload the page to reconnect.
 
 ### Cookie helpers
 
@@ -103,7 +105,7 @@ Expires the named cookie using the same path/domain scope it was created with. P
 
 ## Behavior and lifecycle
 
-- `createLocalStorage` reads persisted JSON when constructed and writes whenever the signal changes.
+- `createLocalStorage` reads persisted JSON when constructed and writes whenever the signal changes. A corrupt saved entry is left in place until the first change.
 - `createIndexedDB` hydrates asynchronously; updates made before hydration take precedence over stored values.
 - When created inside a Nodula owner, localStorage persistence effects stop on owner disposal and IndexedDB connections close on disposal. Outside an owner, signals remain usable without owner-managed cleanup.
 - `createStorageSignal` and `createIndexedDBSignal` are deprecated aliases for `createLocalStorage` and `createIndexedDB`.
@@ -113,7 +115,7 @@ Expires the named cookie using the same path/domain scope it was created with. P
 
 - Storage is browser-side. It is not included in server-rendered HTML and does not synchronize changes across browser tabs.
 - Values are serialized as JSON. Functions, cyclic structures, and other non-JSON data are not suitable for persistence; storage failures are handled as memory-only operation.
-- IndexedDB access is asynchronous; await `ready` before using `available` to determine whether it opened successfully.
+- IndexedDB access is asynchronous; await `ready` before using `available`. Because `ready` can settle on a blocked open, `available` may still change afterwards; treat it as reactive state rather than a one-time answer.
 - JavaScript cannot read or set `HttpOnly`. Use server-issued `HttpOnly`, `Secure`, and appropriately scoped `SameSite` cookies for session credentials.
 - Do not store secrets or authorization decisions in localStorage, IndexedDB, or script-readable cookies. Server-side authorization remains required.
 

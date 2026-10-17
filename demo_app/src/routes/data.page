@@ -1,3 +1,4 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { onCleanup, signal } from "nodula-framework";
 import { createDataClient, DataError } from "nodula-framework/data";
@@ -19,6 +20,12 @@ const [sqliteJson, setSqliteJson] = signal("[]");
 const [pocketbaseJson, setPocketbaseJson] = signal("[]");
 let activeRequest;
 
+/**
+ * Fetch the JSON at the endpoint and show it. A newer request cancels the previous one.
+ *
+ * @param {Event} [event] Its default action is prevented.
+ * @returns {Promise<void>}
+ */
 async function loadJson(event) {
   event?.preventDefault?.();
   activeRequest?.abort();
@@ -65,7 +72,7 @@ onCleanup(() => activeRequest?.abort());
         />
       </div>
       <p class="ui-page__description">
-        Explore browser IndexedDB storage, PHP-backed SQLite and PocketBase APIs, and remote JSON
+        Explore browser IndexedDB storage, PHP-backed SQLite and remote JSON
         requests with <code>nodula-framework/data</code>.
       </p>
     </header>
@@ -96,7 +103,7 @@ onCleanup(() => activeRequest?.abort());
         >
           SQLite
         </button>
-        <button
+        <!-- <button
           class="ui-tab"
           type="button"
           role="tab"
@@ -107,7 +114,7 @@ onCleanup(() => activeRequest?.abort());
           @click="setActiveDataTab('pocketbase')"
         >
           PocketBase
-        </button>
+        </button> -->
         <button
           class="ui-tab"
           type="button"
@@ -189,7 +196,7 @@ await api.delete(`/ideas/${created.id}`);</code></pre>
         <DataTable :json="sqliteJson()"></DataTable>
       </section>
 
-      <section
+      <!-- <section
         class="ui-tab-panel"
         role="tabpanel"
         id="data-panel-pocketbase"
@@ -209,7 +216,7 @@ await api.delete(`/ideas/${created.id}`);</code></pre>
         ></ServerIdeasCard>
         <h3 class="ui-card__title">PocketBase rows rendered from JSON</h3>
         <DataTable :json="pocketbaseJson()"></DataTable>
-      </section>
+      </section> -->
 
       <section
         class="ui-tab-panel"

@@ -1,75 +1,61 @@
 # Specifications and Limits
 
-This page summarizes Nodula's implemented public behavior and known boundaries. “Implemented” means the capability exists in the current source and public API; it does not imply support in every browser, deployment, or bundler. “Unverified target” means it is not a compatibility or release promise.
+This page is the overview of what Nodula provides and where it stops. Each area links to a guide with the options and examples. “Implemented” means the capability exists in the current source and public API; it does not imply support in every browser, deployment, or bundler. “Unverified target” means it is not a compatibility or release promise.
 
-## Implemented
+## What Nodula provides
 
-### Runtime and rendering
+| Area | Provides | Guide |
+|---|---|---|
+| Reactivity and ownership | Signals, computed values, synchronous effects, batching, owner scopes and cleanup. | [Reactivity](/guide/reactivity), [Framework Core](/guide/framework-core) |
+| DOM and components | `h`, `fragment`, `mount`, keyed lists, reactive properties, custom elements, visible islands. | [Framework Core](/guide/framework-core), [List Rendering](/guide/list-rendering) |
+| Single-file components | `.page` and `.comp` files compiled by the Vite plugin: templates, scoped and module styles, bindings, slots. | [Single-File Components](/guide/templates), [Styles](/guide/styles) |
+| Routing | Hash and History routing, guards, explicit and file routes, lazy loading, catch-all patterns, load-failure handling. | [Routing](/guide/routing) |
+| Forms | Values, validation, touched state, submission, reset, and per-field helpers with stable IDs and ARIA attributes. | [Forms](/guide/forms) |
+| Async data | Resources with loading state, refetch and cancellation; a Fetch-based data client. | [Async Resources](/guide/resource), [Data](/guide/data) |
+| Storage | localStorage and IndexedDB signals, cookie helpers. | [Local Storage](/guide/local-storage) |
+| Navigation and UI | Navigation links, dropdowns, dialogs, modals, drawers, notifications, animations. | [Navigation](/guide/navigation), [Modals](/guide/modals) |
+| Drag and drop | Native drag sources, drop targets, sortable lists, file drop and file upload. | [Drag and Drop](/guide/drag-and-drop), [Sortable Lists](/guide/sortable-lists), [File Drop](/guide/file-drop) |
+| Metadata | Client route metadata, Open Graph and Twitter tags, build-time sitemap and robots. | [SEO](/guide/seo) |
+| Consent | Versioned consent, preference UI, consent-gated Google Analytics. | [Cookie Consent](/guide/cookie-consent) |
+| Auth | Adapter-backed client identity state and role or permission checks for the UI. | [Authentication](/guide/auth) |
+| Build | Vite plugin, tree-shaking across package entries, optional PWA integration. | [Tooling](/guide/tooling), [PWA](/guide/pwa) |
 
-- The browser runtime is JavaScript and provides typed public declarations; TypeScript is optional for consumers.
-- Core reactivity includes typed signals, computed accessors, synchronous effects, batching, ownership roots, and cleanup hooks.
-- Core DOM APIs include `h`, `fragment`, `mount`, reactive children/properties, event and ref cleanup, conditional rendering, and keyed list helpers.
-- Compatible DOM nodes are reconciled in place. Keyed rows preserve identity through list updates/reordering when keys remain stable and unique.
-- Components can be JavaScript functions or compiled `.comp` modules. Imported `.comp` tags receive props, callback props, default/named slots, and component-owned cleanup.
-- `defineCustomElement()` can expose a Nodula render function through the browser custom-elements registry, with declared props/events and configurable Shadow DOM behavior.
-- Core `visibleIsland()` can defer invoking a component loader until its placeholder enters the viewport.
+Optional features stay outside the core entry. Check the package `exports` and each guide for exact options and peer requirements.
 
-### Compiler and templates
+## Limits
 
-- The Vite plugin compiles `.page` and `.comp` files from JavaScript, a single-root `<template>`, and optional style blocks.
-- Supported template features include text interpolation, reactive attributes, native events, `@if`/adjacent `@else`, keyed `@for`/`each`, `@show`, `@ref`, value/checked bindings, imported `.comp` components, default/named slots, and `use:visibleIsland`.
-- Plain `<style>` blocks are global; `<style scoped>` scopes supported selectors to the component's rendered elements; `<style module>` uses Vite CSS Modules and exposes `$style` in template expressions.
-- SFCs currently support at most one style block, and `module` and `scoped` cannot be combined.
-- The plugin is build-time tooling. The compiler is not a full Vue/Svelte compiler, and `<script setup>` blocks are JavaScript-only; TypeScript syntax is unsupported.
+These are the boundaries Nodula does not cross. Read them before choosing it for an application.
 
-### Public package and optional add-ons
-
-The framework package is ESM with a core entry, separate optional JavaScript add-on entries, corresponding declaration files, and explicit CSS exports. The following add-ons are available as separate package entries:
-
-| Entry | Implemented capability |
-|---|---|
-| `nodula-framework/store` | Reactive nested plain-object and array state. |
-| `nodula-framework/form` | Form state, touched/errors, validation, async submission, reset. |
-| `nodula-framework/router` | Hash routing by default, opt-in History API mode, route guards, lazy route maps, and Vite file routes. |
-| `nodula-framework/navigation` | Router-aware semantic navigation links and active-page state. |
-| `nodula-framework/navigation-dropdown` | Optional button disclosure that composes navigation links with keyboard dismissal and focus return. |
-| `nodula-framework/localstorage` | localStorage/IndexedDB signals and browser-readable cookie helpers. |
-| `nodula-framework/data` | Fetch-based request helpers and HTTP error objects. |
-| `nodula-framework/dragdrop` | Native drag sources and accepted drop targets; app code owns transferred data and resulting state changes. |
-| `nodula-framework/filedrop` | Accessible native file picker/drop zone with configurable file filtering and app-owned file handling. |
-| `nodula-framework/fileupload` | File-drop uploads with XMLHttpRequest progress callbacks and disposable active requests. |
-| `nodula-framework/sortable` | Vertical list reordering with native drag/drop insertion feedback and Move Up/Down controls; app code owns item state and rendering. |
-| `nodula-framework/auth` | Adapter-backed reactive client auth state and UI role/permission checks. |
-| `nodula-framework/dialog`, `modal`, `drawer`, `notifications` | Focused browser UI helpers with documented dismissal and owner cleanup. |
-| `nodula-framework/cookieconsent` | Versioned consent choices, preference UI, and consent-gated callbacks. |
-| `nodula-framework/animation` | Web Animations helpers and opt-in page/conditional/keyed-list transitions. |
-| `nodula-framework/pwa` | Opt-in Vite PWA plugin integration using `vite-plugin-pwa`. |
-| `nodula-framework/seo`, `nodula-framework/seo-vite` | Client route metadata and build-time sitemap/robots generation. |
-| `nodula-framework/vite` | Vite plugin package entry and declaration for `.page`/`.comp` compilation. |
-
-Optional features stay outside the core runtime entry. Check package `exports` and each add-on guide for exact options, browser/build boundaries, and peer requirements.
-
-## Current boundaries
-
-- **Client rendering only:** server-side rendering and hydration are not implemented. Browser DOM APIs are required for runtime rendering.
-- **Template subset:** one template root is required. JSX, TypeScript inside templates, Vue/Svelte compatibility, arbitrary dynamic component lookup, prop schemas, automatic prop defaults/validation, attribute fallthrough, and scoped-slot props are not provided.
-- **Bindings:** template input bindings require an explicit getter/setter pair and support `value` or `checked` on supported controls; arbitrary two-way expressions are not implemented.
-- **Lists:** keys must be stable and unique. The core `list()` helper preserves existing row nodes for matching keys; its render callback is not rerun just because an item's object was replaced under the same key. Compiled `@for`/`each` rows instead receive reactive item accessors. Use signals/store state or the appropriate template row accessor when row fields must update.
-- **Reconciliation:** compatible dynamic nodes can be reused; unkeyed children match by position and keyed template rows by key. Nodula does not infer identity for arbitrary unkeyed insertions or reuse incompatible element types.
-- **Computed lifetime:** `computed()` is effect-backed and does not expose an independent disposer; create it in an appropriate owner scope.
-- **Visible islands:** the helper calls its loader and inserts the returned component node, but does not establish a separate reactive root for that component. It is not a general async-component or Suspense system.
-- **Routing:** file routes support static path segments and one-segment parameters; catch-all routes are not implemented. History-mode hosting needs an app-entry fallback for direct route visits and refreshes.
-- **Security:** client route guards and auth role/permission helpers are UI controls, not authorization. The repository's example Python API has no authentication or per-user authorization and must not be exposed publicly.
-- **Accessibility:** native HTML and browser APIs are available, but Nodula does not provide an accessibility automation layer or conformance guarantee. The dialog-like add-ons use native `<dialog>` where supported; their `open`-attribute fallback does not polyfill full modal focus/inertness behavior.
-- **HTTP:** no core HTTP wrapper exists; the optional data add-on uses Fetch but does not implement server-side authorization or a production proxy.
-- **Build/deployment:** `.page`/`.comp` compilation happens in Vite at build time. The repository's development API proxy is not a production API server.
+- **Rendering:** client rendering only. There is no server-side rendering or hydration, and a browser DOM is required.
+- **Template subset:** one root element per component. No JSX, no TypeScript inside templates, no prop schemas, no attribute fallthrough, no scoped-slot props, and no arbitrary dynamic component lookup. This is not a full Vue, Svelte or JSX compiler.
+- **Bindings:** an explicit getter and setter pair, for `value` or `checked` only.
+- **Lists:** keys must be stable and unique. The core `list()` helper reads each row's item once per key; `each()` in templates gives rows reactive accessors, so prefer it.
+- **Reconciliation:** unkeyed insertions are not identified, and incompatible element types are not reused.
+- **Computed values:** no independent disposer; create them inside an owner.
+- **Visible islands:** not a general async component or Suspense system. The inserted component does not get its own reactive root.
+- **`h()`:** must run inside a root or effect; outside one it throws.
+- **Forms:** validation is synchronous and runs in your code. Field helpers provide IDs and ARIA attributes but no markup or messages. Client validation is not server validation.
+- **Resources:** no cache, retry policy or Suspense integration. Failures are reported through `error`.
+- **Storage:** no cross-tab `sync` option. A blocked IndexedDB open stays memory-only until it completes. When another tab upgrades the database, this tab releases its connection and continues in memory. Cookie helpers cannot set or read `HttpOnly` cookies.
+- **Routing:** guards are client-side navigation controls, not authorization. History mode needs a host fallback for direct visits and refreshes. The `base` option is History-only, and no base path is inferred.
+- **Data:** no retry, authentication, authorization or proxy by default.
+- **Drag and drop:** does not change your data, sanitize payloads, or provide keyboard or touch alternatives.
+- **File drop and upload:** type checks do not inspect file contents. Server validation, storage and preview policy are yours.
+- **Auth:** role and permission checks affect the UI only. Your server must enforce access.
+- **Cookie consent:** you must stop optional integrations loading before consent. A loaded `gtag.js` cannot be unloaded, so withdrawal relies on Consent Mode. Google Analytics accepts GA4 `G-` IDs only.
+- **Native dialogs:** the `open`-attribute fallback has no focus management or background inertness.
+- **PWA:** cache behaviour depends on your configuration.
+- **SEO:** metadata is client-side, with no server-rendered tags. The canonical URL is also set in hash mode, where search engines may ignore the fragment. `seo-vite` needs an explicit route list.
+- **Accessibility:** Nodula provides semantics and hooks, not an audit or a conformance guarantee. Test with assistive technology.
+- **Security:** the repository's example Python API has no authentication or per-user authorization and must not be exposed publicly.
 
 ## Verification and unverified targets
 
-- Framework behavior is covered by Vitest suites in `framework/vitest/`; demo integration tests are under `demo_app/vitest/`.
-- Vite production-consumer tests verify tree-shaking behavior for the public package entries under the tested configuration. Other bundlers and consumer configurations are not exhaustively verified.
-- The render benchmark (`npm run benchmark:render`) reports Happy DOM timings and DOM operation counts for selected source-level operations. It is useful for relative comparisons, not real-browser layout/paint or user-latency claims.
-- Automated accessibility checks, broad real-browser compatibility, runtime-size targets, production code-splitting guarantees, and benchmarks across browser engines remain unverified targets. Do not treat recommended targets as release promises.
+- Framework behaviour is covered by Vitest suites in `framework/vitest/`. Demo integration tests are under `demo_app/vitest/`.
+- Tree-shaking is checked with Vite production builds of a consumer fixture for each public entry, under the tested configuration. Other bundlers and consumer setups are not exhaustively verified.
+- Tests run in Happy DOM, which is not a real browser. They do not establish layout, paint, focus behaviour in real engines, or screen-reader behaviour.
+- The render benchmark (`npm run benchmark:render`) gives relative comparisons of Happy DOM timings. It is not a real-browser or user-latency measurement.
+- Automated accessibility checks, real-browser compatibility, runtime-size targets, production code-splitting guarantees and cross-engine benchmarks remain unverified targets. Do not treat recommended targets as release promises.
 
 Useful repository checks:
 
@@ -84,9 +70,9 @@ See [Testing](/guide/testing) for suite details and limitations, [Performance](/
 
 ## Related guides
 
-- [Framework Core](/guide/framework-core) — core API and lifecycle behavior.
-- [Single-File Components](/guide/templates) — compiler syntax and restrictions.
-- [Routing](/guide/routing) — route modes, parameters, lazy loading, and hosting fallback.
-- [Accessibility](/guide/accessibility) and [Security](/guide/security) — application responsibilities.
-- [Testing](/guide/testing), [Performance](/guide/performance), and [Production Deployment](/guide/production-deployment) — verification and deployment boundaries.
-- The detailed repository source specification is `/docs/SPECS.md`.
+- [Framework Core](/guide/framework-core): core API and lifecycle behaviour.
+- [Single-File Components](/guide/templates): compiler syntax and restrictions.
+- [Routing](/guide/routing): route modes, parameters, lazy loading and hosting fallback.
+- [Async Resources](/guide/resource): loading state, refetch and cancellation.
+- [Accessibility](/guide/accessibility) and [Security](/guide/security): application responsibilities.
+- [Testing](/guide/testing), [Performance](/guide/performance) and [Production Deployment](/guide/production-deployment): verification and deployment boundaries.

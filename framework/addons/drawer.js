@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 /* Provide native side drawers with optional custom DOM and lifecycle cleanup. */
 import { onCleanup } from "nodula-framework";
 import { injectAddonStyles } from "./inject-styles.js";
@@ -82,6 +84,9 @@ export function showDrawer(content, options = {}) {
   let isClosed = false;
   let customCloseButtons = [];
 
+  /**
+   * Close the drawer once and remove its listeners. Restores the custom content and focus.
+   */
   const close = () => {
     if (isClosed) return;
     isClosed = true;
@@ -103,11 +108,24 @@ export function showDrawer(content, options = {}) {
     resolveClosed();
   };
 
+  /**
+   * Handle the native cancel event by cancelling it and closing the drawer.
+   *
+   * @param {Event} event
+   */
   const handleCancel = (event) => {
     event.preventDefault();
     close();
   };
+  /**
+   * Clean up when the native dialog closes.
+   */
   const handleClose = () => close();
+  /**
+   * Close the drawer when a click lands outside its box, if closing on the backdrop is enabled.
+   *
+   * @param {MouseEvent} event
+   */
   const handleBackdropClick = (event) => {
     if (!closeOnBackdrop || event.target !== drawer) return;
     const bounds = drawer.getBoundingClientRect();

@@ -1,0 +1,16 @@
+{
+  "nodula-router-load-failed": "Could not load this page.",
+  "nodula-router-not-found": "Page not found",
+  "nodula-island-loading": "Loading section…",
+  "nodula-island-load-failed": "Could not load this section.",
+  "nodula-data-http-error": "Data request failed with HTTP {status}.",
+  "nodula-upload-file-too-large": "File exceeds the maximum size of {maxFileSize} bytes.",
+  "nodula-upload-invalid-response": "Upload server returned invalid JSON.",
+  "nodula-upload-network-error": "Upload failed because of a network error.",
+  "nodula-storage-open-failed": "Could not open IndexedDB.",
+  "nodula-storage-request-failed": "IndexedDB request failed.",
+  "nodula-storage-transaction-aborted": "IndexedDB transaction aborted.",
+  "nodula-storage-transaction-failed": "IndexedDB transaction failed.",
+  "nodula-storage-write-failed": "IndexedDB write failed.",
+  "nodula-storage-unavailable": "IndexedDB is unavailable."
+}

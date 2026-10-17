@@ -52,7 +52,7 @@ The matched page and its layouts load after route guards allow navigation. Succe
 
 ## Load non-route content when visible
 
-`visibleIsland(loader, placeholder?)` creates a placeholder `<div>` and defers invoking `loader` until that container intersects the viewport:
+`visibleIsland(loader, placeholder?, options?)` creates a placeholder `<div>` and defers invoking `loader` until that container intersects the viewport:
 
 ```html
 <script>
@@ -71,6 +71,8 @@ const loadExtraCard = async () => {
   </main>
 </template>
 ```
+
+`options.errorText` replaces the English text shown when the loader fails; the element keeps `data-nodula-code="nodula-island-load-failed"` so the text can be found and translated by code.
 
 The loader must resolve to a component function. Unlike a router loader, `visibleIsland()` does not unwrap `{ default: Component }` itself; return `module.default` as shown. On success, Nodula calls the function with no component context and replaces the placeholder content with its returned node.
 

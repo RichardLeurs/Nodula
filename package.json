@@ -21,6 +21,8 @@
     "./drawer.css": "./dist/nodula/css/nodula-drawer.css",
     "./notifications.css": "./dist/nodula/css/nodula-notifications.css",
     "./cookieconsent.css": "./dist/nodula/css/nodula-cookieconsent.css",
+    "./filedrop.css": "./dist/nodula/css/nodula-filedrop.css",
+    "./sortable.css": "./dist/nodula/css/nodula-sortable.css",
     "./vite": {
       "types": "./dist/nodula/nodula-vite.d.ts",
       "import": "./dist/nodula/nodula-vite.js"
@@ -72,6 +74,10 @@
     "./sortable": {
       "types": "./dist/nodula/nodula-sortable.d.ts",
       "import": "./dist/nodula/nodula-sortable.js"
+    },
+    "./resource": {
+      "types": "./dist/nodula/nodula-resource.d.ts",
+      "import": "./dist/nodula/nodula-resource.js"
     },
     "./filedrop": {
       "types": "./dist/nodula/nodula-filedrop.d.ts",
@@ -135,6 +141,7 @@
     "build:fileupload": "vite build --config framework/vite.config.js --mode addon-fileupload",
     "build:localstorage": "vite build --config framework/vite.config.js --mode addon-localstorage",
     "build:data": "vite build --config framework/vite.config.js --mode addon-data",
+    "build:resource": "vite build --config framework/vite.config.js --mode addon-resource",
     "build:pwa": "vite build --config framework/vite.config.js --mode addon-pwa",
     "build:store": "vite build --config framework/vite.config.js --mode addon-store",
     "build:auth": "vite build --config framework/vite.config.js --mode addon-auth",
@@ -144,7 +151,7 @@
     "lint:fix": "oxlint --fix",
     "format": "oxfmt 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
     "format:check": "oxfmt --check 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
-    "build:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\" && vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:navigation-dropdown && npm run build:dragdrop && npm run build:sortable && npm run build:filedrop && npm run build:fileupload && npm run build:localstorage && npm run build:data && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node framework/mjs/gzip-framework.mjs",
+    "build:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\" && vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:navigation-dropdown && npm run build:dragdrop && npm run build:sortable && npm run build:filedrop && npm run build:fileupload && npm run build:localstorage && npm run build:data && npm run build:resource && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node framework/mjs/gzip-framework.mjs",
     "package:framework": "npm run build:framework && npm run pack:framework",
     "pack:framework": "mkdir -p dist/npm && npm pack --pack-destination dist/npm",
     "install:framework": "npm run package:framework && npm run install:framework:package",
@@ -154,10 +161,13 @@
     "test:framework": "vitest run --config framework/vitest.config.js",
     "test:framework:watch": "vitest --config framework/vitest.config.js",
     "test:demo": "npm --prefix demo_app run test",
+    "test:a11y": "playwright test --config playwright.config.js",
     "typecheck": "npm run build:framework && tsc -p tsconfig.types.json",
     "typecheck:bundle": "tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM,DOM.Iterable --types node framework/vitest/types/bundle.typecheck.ts"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "axe-core": "^4.14.0",
     "happy-dom": "^20.14.5",
     "lightningcss": "^1.33.0",
     "oxfmt": "^0.73.0",
