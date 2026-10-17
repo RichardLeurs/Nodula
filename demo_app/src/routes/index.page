@@ -274,7 +274,7 @@ function moveAddonCarousel(direction) {
             </div>
             <div class="ui-home-specs__item">
               <dt>Framework core size</dt>
-              <dd>~ 5 kB gzipped</dd>
+              <dd>~ 6 kB gzipped</dd>
             </div>
           </dl>
         </section>
