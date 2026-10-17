@@ -1,0 +1,163 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
+<script>
+import { signal } from "nodula-framework";
+import { createResource } from "nodula-framework/resource";
+import resourceImage from "../assets/images/resource.webp";
+
+const greenhouses = [
+  { id: "north", label: "North greenhouse" },
+  { id: "south", label: "South greenhouse" },
+  { id: "sensor", label: "Sensor greenhouse (fails on purpose)" },
+];
+const bedsByGreenhouse = {
+  north: [
+    { id: "n1", bed: "Bed 1", crop: "Tomatoes", watered: "Today, 08:00" },
+    { id: "n2", bed: "Bed 2", crop: "Cucumbers", watered: "Today, 08:05" },
+    { id: "n3", bed: "Bed 3", crop: "Peppers", watered: "Yesterday, 18:30" },
+  ],
+  south: [
+    { id: "s1", bed: "Bed 1", crop: "Lettuce", watered: "Yesterday, 18:30" },
+    { id: "s2", bed: "Bed 2", crop: "Basil", watered: "Today, 07:15" },
+  ],
+};
+const [selectedGreenhouseId, setSelectedGreenhouseId] = signal("north");
+
+/**
+ * Pretend to fetch the beds of a greenhouse from a server. It answers after a short delay,
+ * rejects for the sensor greenhouse, and stops early when its signal is aborted.
+ *
+ * @param {string} greenhouseId
+ * @param {{ signal?: AbortSignal }} options
+ * @returns {Promise<Array<{ id: string, bed: string, crop: string, watered: string }>>}
+ */
+function fetchBeds(greenhouseId, { signal }) {
+  return new Promise((resolve, reject) => {
+    const timeout = window.setTimeout(() => {
+      if (greenhouseId === "sensor") reject(new Error("The greenhouse sensor did not answer."));
+      else resolve(bedsByGreenhouse[greenhouseId]);
+    }, 900);
+    signal?.addEventListener(
+      "abort",
+      () => {
+        window.clearTimeout(timeout);
+        reject(new DOMException("Request aborted.", "AbortError"));
+      },
+      { once: true },
+    );
+  });
+}
+
+// The resource follows the selected greenhouse and is disposed with this page.
+const bedResource = createResource(fetchBeds, { source: selectedGreenhouseId });
+
+/**
+ * Select another greenhouse. Its beds are requested automatically.
+ *
+ * @param {string} greenhouseId
+ */
+function chooseGreenhouse(greenhouseId) {
+  setSelectedGreenhouseId(greenhouseId);
+}
+
+/**
+ * Request the selected greenhouse again. A failure is already shown through `bedResource.error()`,
+ * so the rejected promise is not handled here.
+ */
+function refreshBeds() {
+  bedResource.refetch().catch(() => {});
+}
+</script>
+
+<template>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Optional async resource add-on</p>
+
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">Load data with reactive states.</h1>
+        <img
+          class="ui-page__header-image"
+          :src="resourceImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
+      </div>
+
+      <p class="ui-page__description">
+        createResource runs a fetcher with a signal, tracks its state, and keeps the last good value
+        while a refresh runs. Choosing another greenhouse aborts the request that is still in flight.
+      </p>
+    </header>
+
+    <section class="ui-section" aria-labelledby="resource-demo-title">
+      <h2 id="resource-demo-title" class="ui-section__title">Greenhouse beds</h2>
+
+      <div class="ui-field">
+        <label class="ui-field__label" for="resource-greenhouse">Greenhouse</label>
+        <select
+          id="resource-greenhouse"
+          class="ui-select"
+          :value="selectedGreenhouseId()"
+          @change="chooseGreenhouse($event.currentTarget.value)"
+        >
+          <option @for="greenhouse of greenhouses" :key="greenhouse.id" :value="greenhouse.id">
+            {{ greenhouse.label }}
+          </option>
+        </select>
+      </div>
+
+      <p class="ui-section__description" role="status" aria-live="polite">
+        State: <code>{{ bedResource.state() }}</code>
+      </p>
+
+      <p class="ui-section__description" @if="bedResource.loading()">Loading beds…</p>
+
+      <p class="ui-field__error" role="alert" @if="bedResource.error()">
+        {{ bedResource.error().message }}
+      </p>
+
+      <div class="ui-table-wrap" @if="bedResource.state() === 'ready'">
+        <table class="ui-table" aria-label="Beds in the selected greenhouse">
+          <thead>
+            <tr>
+              <th scope="col">Bed</th>
+              <th scope="col">Crop</th>
+              <th scope="col">Last watered</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr @for="bed of bedResource.value()" :key="bed.id">
+              <td>{{ bed.bed }}</td>
+              <td>{{ bed.crop }}</td>
+              <td>{{ bed.watered }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- <div class="ui-cluster ui-cluster--wrap">
+        <button
+          class="ui-button ui-button--secondary"
+          type="button"
+          :disabled="bedResource.loading()"
+          @click="refreshBeds"
+        >
+          Refresh
+        </button>
+      </div> -->
+    </section>
+
+    <section class="ui-section" aria-labelledby="resource-code-title">
+      <h2 id="resource-code-title" class="ui-section__title">Create a resource</h2>
+      <pre class="ui-code-block"><code data-highlight>const bedResource = createResource(fetchBeds, {
+  source: selectedGreenhouseId,
+});
+
+bedResource.state();   // initial, pending, ready, refreshing, or errored
+bedResource.value();   // last successful value, rendered as table rows
+bedResource.error();   // error from the most recent failed request</code></pre>
+    </section>
+  </main>
+</template>

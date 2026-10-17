@@ -7,6 +7,7 @@ const routeComponents = {
   "/data": { load: () => import("./routes/data.page") },
   "/navigation-dropdown": { load: () => import("./routes/navigation-dropdown.page") },
   "/sortable": { load: () => import("./routes/sortable.page") },
+  "/resource": { load: () => import("./routes/resource.page") },
   "/dragdrop": { load: () => import("./routes/dragdrop.page") },
   "/filedrop": { load: () => import("./routes/filedrop.page") },
   "/fileupload": { load: () => import("./routes/fileupload.page") },

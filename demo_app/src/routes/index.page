@@ -22,6 +22,7 @@ import dragdropImage from "../assets/images/dragdrop.webp";
 import filedropImage from "../assets/images/filedrop.webp";
 import fileuploadImage from "../assets/images/fileupload.webp";
 import sortableImage from "../assets/images/sortable.webp";
+import resourceImage from "../assets/images/resource.webp";
 
 const loadExtraCard = () => import("../components/ExtraCard.comp").then((module) => module.default);
 
@@ -53,6 +54,12 @@ const addonCarouselItems = [
     title: "Data",
     description: "Make HTTP requests with method helpers, query parameters, and readable errors.",
     image: dataImage,
+  },
+  {
+    title: "Resource",
+    description:
+      "Load async data with reactive states, cancel superseded requests, and ignore stale responses.",
+    image: resourceImage,
   },
   {
     title: "Auth",
@@ -251,7 +258,7 @@ function moveAddonCarousel(direction) {
           <dl class="ui-home-specs__list">
             <div class="ui-home-specs__item">
               <dt>Modular</dt>
-              <dd>Only add the framework add-ons you need</dd>
+              <dd>Only use the framework add-ons you need</dd>
             </div>
             <div class="ui-home-specs__item">
               <dt>Routing</dt>
@@ -274,7 +281,7 @@ function moveAddonCarousel(direction) {
             </div>
             <div class="ui-home-specs__item">
               <dt>Framework core size</dt>
-              <dd>~ 6 kB gzipped</dd>
+              <dd>< 6 kB gzipped</dd>
             </div>
           </dl>
         </section>

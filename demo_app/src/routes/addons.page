@@ -22,6 +22,7 @@ import cookieImage from '../assets/images/cookie.webp';
 import notificationImage from '../assets/images/notification.webp';
 import dropdownImage from '../assets/images/dropdown.webp';
 import fileuploadImage from '../assets/images/fileupload.webp';
+import resourceImage from '../assets/images/resource.webp';
 
 </script>
 
@@ -71,6 +72,15 @@ import fileuploadImage from '../assets/images/fileupload.webp';
               <pre class="ui-code-block"><code data-highlight>import { createDataClient } from 'nodula-framework/data';</code></pre>
             </div>
             <footer class="ui-card__footer"><a class="ui-link" href="/data">Open Data demo <span aria-hidden="true">→</span></a></footer>
+          </article>
+          <article class="ui-card ui-card--interactive">
+            <header class="ui-card__header"><h2 class="ui-card__title">Resource</h2>
+            <img class="ui-card__header-image" :src="resourceImage" alt="" width="64" height="73" aria-hidden="true"></header>
+            <div class="ui-card__body ui-stack ui-stack--tight">
+              <p class="ui-card__description">Load async data with reactive pending, ready, refreshing, and errored states. Superseded requests are aborted and their responses ignored.</p>
+              <pre class="ui-code-block"><code data-highlight>import { createResource } from 'nodula-framework/resource';</code></pre>
+            </div>
+            <footer class="ui-card__footer"><a class="ui-link" href="/resource">Open Resource demo <span aria-hidden="true">→</span></a></footer>
           </article>
           <article class="ui-card ui-card--interactive">
             <header class="ui-card__header"><h2 class="ui-card__title">Auth</h2>
