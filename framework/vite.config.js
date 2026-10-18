@@ -102,6 +102,7 @@ const addonBuilds = {
     imports: [["nodula-framework/filedrop", "./nodula-filedrop.js"]],
   }),
   resource: coreAddon("resource"),
+  suspense: coreAddon("suspense"),
   localstorage: coreAddon("localstorage"),
   data: coreAddon("data"),
   pwa: {

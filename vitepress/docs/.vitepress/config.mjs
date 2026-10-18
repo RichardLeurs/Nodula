@@ -113,6 +113,7 @@ export default defineConfig({
           { text: "Drag and drop", link: "/guide/drag-and-drop" },
           { text: "Sortable lists", link: "/guide/sortable-lists" },
           { text: "Async resources", link: "/guide/resource" },
+          { text: "Suspense", link: "/guide/suspense" },
           { text: "File drop", link: "/guide/file-drop" },
           { text: "File upload", link: "/guide/file-upload" },
           { text: "Authentication", link: "/guide/auth" },

@@ -55,6 +55,8 @@
       "patterns": [
         { "include": "#interpolation" },
         { "include": "#nodula-directives" },
+        { "include": "#component-tags" },
+        { "include": "#template-block" },
         { "include": "text.html.basic" }
       ]
     },
@@ -79,6 +81,13 @@
           "name": "entity.other.attribute-name.directive.nodula"
         }
       ]
+    },
+    "component-tags": {
+      "match": "(</?)([Ss]uspense)\\b",
+      "captures": {
+        "1": { "name": "punctuation.definition.tag.begin.nodula" },
+        "2": { "name": "entity.name.tag.component.nodula" }
+      }
     },
     "style-block": {
       "begin": "(<)(style)\\b([^>]*)(>)",

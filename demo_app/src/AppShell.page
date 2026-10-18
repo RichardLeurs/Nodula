@@ -162,15 +162,12 @@ function setNavigationElement(element) {
     const isAdmin = demoAuth.status() === "authenticated" && demoAuth.user()?.role === "admin";
     const items = [
       { label: "Home", href: "/" },
-
       { label: "Add-ons", href: "/addons" },
       { label: "Data", href: "/data" },
-
       { label: "Form", href: "/forms" },
       { label: "Dialog", href: "/modal" },
       { label: "Sortable list", href: "/sortable" },
       { label: "Drag & Drop", href: "/dragdrop" },
-
       //   { label: 'File drop', href: '/filedrop' },
       { label: "File upload", href: "/fileupload" },
       { label: "Web Components", href: "/web-components" },
@@ -249,7 +246,7 @@ function openCookieSettings() {
         <!-- <span class="ui-brand__mark" aria-hidden="true">s</span> -->
         <span class="ui-brand__logo" aria-hidden="true"></span>
         <span class="ui-brand__name"><b>Nodula</b></span>
-        <span class="ui-brand__version">0.1</span>
+        <span class="ui-brand__version">0.3</span>
       </a>
       <nav class="ui-site-nav" @ref="setNavigationElement"></nav>
       <div class="ui-header-actions">

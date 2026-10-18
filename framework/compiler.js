@@ -873,6 +873,13 @@ function extractImports(script) {
         /^\s*import\s+([A-Za-z_$][\w$]*)\s+from\s+['"][^'"]+\.comp['"];?\s*$/,
       );
       if (componentImport) components.set(componentImport[1].toLowerCase(), componentImport[1]);
+      // Framework components such as `import { Suspense } from 'nodula-framework/suspense'` are plain functions, not .comp files.
+      const frameworkImport = statement.match(
+        /^\s*import\s*\{([^}]*)\}\s*from\s+['"]nodula-framework\/[^'"]+['"];?\s*$/,
+      );
+      for (const name of frameworkImport?.[1].split(",").map((part) => part.trim()) ?? []) {
+        if (/^[A-Z][\w$]*$/.test(name)) components.set(name.toLowerCase(), name);
+      }
       return "";
     },
   );

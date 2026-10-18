@@ -1676,6 +1676,31 @@ a {
   }
 }
 
+/* .ui-spinner: a rotating ring for inline loading states. Reduced motion keeps it still. */
+.ui-spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: var(--ui-space-2);
+  vertical-align: -0.125em;
+  border: 2px solid var(--ui-color-border-strong);
+  border-top-color: var(--ui-color-primary);
+  border-radius: 50%;
+  animation: ui-spinner-rotate 0.8s linear infinite;
+}
+
+@keyframes ui-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-spinner {
+    animation: none;
+  }
+}
+
 /* .ui-form__body: spaces form controls using current density tokens. */
 .ui-form__body {
   display: grid;

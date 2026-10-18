@@ -13,12 +13,14 @@ export {
   onMount,
   onUnmount,
   batch,
+  untrack,
 } from "./reactivity.js";
 import { defineCustomElement } from "./dom.js";
 export {
   h,
   fragment,
   mount,
+  errorBoundary,
   list,
   each,
   when,

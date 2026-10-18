@@ -30,6 +30,7 @@ const addonNames = [
   "seo-vite",
   "store",
   "resource",
+  "suspense",
   "sortable",
   "filedrop",
 ];

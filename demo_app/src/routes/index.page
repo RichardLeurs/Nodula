@@ -62,6 +62,12 @@ const addonCarouselItems = [
     image: resourceImage,
   },
   {
+    title: "Suspense",
+    description:
+      "Show a fallback while resources load for the first time, then keep the content on screen during refreshes.",
+    image: resourceImage,
+  },
+  {
     title: "Auth",
     description:
       "Connect reactive sign-in state and role or permission checks to your session adapter.",

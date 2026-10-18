@@ -34,6 +34,7 @@ const addonOutputs = [
   ["seo", "nodula-seo.js"],
   ["seo-vite", "nodula-seo-vite.js"],
   ["store", "nodula-store.js"],
+  ["suspense", "nodula-suspense.js"],
 ];
 const runtimeEntry = fileURLToPath(new URL("../dist/nodula/nodula-core.js", import.meta.url));
 

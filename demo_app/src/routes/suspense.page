@@ -1,0 +1,148 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
+<script setup>
+import { createResource } from "nodula-framework/resource";
+import { Suspense } from "nodula-framework/suspense";
+import suspenseImage from "../assets/images/resource.webp";
+
+/**
+ * Pretend to fetch the beds of the greenhouse. It answers after a short delay and stops early when its signal is aborted.
+ *
+ * @param {undefined} _input The resource has no source, so the fetcher receives no input.
+ * @param {{ signal?: AbortSignal }} options
+ * @returns {Promise<Array<{ id: string, bed: string, crop: string }>>}
+ */
+function fetchBeds(_input, { signal }) {
+  return new Promise((resolve, reject) => {
+    const timeout = window.setTimeout(() => {
+      resolve([
+        { id: "n1", bed: "Bed 1", crop: "Tomatoes" },
+        { id: "n2", bed: "Bed 2", crop: "Cucumbers" },
+        { id: "n3", bed: "Bed 3", crop: "Peppers" },
+      ]);
+    }, 600);
+    signal?.addEventListener(
+      "abort",
+      () => {
+        window.clearTimeout(timeout);
+        reject(new DOMException("Request aborted.", "AbortError"));
+      },
+      { once: true },
+    );
+  });
+}
+
+let sensorRequests = 0;
+
+/**
+ * Pretend to fetch the sensor reading. The first request fails so the page can show an error,
+ * and later requests answer with a reading after a short delay.
+ *
+ * @param {undefined} _input The resource has no source, so the fetcher receives no input.
+ * @param {{ signal?: AbortSignal }} options
+ * @returns {Promise<{ temperature: number, humidity: number }>}
+ */
+function fetchSensors(_input, { signal }) {
+  sensorRequests += 1;
+  const failing = sensorRequests === 1;
+  return new Promise((resolve, reject) => {
+    const timeout = window.setTimeout(() => {
+      if (failing) reject(new Error("The greenhouse sensor did not answer."));
+      else resolve({ temperature: 21.5, humidity: 64 });
+    }, 900);
+    signal?.addEventListener(
+      "abort",
+      () => {
+        window.clearTimeout(timeout);
+        reject(new DOMException("Request aborted.", "AbortError"));
+      },
+      { once: true },
+    );
+  });
+}
+
+// Both resources start loading when the page is created. The fallback shows until both have finished their first load.
+const beds = createResource(fetchBeds);
+const sensors = createResource(fetchSensors);
+
+/**
+ * Request the sensor reading again. The content stays visible while the refresh runs. A failure
+ * is already shown through `sensors.error()`, so the rejected promise is not handled here.
+ */
+function refreshSensors() {
+  sensors.refetch().catch(() => {});
+}
+</script>
+
+<template>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Optional Suspense add-on</p>
+
+      <div class="ui-page__title-row">
+        <h1 class="ui-page__title">Show a fallback until the data arrives.</h1>
+        <img
+          class="ui-page__header-image"
+          :src="suspenseImage"
+          alt=""
+          width="128"
+          height="147"
+          aria-hidden="true"
+        />
+      </div>
+
+      <p class="ui-page__description">
+        Suspense shows its fallback while the resources it watches load for the first time, then
+        shows the content. A refresh keeps the content on screen, and a failed load still shows the
+        content so it can report the error.
+      </p>
+    </header>
+
+    <section class="ui-section" aria-labelledby="suspense-demo-title">
+      <h2 id="suspense-demo-title" class="ui-section__title">Greenhouse summary</h2>
+
+      <Suspense :resources="[beds, sensors]">
+        <template #fallback>
+          <p class="ui-section__description" role="status">
+            <span class="ui-spinner" aria-hidden="true"></span>Suspense: Loading greenhouse data…
+          </p>
+        </template>
+
+        <div id="suspense-summary" class="ui-stack">
+          <p class="ui-section__description">
+            Beds in the greenhouse: <strong>{{ beds.value()?.length }}</strong>
+          </p>
+          <p class="ui-field__error" role="alert" @if="sensors.error()">
+            {{ sensors.error().message }}
+          </p>
+          <p class="ui-section__description" @if="sensors.value()">
+            Temperature: <strong>{{ sensors.value().temperature }} °C</strong>, humidity:
+            <strong>{{ sensors.value().humidity }} %</strong>
+          </p>
+          <p class="ui-section__description">
+            Sensor state: <code>{{ sensors.state() }}</code>
+          </p>
+          <div class="ui-cluster ui-cluster--wrap">
+            <button
+              class="ui-button ui-button--secondary"
+              type="button"
+              :disabled="sensors.loading()"
+              @click="refreshSensors()"
+            >
+              Refresh sensors
+            </button>
+          </div>
+        </div>
+      </Suspense>
+    </section>
+
+    <section class="ui-section" aria-labelledby="suspense-code-title">
+      <h2 id="suspense-code-title" class="ui-section__title">Use a suspense boundary</h2>
+      <pre class="ui-code-block"><code data-highlight>import { Suspense } from 'nodula-framework/suspense';
+
+&lt;Suspense :resources="[beds, sensors]"&gt;
+  &lt;template #fallback&gt;&lt;p&gt;Loading…&lt;/p&gt;&lt;/template&gt;
+  &lt;div&gt;Beds loaded&lt;/div&gt;
+&lt;/Suspense&gt;</code></pre>
+    </section>
+  </main>
+</template>

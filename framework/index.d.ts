@@ -140,6 +140,8 @@ export function onMount(fn: () => void): void;
 export function onUnmount(fn: Cleanup): void;
 /** Batch reactive notifications until the callback completes. */
 export function batch<T>(fn: () => T): T;
+/** Run a function without tracking the signals it reads, so the enclosing effect does not re-run for them. */
+export function untrack<T>(fn: () => T): T;
 
 /** Create a native element. Function children and function-valued props are reactive. */
 export function h<K extends keyof HTMLElementTagNameMap>(
@@ -155,6 +157,11 @@ export function h(
 export function h(tag: string, props?: ElementProps | null, ...children: Child[]): HTMLElement;
 /** Create a DOM fragment. */
 export function fragment(...children: Child[]): DocumentFragment;
+/**
+ * Render content inside an error boundary. If the content throws while it is created, the error is logged and
+ * `fallback(error)` renders instead. Catches creation-time errors only, not later reactive updates.
+ */
+export function errorBoundary(render: () => Child, fallback: (error: unknown) => Child): Node;
 /** Mount a component result into a selector or element, returning its disposer. */
 export function mount(target: string | Element, component: Component | (() => Node)): Dispose;
 /** Create a keyed list container. */

@@ -1,6 +1,6 @@
 {
   "name": "nodula-framework",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": false,
   "license": "GPL-3.0-or-later",
   "files": [
@@ -79,6 +79,10 @@
       "types": "./dist/nodula/nodula-resource.d.ts",
       "import": "./dist/nodula/nodula-resource.js"
     },
+    "./suspense": {
+      "types": "./dist/nodula/nodula-suspense.d.ts",
+      "import": "./dist/nodula/nodula-suspense.js"
+    },
     "./filedrop": {
       "types": "./dist/nodula/nodula-filedrop.d.ts",
       "import": "./dist/nodula/nodula-filedrop.js"
@@ -142,6 +146,7 @@
     "build:localstorage": "vite build --config framework/vite.config.js --mode addon-localstorage",
     "build:data": "vite build --config framework/vite.config.js --mode addon-data",
     "build:resource": "vite build --config framework/vite.config.js --mode addon-resource",
+    "build:suspense": "vite build --config framework/vite.config.js --mode addon-suspense",
     "build:pwa": "vite build --config framework/vite.config.js --mode addon-pwa",
     "build:store": "vite build --config framework/vite.config.js --mode addon-store",
     "build:auth": "vite build --config framework/vite.config.js --mode addon-auth",
@@ -151,7 +156,7 @@
     "lint:fix": "oxlint --fix",
     "format": "oxfmt 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
     "format:check": "oxfmt --check 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
-    "build:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\" && vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:navigation-dropdown && npm run build:dragdrop && npm run build:sortable && npm run build:filedrop && npm run build:fileupload && npm run build:localstorage && npm run build:data && npm run build:resource && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node framework/mjs/gzip-framework.mjs",
+    "build:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\" && vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:navigation-dropdown && npm run build:dragdrop && npm run build:sortable && npm run build:filedrop && npm run build:fileupload && npm run build:localstorage && npm run build:data && npm run build:resource && npm run build:suspense && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node framework/mjs/gzip-framework.mjs",
     "package:framework": "npm run build:framework && npm run pack:framework",
     "pack:framework": "mkdir -p dist/npm && npm pack --pack-destination dist/npm",
     "install:framework": "npm run package:framework && npm run install:framework:package",

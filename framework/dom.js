@@ -897,6 +897,28 @@ export function mount(target, component) {
 
 // Only changed rows are created or removed; unchanged nodes keep their identity.
 /**
+ * Render content inside an error boundary. If the content throws while it is created, the error is logged and
+ * `fallback(error)` renders instead, so the failure does not take down the parent tree.
+ *
+ * Catches errors from the content and the child components it creates. It does not catch errors from later
+ * reactive updates.
+ *
+ * @param {() => unknown} render Renders the protected content.
+ * @param {(error: unknown) => unknown} fallback Renders the content shown after a failure.
+ * @returns {Node} The content, or the fallback when the content throws.
+ */
+export function errorBoundary(render, fallback) {
+  if (typeof render !== "function") throw new TypeError("errorBoundary render must be a function.");
+  if (typeof fallback !== "function") throw new TypeError("errorBoundary fallback must be a function.");
+  try {
+    return createRoot(() => toNode(render()))[0];
+  } catch (error) {
+    console.error("errorBoundary: content failed to render.", error);
+    return createRoot(() => toNode(fallback(error)))[0];
+  }
+}
+
+/**
  * Render a keyed list into its own container element.
  *
  * Rows are reused by key, so existing row nodes are kept when the items change. Each row is rendered once per key.
