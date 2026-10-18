@@ -83,7 +83,7 @@ For most application code, direct function calls and `mount()` are sufficient. `
 
 ## Custom elements use a separate registry
 
-When a component must be consumed from plain HTML or another framework, register a browser custom element with `defineCustomElement()`. That uses the browser's `customElements` registry and has different property, attribute, event, and lifecycle behavior than importing a `.comp` file. See [Web Components](/guide/web-components).
+When a component must be consumed from plain HTML or another framework, register a browser custom element with `defineCustomElement()` from `nodula-framework/web-components`. That uses the browser's `customElements` registry and has different property, attribute, event, and lifecycle behavior than importing a `.comp` file. See [Web Components](/guide/web-components).
 
 ## Limitations and troubleshooting
 

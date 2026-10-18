@@ -1,5 +1,6 @@
 <script>
-import { effect, onCleanup, signal, visibleIsland } from "nodula-framework";
+import { effect, onCleanup, signal } from "nodula-framework";
+import { visibleIsland } from "nodula-framework/island";
 
 import DemoCounter from "../components/DemoCounter.comp";
 import routerImage from "../assets/images/router.webp";
@@ -23,6 +24,11 @@ import filedropImage from "../assets/images/filedrop.webp";
 import fileuploadImage from "../assets/images/fileupload.webp";
 import sortableImage from "../assets/images/sortable.webp";
 import resourceImage from "../assets/images/resource.webp";
+import suspenseImage from '../assets/images/suspense.webp';
+import heroImage from "../assets/images/nodula-hero2.webp";
+
+// Scoped CSS does not rewrite url(), so the bundled hero URL is passed in as a custom property.
+const heroImageStyle = `--ui-home-hero-image: url("${heroImage}")`;
 
 const loadExtraCard = () => import("../components/ExtraCard.comp").then((module) => module.default);
 
@@ -65,7 +71,7 @@ const addonCarouselItems = [
     title: "Suspense",
     description:
       "Show a fallback while resources load for the first time, then keep the content on screen during refreshes.",
-    image: resourceImage,
+    image: suspenseImage,
   },
   {
     title: "Auth",
@@ -226,7 +232,7 @@ function moveAddonCarousel(direction) {
           </h1>
         </div>
 
-        <div class="ui-home-hero-image"></div>
+        <div class="ui-home-hero-image" :style="heroImageStyle"></div>
         <p class="ui-page__description ui-home-hero__description">
           Meet Nodula: A lightweight JavaScript framework built around modular architecture,
           simplicity and speed. Build your application from small, focused pieces that work together
@@ -287,7 +293,7 @@ function moveAddonCarousel(direction) {
             </div>
             <div class="ui-home-specs__item">
               <dt>Framework core size</dt>
-              <dd>< 6 kB gzipped</dd>
+              <dd>< 5 kB gzipped</dd>
             </div>
           </dl>
         </section>
@@ -375,3 +381,369 @@ function moveAddonCarousel(direction) {
     </section> -->
   </main>
 </template>
+
+<style scoped>
+/* .ui-home-hero-image: sizes the landing-page hero artwork. */
+.ui-home-hero-image {
+  width: 100%;
+  height: 450px;
+  margin-top: 0px;
+  background: var(--ui-home-hero-image) center / contain no-repeat;
+}
+
+/* .ui-home-hero: arranges introductory copy and supporting content in columns. */
+.ui-home-hero {
+  display: grid;
+  /* grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr); */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(var(--ui-space-8), 5vw, var(--ui-space-10));
+  padding: var(--ui-space-8) 0 var(--ui-space-10);
+  /* border-bottom: 1px solid var(--ui-color-border); */
+}
+
+/* .ui-home-hero__copy: lets hero text shrink without overflowing its column. */
+.ui-home-hero__copy {
+  min-width: 0;
+}
+
+/* .ui-home-hero__aside: stacks supporting hero panels with consistent spacing. */
+.ui-home-hero__aside {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: var(--ui-space-5);
+}
+
+/* .ui-home-hero__title: reserves stable height for the rotating headline. */
+.ui-home-hero__title {
+  display: grid;
+  align-content: center;
+  min-height: 2.12em;
+  margin: 0;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-display);
+  line-height: var(--ui-line-height-compact);
+  letter-spacing: var(--ui-letter-spacing-tight);
+}
+
+/* .ui-home-carousel: keeps changing headline text from shifting nearby content. */
+.ui-home-carousel {
+  min-height: 2.12em;
+}
+
+/* .ui-home-carousel__line: makes each carousel headline occupy its own line. */
+.ui-home-carousel__line {
+  display: block;
+}
+
+/* Fade variants animate carousel text between headline states. */
+.ui-home-carousel--fade-a .ui-home-carousel__line {
+  animation: ui-home-carousel-fade-a 0.45s ease both;
+}
+
+/* .ui-home-carousel--fade-a and --fade-b animate headline transitions. */
+/* .ui-home-carousel--fade-b: applies alternate headline transition timing. */
+.ui-home-carousel--fade-b .ui-home-carousel__line {
+  animation: ui-home-carousel-fade-b 0.45s ease both;
+}
+
+/* .ui-home-hero__description: separates supporting copy from hero actions. */
+.ui-home-hero__description {
+  margin: var(--ui-space-4) 0 var(--ui-space-6);
+}
+
+/* .ui-home-hero__note: styles secondary footnote copy in the hero. */
+.ui-home-hero__note {
+  color: var(--ui-color-text-subtle);
+  font-size: var(--ui-font-size-label);
+}
+
+/* .ui-home-specs: contains a compact specification summary panel. */
+.ui-home-specs {
+  min-width: 0;
+  overflow: hidden;
+  margin-bottom: 0px;
+}
+
+/* .ui-home-specs__header: groups title and metadata above specification rows. */
+.ui-home-specs__header {
+  display: grid;
+  justify-content: stretch;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-5) var(--ui-density-panel-padding);
+  border-bottom: 1px solid var(--ui-color-border);
+}
+
+/* The specs header removes extra eyebrow spacing inside its compact layout. */
+.ui-home-specs__header .ui-page__eyebrow {
+  margin: 0;
+}
+
+/* The specs header tightens its inline metadata cluster. */
+.ui-home-specs__header .ui-cluster {
+  gap: var(--ui-space-2);
+}
+
+/* The specs panel title uses compact heading scale. */
+.ui-home-specs__header .ui-panel__title {
+  font-size: var(--ui-font-size-heading-3);
+}
+
+/* .ui-home-specs__list: removes list defaults and spaces the spec rows. */
+.ui-home-specs__list {
+  margin: 0;
+  padding: 0 var(--ui-space-6) var(--ui-space-4);
+}
+
+/* .ui-home-specs__item: aligns each specification label and value. */
+.ui-home-specs__item {
+  display: grid;
+  grid-template-columns: minmax(95px, 0.7fr) minmax(0, 1fr);
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-3) 0;
+  border-top: 1px solid var(--ui-color-border);
+  font-size: var(--ui-font-size-body-small);
+  line-height: var(--ui-line-height-compact);
+}
+
+/* The first specification row omits a top divider. */
+.ui-home-specs__item:first-child {
+  border-top: 0;
+}
+
+/* Specification terms use subdued monospace text. */
+.ui-home-specs__item dt {
+  color: var(--ui-color-text-subtle);
+  font-family: var(--ui-font-family-mono);
+}
+
+/* Specification values remove definition-list defaults. */
+.ui-home-specs__item dd {
+  margin: 0;
+  color: var(--ui-color-text-muted);
+}
+
+/* .ui-home-addon-carousel: frames addon slides between header and controls. */
+.ui-home-addon-carousel {
+  display: grid;
+  min-width: 0;
+  min-height: 320px;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-large);
+  background: var(--ui-color-surface-raised);
+  box-shadow: var(--ui-shadow-raised);
+}
+
+/* Addon carousel header and footer align metadata and navigation controls. */
+.ui-home-addon-carousel__header,
+.ui-home-addon-carousel__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-4) var(--ui-space-5);
+}
+
+/* .ui-home-addon-carousel__header: separates title metadata from slide. */
+.ui-home-addon-carousel__header {
+  border-bottom: 1px solid var(--ui-color-border);
+}
+
+/* Carousel header eyebrow omits default bottom margin. */
+.ui-home-addon-carousel__header .ui-page__eyebrow {
+  margin: 0;
+}
+
+/* .ui-home-addon-carousel__count: identifies the current carousel slide. */
+.ui-home-addon-carousel__count {
+  color: var(--ui-color-text-subtle);
+  font-family: var(--ui-font-family-mono);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-home-addon-carousel__slide: lays addon image beside its description. */
+.ui-home-addon-carousel__slide {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.7fr) minmax(0, 1.3fr);
+  align-items: center;
+  gap: var(--ui-space-5);
+  padding: var(--ui-density-panel-padding);
+}
+
+/* .ui-home-addon-carousel__image: contains addon artwork within its slide. */
+.ui-home-addon-carousel__image {
+  width: min(100%, 150px);
+  aspect-ratio: 128 / 147;
+  object-fit: contain;
+  justify-self: center;
+}
+
+/* .ui-home-addon-carousel__copy: constrains text content within the slide. */
+.ui-home-addon-carousel__copy {
+  display: grid;
+  align-self: start;
+  gap: var(--ui-density-form-gap);
+}
+
+/* Addon slide title uses a responsive compact heading scale. */
+.ui-home-addon-carousel__copy .ui-panel__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+}
+
+/* .ui-home-addon-carousel__footer: separates slide content from controls. */
+.ui-home-addon-carousel__footer {
+  border-top: 1px solid var(--ui-color-border);
+}
+
+/* .ui-home-addon-carousel__controls: groups previous/next carousel actions. */
+.ui-home-addon-carousel__controls {
+  display: flex;
+  gap: var(--ui-space-2);
+}
+
+/* Carousel buttons retain touch-friendly target dimensions. */
+.ui-home-addon-carousel__controls .ui-button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--ui-space-2);
+  font-size: 1.2rem;
+}
+
+/* .ui-home-examples: separates example content from neighboring home sections. */
+.ui-home-examples {
+  padding-bottom: var(--ui-space-8);
+  border-bottom: 1px solid var(--ui-color-border);
+}
+
+/* .ui-home-examples__grid: balances the two example columns. */
+.ui-home-examples__grid {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+/* Example section heading aligns with supporting copy. */
+.ui-home-examples .ui-section__header {
+  align-items: flex-end;
+}
+
+/* Example section description is right-aligned beside its heading. */
+.ui-home-examples .ui-section__description {
+  max-width: 29ch;
+  margin: 0;
+  text-align: right;
+}
+
+/* .ui-home-highlights: groups concise product feature callouts. */
+.ui-home-highlights {
+  padding: var(--ui-space-6) 0;
+  border-bottom: 1px solid var(--ui-color-border);
+}
+
+/* .ui-home-highlight: aligns a numbered feature with its copy. */
+.ui-home-highlight {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ui-space-3);
+  padding-left: var(--ui-space-4);
+  border-left: 1px solid var(--ui-color-border);
+}
+
+/* The first highlight omits the leading divider and inset. */
+.ui-home-highlight:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+/* .ui-home-highlight__number: styles the feature's index marker. */
+.ui-home-highlight__number {
+  color: var(--ui-color-primary);
+  font: var(--ui-font-size-caption)/var(--ui-line-height-compact) var(--ui-font-family-mono);
+}
+
+/* Highlight card titles use compact type scale. */
+.ui-home-highlight .ui-card__title {
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+/* Highlight card descriptions use compact copy styling. */
+.ui-home-highlight .ui-card__description {
+  margin-top: var(--ui-space-1);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-home-island: lays out a standalone feature strip across the page. */
+.ui-home-island {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-5);
+  min-height: 88px;
+  padding: var(--ui-space-5) 0;
+  border-bottom: 1px solid var(--ui-color-border);
+}
+
+/* .ui-home-island__label: styles the concise label in a feature strip. */
+.ui-home-island__label {
+  color: var(--ui-color-text-muted);
+  font: var(--ui-font-size-sm)/var(--ui-line-height-body) var(--ui-font-family-mono);
+}
+
+/* .ui-home-island__content: prevents strip content from overflowing. */
+.ui-home-island__content {
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-home-carousel--fade-a .ui-home-carousel__line,
+  .ui-home-carousel--fade-b .ui-home-carousel__line {
+    animation: none;
+  }
+}
+
+@keyframes ui-home-carousel-fade-a {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ui-home-carousel-fade-b {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tablet-ish layouts */
+@media (max-width: 820px) {
+  .ui-home-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-home-examples__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-home-addon-carousel__slide {
+    grid-template-columns: minmax(88px, 0.65fr) minmax(0, 1.35fr);
+  }
+  .ui-home-highlights {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-home-highlight,
+  .ui-home-highlight:first-child {
+    padding: 0;
+    border: 0;
+  }
+}
+</style>

@@ -1,0 +1,62 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-icon-picker: constrains icon-selection content to available width. */
+.ui-icon-picker {
+  max-width: 100%;
+}
+
+/* .ui-icon-picker__button: makes one icon a visible, focusable choice. */
+.ui-icon-picker__button {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px solid var(--ui-color-border-strong);
+  border-radius: var(--ui-radius-medium);
+  color: var(--ui-color-primary);
+  background: color-mix(in srgb, var(--ui-color-primary) 9%, var(--ui-color-surface));
+  cursor: pointer;
+  transition:
+    background-color var(--ui-transition-fast),
+    border-color var(--ui-transition-fast),
+    transform var(--ui-transition-fast);
+}
+
+.ui-icon-picker__button:hover {
+  transform: translateY(-2px);
+  border-color: var(--ui-color-primary);
+  background: color-mix(in srgb, var(--ui-color-primary) 16%, var(--ui-color-surface));
+}
+
+.ui-icon-picker__button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ui-color-focus) 38%, transparent);
+  outline-offset: 2px;
+}
+
+.ui-icon-picker__button iconify-icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* .ui-icon-picker__selection: lays out the chosen icon and its identifier. */
+.ui-icon-picker__selection {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ui-space-3);
+  color: var(--ui-color-text-muted);
+}
+
+/* The icon identifier wraps instead of overflowing its selection row. */
+.ui-icon-picker__selection code {
+  overflow-wrap: anywhere;
+  color: var(--ui-color-text);
+}
+
+/* The selected icon uses consistent size and primary color. */
+.ui-icon-picker__selection iconify-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--ui-color-primary);
+}

@@ -88,3 +88,16 @@ effect(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* .ui-data-table-panel: clips fetched table content to its panel surface. */
+.ui-data-table-panel {
+  overflow: hidden;
+}
+
+/* .ui-data-table__error: spaces error feedback inside the data panel. */
+.ui-data-table__error {
+  margin: 0;
+  padding: var(--ui-space-4);
+}
+</style>

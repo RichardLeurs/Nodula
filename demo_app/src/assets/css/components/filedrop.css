@@ -1,0 +1,92 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* File drop add-on styles. */
+.ui-filedrop {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border: 2px dashed var(--ui-color-border-strong, #687782);
+  border-radius: 0.75rem;
+  color: var(--ui-color-text, #17232c);
+  background: var(--ui-color-surface, #fff);
+  text-align: center;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+
+.ui-filedrop__label,
+.ui-filedrop__description {
+  margin: 0;
+}
+
+.ui-filedrop__label {
+  font-weight: 650;
+}
+
+.ui-filedrop__description {
+  color: var(--ui-color-text-muted, #52616b);
+}
+
+.ui-filedrop__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.ui-filedrop__button {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--ui-color-border-strong, #687782);
+  border-radius: 0.4rem;
+  color: var(--ui-color-text, #17232c);
+  background: var(--ui-color-surface, #fff);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ui-filedrop__button:hover {
+  border-color: var(--ui-color-primary, #1769aa);
+}
+
+.ui-filedrop__button:focus-visible {
+  outline: 3px solid var(--ui-color-focus, #1769aa);
+  outline-offset: 3px;
+}
+
+.ui-filedrop:focus-within {
+  outline: 3px solid var(--ui-color-focus, #1769aa);
+  outline-offset: 3px;
+}
+
+.ui-filedrop--active {
+  border-color: var(--ui-color-primary, #1769aa);
+  background: color-mix(
+    in srgb,
+    var(--ui-color-primary, #1769aa) 10%,
+    var(--ui-color-surface, #fff)
+  );
+}
+
+.ui-filedrop--accepted {
+  border-color: var(--ui-color-success, #218838);
+  background: color-mix(
+    in srgb,
+    var(--ui-color-success, #218838) 10%,
+    var(--ui-color-surface, #fff)
+  );
+}
+
+.ui-filedrop--rejected {
+  border-color: var(--ui-color-danger, #b42318);
+  background: color-mix(
+    in srgb,
+    var(--ui-color-danger, #b42318) 10%,
+    var(--ui-color-surface, #fff)
+  );
+}

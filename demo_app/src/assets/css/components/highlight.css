@@ -1,0 +1,65 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* Highlight.js token colors for JavaScript and HTML examples. */
+
+.hljs {
+  color: var(--ui-syntax-default);
+  background: transparent;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--ui-syntax-comment);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-meta .hljs-keyword {
+  color: var(--ui-syntax-keyword);
+}
+
+.hljs-string,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-regexp {
+  color: var(--ui-syntax-string);
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-selector-class,
+.hljs-selector-id {
+  color: var(--ui-syntax-tag);
+}
+
+.hljs-attribute,
+.hljs-attr {
+  color: var(--ui-syntax-attribute);
+}
+
+.hljs-title,
+.hljs-title.function_,
+.hljs-function .hljs-title {
+  color: var(--ui-syntax-function);
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-meta {
+  color: var(--ui-syntax-literal);
+}
+
+.hljs-built_in,
+.hljs-type {
+  color: var(--ui-syntax-attribute);
+}
+
+.hljs-variable,
+.hljs-property,
+.hljs-params {
+  color: var(--ui-syntax-default);
+}

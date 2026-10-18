@@ -7,31 +7,10 @@ export type Signal<T> = [read: Accessor<T>, write: Setter<T>];
 export type Cleanup = () => void;
 export type Effect = () => void;
 
-export interface NodulaAPI {
-  /** Load a global stylesheet URL once and return its link element. */
-  css(href: string): HTMLLinkElement;
-  /** Register a Nodula component as a custom element. */
-  defineCustomElement(
-    name: string,
-    render: Component,
-    options?: CustomElementOptions,
-  ): CustomElementConstructor;
-}
-
-export const Nodula: Readonly<NodulaAPI>;
 export type Dispose = () => void;
 
 export interface RootOptions {
   detached?: boolean;
-}
-
-export interface CustomElementOptions {
-  /** Props reflected to/from kebab-case attributes; object values stay property-only. */
-  props?: string[];
-  /** Component callbacks exposed as bubbling, composed custom events. */
-  events?: string[];
-  /** Render into a shadow root (default: open), or the host when false. */
-  shadow?: "open" | "closed" | false;
 }
 
 export interface NodulaEventProps {
@@ -94,18 +73,14 @@ export type Slots = Record<string, Child | (() => Child)>;
 export interface ComponentContext<P extends Record<string, string> = Record<string, string>> {
   params?: P;
   props?: Record<string, unknown>;
+  /** Caller props that a component with a prop schema did not declare. Set by withProps from nodula-framework/props. */
+  attrs?: Record<string, unknown>;
   children?: Child;
   slots?: Slots;
 }
 export type Component<P extends Record<string, string> = Record<string, string>> = (
   context?: ComponentContext<P>,
 ) => Node;
-export interface CustomElementComponentContext {
-  props: Record<string, unknown>;
-  children?: Child;
-  slots?: Slots;
-}
-export type CustomElementComponent = (context: CustomElementComponentContext) => Node;
 export interface CustomElementProps extends ElementProps {
   [property: string]: unknown;
   [event: `on:${string}`]: (event: CustomEvent) => unknown;
@@ -115,12 +90,6 @@ export function component<P extends Record<string, unknown>>(
   readProps: Accessor<P>,
   slots?: Slots,
 ): RenderDescriptor;
-/** Register a Nodula component as a custom element; disconnect disposes its reactive root. */
-export function defineCustomElement(
-  name: string,
-  render: CustomElementComponent,
-  options?: CustomElementOptions,
-): CustomElementConstructor;
 export type Key = string | number | symbol | bigint;
 
 /** Create a reactive getter/setter pair. */
@@ -198,13 +167,3 @@ export function registerLifecycleTransition(
     details: { type: "page" | "conditional" | "list"; key?: Key },
   ) => void | Promise<void>,
 ): Dispose;
-/** Defer loading a component until its placeholder becomes visible. */
-export interface VisibleIslandOptions {
-  /** Text shown when the loader fails. Defaults to English; the element keeps code "nodula-island-load-failed". */
-  errorText?: string;
-}
-export function visibleIsland(
-  loader: () => Promise<Component>,
-  placeholder?: string,
-  options?: VisibleIslandOptions,
-): HTMLDivElement;

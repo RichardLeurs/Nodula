@@ -1,0 +1,26 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-switch: aligns a labeled boolean control and its supporting copy. */
+.ui-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-4);
+  color: var(--ui-color-text);
+  cursor: pointer;
+}
+
+/* .ui-switch__copy: stacks switch label and description. */
+.ui-switch__copy {
+  display: grid;
+  gap: var(--ui-space-1);
+}
+
+/* .ui-switch__control: sizes and colors the native switch input. */
+.ui-switch__control {
+  width: 42px;
+  height: 24px;
+  flex: 0 0 auto;
+  accent-color: var(--ui-color-primary);
+  cursor: pointer;
+}

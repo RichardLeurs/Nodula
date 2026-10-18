@@ -14,10 +14,11 @@ Nodula single-file components put component logic, template, and optional styles
 
 - **`.page`:** page module that can be imported directly or supplied to the optional file router. The compiler does not itself register routes.
 - **`.comp`:** reusable component module imported by a page or another compiled component.
-- **`<script setup>`:** JavaScript evaluated as component setup. Values and functions declared here can be referenced by that file's template. TypeScript syntax is not supported by this compiler.
+- **`<script>`:** JavaScript evaluated as component setup. Values and functions declared here can be referenced by that file's template. TypeScript syntax is not supported by this compiler.
 - **`<template>`:** one root element containing supported markup and directives.
 - **`<style>`:** optional CSS; plain styles are global, `<style scoped>` scopes selectors to this component's rendered elements, and `<style module>` exposes Vite-generated local classes through `$style`.
 - **CSS Modules:** `<style module>` is the inline SFC form. External `.module.css` imports through Vite also remain supported and expose their imported class map.
+- **Top-level comments:** HTML comments (`<!-- … -->`), `//` line comments and blank lines may appear between the blocks, for example a copyright notice. Any other top-level content is a compile error. A `//` comment should not contain `<`, because the HTML parser reads it as a tag.
 
 ### CSS Modules in an SFC
 
@@ -42,7 +43,7 @@ For global imports, scoped blocks, CSS Module setup, and guidance on choosing be
 Create `Counter.comp`:
 
 ```html
-<script setup>
+<script>
 import { signal } from 'nodula-framework';
 
 const [count, setCount] = signal(0);
@@ -62,7 +63,7 @@ const [count, setCount] = signal(0);
 Import the component into a page:
 
 ```html
-<script setup>
+<script>
 import Counter from './Counter.comp';
 </script>
 
@@ -149,14 +150,62 @@ Bindings support `value` and `checked`, using `input` and `change` events respec
 
 Import `.comp` files and use their component tags in a template. Imported components receive declared attributes as props, child markup as default slot content, and named `<slot name="...">` content as named slots. See [Components Basics](/guide/components-basics), [Props](/guide/props), and [Slots](/guide/slots) for details.
 
+### Prop schemas and `@attrs`
+
+A `.comp` can declare its props in its `<script>` with an `export const propSchema` object literal. Each entry may set `type`, `required`, `default`, and `validate`:
+
+```html
+<!-- Badge.comp -->
+<script>
+export const propSchema = {
+  label: { required: true },
+  size: { type: Number, default: 2 },
+};
+</script>
+
+<template>
+  <span class="badge">{{ props.label }} {{ props.size }}</span>
+</template>
+```
+
+With a schema, attributes the component does not declare fall through to its root element. Mark a different element with `@attrs` to receive them instead. `@attrs` takes no value and requires a schema:
+
+```html
+<template>
+  <section class="card">
+    <button type="button" @attrs>{{ props.label }}</button>
+  </section>
+</template>
+```
+
+Components without `propSchema` do not forward attributes. `propSchema` is valid only in `.comp` files. See [Props](/guide/props) for schema options and warnings, and [Fallthrough Attributes](/guide/fallthrough-attributes) for the merge rules.
+
 ### Deferred content
 
-`use:visibleIsland="visibleIsland(loader)"` can defer loading a component until its placeholder enters the viewport. The loader should resolve to a component (or a module whose default export is the component). If `IntersectionObserver` is unavailable, loading starts immediately. See [Performance](/guide/performance) for when deferral is useful.
+`use:visibleIsland="visibleIsland(loader)"` can defer loading a component until its placeholder enters the viewport. The directive evaluates `visibleIsland` in the component's scope, so import it from `nodula-framework/island` in the `<script>`:
+
+```html
+<script>
+import { visibleIsland } from 'nodula-framework/island';
+
+const loadCard = async () => (await import('./Card.comp')).default;
+</script>
+
+<template>
+  <div use:visibleIsland="visibleIsland(loadCard, 'Loading card…')"></div>
+</template>
+```
+
+The loader must resolve to a component function, so return `module.default` rather than the module object. If `IntersectionObserver` is unavailable, loading starts immediately. See [Async Components](/guide/async-components) for the loader contract and [Performance](/guide/performance) for when deferral is useful.
 
 ## Limitations and troubleshooting
 
 - Each file requires exactly one `<template>` block with exactly one root element. Group siblings under an element or supported `<template>` directive.
-- `<script setup>` is JavaScript, not TypeScript. JSX, arbitrary component resolution, arbitrary two-way bindings, and full Vue/Svelte template compatibility are not provided.
+- `@show` and `@ref` only apply to elements; the compiler rejects them on imported component tags. Wrap the component in an element, or pass the value as a prop.
+- `<script>` is JavaScript, not TypeScript. JSX, arbitrary component resolution, arbitrary two-way bindings, and full Vue/Svelte template compatibility are not provided.
+- `propSchema` must be an `export const` object literal in a `.comp`; other top-level exports in `<script>` are rejected. A malformed schema throws when the module loads.
+- `@attrs` takes no value and needs `propSchema` in the same file. Only one element or component tag per component can have it. It cannot be on `<slot>`, `<template>`, or `<outlet>`, or inside a loop (`@for` or `each`).
+- A component with `propSchema` needs an element or component root, unless an element is marked `@attrs`. A text root or an `<outlet>` root is a compile error without `@attrs`.
 - Vite must load the Nodula compiler plugin for these file extensions. If Vite reports an unknown `.page` or `.comp` import, verify plugin setup before debugging runtime code.
 - A page file is not automatically a route. Register it in a router or use the optional file router.
 - Scoped styles are scoped to rendered component elements, not a Shadow DOM boundary. Use custom elements when an actual web-component boundary is required.

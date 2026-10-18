@@ -38,7 +38,7 @@ Every loop needs `:key`. Keys should come from item identity, not array position
 
 ## How it works
 
-When the collection changes, Nodula compares keys. Rows with keys that remain keep their DOM identity; new keys create rows, and missing keys dispose and remove rows. Duplicate keys throw an error rather than ambiguously reusing a row. Reordering changes node order without recreating unchanged keyed rows.
+When the collection changes, Nodula compares keys. Rows with keys that remain keep their DOM identity; new keys create rows, and missing keys dispose and remove rows. Duplicate keys throw an error rather than ambiguously reusing a row. Reordering changes node order without recreating unchanged keyed rows. `each()`, `list()` and `@for` move as few rows as possible: moving one row is one DOM move, swapping two rows is two.
 
 The loop item is exposed as a reactive accessor. Template property expressions such as `item.name` are compiled to read from that accessor; JavaScript callbacks can call it explicitly as `item()`.
 
@@ -107,7 +107,7 @@ Use `each()` when composing rows inside `h()` or compiled template rendering; us
 - `render(item, index)` runs once per key. If an item object is replaced under the same key, or its position changes, the row keeps the item and `index` it was created with. Read row fields from signals or a store, or use `each()`, whose rows receive a reactive item accessor.
 - Each row must render a single node; lifecycle (enter/leave) transitions are not applied.
 
-New code should prefer `each()`; `list()` remains supported for existing standalone containers.
+Like `each()`, `list()` moves only the rows that a reorder requires. New code should prefer `each()`; `list()` remains supported for existing standalone containers.
 
 ### Keep conditions inside rows
 
@@ -132,6 +132,7 @@ Put `@if` on a child or wrapper inside the loop row. A loop directive and `@if`/
 - A loop alone cannot be the component template's root if the compiler requires a single root element. Wrap the loop in `<ul>`, `<div>`, or a supported conditional template structure.
 - Removed rows are disposed immediately by default. Optional [Animation](/guide/animations) lifecycle transitions can delay DOM removal for leave animation, but the removed row is no longer reactive during that interval.
 - Use `@show` for visibility toggling when a node should remain mounted; see [Conditional Rendering](/guide/conditional-rendering).
+- Do not wrap `each()` in a function child. `() => each(...)` is a descriptor, not a node, so it renders the text `[object Object]`. Pass `each()` directly as a child of `h()`. See [Function children that return nodes](/guide/performance#function-children-that-return-nodes) for when a function child rebuilds its output.
 
 ## Related guides
 

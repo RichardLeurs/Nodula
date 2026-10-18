@@ -1,0 +1,93 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* -- 01-settings ---------------------------------------------------------------------------------- */
+
+:root {
+  /* Semantic typography roles shared by UI components. */
+  --ui-font-family-sans: "DM Sans", sans-serif;
+  --ui-font-family-mono: "DM Mono", monospace;
+  --mono: var(--ui-font-family-mono);
+  --ui-font-size-xs: 0.72rem;
+  --ui-font-size-caption: 0.78rem;
+  --ui-font-size-sm: 0.9rem;
+  --ui-font-size-body-small: 0.84rem;
+  --ui-font-size-label: 0.86rem;
+  --ui-font-size-control: 0.9rem;
+  --ui-font-size-code: 0.85rem;
+  --ui-font-size-brand: 1.5833rem;
+  --ui-font-size-body: 1rem;
+  --ui-font-size-lg: 1.05rem;
+  --ui-font-size-heading-3: 1.6rem;
+  --ui-font-size-heading-2: clamp(1.4rem, 3vw, 1.9rem);
+  --ui-font-size-display: clamp(2.5rem, 6vw, 3.5rem);
+  --ui-font-weight-regular: 400;
+  --ui-font-weight-medium: 500;
+  --ui-font-weight-semibold: 600;
+  --ui-font-weight-strong: 650;
+  --ui-font-weight-bold: 700;
+  --ui-font-weight-extrabold: 800;
+  --ui-line-height-tight: 1.2;
+  --ui-line-height-compact: 1.4;
+  --ui-line-height-body: 1.6;
+  --ui-line-height-relaxed: 1.75;
+  --ui-line-height-code: 1.7;
+  --ui-letter-spacing-tight: -0.045em;
+  --ui-letter-spacing-heading: -0.025em;
+  --ui-letter-spacing-normal: 0;
+  --ui-letter-spacing-wide: 0.06em;
+  --ui-letter-spacing-wider: 0.08em;
+
+  /* Shared content and control dimensions. */
+  --ui-size-content: 70.5rem;
+  --ui-size-copy: 40.625rem;
+  --ui-size-title: 45rem;
+  --ui-size-page-gutter: 1.5rem;
+  --ui-size-page-padding-block: clamp(2.25rem, 7vw, 5rem);
+  --ui-size-control-small: 2rem;
+  --ui-size-control-medium: 2.5rem;
+  --ui-size-control-large: 3rem;
+  --ui-size-input: 2.625rem;
+  --ui-size-input-padding-block: 9px;
+  --ui-size-input-padding-inline: 11px;
+  --ui-size-checkbox: 1rem;
+  --ui-size-icon: 2.5rem;
+  --ui-size-avatar: 2.5rem;
+
+  /* Stacking order for positioned UI; native top-layer dialogs remain browser-managed. */
+  --ui-z-base: 0;
+  --ui-z-raised: 1;
+  --ui-z-sticky: 20;
+  /* Reserved ordering slots for future reusable overlays and notifications. */
+  --ui-z-dropdown: 30;
+  --ui-z-overlay: 50;
+  --ui-z-toast: 60;
+  --ui-z-tooltip: 70;
+
+  /* Comfortable density is default; compact mode overrides these inherited values. */
+  --ui-density-control-height: var(--ui-size-control-medium);
+  --ui-density-input-height: var(--ui-size-input);
+  --ui-density-control-padding-inline: var(--ui-space-4);
+  --ui-density-panel-padding: var(--ui-space-6);
+  --ui-density-panel-header-padding: var(--ui-space-5);
+  --ui-density-form-gap: var(--ui-space-5);
+  --ui-density-field-gap: var(--ui-space-2);
+
+  /* Shared radius dimensions. */
+  --ui-radius-small: 5px;
+  --ui-radius-medium: 9px;
+  --ui-radius-large: 14px;
+
+  /* Shared spacing dimensions. */
+  --ui-space-1: 4px;
+  --ui-space-2: 8px;
+  --ui-space-3: 12px;
+  --ui-space-4: 16px;
+  --ui-space-5: 20px;
+  --ui-space-6: 24px;
+  --ui-space-8: 32px;
+  --ui-space-10: 40px;
+
+  /* Shared transitions. */
+  --ui-transition-fast: 140ms ease;
+  --ui-transition-normal: 200ms ease;
+}

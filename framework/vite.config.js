@@ -103,6 +103,7 @@ const addonBuilds = {
   }),
   resource: coreAddon("resource"),
   suspense: coreAddon("suspense"),
+  props: coreAddon("props"),
   localstorage: coreAddon("localstorage"),
   data: coreAddon("data"),
   pwa: {
@@ -118,6 +119,8 @@ const addonBuilds = {
     types: "seo-vite.d.ts",
     externals: ["vite"],
   },
+  island: coreAddon("island"),
+  "web-components": coreAddon("web-components"),
 };
 
 /**

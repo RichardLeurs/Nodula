@@ -1,0 +1,40 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-tooltip: establishes inline trigger and positioning context for its text. */
+.ui-tooltip {
+  position: relative; /* Positioning context for the tooltip */
+  display: inline-block; /* Allows the tooltip to be inline */
+  cursor: pointer; /* Changes cursor to indicate hoverable text */
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-tooltip-text: hides tooltip copy until its trigger is hovered. */
+.ui-tooltip-text {
+  visibility: hidden; /* Hidden by default */
+  width: fit-content;
+  min-width: 50px;
+  /* 130px; Width of the tooltip */
+  background-color: var(--ui-tooltip-background); /* Background color */
+  color: var(--ui-tooltip-text-color); /* Text color */
+  text-align: center; /* Center text */
+  padding: 5px; /* Padding around text */
+  border-radius: 6px; /* Rounded corners */
+  position: absolute; /* Positioning relative to the tooltip */
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--ui-z-tooltip); /* Ensure tooltip appears above other content */
+}
+
+.ui-tooltip:hover .ui-tooltip-text {
+  visibility: visible; /* Show tooltip on hover */
+}
+
+/* .ui-tooltiptext {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.ui-tooltip:hover .tooltiptext {
+  opacity: 1;
+} */

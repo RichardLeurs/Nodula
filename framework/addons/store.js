@@ -129,7 +129,7 @@ function wrap(target) {
     },
     // Object.defineProperty bypasses the set trap, so it publishes on its own.
     /**
-     * Proxy trap for `Object.defineProperty`. Stores the descriptor and notifies readers, as a write does.
+     * Proxy trap for `Object.defineProperty`. Stores the descriptor and notifies readers when the value or accessor changes, as a write does.
      */
     defineProperty(object, key, descriptor) {
       return batch(() => {
@@ -137,7 +137,15 @@ function wrap(target) {
         const length = Array.isArray(object) ? object.length : 0;
         const next = "value" in descriptor ? { ...descriptor, value: unwrap(descriptor.value) } : descriptor;
         if (!Reflect.defineProperty(object, key, next)) return false;
-        publish(object, key);
+        const current = Reflect.getOwnPropertyDescriptor(object, key);
+        // Match the set trap: redefining a key with the same value does not notify its readers.
+        if (
+          !previous ||
+          !Object.is(previous.value, current.value) ||
+          previous.get !== current.get ||
+          previous.set !== current.set
+        )
+          publish(object, key);
         if (!previous || ("enumerable" in next && next.enumerable !== previous.enumerable))
           publish(object, STORE_KEYS);
         if (Array.isArray(object) && key !== "length" && object.length !== length)

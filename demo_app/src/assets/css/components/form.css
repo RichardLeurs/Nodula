@@ -1,0 +1,24 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-form__body: spaces form controls using current density tokens. */
+.ui-form__body {
+  display: grid;
+  gap: var(--ui-density-form-gap);
+  padding: var(--ui-density-panel-padding);
+}
+
+/* .ui-form__dirty: indicates that values differ from their saved state. */
+.ui-form__dirty {
+  margin-left: auto;
+  color: var(--ui-color-text-subtle);
+  font: var(--ui-font-size-caption)/var(--ui-line-height-body) var(--ui-font-family-mono);
+}
+
+/* .ui-form__success: spaces successful form submission feedback. */
+.ui-form__success {
+  margin-top: var(--ui-space-4);
+
+  & .ui-alert__text {
+    margin: 0;
+  }
+}

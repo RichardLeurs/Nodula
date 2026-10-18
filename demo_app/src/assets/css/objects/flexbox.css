@@ -1,0 +1,47 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-flexbox: creates a flexible row of items with shared spacing. */
+.ui-flexbox {
+  display: flex;
+  gap: var(--ui-space-3);
+}
+
+/* .ui-flexbox--row: explicitly lays flex items along the horizontal axis. */
+.ui-flexbox--row {
+  flex-direction: row;
+}
+
+/* .ui-flexbox--column: stacks flex items along the vertical axis. */
+.ui-flexbox--column {
+  flex-direction: column;
+}
+
+/* .ui-flexbox--wrap: allows flex items to flow onto another line. */
+.ui-flexbox--wrap {
+  flex-wrap: wrap;
+}
+
+/* UNUSED: .ui-flexbox--between: distributes free space between flex items.
+.ui-flexbox--between {
+  justify-content: space-between;
+} */
+
+/* .ui-flexbox--center: centers flex items on the cross axis. */
+.ui-flexbox--center {
+  align-items: center;
+}
+
+/* .ui-flexbox--stretch: stretches flex items across the cross axis. */
+.ui-flexbox--stretch {
+  align-items: stretch;
+}
+
+/* .ui-flexbox__item: prevents an individual flex child from overflowing. */
+.ui-flexbox__item {
+  min-width: 0;
+}
+
+/* .ui-flexbox__item--grow: lets an item grow from a responsive basis. */
+.ui-flexbox__item--grow {
+  flex: 1 1 12rem;
+}

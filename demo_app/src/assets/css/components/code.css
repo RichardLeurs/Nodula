@@ -1,0 +1,31 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-code: styles compact inline code or token-value labels. */
+.ui-code {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--ui-color-text-subtle);
+  font: var(--ui-font-size-xs)/var(--ui-line-height-body) var(--ui-font-family-mono);
+}
+
+/* Code and status groups style inline examples, scrollable snippets, and state markers. */
+/* .ui-code-block: presents a wrapped, horizontally scrollable code sample. */
+.ui-code-block {
+  min-width: 0;
+  margin: var(--ui-space-2) 0 0;
+  padding: var(--ui-space-3);
+  overflow-x: auto;
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  background: var(--ui-color-surface-sunken);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  & code {
+    color: var(--ui-color-text-muted);
+    font: var(--ui-font-size-caption)/1.65 var(--ui-font-family-mono);
+    white-space: inherit;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}

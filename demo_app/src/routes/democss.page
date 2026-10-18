@@ -771,3 +771,253 @@ function preventSubmit(event) {
     </section>
   </main>
 </template>
+
+<style scoped>
+/* .ui-token-swatch: previews one semantic color token. */
+.ui-token-swatch {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  background: var(--ui-color-surface);
+}
+
+/* .ui-token-swatch--primary: previews the primary theme color. */
+.ui-token-swatch--primary {
+  background: var(--ui-color-primary);
+}
+
+/* .ui-token-swatch--surface: previews the component surface color. */
+.ui-token-swatch--surface {
+  background: var(--ui-color-surface);
+}
+
+/* .ui-token-swatch--success: previews the success state color. */
+.ui-token-swatch--success {
+  background: var(--ui-color-success);
+}
+
+/* .ui-token-swatch--warning: previews the warning state color. */
+.ui-token-swatch--warning {
+  background: var(--ui-color-warning);
+}
+
+/* .ui-token-swatch--danger: previews the danger state color. */
+.ui-token-swatch--danger {
+  background: var(--ui-color-danger);
+}
+
+/* .ui-token-example: keeps token demonstration content from overflowing. */
+.ui-token-example {
+  min-width: 0;
+}
+
+/* .ui-grid-example: frames one grid layout demonstration. */
+.ui-grid-example {
+  display: grid;
+  align-content: start;
+  gap: var(--ui-space-4);
+  min-width: 0;
+  padding: var(--ui-density-panel-padding);
+}
+
+/* .ui-grid-example--wide: spans the complete example grid width. */
+.ui-grid-example--wide {
+  grid-column: 1 / -1;
+}
+
+/* .ui-grid-demo-cell: displays a labeled cell in grid demonstrations. */
+.ui-grid-demo-cell {
+  display: grid;
+  min-height: var(--ui-size-control-large);
+  place-items: center;
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-primary);
+  background: color-mix(in srgb, var(--ui-color-primary) 10%, var(--ui-color-surface));
+  font-size: var(--ui-font-size-caption);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+/* .ui-flexbox-example: frames one flex layout demonstration. */
+.ui-flexbox-example {
+  display: grid;
+  align-content: start;
+  gap: var(--ui-space-4);
+  min-width: 0;
+  padding: var(--ui-density-panel-padding);
+}
+
+/* .ui-flexbox-demo-item: displays a labeled item in flex demonstrations. */
+.ui-flexbox-demo-item {
+  display: grid;
+  min-height: var(--ui-size-control-large);
+  place-items: center;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-primary);
+  background: color-mix(in srgb, var(--ui-color-primary) 10%, var(--ui-color-surface));
+  font-size: var(--ui-font-size-caption);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+/* .ui-type-sample: base style shared by typography specimens. */
+.ui-type-sample {
+  margin: 0;
+  color: var(--ui-color-text);
+}
+
+/* .ui-type-sample--display: demonstrates large display typography. */
+.ui-type-sample--display {
+  font-size: var(--ui-font-size-display);
+  font-weight: var(--ui-font-weight-bold);
+  line-height: var(--ui-line-height-tight);
+  letter-spacing: var(--ui-letter-spacing-tight);
+}
+
+/* .ui-type-sample--heading: demonstrates section-heading typography. */
+.ui-type-sample--heading {
+  font-size: var(--ui-font-size-heading-2);
+  font-weight: var(--ui-font-weight-semibold);
+  line-height: var(--ui-line-height-tight);
+}
+
+/* .ui-type-sample--body: demonstrates body-copy typography. */
+.ui-type-sample--body {
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-body);
+  line-height: var(--ui-line-height-body);
+}
+
+/* .ui-layer-scale: lists available stacking-layer tokens. */
+.ui-layer-scale {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ui-space-2);
+}
+
+/* .ui-layer-scale__item: pairs a layer name with its token value. */
+.ui-layer-scale__item {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-text-muted);
+  background: var(--ui-color-surface-sunken);
+  font-size: var(--ui-font-size-caption);
+}
+
+/* Code inside layer rows identifies token values. */
+.ui-layer-scale__item code {
+  color: var(--ui-color-primary);
+  font-family: var(--ui-font-family-mono);
+}
+
+/* .ui-density-example: separates density comparison from preceding content. */
+.ui-density-example {
+  margin-top: var(--ui-space-4);
+}
+
+/* .ui-density-comparison: arranges density previews side by side. */
+.ui-density-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* .ui-density-preview: demonstrates controls under one density setting. */
+.ui-density-preview {
+  display: grid;
+  align-content: start;
+  gap: var(--ui-density-form-gap);
+  min-width: 0;
+  padding: var(--ui-density-panel-padding);
+}
+
+/* Adjacent density previews are separated by a divider. */
+.ui-density-preview + .ui-density-preview {
+  border-left: 1px solid var(--ui-color-border);
+}
+
+@media (max-width: 560px) {
+  .ui-density-comparison,
+  .ui-layer-scale {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Stacked previews use horizontal rather than vertical separation. */
+  .ui-density-preview + .ui-density-preview {
+    border-top: 1px solid var(--ui-color-border);
+    border-left: 0;
+  }
+}
+
+/* .ui-theme-preview-grid: aligns theme preview surfaces consistently. */
+.ui-theme-preview-grid {
+  align-items: stretch;
+}
+
+/* .ui-theme-preview: previews UI components using locally scoped theme tokens. */
+.ui-theme-preview {
+  display: grid;
+  align-content: start;
+  gap: var(--ui-space-4);
+  min-width: 0;
+  padding: var(--ui-space-5);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-medium);
+  color: var(--ui-color-text);
+  background: var(--ui-color-background);
+  color-scheme: dark;
+}
+
+/* Light preview values override inherited tokens inside this sample only. */
+.ui-theme-preview[data-theme="light"] {
+  --ui-color-background: hsl(196, 52%, 97%);
+  --ui-color-surface: hsl(0, 0%, 98%);
+  --ui-color-surface-raised: #ffffff;
+  --ui-color-surface-sunken: hsl(132, 24%, 97%);
+  --ui-color-border: rgba(32, 51, 47, 0.16);
+  --ui-color-border-strong: rgba(32, 51, 47, 0.3);
+  --ui-color-text: #20332f;
+  --ui-color-text-muted: #526760;
+  --ui-color-text-subtle: #5b6a62;
+  --ui-color-text-inverse: #ffffff;
+  --ui-color-primary: #38633b;
+  --ui-color-primary-hover: #2c5031;
+  --ui-color-success: #146c43;
+  --ui-color-skeleton: #8b9aa8;
+  --ui-color-skeleton-highlight: #a7b4bf;
+  --ui-color-focus: #38633b;
+  --ui-color-disabled: #7b8980;
+  --ui-shadow-raised: 0 12px 30px rgba(32, 51, 47, 0.09);
+  color-scheme: light;
+}
+
+/* Dark preview values override inherited tokens inside this sample only. */
+.ui-theme-preview[data-theme="dark"] {
+  --ui-color-background: #0a1424;
+  --ui-color-surface: #101f33;
+  --ui-color-surface-raised: #152944;
+  --ui-color-surface-sunken: #081322;
+  --ui-color-border: rgba(196, 216, 240, 0.16);
+  --ui-color-border-strong: rgba(196, 216, 240, 0.3);
+  --ui-color-text: #edf2eb;
+  --ui-color-text-muted: #b4c5d5;
+  --ui-color-text-subtle: #a2afba;
+  --ui-color-text-inverse: #102332;
+  --ui-color-primary: #68b9e8;
+  --ui-color-primary-hover: #91d0f3;
+  --ui-color-success: #75b798;
+  --ui-color-skeleton: #354b65;
+  --ui-color-skeleton-highlight: #526b89;
+  --ui-color-focus: #68b9e8;
+  --ui-color-disabled: #8a9b95;
+  --ui-shadow-raised: 0 12px 32px rgba(0, 0, 0, 0.2);
+  color-scheme: dark;
+}
+</style>

@@ -1,0 +1,18 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-cluster: aligns related items in a horizontal row. */
+.ui-cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+}
+
+/* .ui-cluster--wrap: lets cluster items continue onto additional lines. */
+.ui-cluster--wrap {
+  flex-wrap: wrap;
+}
+
+/* .ui-cluster--end: aligns cluster items to the row's end. */
+.ui-cluster--end {
+  justify-content: flex-end;
+}

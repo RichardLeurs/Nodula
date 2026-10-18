@@ -12,5 +12,7 @@
   "nodula-storage-transaction-aborted": "IndexedDB transaction aborted.",
   "nodula-storage-transaction-failed": "IndexedDB transaction failed.",
   "nodula-storage-write-failed": "IndexedDB write failed.",
-  "nodula-storage-unavailable": "IndexedDB is unavailable."
+  "nodula-storage-unavailable": "IndexedDB is unavailable.",
+  "nodula-form-errors-one": "1 field has an error.",
+  "nodula-form-errors-many": "{count} fields have errors."
 }

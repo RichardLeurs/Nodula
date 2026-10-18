@@ -23,6 +23,7 @@ import notificationImage from '../assets/images/notification.webp';
 import dropdownImage from '../assets/images/dropdown.webp';
 import fileuploadImage from '../assets/images/fileupload.webp';
 import resourceImage from '../assets/images/resource.webp';
+import suspenseImage from '../assets/images/suspense.webp';
 
 </script>
 
@@ -84,7 +85,7 @@ import resourceImage from '../assets/images/resource.webp';
           </article>
           <article class="ui-card ui-card--interactive">
             <header class="ui-card__header"><h2 class="ui-card__title">Suspense</h2>
-            <img class="ui-card__header-image" :src="resourceImage" alt="" width="64" height="73" aria-hidden="true"></header>
+            <img class="ui-card__header-image" :src="suspenseImage" alt="" width="64" height="73" aria-hidden="true"></header>
             <div class="ui-card__body ui-stack ui-stack--tight">
               <p class="ui-card__description">Show a fallback while resources load for the first time, then the content. Refreshes keep the content on screen.</p>
               <pre class="ui-code-block"><code data-highlight>import { Suspense } from 'nodula-framework/suspense';</code></pre>

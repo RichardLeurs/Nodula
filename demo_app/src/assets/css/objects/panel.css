@@ -1,0 +1,81 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-panel: provides a reusable surface with optional header, body, and footer. */
+.ui-panel,
+.ui-card {
+  min-width: 0;
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-medium);
+  background: var(--ui-color-surface);
+  margin: var(--ui-space-2) 0 0;
+}
+
+/* .ui-panel--raised: adds elevation to a panel surface. */
+.ui-panel--raised,
+/* .ui-card: shares panel elevation treatment. */
+.ui-card {
+  box-shadow: var(--ui-shadow-raised);
+}
+
+/* .ui-panel--bordered: emphasizes the panel outline. */
+.ui-panel--bordered {
+  border-color: var(--ui-color-border-strong);
+}
+
+/* .ui-panel--flat: removes elevation and uses a muted flat surface. */
+.ui-panel--flat {
+  box-shadow: none;
+  background: var(--ui-color-surface-muted);
+}
+
+/* .ui-panel__header: lays out panel heading content above the body. */
+.ui-panel__header,
+.ui-panel__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-4);
+  padding: var(--ui-density-panel-header-padding) var(--ui-density-panel-padding);
+}
+
+/* .ui-panel__header: separates heading region from panel body. */
+.ui-panel__header {
+  border-bottom: 1px solid var(--ui-color-border);
+}
+
+/* .ui-panel__footer: separates trailing actions from panel body. */
+.ui-panel__footer {
+  border-top: 1px solid var(--ui-color-border);
+}
+
+/* .ui-panel__body: applies density-aware inner spacing to panel content. */
+.ui-panel__body {
+  padding: var(--ui-density-panel-padding);
+}
+
+/* .ui-panel__title and .ui-card__title: style panel and card headings. */
+.ui-panel__title,
+.ui-card__title {
+  margin: 0;
+
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-heading-3);
+  line-height: var(--ui-line-height-relaxed);
+}
+
+/* .ui-panel__description and .ui-card__description: style supporting copy. */
+.ui-panel__description,
+.ui-card__description {
+  margin: var(--ui-space-1) 0 0;
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
+  line-height: var(--ui-line-height-body);
+  white-space: pre-line;
+}
+
+/* Very narrow layouts */
+@media (max-width: 440px) {
+  .ui-panel__footer {
+    flex-wrap: wrap;
+  }
+}

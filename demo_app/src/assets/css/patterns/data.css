@@ -1,0 +1,44 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-data-form: constrains the width of a data-backed form. */
+.ui-data-form {
+  max-width: 100%;
+}
+
+/* .ui-data-status: positions request or save feedback. */
+/* .ui-data-error: positions request failure feedback. */
+.ui-data-status,
+.ui-data-error {
+  margin-top: var(--ui-space-4);
+}
+
+.ui-data-status .ui-alert__text,
+.ui-data-error .ui-alert__text {
+  margin: 0;
+}
+
+/* .ui-data-response: contains returned data in a separated response surface. */
+.ui-data-response {
+  margin-top: var(--ui-space-5);
+  overflow: hidden;
+}
+
+/* .ui-data-response__body: lets response content shrink within its panel. */
+.ui-data-response__body {
+  min-width: 0;
+}
+
+/* .ui-data-response__code: displays long response data in a bounded code view. */
+.ui-data-response__code {
+  max-height: 430px;
+  margin: 0;
+  overflow: auto;
+  color: var(--ui-syntax-default);
+  font: var(--ui-font-size-code)/var(--ui-line-height-code) var(--ui-font-family-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  & code {
+    font: inherit;
+  }
+}

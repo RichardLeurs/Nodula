@@ -81,7 +81,7 @@ const [saved, setSaved] = signal('Not saved');
 
 The compiler supplies a reactive props object, so a reactive parent binding updates the child's reads. The `@save` syntax is callback passing: the parent callback becomes `props.onSave`; it is not a separate event-emitter registry. For JavaScript component calls, supply context explicitly, for example `Card({ props: { title: 'Account' } })`.
 
-Nodula does not currently provide declared prop schemas, automatic defaults/validation, attribute fallthrough, or component `v-model`. Decide and validate required prop conventions in application code. See [Props](/guide/props) and [Component Events](/guide/component-events).
+Prop schemas with defaults and validation, and attribute fallthrough, are opt-in through the `nodula-framework/props` add-on: a component declares `export const propSchema`. Components without a schema receive every attribute as a prop. Nodula has no component `v-model`. See [Props](/guide/props) and [Component Events](/guide/component-events).
 
 ## Default and named slots
 
@@ -128,7 +128,7 @@ The router calls page components with `{ params }`; layout components receive th
 - **Child action did not reach parent:** pass a callback with component event syntax (for example `@save="handleSave($event)"`) and call `props.onSave(...)` from the child.
 - **Slot content is missing:** ensure named slot names match exactly, and place default children or `<template #name>` inside the imported component tag.
 - **Cleanup did not run:** register cleanup while the component is being rendered within an owner scope. `onCleanup()` called outside a root/effect throws; `onMount()` and `onUnmount()` require a root scope.
-- **Compiler rejects Vue-style syntax:** `.comp` templates implement Nodula's documented subset, not full Vue/Svelte semantics; `<script setup>` is JavaScript-only.
+- **Compiler rejects Vue-style syntax:** `.comp` templates implement Nodula's documented subset, not full Vue/Svelte semantics; `<script>` is JavaScript-only.
 
 ## Related guides
 

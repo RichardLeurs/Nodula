@@ -40,6 +40,10 @@ export default defineConfig({
   outDir: path.resolve(docsDirectory, ".vitepress/dist"),
   vite: {
     configFile: false,
+    build: {
+      // The local search index chunk holds the text of every page and is only loaded when search opens.
+      chunkSizeWarningLimit: 800,
+    },
   },
   title: "Nodula Docs",
   titleTemplate: ":title | Nodula Docs",
@@ -124,7 +128,14 @@ export default defineConfig({
           { text: "Progressive Web App", link: "/guide/pwa" },
           { text: "SEO", link: "/guide/seo" },
           { text: "Cookie consent", link: "/guide/cookie-consent" },
+        ],
+      },
+      {
+        text: "Theming",
+        items: [
+          { text: "Styles and CSS Modules", link: "/guide/styles" },
           { text: "Framework Stylesheets", link: "/guide/framework-stylesheet" },
+          { text: "NodulaUI Specification", link: "/guide/nodula-ui-specification" },
         ],
       },
       {
@@ -140,7 +151,6 @@ export default defineConfig({
         text: "Essentials",
         items: [
           { text: "Template Syntax", link: "/guide/templates" },
-          { text: "Styles ans CSS modules", link: "/guide/styles" },
           { text: "Reactivity Fundamentals", link: "/guide/reactivity" },
           { text: "Computed Properties", link: "/guide/computed-properties" },
           { text: "Class and Style Bindings", link: "/guide/class-and-style-bindings" },
@@ -148,7 +158,6 @@ export default defineConfig({
           { text: "List Rendering", link: "/guide/list-rendering" },
           { text: "Event Handling", link: "/guide/event-handling" },
           { text: "Form Input Bindings", link: "/guide/form-input-bindings" },
-          { text: "Styles and CSS Modules", link: "/guide/styles" },
           { text: "Watchers", link: "/guide/watchers" },
           { text: "Template Refs", link: "/guide/template-refs" },
           { text: "Components Basics", link: "/guide/components-basics" },

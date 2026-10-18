@@ -1,6 +1,6 @@
 # Async Components and Lazy Loading
 
-Nodula has two focused ways to defer component code: the router lazy-loads matched route/page modules, and core `visibleIsland()` delays an independent component until its placeholder enters the viewport. These have different loading triggers and result contracts. Nodula does not provide a general `defineAsyncComponent` wrapper or a `Suspense` component.
+Nodula has two focused ways to defer component code: the router lazy-loads matched route/page modules, and `visibleIsland()` from `nodula-framework/island` delays an independent component until its placeholder enters the viewport. These have different loading triggers and result contracts. Nodula does not provide a general `defineAsyncComponent` wrapper or a `Suspense` component.
 
 ## Choose loading strategy
 
@@ -52,11 +52,11 @@ The matched page and its layouts load after route guards allow navigation. Succe
 
 ## Load non-route content when visible
 
-`visibleIsland(loader, placeholder?, options?)` creates a placeholder `<div>` and defers invoking `loader` until that container intersects the viewport:
+`visibleIsland(loader, placeholder?, options?)` creates a placeholder `<div>` and defers invoking `loader` until that container intersects the viewport. Import it from the optional `nodula-framework/island` entry; the core entry does not export it:
 
 ```html
 <script>
-import { visibleIsland } from 'nodula-framework';
+import { visibleIsland } from 'nodula-framework/island';
 
 const loadExtraCard = async () => {
   const module = await import('../components/ExtraCard.comp');
@@ -129,7 +129,7 @@ Each `@else` must immediately follow its paired `@if` branch (whitespace is allo
 - **Route displays load failure:** ensure the route loader resolves to a component function or a module with a function-valued `default` export. File-router page/layout modules require the default export form.
 - **Island shows failure:** ensure its loader resolves to a component function, not the dynamic-import module object itself; return `module.default`.
 - **Island loads immediately:** `IntersectionObserver` may be unavailable in the environment, which intentionally falls back to immediate loading.
-- **Island does not load:** confirm the placeholder can intersect the viewport and that `use:visibleIsland` uses the core helper in a compiled template.
+- **Island does not load:** confirm the placeholder can intersect the viewport and that the component script imports `visibleIsland` from `nodula-framework/island` when a compiled template uses `use:visibleIsland`.
 - **Resolved component does not appear after removal:** disposal suppresses late insertion by design; mount a fresh owner to create a new placeholder.
 - **Expecting suspense/fallback components:** no general async-component wrapper, Suspense boundary, built-in retry policy, or loading/error slot exists. Model those UI states explicitly or use router/island behavior.
 - **Import fails in a `.page`/`.comp`:** verify Nodula's Vite compiler is configured and the import path is valid; see [Tooling](/guide/tooling).

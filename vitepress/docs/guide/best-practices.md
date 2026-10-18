@@ -60,7 +60,7 @@ const [saved, setSaved] = signal(false);
 </template>
 ```
 
-Document required props and callback payloads at component boundaries. Nodula does not add prop schemas, runtime validators, implicit event emitters, or automatic attribute inheritance. See [Props](/guide/props), [Component Events](/guide/component-events), [Slots](/guide/slots), and [Fallthrough Attributes](/guide/fallthrough-attributes).
+Document required props and callback payloads at component boundaries. For reusable components, declare a `propSchema` so required props, types and defaults are checked and undeclared attributes fall through; Nodula has no implicit event emitters, and schema-less components inherit no attributes. See [Props](/guide/props), [Component Events](/guide/component-events), [Slots](/guide/slots), and [Fallthrough Attributes](/guide/fallthrough-attributes).
 
 ## Stay within compiler-supported templates
 

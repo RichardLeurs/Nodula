@@ -8,3 +8,29 @@
     </div>
   </article>
 </template>
+
+<style scoped>
+/* .ui-extra-card: lays out a small supplementary card with leading icon. */
+.ui-extra-card {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-3);
+  min-width: min(100%, 360px);
+  padding: var(--ui-space-4);
+  box-shadow: none;
+  margin-left: 10pt;
+  border: none;
+}
+
+/* .ui-extra-card__icon: frames the supplementary card symbol. */
+.ui-extra-card__icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border: 1px solid var(--ui-color-border);
+  border-radius: 50%;
+  color: var(--ui-color-primary);
+}
+</style>

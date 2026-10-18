@@ -1,0 +1,391 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* - 06-layout ---------------------------------------------------------------------------------- */
+/* Page header */
+
+/* .ui-site-header: keeps primary navigation visible at the top of the viewport. */
+.ui-site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--ui-z-sticky);
+  width: 100%;
+  /* min(100% - 48px, 1128px); */
+  height: 78px;
+  margin: 0 auto;
+  padding: 0 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  transition:
+    background-color 1000ms ease,
+    backdrop-filter 1000ms ease;
+}
+
+/* .ui-site-header--scrolled: adds translucent surface and blur after scrolling. */
+.ui-site-header--scrolled {
+  background: color-mix(in srgb, var(--page-bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+/* .ui-brand: aligns product mark, name, and optional version as one identity. */
+.ui-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: var(--ui-font-weight-extrabold) 3rem var(--ui-font-family-sans);
+  letter-spacing: -0.8px;
+}
+
+/* .ui-brand__logo: renders the brand image within the identity row. */
+.ui-brand__logo {
+  position: relative;
+  top: -2px;
+  display: block;
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
+  /* background: url("./images/logo-nodula-128.webp") center / contain no-repeat; */
+  background: url("../../images/logo-64x64.png") center / contain no-repeat;
+  filter: var(--logo-filter);
+}
+
+/* .ui-brand__mark: frames a compact text mark when used instead of a logo. */
+.ui-brand__mark {
+  display: grid;
+  place-items: center;
+  top: 10px;
+  width: 28px;
+  height: 28px;
+  color: var(--brand-mark-text);
+  border-radius: 9px 9px 9px 3px;
+  font: var(--ui-font-weight-extrabold) 1.25rem var(--ui-font-family-sans);
+}
+
+/* .ui-brand__version: places small version metadata beside the brand name. */
+.ui-brand__version {
+  align-self: flex-start;
+  padding-top: 2px;
+  color: var(--brand-name-color);
+  font: var(--ui-font-size-caption) var(--ui-font-family-mono);
+  letter-spacing: 0;
+}
+
+/* .ui-brand__name: applies the product name color and type scale. */
+.ui-brand__name {
+  color: var(--brand-name-color);
+  font-size: var(--ui-font-size-brand);
+}
+
+/* .ui-site-nav: lays out application navigation links as a grouped region. */
+.ui-site-nav {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  gap: 20px;
+  margin-left: 35px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--surface-overlay);
+  background-blend-mode: var(--surface-blend);
+  border: 1px solid transparent;
+}
+
+/* .ui-nav-link: styles one navigation link; active modifier marks current route. */
+.ui-nav-link {
+  color: var(--muted-nav);
+  font-size: var(--ui-font-size-body);
+  transition: color 0.2s ease;
+  padding: 8px;
+
+  &:hover {
+    color: var(--ui-color-primary);
+    background-color: var(--ui-color-surface);
+    box-shadow: inset 0 0 0 1px var(--ui-color-border);
+    border-radius: var(--ui-radius-medium);
+  }
+}
+
+/* .ui-nav-link--active: distinguishes the link for the current route. */
+.ui-nav-link--active {
+  color: var(--ui-color-primary);
+  font-weight: var(--ui-font-weight-bold);
+}
+
+/* .ui-nav-dropdown: positions the NodulaUI section disclosure in the header nav. */
+.ui-nav-dropdown {
+  position: relative;
+}
+
+/* .ui-nav-dropdown__button: keeps the disclosure button visually aligned with nav links. */
+.ui-nav-dropdown__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-1);
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Disclosure indicator makes the submenu action visible without changing button name. */
+.ui-nav-dropdown__button::after {
+  width: 0;
+  height: 0;
+  border-top: 0.3em solid currentColor;
+  border-right: 0.25em solid transparent;
+  border-left: 0.25em solid transparent;
+  content: "";
+}
+
+/* .ui-nav-dropdown__panel: displays NodulaUI section links below its trigger. */
+.ui-nav-dropdown__panel {
+  position: absolute;
+  z-index: var(--ui-z-dropdown);
+  top: calc(100% + var(--ui-space-2));
+  left: 0;
+  display: grid;
+  min-width: 13rem;
+  gap: var(--ui-space-1);
+  padding: var(--ui-space-2);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-medium);
+  background: var(--ui-color-surface-raised);
+  box-shadow: var(--ui-shadow-raised);
+}
+
+.ui-nav-dropdown__panel[hidden] {
+  display: none;
+}
+
+/* .ui-nav-dropdown__link: creates a full-width target for each UI section. */
+.ui-nav-dropdown__link {
+  display: block;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-text);
+  text-decoration: none;
+}
+
+.ui-nav-dropdown__link:hover,
+.ui-nav-dropdown__link:focus-visible {
+  background: var(--ui-color-surface-sunken);
+  color: var(--ui-color-primary);
+}
+
+/* .ui-header-actions: groups account, cookie, and theme controls in the header. */
+.ui-header-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* .ui-auth-toggle: icon button for opening or checking authentication state. */
+.ui-auth-toggle {
+  position: relative;
+  display: grid;
+  width: 34px;
+  min-height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 0px solid var(--line);
+  border-radius: 5px;
+  color: var(--theme-toggle-icon-color);
+  background: transparent;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--ui-color-focus);
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+}
+
+.ui-auth-toggle::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  content: "";
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  pointer-events: none;
+}
+
+.ui-auth-toggle[data-auth-state="signed-in"]::before {
+  mask-image: url("../../icons/person.svg");
+  -webkit-mask-image: url("../../icons/person.svg");
+}
+
+.ui-auth-toggle[data-auth-state="signed-out"]::before,
+.ui-auth-toggle[data-auth-state="busy"]::before {
+  mask-image: url("../../icons/person-lock.svg");
+  -webkit-mask-image: url("../../icons/person-lock.svg");
+}
+
+/* UNUSED: .ui-auth-toggle__loading: compact progress indicator shown while auth is busy.
+.ui-auth-toggle__loading {
+  font-size: var(--ui-font-size-body);
+  line-height: var(--ui-line-height-tight);
+} */
+
+:root:not([data-theme="light"]) .ui-auth-toggle,
+:root:not([data-theme="light"]) .ui-cookie-settings-toggle,
+:root:not([data-theme="light"]) .ui-theme-toggle {
+  color: #eee;
+}
+
+/* .ui-cookie-settings-toggle: opens cookie-consent preferences from the header. */
+.ui-cookie-settings-toggle {
+  position: relative;
+  display: grid;
+  width: 34px;
+  min-height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  color: var(--ui-color-text, #edf2eb);
+  background: transparent;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--ui-color-focus);
+    outline-offset: 3px;
+  }
+}
+
+.ui-cookie-settings-toggle::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  content: "";
+  mask-image: url("../../icons/gear.svg");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-image: url("../../icons/gear.svg");
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  pointer-events: none;
+}
+
+/* .ui-theme-toggle: switches color scheme; child icons reflect selected theme. */
+.ui-theme-toggle {
+  position: relative;
+  display: grid;
+  width: 34px;
+  min-height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 0px solid var(--line);
+  border-radius: 5px;
+  color: var(--theme-toggle-icon-color);
+  background: transparent;
+  font: var(--ui-font-size-body) var(--ui-font-family-mono);
+  cursor: pointer;
+  isolation: isolate;
+
+  &:hover {
+    border-color: var(--ui-color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ui-color-focus);
+    outline-offset: 3px;
+  }
+}
+
+.ui-theme-toggle::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  content: "";
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .ui-theme-toggle::before,
+:root:not([data-theme="light"]) .ui-theme-toggle::before {
+  mask-image: url("../../icons/sun.svg");
+  -webkit-mask-image: url("../../icons/sun.svg");
+}
+
+:root[data-theme="light"] .ui-theme-toggle::before {
+  mask-image: url("../../icons/moon.svg");
+  -webkit-mask-image: url("../../icons/moon.svg");
+}
+
+/* .ui-site-footer: anchors shared footer content to the app shell width. */
+.ui-site-footer {
+  width: min(100% - 72px, 1128px);
+  min-height: 63px;
+  margin: auto auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted-footer);
+  font-size: 0.875rem;
+  gap: 20px;
+}
+
+/* Very wide layouts */
+@media (max-width: 1625px) {
+  .ui-site-header {
+    height: auto;
+    min-height: 78px;
+    flex-wrap: wrap;
+    row-gap: 4px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    padding-left: 45px;
+    padding-right: 45px;
+    /* margin: 0 auto; */
+  }
+  .ui-brand {
+    order: 1;
+  }
+  .ui-header-actions {
+    order: 2;
+    margin-left: auto;
+  }
+  .ui-site-nav {
+    order: 3;
+    flex: 0 0 100%;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 0px 15px;
+    margin-left: -10px;
+    padding-left: 0;
+  }
+}
+
+/* Very narrow layouts */
+@media (max-width: 440px) {
+  .ui-nav-link {
+    font-size: 0.9rem;
+  }
+
+  .ui-site-footer {
+    font-size: 0.8rem;
+  }
+}

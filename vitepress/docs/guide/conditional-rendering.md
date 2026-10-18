@@ -83,6 +83,27 @@ The `<template>` wrapper is not rendered. Its children are inserted as a fragmen
 
 Use `@show` when preserving the element and its local DOM state matters. Use `@if` when inactive content should be removed and its owner cleanup should run.
 
+### Core `when()` for branches with components
+
+Core helpers without templates use `when(condition, yes, no?)` as a child of `h()`:
+
+```js
+import { h, mount, signal, when } from 'nodula-framework';
+
+const [open, setOpen] = signal(false);
+
+function Panel() {
+  return h('section', {},
+    h('button', { type: 'button', onClick: () => setOpen((value) => !value) }, 'Toggle details'),
+    when(open, () => h('p', {}, 'Details'), () => h('p', {}, 'Summary')),
+  );
+}
+
+const dispose = mount('#app', Panel);
+```
+
+`when()` re-evaluates its condition only when a value the condition reads changes. Reads inside the branch are not dependencies of the condition, so a change to a value used only inside the branch updates that branch's own bindings and does not switch it. Use `when()` for a branch that contains components or local state. A function child that returns the same branch re-runs whenever any value read while building it changes, which recreates the components and resets their state. See [Function children that return nodes](/guide/performance#function-children-that-return-nodes).
+
 ### Combine conditions with keyed loops
 
 Put a conditional inside a wrapper or inside each row; do not place `@if` and `@for`/`each` on the same element:
@@ -107,6 +128,7 @@ See [List Rendering](/guide/list-rendering) for stable keys and row updates.
 - `@if`/`@else` and a loop (`@for` or `each`) cannot share one element. Put one directive on a parent or child element instead.
 - Conditional `<template>` supports only `@if` or `@else` attributes and must be inside the component's single template root.
 - Branch-local state is recreated when the branch is mounted again. Move state to the component's `<script>` scope if it must survive branch switches.
+- Core `when()` is a child descriptor, not a node. Returned from a function child, it renders the text `[object Object]`; pass it directly as a child of `h()`.
 - If branch content should remain in the DOM, use `@show`; conditional rendering disposes inactive content.
 - Optional [Animation](/guide/animations) lifecycle transitions can animate conditional branch entry and removal after `enableLifecycleTransitions()` is enabled.
 

@@ -109,7 +109,7 @@ The compiler recognizes imported `.comp` modules as component tags. It does not 
 
 - `.comp` and `.page` files require the Vite compiler plugin. An unresolved file extension usually means the plugin is missing from Vite configuration or the repository compiler boundary is misunderstood.
 - Each file needs exactly one template root. The template compiler supports a focused JavaScript/HTML subset, not full Vue or Svelte syntax; see [Specifications and Limits](/guide/specifications).
-- `<script setup>` contains JavaScript, not TypeScript. Props are runtime values; Nodula does not provide Vue-style prop declarations, runtime validators, defaults, or attribute fallthrough.
+- `<script>` contains JavaScript, not TypeScript. Props are runtime values. Declarations, defaults, validation and attribute fallthrough are opt-in with `export const propSchema` (see [Props](/guide/props)).
 - Imported `.page` files are page modules, not recognized child component tags. Use `.comp` for imported template components.
 - Function components return DOM nodes. They do not return arbitrary HTML strings for insertion.
 

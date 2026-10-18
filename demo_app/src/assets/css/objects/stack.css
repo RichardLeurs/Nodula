@@ -1,0 +1,12 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-stack: arranges children vertically with a consistent gap. */
+.ui-stack {
+  display: grid;
+  gap: var(--ui-space-4);
+}
+
+/* .ui-stack--tight: reduces spacing for compact content groups. */
+.ui-stack--tight {
+  gap: var(--ui-space-1);
+}

@@ -2,8 +2,8 @@
 
 /* Provide native side drawers with optional custom DOM and lifecycle cleanup. */
 import { onCleanup } from "nodula-framework";
-import { injectAddonStyles } from "./inject-styles.js";
-import { prepareContent } from "./prepare-content.js";
+import { injectAddonStyles } from "./utils/inject-styles.js";
+import { prepareContent } from "./utils/prepare-content.js";
 import drawerStyles from "../assets/css/nodula-drawer.css?inline";
 
 let nextDrawerId = 0;

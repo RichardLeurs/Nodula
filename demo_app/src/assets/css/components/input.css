@@ -1,0 +1,92 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-input, .ui-select, and .ui-textarea share themed form-control surfaces. */
+.ui-input,
+.ui-select,
+.ui-textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border: 1px solid var(--ui-color-border-strong);
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-text);
+  background: var(--ui-color-surface-sunken);
+  font: inherit;
+}
+
+/* Single-line controls use the density height; textarea sets its own minimum below. */
+.ui-input,
+.ui-select {
+  min-height: var(--ui-density-input-height);
+}
+
+.ui-select {
+  appearance: none;
+  padding-inline-end: calc(var(--ui-space-4) + 0.625rem);
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 13px) 50%,
+    calc(100% - 8px) 50%;
+  background-repeat: no-repeat;
+  background-size: 5px 5px;
+}
+
+.ui-select option {
+  padding-inline: var(--ui-space-3);
+}
+
+/* .ui-range: sizes and themes a native range input. */
+.ui-range {
+  width: 100%;
+  min-height: var(--ui-density-input-height);
+  margin: 0;
+  accent-color: var(--ui-color-primary);
+  cursor: pointer;
+}
+
+/* Form controls include text inputs, checkboxes, avatars, and inline links. */
+.ui-input::placeholder,
+.ui-textarea::placeholder {
+  color: var(--ui-color-text-subtle);
+}
+
+/* .ui-input--invalid: marks a control whose value failed validation. */
+.ui-input--invalid {
+  border-color: var(--ui-color-danger);
+}
+
+/* .ui-textarea: sets a practical minimum size and vertical-only resizing. */
+.ui-textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+/* .ui-checkbox: aligns a native checkbox with its label. */
+.ui-checkbox,
+.ui-radio {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-density-field-gap);
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
+  cursor: pointer;
+}
+
+/* .ui-checkbox__control: sizes and themes the native checkbox input. */
+.ui-checkbox__control {
+  width: var(--ui-size-checkbox);
+  height: var(--ui-size-checkbox);
+  margin: 0;
+  accent-color: var(--ui-color-primary);
+}
+
+/* .ui-radio__control: sizes and themes a native radio input. */
+.ui-radio__control {
+  width: var(--ui-size-checkbox);
+  height: var(--ui-size-checkbox);
+  margin: 0;
+  accent-color: var(--ui-color-primary);
+}

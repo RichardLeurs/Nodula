@@ -83,3 +83,115 @@ function addIdea(event) {
     </form>
   </article>
 </template>
+
+<style scoped>
+/* Ideas card title follows its card-specific heading layout. */
+.ui-ideas-card .ui-card__title {
+  margin-top: 0;
+}
+
+/* .ui-ideas-card: contains the interactive ideas-list demonstration. */
+.ui-ideas-card {
+  width: 100%;
+  min-height: 220px;
+  padding: var(--ui-space-6);
+}
+
+/* .ui-ideas-card__heading: aligns title and list status, wrapping if needed. */
+.ui-ideas-card__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--ui-space-2);
+}
+
+/* .ui-ideas-card__status: reports list completion or item count. */
+.ui-ideas-card__status {
+  margin: 0;
+  color: var(--ui-color-text-subtle);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-ideas-list: resets list markers and reserves room for list items. */
+.ui-ideas-list {
+  min-height: 77px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* .ui-ideas-list__item: aligns idea text with its controls. */
+.ui-ideas-list__item {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-ideas-list__label: allows long idea text to shrink within the row. */
+.ui-ideas-list__label {
+  min-width: 0;
+}
+
+/* Idea text wraps at long unbroken strings. */
+.ui-ideas-list__label span {
+  overflow-wrap: anywhere;
+}
+
+/* UNUSED: .ui-ideas-list__control: reserves a stable slot for the completion checkbox.
+.ui-ideas-list__control {
+  flex: 0 0 16px;
+} */
+
+/* .ui-ideas-list__item--done: mutes and strikes through completed idea text. */
+.ui-ideas-list__item--done .ui-ideas-list__label span {
+  color: var(--ui-color-disabled);
+  text-decoration: line-through;
+}
+
+/* .ui-ideas-list__remove: provides a compact action to remove an idea. */
+.ui-ideas-list__remove {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border: 0;
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-text-subtle);
+  background: transparent;
+  font-family: inherit;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Remove action signals its destructive effect on hover. */
+.ui-ideas-list__remove:hover {
+  color: var(--ui-color-danger);
+  background: color-mix(in srgb, var(--ui-color-danger) 10%, transparent);
+}
+
+/* .ui-ideas-card__add: separates new-item controls from existing ideas. */
+.ui-ideas-card__add {
+  column-gap: var(--ui-space-3);
+  padding-top: var(--ui-space-3);
+  border-top: 1px solid var(--ui-color-border);
+}
+
+.ui-ideas-card__add .ui-input {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+/* .ui-ideas-card__add-button: sizes the compact add-item action. */
+.ui-ideas-card__add-button {
+  width: 42px;
+  padding: 0;
+  font-size: var(--ui-font-size-lg);
+}
+</style>

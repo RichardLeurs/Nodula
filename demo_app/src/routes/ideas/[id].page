@@ -16,3 +16,10 @@
     </footer>
   </article>
 </template>
+
+<style scoped>
+/* .ui-idea-detail: constrains the width of an idea detail view. */
+.ui-idea-detail {
+  max-width: 760px;
+}
+</style>

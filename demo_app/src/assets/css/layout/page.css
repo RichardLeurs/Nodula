@@ -1,0 +1,132 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-route-not-found: centers fallback content when no route matches. */
+.ui-route-not-found {
+  display: grid;
+  min-height: calc(100vh - 141px);
+  place-items: center;
+  text-align: center;
+  color: var(--ui-color-text);
+}
+
+/* .ui-page: centers route content and establishes shared page gutters. */
+.ui-page {
+  --ui-content-width: var(--ui-size-content);
+  width: min(
+    calc(100% - var(--ui-size-page-gutter) - var(--ui-size-page-gutter)),
+    var(--ui-content-width)
+  );
+  margin: 0 auto;
+  padding: var(--ui-size-page-padding-block) 0;
+  color: var(--ui-color-text);
+}
+
+/* .ui-page__header: separates page heading content from following sections. */
+.ui-page__header {
+  max-width: var(--ui-size-content);
+  margin-bottom: var(--ui-space-10);
+}
+
+/* .ui-page__header--with-image: lets image-led headers use full page width. */
+.ui-page__header--with-image {
+  max-width: none;
+}
+
+/* .ui-page__title-row: aligns page title and optional trailing actions. */
+.ui-page__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-6);
+}
+
+/* .ui-page__header-image: sizes decorative or identifying page-header artwork. */
+.ui-page__header-image {
+  width: clamp(72px, 12vw, 128px);
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+/* .ui-page__eyebrow: renders small uppercase context above a page title. */
+.ui-page__eyebrow {
+  margin: 0 0 var(--ui-space-3);
+  color: var(--ui-color-primary);
+  font: var(--ui-font-weight-semibold) var(--ui-font-size-caption)/var(--ui-line-height-compact)
+    var(--ui-font-family-mono);
+  letter-spacing: var(--ui-letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+/* .ui-page__title: sets display typography and readable measure for page titles. */
+.ui-page__title {
+  max-width: var(--ui-size-title);
+  margin: 0;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-display);
+  line-height: 1.05;
+  letter-spacing: var(--ui-letter-spacing-tight);
+}
+
+/* .ui-page__description: constrains introductory copy below a page title. */
+.ui-page__description {
+  max-width: var(--ui-size-copy);
+  margin: var(--ui-space-4) 0 var(--ui-space-6);
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-lg);
+  line-height: var(--ui-line-height-relaxed);
+
+  code {
+    padding: 5px;
+    border: 1pt solid var(--ui-color-border);
+    border-radius: var(--ui-radius-medium);
+  }
+}
+
+/* .ui-section: adds consistent vertical separation between page sections. */
+.ui-section {
+  margin-top: var(--ui-space-10);
+}
+
+/* .ui-section__header: aligns section title and optional supporting content. */
+.ui-section__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ui-space-4);
+  margin-bottom: var(--ui-space-5);
+}
+
+/* .ui-section__title: provides shared heading scale for page sections. */
+.ui-section__title {
+  margin: 0;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-heading-2);
+  line-height: var(--ui-line-height-tight);
+  letter-spacing: var(--ui-letter-spacing-heading);
+}
+
+/* .ui-section__description: styles explanatory copy attached to a section. */
+.ui-section__description {
+  margin: var(--ui-space-2) 0 0;
+  color: var(--ui-color-text-muted);
+  line-height: var(--ui-line-height-body);
+}
+
+/* Wide layouts */
+@media (max-width: 1200px) {
+  .ui-page {
+    padding: 20px;
+  }
+}
+
+/* Very narrow layouts */
+@media (max-width: 440px) {
+  .ui-page {
+    width: min(100% - 24px, var(--ui-content-width));
+  }
+
+  .ui-section__header {
+    flex-direction: column;
+  }
+}

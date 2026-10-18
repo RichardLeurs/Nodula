@@ -1,0 +1,30 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-avatar: presents initials or a person in a circular frame. */
+.ui-avatar {
+  display: inline-grid;
+  width: var(--ui-size-control-medium);
+  height: var(--ui-size-control-medium);
+  place-items: center;
+  border-radius: 50%;
+  font-size: var(--ui-font-size-xs);
+  font-weight: var(--ui-font-weight-bold);
+}
+
+/* .ui-avatar--primary: applies primary semantic color to an avatar. */
+.ui-avatar--primary {
+  color: var(--ui-color-primary);
+  background: color-mix(in srgb, var(--ui-color-primary) 17%, transparent);
+}
+
+/* .ui-avatar--success: applies success semantic color to an avatar. */
+.ui-avatar--success {
+  color: var(--ui-color-success);
+  background: color-mix(in srgb, var(--ui-color-success) 17%, transparent);
+}
+
+/* .ui-avatar--info: applies informational semantic color to an avatar. */
+.ui-avatar--info {
+  color: var(--ui-color-info);
+  background: color-mix(in srgb, var(--ui-color-info) 17%, transparent);
+}

@@ -3,7 +3,7 @@
 /* Provide versioned cookie-consent UI, preferences, and gated integrations. */
 import { createRoot, onCleanup } from "nodula-framework";
 import { createLocalStorage, deleteCookie } from "nodula-framework/localstorage";
-import { injectAddonStyles } from "./inject-styles.js";
+import { injectAddonStyles } from "./utils/inject-styles.js";
 import cookieConsentStyles from "../assets/css/nodula-cookieconsent.css?inline";
 
 let nextCookieConsentId = 0;

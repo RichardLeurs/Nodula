@@ -1,6 +1,6 @@
 // Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
 
-import { createRoot, onCleanup } from "./reactivity.js";
+import { createRoot, onCleanup } from "nodula-framework";
 
 // The loader can be a dynamic import; it is not called until the placeholder is visible.
 /**

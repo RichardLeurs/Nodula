@@ -71,7 +71,7 @@ For event listener forms, native `CustomEvent` dispatch, and listener cleanup, s
 
 When a child tag is a browser custom element rather than an imported `.comp`, Nodula attaches a native DOM event listener. Dashed event names such as `@selection-change` listen for that literal event name. The custom element's provider must dispatch the corresponding native event—commonly a `CustomEvent` with `detail` data. See [Web Components](/guide/web-components).
 
-By contrast, when a component is registered with `defineCustomElement(name, render, { events: [...] })`, its declared callback props are adapted to bubbling, composed custom events by that registration helper. That is a separate API from ordinary imported `.comp` callbacks.
+By contrast, when a component is registered with `defineCustomElement(name, render, { events: [...] })` from `nodula-framework/web-components`, its declared callback props are adapted to bubbling, composed custom events by that registration helper. That is a separate API from ordinary imported `.comp` callbacks.
 
 ## JavaScript component callbacks
 

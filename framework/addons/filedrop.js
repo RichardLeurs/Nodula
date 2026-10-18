@@ -2,7 +2,7 @@
 
 /* Provide an accessible native file picker and file-drop target. */
 import { onCleanup } from "nodula-framework";
-import { injectAddonStyles } from "./inject-styles.js";
+import { injectAddonStyles } from "./utils/inject-styles.js";
 import fileDropStyles from "../assets/css/nodula-filedrop.css?inline";
 
 let nextFileDropId = 0;

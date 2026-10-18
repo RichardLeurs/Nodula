@@ -1,0 +1,62 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-alert: groups an icon and message in a contextual feedback surface. */
+.ui-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-3) var(--ui-space-4);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+}
+
+/* .ui-alert--info: styles informational feedback. */
+.ui-alert--info {
+  color: var(--ui-color-info);
+  border-color: color-mix(in srgb, var(--ui-color-info) 35%, transparent);
+  background: color-mix(in srgb, var(--ui-color-info) 8%, transparent);
+}
+
+/* .ui-alert--danger: styles error or danger feedback. */
+.ui-alert--danger {
+  color: var(--ui-color-danger);
+  border-color: color-mix(in srgb, var(--ui-color-danger) 35%, transparent);
+  background: color-mix(in srgb, var(--ui-color-danger) 8%, transparent);
+}
+
+/* .ui-alert--success: styles successful feedback. */
+.ui-alert--success {
+  color: var(--ui-color-success);
+  border-color: color-mix(in srgb, var(--ui-color-success) 35%, transparent);
+  background: color-mix(in srgb, var(--ui-color-success) 8%, transparent);
+}
+
+/* .ui-alert__icon: provides a fixed-size marker for alert state. */
+.ui-alert__icon {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font: var(--ui-font-weight-bold) var(--ui-font-size-caption)/1 var(--ui-font-family-sans);
+}
+
+/* .ui-alert__content: contains alert title and message without overflow. */
+.ui-alert__content {
+  min-width: 0;
+}
+
+/* .ui-alert__title: gives the alert's short heading stronger emphasis. */
+.ui-alert__title {
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-alert__text: styles explanatory copy within an alert. */
+.ui-alert__text {
+  margin: var(--ui-space-1) 0 0;
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-body-small);
+  line-height: var(--ui-line-height-body);
+}

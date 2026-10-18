@@ -1,0 +1,47 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-progress-panel: separates progress feedback from nearby panel content. */
+.ui-progress-panel {
+  margin-top: var(--ui-space-4);
+}
+
+/* .ui-progress-heading: separates progress label from its value or action. */
+.ui-progress-heading {
+  justify-content: space-between;
+}
+
+/* .ui-progress: styles native progress track and completed value. */
+.ui-progress {
+  --ui-progress-track: var(--ui-color-surface-sunken);
+  display: block;
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  accent-color: var(--ui-color-primary);
+  background: var(--ui-progress-track);
+}
+
+/* WebKit progress track retains the rounded track shape. */
+.ui-progress::-webkit-progress-bar {
+  border-radius: inherit;
+  background: var(--ui-progress-track);
+}
+
+/* Light theme adjusts progress-track contrast. */
+:root[data-theme="light"] .ui-progress {
+  --ui-progress-track: hsl(132, 18%, 91%);
+}
+
+/* WebKit progress value uses the primary semantic color. */
+.ui-progress::-webkit-progress-value {
+  border-radius: inherit;
+  background: var(--ui-color-primary);
+}
+
+/* Firefox progress value uses the primary semantic color. */
+.ui-progress::-moz-progress-bar {
+  border-radius: inherit;
+  background: var(--ui-color-primary);
+}

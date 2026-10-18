@@ -1,5 +1,7 @@
 // Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
 
+// Used in: - framework/addons/modal.js, framework/addons/drawer.js
+
 /* Internally resolve element-ID content and restore its source after overlays close. */
 /** Resolve #id content references and restore the source element after the overlay closes. */
 export function prepareContent(content) {

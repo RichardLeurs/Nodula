@@ -6,7 +6,7 @@ TypeScript is optional for Nodula applications. Nodula's runtime and single-file
 
 - Importing `nodula-framework` and its declaration-backed add-on entries provides types for public APIs such as signals, DOM helpers, forms, stores, routing, and animation.
 - Core declarations live in `framework/index.d.ts`; add-on declarations live in `framework/addons/*.d.ts` and are emitted beside their package JavaScript entries.
-- `.page` and `.comp` files are compiled from JavaScript. Their `<script>` (or `<script setup>`) blocks do **not** support TypeScript syntax such as interfaces, annotations, or `lang="ts"`.
+- `.page` and `.comp` files are compiled from JavaScript. Their `<script>` blocks do **not** support TypeScript syntax such as interfaces, annotations, or `lang="ts"`.
 - Nodula does not implement Vue's Composition API or Options API. Its own function-based and signal APIs have TypeScript declarations; they are not Vue compatibility layers.
 
 For the repository's current compiler and package boundaries, see [Installation](/guide/installation), [Single-File Components](/guide/templates), and [Building the npm Package](/guide/npm-package).

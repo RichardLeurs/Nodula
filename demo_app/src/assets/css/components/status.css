@@ -1,0 +1,12 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-status-dot: marks a compact status or activity indicator. */
+.ui-status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: var(--ui-color-primary);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--ui-color-primary) 55%, transparent);
+}

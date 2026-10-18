@@ -25,6 +25,8 @@ The root development script builds Nodula core and add-on bundles before startin
 | `npm run format`          | Format supported source, Vite config, guide, and package files with Oxfmt.                               |
 | `npm run format:check`    | Check those files without writing changes.                                                               |
 
+`build:framework`, `pack:framework`, `build:app` and `build:docs` run through `framework/mjs/run-steps.mjs`. Each empties its `dist/` folder first, then prints one line per step with a counter and its duration, green on success. A failed step is shown in red with its full output, and the build stops. Set `NODULA_STEPS_VERBOSE=1` to stream every step's output instead.
+
 
 Builds clear their destination before writing fresh output: framework builds clear `dist/nodula/` once before the sequence of core and add-on builds, demo builds clear `dist/app/`, and docs builds clear `dist/vitepress/`. This prevents files left by earlier builds from being included in the next output.
 

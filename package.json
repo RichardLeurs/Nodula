@@ -83,6 +83,10 @@
       "types": "./dist/nodula/nodula-suspense.d.ts",
       "import": "./dist/nodula/nodula-suspense.js"
     },
+    "./props": {
+      "types": "./dist/nodula/nodula-props.d.ts",
+      "import": "./dist/nodula/nodula-props.js"
+    },
     "./filedrop": {
       "types": "./dist/nodula/nodula-filedrop.d.ts",
       "import": "./dist/nodula/nodula-filedrop.js"
@@ -118,16 +122,27 @@
     "./seo-vite": {
       "types": "./dist/nodula/nodula-seo-vite.d.ts",
       "import": "./dist/nodula/nodula-seo-vite.js"
+    },
+    "./island": {
+      "types": "./dist/nodula/nodula-island.d.ts",
+      "import": "./dist/nodula/nodula-island.js"
+    },
+    "./web-components": {
+      "types": "./dist/nodula/nodula-web-components.d.ts",
+      "import": "./dist/nodula/nodula-web-components.js"
     }
   },
   "scripts": {
     "dev": "npm run install:framework && npm --prefix demo_app run dev",
     "dev:api": "php -S localhost:8787 -t . api/database/index.php",
     "dev:upload": "php -S localhost:8787 -t . api/upload/index.php",
-    "build": "npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run build:app && npm run build:docs",
-    "build_test": "npm run test:framework && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run test:demo && npm run build:app && npm run build:docs",
+    "build": "node framework/mjs/build-banner.mjs start && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run build:app && npm run build:docs && node framework/mjs/build-banner.mjs done",
+    "build_test": "node framework/mjs/build-banner.mjs start && npm run test:framework && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run test:demo && npm run build:app && npm run build:docs && node framework/mjs/build-banner.mjs done",
     "build:app": "npm --prefix demo_app run build",
-    "build:docs": "node vitepress/build-docs.mjs",
+    "build:docs": "node framework/mjs/run-steps.mjs clean:docs build:docs:site copy:docs",
+    "clean:docs": "node vitepress/build-docs.mjs clean",
+    "build:docs:site": "node vitepress/build-docs.mjs site",
+    "copy:docs": "node vitepress/build-docs.mjs copy",
     "build:compiler": "vite build --config framework/vite.config.js --mode compiler",
     "build:form": "vite build --config framework/vite.config.js --mode addon-form",
     "build:router": "vite build --config framework/vite.config.js --mode addon-router",
@@ -147,20 +162,28 @@
     "build:data": "vite build --config framework/vite.config.js --mode addon-data",
     "build:resource": "vite build --config framework/vite.config.js --mode addon-resource",
     "build:suspense": "vite build --config framework/vite.config.js --mode addon-suspense",
+    "build:props": "vite build --config framework/vite.config.js --mode addon-props",
     "build:pwa": "vite build --config framework/vite.config.js --mode addon-pwa",
     "build:store": "vite build --config framework/vite.config.js --mode addon-store",
     "build:auth": "vite build --config framework/vite.config.js --mode addon-auth",
     "build:seo": "vite build --config framework/vite.config.js --mode addon-seo",
     "build:seo-vite": "vite build --config framework/vite.config.js --mode addon-seo-vite",
+    "build:island": "vite build --config framework/vite.config.js --mode addon-island",
+    "build:web-components": "vite build --config framework/vite.config.js --mode addon-web-components",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
     "format:check": "oxfmt --check 'framework/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/src/**/*.{js,mjs,cjs,ts,tsx,jsx,json,css,md}' 'demo_app/vite.config.js' 'vitepress/docs/guide/**/*.md' 'vitepress/docs/.vitepress/config.mjs' 'vitepress/vite.config.js' 'vite.config.js' 'package.json'",
-    "build:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\" && vite build --config framework/vite.config.js --mode framework && npm run build:compiler && npm run build:store && npm run build:form && npm run build:router && npm run build:animation && npm run build:dialog && npm run build:notification && npm run build:cookieconsent && npm run build:modal && npm run build:drawer && npm run build:navigation && npm run build:navigation-dropdown && npm run build:dragdrop && npm run build:sortable && npm run build:filedrop && npm run build:fileupload && npm run build:localstorage && npm run build:data && npm run build:resource && npm run build:suspense && npm run build:pwa && npm run build:auth && npm run build:seo && npm run build:seo-vite && node framework/mjs/gzip-framework.mjs",
+    "clean:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\"",
+    "build:core": "vite build --config framework/vite.config.js --mode framework",
+    "gzip:framework": "node framework/mjs/gzip-framework.mjs",
+    "build:framework": "node framework/mjs/run-steps.mjs clean:framework build:core build:compiler build:store build:form build:router build:animation build:dialog build:notification build:cookieconsent build:modal build:drawer build:navigation build:navigation-dropdown build:dragdrop build:sortable build:filedrop build:fileupload build:localstorage build:data build:resource build:suspense build:props build:pwa build:auth build:seo build:seo-vite build:island build:web-components gzip:framework",
     "package:framework": "npm run build:framework && npm run pack:framework",
-    "pack:framework": "mkdir -p dist/npm && npm pack --pack-destination dist/npm",
+    "pack:framework": "node framework/mjs/run-steps.mjs clean:npm pack:npm",
+    "clean:npm": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/npm', { recursive: true, force: true });\"",
+    "pack:npm": "mkdir -p dist/npm && npm pack --pack-destination dist/npm",
     "install:framework": "npm run package:framework && npm run install:framework:package",
-    "install:framework:package": "npm install --prefix demo_app ./dist/npm/nodula-framework-0.1.0.tgz",
+    "install:framework:package": "npm install --prefix demo_app ./dist/npm/nodula-framework-$npm_package_version.tgz",
     "test": "npm run typecheck && npm run test:framework && npm run test:demo",
     "benchmark:render": "node framework/mjs/render-benchmark.mjs",
     "test:framework": "vitest run --config framework/vitest.config.js",

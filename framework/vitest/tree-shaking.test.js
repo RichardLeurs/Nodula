@@ -30,6 +30,7 @@ async function bundleConsumer(entry) {
             'data',
             'resource',
             'suspense',
+            'props',
             'dragdrop',
             'sortable',
             'filedrop',
@@ -47,6 +48,8 @@ async function bundleConsumer(entry) {
             'seo',
             'seo-vite',
             'store',
+            'island',
+            'web-components',
           ].map((name) => ({
             find: `nodula-framework/${name}`,
             replacement: path.join(projectRoot, `framework/addons/${name}.js`),
@@ -93,6 +96,8 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   assert.match(core, /treeShakingResult/);
   assert.doesNotMatch(core, /createStore/);
   assert.doesNotMatch(core, /baseURI/);
+  assert.doesNotMatch(core, /IntersectionObserver/);
+  assert.doesNotMatch(core, /defineCustomElement expects/);
 
   const form = await bundleConsumer('form.js');
   assert.match(form, /treeShakingResult/);
@@ -139,6 +144,24 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   assert.match(suspense, /treeShakingResult/);
   assert.match(suspense, /createSuspense expects an array of resources/);
   assert.doesNotMatch(suspense, /createResource expects a fetcher function/);
+
+  // A consumer that imports only withProps must not ship the attribute merger.
+  const props = await bundleConsumer('props.js');
+  assert.match(props, /treeShakingResult/);
+  assert.match(props, /props are read-only/);
+  assert.doesNotMatch(props, /"className"/);
+
+  const island = await bundleConsumer('island.js');
+  assert.match(island, /treeShakingResult/);
+  assert.match(island, /visibleIsland errorText must be a non-empty string/);
+  assert.match(island, /IntersectionObserver/);
+  assert.doesNotMatch(island, /defineCustomElement expects/);
+
+  const webComponents = await bundleConsumer('web-components.js');
+  assert.match(webComponents, /treeShakingResult/);
+  assert.match(webComponents, /defineCustomElement expects a valid custom element name/);
+  assert.doesNotMatch(webComponents, /visibleIsland errorText/);
+  assert.doesNotMatch(webComponents, /stylesheet/);
 
   const notification = await bundleConsumer('notification.js');
   assert.match(notification, /treeShakingResult/);

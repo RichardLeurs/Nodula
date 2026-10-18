@@ -2,7 +2,7 @@ import { Window } from "happy-dom";
 import { readFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 import { createRoot, effect, onCleanup, signal } from "../reactivity.js";
-import { h, list, mount } from "../dom.js";
+import { component, each, h, list, mount } from "../dom.js";
 
 const ROW_COUNT = Number(process.env.ROW_COUNT ?? 1000);
 const ROUNDS = Number(process.env.ROUNDS ?? 7);
@@ -18,23 +18,26 @@ Object.assign(globalThis, {
   customElements: window.customElements,
 });
 
+// Live operations touch nodes connected to the document. Detached operations build new subtrees before they are
+// attached, so they are reported separately and do not count as DOM work for the page.
 const operationCounts = {
-  append: 0,
-  insertBefore: 0,
-  remove: 0,
   movedInsertBefore: 0,
-  attributeWrites: 0,
+  componentRenders: 0,
 };
+for (const name of ["append", "insertBefore", "remove", "attributeWrites"]) {
+  operationCounts[name] = 0;
+  operationCounts[`detached ${name}`] = 0;
+}
 const restorers = [];
 
-function instrument(prototype, name, counter = name, when = () => true) {
+function instrument(prototype, name, counter = name) {
   const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
   if (typeof descriptor?.value !== "function") return;
   const original = descriptor.value;
   Object.defineProperty(prototype, name, {
     ...descriptor,
     value(...args) {
-      if (when(this, args)) operationCounts[counter] += 1;
+      operationCounts[this.isConnected ? counter : `detached ${counter}`] += 1;
       if (
         name === "insertBefore" &&
         args[0]?.parentNode === this &&
@@ -52,7 +55,7 @@ function instrument(prototype, name, counter = name, when = () => true) {
 instrument(window.Node.prototype, "insertBefore");
 for (const name of ["append", "remove"]) instrument(window.Element.prototype, name);
 for (const name of ["setAttribute", "removeAttribute"]) {
-  instrument(window.Element.prototype, name, "attributeWrites", (element) => element.isConnected);
+  instrument(window.Element.prototype, name, "attributeWrites");
 }
 
 function resetOperations() {
@@ -178,6 +181,70 @@ function mountKeyedList(implementation) {
   return { setItems, dispose };
 }
 
+function mountEachList() {
+  const [items, setItems] = signal(Array.from({ length: ROW_COUNT }, (_, id) => ({ id })));
+  const dispose = mount(document.body, () =>
+    h(
+      "ul",
+      {},
+      each(
+        items,
+        (item) => item.id,
+        (item) => h("li", {}, () => String(item().id)),
+      ),
+    ),
+  );
+  return { setItems, dispose };
+}
+
+function mountListRows() {
+  const [items, setItems] = signal(Array.from({ length: ROW_COUNT }, (_, id) => ({ id })));
+  const dispose = mount(document.body, () =>
+    h(
+      "ul",
+      {},
+      list(
+        items,
+        (item) => item.id,
+        (item) => h("li", {}, String(item.id)),
+      ),
+    ),
+  );
+  return { setItems, dispose };
+}
+
+function mountFineGrainedTree() {
+  const [version, setVersion] = signal(0);
+  const dispose = mount(document.body, () =>
+    h(
+      "main",
+      {},
+      Array.from({ length: 100 }, (_, index) =>
+        h("p", { "data-row": index }, () => `row ${index}: ${version()}`),
+      ),
+    ),
+  );
+  return { setVersion, dispose };
+}
+
+function mountComponentFunctionChild() {
+  const [version, setVersion] = signal(0);
+  const Row = component(
+    (props) => {
+      operationCounts.componentRenders += 1;
+      return h("p", {}, () => String(props.value));
+    },
+    () => ({ value: version() }),
+  );
+  const dispose = mount(document.body, () =>
+    h("main", {}, () => {
+      version();
+      return h("section", {}, Row);
+    }),
+  );
+  return { setVersion, dispose };
+}
+
 function mountTreeReconciler() {
   const [version, setVersion] = signal(0);
   const dispose = mount(document.body, () =>
@@ -232,10 +299,40 @@ try {
     }
   }
 
+  const moveScenarios = {
+    reverse: (items) => [...items].reverse(),
+    "move first row to end": (items) => [...items.slice(1), items[0]],
+    "swap first and last rows": (items) => [items.at(-1), ...items.slice(1, -1), items[0]],
+  };
+  for (const [operation, reorder] of Object.entries(moveScenarios)) {
+    benchmark(
+      `each keyed-list ${operation}`,
+      () => mountEachList(),
+      (state) => state.setItems(reorder),
+    );
+    benchmark(
+      `list keyed-list ${operation}`,
+      () => mountListRows(),
+      (state) => state.setItems(reorder),
+    );
+  }
+
   benchmarkMount();
   benchmark(
     "reconcile unchanged 100-row tree",
     () => mountTreeReconciler(),
+    (state, iteration) => state.setVersion(iteration + 1),
+  );
+
+  benchmark(
+    "fine-grained 100-row tree (reactive leaf)",
+    () => mountFineGrainedTree(),
+    (state, iteration) => state.setVersion(iteration + 1),
+  );
+
+  benchmark(
+    "function child with nested component",
+    () => mountComponentFunctionChild(),
     (state, iteration) => state.setVersion(iteration + 1),
   );
 

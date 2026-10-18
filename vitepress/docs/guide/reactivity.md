@@ -12,7 +12,7 @@ Import reactive primitives from `nodula-framework`. This guide uses browser exam
 - **Computed:** a read-only accessor derived from reactive reads. It updates when its dependencies update.
 - **Effect:** a side-effect callback that runs immediately and reruns when values it read change. It returns a stop function.
 - **Owner scope:** a root or effect execution that owns cleanup callbacks, nested effects, and DOM listeners.
-- **DOM binding:** a function child or function-valued property passed to core DOM helpers. Reads inside it are tracked, then that specific binding updates when dependencies change.
+- **DOM binding:** a function child or function-valued property passed to core DOM helpers. Reads inside it are tracked. A function child that returns text updates only that text when its dependencies change. A function child that returns an element, fragment or array re-runs its whole subtree instead; see [Function children that return nodes](/guide/performance#function-children-that-return-nodes).
 
 ## Quick start
 
@@ -90,6 +90,8 @@ const unmount = mount('#app', Counter);
 ```
 
 Only the dependent text and `title` bindings update. `mount()` returns a disposer that cleans up its root and removes the mounted node. See [Single-File Components](/guide/templates) for template bindings.
+
+A function child that returns text, as in this example, is a text binding. A function child that returns an element, fragment or array is different: when a value read while building that node changes, the whole function child re-runs and its components and effects are recreated. Keep the reactive reads in leaves such as `() => count()`, and see [Function children that return nodes](/guide/performance#function-children-that-return-nodes) for the rebuild contract.
 
 ## Ownership and cleanup
 

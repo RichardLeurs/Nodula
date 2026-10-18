@@ -2,7 +2,7 @@
 
 /* Add native vertical list sorting with application-owned item state. */
 import { onCleanup } from "nodula-framework";
-import { injectAddonStyles } from "./inject-styles.js";
+import { injectAddonStyles } from "./utils/inject-styles.js";
 import sortableStyles from "../assets/css/nodula-sortable.css?inline";
 
 const transferType = "application/x-nodula-sortable-item";

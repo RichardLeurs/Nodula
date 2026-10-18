@@ -4,7 +4,7 @@ Nodula's performance model favors fine-grained reactive bindings, direct DOM upd
 
 ## How Nodula updates the DOM
 
-Signals and store properties track reads made by effects and reactive DOM bindings. A changed value schedules its dependents; function children and function-valued DOM properties update their bindings rather than asking Nodula to rerender an entire virtual component tree. Compatible nodes are reconciled in place, and keyed rows can retain their DOM identity when the list changes.
+Signals and store properties track reads made by effects and reactive DOM bindings. A changed value schedules its dependents. A function child that returns text updates only that text node, and a function-valued DOM property updates only its own binding. A function child that returns an element, fragment or array is different: it re-runs its whole subtree when a value read while building it changes. See [Function children that return nodes](#function-children-that-return-nodes). Compatible nodes are reconciled in place, and keyed rows can retain their DOM identity when the list changes.
 
 ```js
 import { h, mount, signal } from 'nodula-framework';
@@ -23,6 +23,50 @@ const dispose = mount('#app', Counter);
 ```
 
 Only bindings that read `count()` need to update. Keep reactive computations focused: avoid repeating expensive work inside several independent DOM bindings when one derived value or one precomputed result can serve them. See [Reactivity and DOM](/guide/reactivity) and [Computed Properties](/guide/computed-properties).
+
+## Function children that return nodes
+
+A function child can return text or a node, and the two behave differently:
+
+- **Text** (a string, number, `null`, `undefined` or `false`) updates the existing text node in place while the output stays text. Nothing else is built or reconciled.
+- **A node** (an element, a fragment or an array of nodes) re-runs the whole function child when any value read while building it changes. Nodula builds the subtree again and reconciles it with the DOM it replaces.
+
+The two examples below render the same text. The first rebuilds its `<p>` on every change, and the second rebuilds nothing:
+
+```js
+import { h, mount, signal } from 'nodula-framework';
+
+const [count, setCount] = signal(0);
+
+// Rebuild: each change re-runs the function child and builds a new <p> subtree.
+mount('#app', () => h('main', {}, () => h('p', {}, `Count: ${count()}`)));
+```
+
+```js
+import { h, mount, signal } from 'nodula-framework';
+
+const [count, setCount] = signal(0);
+
+// Reactive leaf: the <p> is built once, and only its text re-runs when count changes.
+mount('#app', () => h('main', {}, h('p', {}, () => `Count: ${count()}`)));
+```
+
+Reconciliation keeps the `<p>` element in both versions, so the difference is the work: the rebuild version runs its builder and reconciles the subtree on every change, while the reactive leaf does neither. Prefer reactive leaves for values that change often.
+
+The rebuild contract, which the framework tests pin:
+
+- Components and effects inside the subtree are disposed and recreated on every re-run, so component local state resets. Cleanup registered with `onCleanup` runs once per re-run.
+- DOM identity is kept where reconciliation allows: a node with the same tag at the same position is reused. Returning the same cached node again keeps its bindings and refs, and its refs are not called again.
+- Reads inside a nested function child belong to that child. Changing them updates the nested child without re-running the outer one.
+- A throwing update keeps the previous DOM and the previous owner in place.
+- Disposing a function child stops its updates and disposes its components, but leaves its last DOM in place. That DOM is removed with the element that contains it.
+- `when()` and `each()` are descriptors, not nodes. Returned from a function child they render as the text `[object Object]`. Use them as direct children of `h()` instead.
+
+Choose a shape that keeps updates small:
+
+- Put reactive values in text or attribute bindings, such as a `() => count()` child on an element that stays mounted.
+- Use `when()` for a branch that contains components or local state. It re-runs only when its condition changes, not when any value read inside the branch changes. See [Conditional Rendering](/guide/conditional-rendering#core-when-for-branches-with-components).
+- Use `each()` or `list()` for collections, and do not wrap them in a function child. See [List Rendering](/guide/list-rendering).
 
 ## Keep lists stable and bounded
 
@@ -44,7 +88,7 @@ Different list operations have different costs: appending one row should not req
 
 ## Defer work that users may not need immediately
 
-The file-based router loads matched lazy page/layout modules on first allowed visit and caches successful imports. For non-route content, `visibleIsland(loader, placeholder)` can delay loading until a placeholder intersects the viewport. These mechanisms can reduce initial work when used selectively, but they do not reduce the cost of content that is ultimately loaded or rendered. See [Async Components and Lazy Loading](/guide/async-components) and [Routing](/guide/routing).
+The file-based router loads matched lazy page/layout modules on first allowed visit and caches successful imports. For non-route content, `visibleIsland(loader, placeholder)` from `nodula-framework/island` can delay loading until a placeholder intersects the viewport. These mechanisms can reduce initial work when used selectively, but they do not reduce the cost of content that is ultimately loaded or rendered. See [Async Components and Lazy Loading](/guide/async-components) and [Routing](/guide/routing).
 
 Keep optional integrations optional: import add-ons from their dedicated package entries only when used. Vite tree-shaking tests cover the current public JavaScript entries in the tested Vite production-consumer setup; this does not prove identical output for every bundler or configuration.
 
@@ -59,8 +103,11 @@ npm run benchmark:render
 `framework/mjs/render-benchmark.mjs` uses Happy DOM and reports medians and DOM-operation counts for:
 
 - Keyed-list append, removal, and reverse operations for the optimized `list()` helper and a simple baseline implementation.
+- Keyed reorders for `each()` and `list()`: reverse, move the first row to the end, and swap the first and last rows. Each move counts as one DOM move.
 - Mounting a 100-row tree.
-- Reconciling an unchanged 100-row tree.
+- Reconciling an unchanged 100-row tree. Its rows are built detached on every update, so the report lists those operations separately from live DOM operations.
+- A fine-grained 100-row tree whose rows each hold a reactive text leaf, which performs no DOM operations per update.
+- A function child with a nested component, which reports how many times the component renders.
 - Updating reactive text.
 - Built core runtime bytes and gzip bytes, when `dist/nodula/nodula-core.js` exists; run `npm run build:framework` first to generate that artifact.
 
@@ -93,6 +140,7 @@ Animation is an optional add-on. Nodula's animation helpers respect `prefers-red
 - **Benchmark runtime size is missing:** build the framework first with `npm run build:framework`; the benchmark reads `dist/nodula/nodula-core.js` when present.
 - **Benchmark timings differ between runs:** Happy DOM timings are comparative. Keep machine/load and benchmark variables stable; use real-browser profiling for user-visible claims.
 - **List update recreates rows:** verify keys represent stable item identity and remain unique across updates.
+- **Component state resets or a branch re-renders on every change:** a function child that returns an element, fragment or array re-runs when any value it read changes. Move the value into a reactive leaf, or use `when()` for the branch. See [Function children that return nodes](#function-children-that-return-nodes).
 - **Bundle still includes an optional add-on:** inspect imports and build output; production tree-shaking behavior is verified with Vite fixtures, not exhaustively across all consumer bundlers.
 - **App feels slow despite quick render benchmark:** investigate network, JavaScript outside Nodula bindings, browser layout/paint, DOM size, and third-party code in the actual application.
 - **Initial route/code is large:** consider lazy route modules or `visibleIsland()` for content that need not load immediately, while accounting for loading/error UX.

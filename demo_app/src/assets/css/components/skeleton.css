@@ -1,0 +1,34 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-skeleton: animates a placeholder while content is loading. */
+.ui-skeleton {
+  width: 100%;
+  height: 14px;
+  border-radius: var(--ui-radius-small);
+  background: linear-gradient(
+    90deg,
+    var(--ui-color-skeleton),
+    var(--ui-color-skeleton-highlight),
+    var(--ui-color-skeleton)
+  );
+  background-size: 200% 100%;
+  animation: ui-skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+/* UNUSED: .ui-skeleton--short: varies placeholder length within a skeleton group.
+.ui-skeleton--short {
+  width: 68%;
+} */
+
+@keyframes ui-skeleton-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Reduced-motion preference disables skeleton shimmer animation. */
+  .ui-skeleton {
+    animation: none;
+  }
+}

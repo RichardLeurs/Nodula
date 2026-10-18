@@ -67,7 +67,7 @@ See [Animations](/guide/animations) for add-on behavior and limitations.
 
 Use text interpolation, `textContent`, or DOM construction for untrusted/user-provided text. Do not treat escaping or client-side rendering as a complete security boundary; validate and encode data at the appropriate server/output context too. For rich content, use a deliberate sanitization policy before inserting HTML and test its allowed markup. See [Security](/guide/security).
 
-For async updates, expose progress and errors as text and, where suitable, an announced status region. Avoid moving focus unexpectedly when a background update completes. Nodula has no automatic accessibility announcer; the application chooses status semantics and timing.
+For async updates, expose progress and errors as text and, where suitable, an announced status region. Avoid moving focus unexpectedly when a background update completes. Nodula has no automatic accessibility announcer; the application chooses status semantics and timing. The one exception is the form add-on's opt-in `announceErrors` option, which writes a failed-submit summary to a status region; see [Forms](/guide/forms#accessibility-helpers).
 
 ## Practical review checklist
 

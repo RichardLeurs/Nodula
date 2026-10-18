@@ -1,0 +1,51 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-badge: renders a compact, pill-shaped status label. */
+.ui-badge {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: var(--ui-font-size-xs);
+  font-weight: var(--ui-font-weight-semibold);
+  line-height: var(--ui-line-height-tight);
+  white-space: nowrap;
+}
+
+/* .ui-badge--neutral: gives non-semantic labels a subdued appearance. */
+.ui-badge--neutral {
+  color: var(--ui-color-text-muted);
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-sunken);
+}
+
+/* .ui-badge--primary: associates a badge with primary emphasis. */
+.ui-badge--primary {
+  color: var(--ui-color-primary);
+  border-color: var(--ui-color-border);
+  background: color-mix(in srgb, var(--ui-color-primary) 15%, transparent);
+}
+
+/* .ui-badge--success: communicates successful state. */
+.ui-badge--success {
+  color: var(--ui-color-success);
+  background: color-mix(in srgb, var(--ui-color-success) 13%, transparent);
+  border-color: var(--ui-color-border);
+}
+
+/* .ui-badge--warning: communicates caution or pending state. */
+.ui-badge--warning {
+  color: var(--ui-color-warning);
+  border-color: var(--ui-color-border);
+  background: color-mix(in srgb, var(--ui-color-warning) 13%, transparent);
+}
+
+/* .ui-badge--danger: communicates an error or destructive state. */
+.ui-badge--danger {
+  color: var(--ui-color-danger);
+  background: color-mix(in srgb, var(--ui-color-danger) 13%, transparent);
+  border-color: var(--ui-color-border);
+}

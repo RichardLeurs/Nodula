@@ -5,14 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.js",
-    "build": "vite build --config vite.config.js && node mjs/gzip-demo-assets.mjs && node mjs/verify-precache.mjs",
+    "build": "node ../framework/mjs/run-steps.mjs clean:app build:vite gzip:assets verify:precache",
+    "clean:app": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('../dist/app', { recursive: true, force: true });\"",
+    "build:vite": "vite build --config vite.config.js",
+    "gzip:assets": "node mjs/gzip-demo-assets.mjs",
+    "verify:precache": "node mjs/verify-precache.mjs",
     "preview": "vite preview --config vite.config.js",
     "test": "vitest run --config vitest.config.js",
     "test:watch": "vitest --config vitest.config.js"
   },
   "dependencies": {
     "iconify-icon": "^3.0.3",
-    "nodula-framework": "file:../dist/npm/nodula-framework-0.1.0.tgz"
+    "nodula-framework": "file:../dist/npm/nodula-framework-0.3.0.tgz"
   },
   "devDependencies": {
     "highlight.js": "^11.12.0",

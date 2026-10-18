@@ -2,7 +2,7 @@
 <script setup>
 import { createResource } from "nodula-framework/resource";
 import { Suspense } from "nodula-framework/suspense";
-import suspenseImage from "../assets/images/resource.webp";
+import suspenseImage from "../assets/images/suspense.webp";
 
 /**
  * Pretend to fetch the beds of the greenhouse. It answers after a short delay and stops early when its signal is aborted.

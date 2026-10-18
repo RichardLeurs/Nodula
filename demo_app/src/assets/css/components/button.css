@@ -1,0 +1,99 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-button: base interactive control with shared sizing and focus behavior. */
+.ui-button {
+  display: inline-flex;
+  min-height: var(--ui-density-control-height);
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-space-2);
+  padding: 0 var(--ui-density-control-padding-inline);
+  border: 1px solid transparent;
+  border-radius: var(--ui-radius-small);
+  font: inherit;
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-semibold);
+  line-height: var(--ui-line-height-tight);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color var(--ui-transition-fast),
+    background-color var(--ui-transition-fast),
+    border-color var(--ui-transition-fast),
+    transform var(--ui-transition-fast);
+}
+
+.ui-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+/* Keyboard focus remains visible on buttons and form controls. */
+.ui-button:focus-visible,
+.ui-input:focus-visible,
+.ui-select:focus-visible,
+.ui-textarea:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ui-color-focus) 38%, transparent);
+  outline-offset: 2px;
+}
+
+/* Disabled buttons use muted colors and a non-interactive cursor. */
+.ui-button:disabled {
+  color: var(--ui-color-disabled);
+  background: var(--ui-color-surface-sunken);
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+/* .ui-button--primary: emphasizes the main action. */
+.ui-button--primary {
+  color: var(--ui-color-text-inverse);
+  background: var(--ui-color-primary);
+
+  &:hover:not(:disabled) {
+    background: var(--ui-color-primary-hover);
+  }
+}
+
+/* .ui-button--secondary: presents a contained, lower-emphasis action. */
+.ui-button--secondary {
+  color: var(--ui-color-text);
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-raised);
+
+  &:hover:not(:disabled) {
+    border-color: var(--ui-color-border-strong);
+  }
+}
+
+/* .ui-button--outline: presents a transparent action with primary outline. */
+.ui-button--outline {
+  color: var(--ui-color-primary);
+  border-color: var(--ui-color-primary);
+  background: transparent;
+}
+
+/* Outline and ghost actions share a subtle primary hover surface. */
+.ui-button--outline:hover:not(:disabled),
+.ui-button--ghost:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ui-color-primary) 10%, transparent);
+}
+
+/* .ui-button--ghost: presents a low-emphasis text-like action. */
+.ui-button--ghost {
+  color: var(--ui-color-text-muted);
+  background: transparent;
+}
+
+/* .ui-button--small: reduces control height and horizontal padding. */
+.ui-button--small {
+  min-height: var(--ui-size-control-small);
+  padding: 0 var(--ui-space-3);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-button--large: increases control height and label scale. */
+.ui-button--large {
+  min-height: var(--ui-size-control-large);
+  padding: 0 var(--ui-space-5);
+  font-size: var(--ui-font-size-body);
+}

@@ -1,0 +1,44 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-tabs: groups horizontally scrollable tab controls. */
+.ui-tabs {
+  display: flex;
+  gap: var(--ui-space-1);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--ui-color-border);
+  margin-bottom: 20px;
+}
+
+/* Tabs, switches, and progress groups expose selection and completion states. */
+.ui-tab {
+  flex: 0 0 auto;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--ui-color-text-muted);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Selected tabs receive primary text, border, and surface treatment. */
+.ui-tab[aria-selected="true"] {
+  border-bottom-color: var(--ui-color-primary);
+  color: var(--ui-color-primary);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+/* Tabs and switch controls share a visible keyboard focus indicator. */
+.ui-tab:focus-visible,
+.ui-switch__control:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ui-color-focus) 38%, transparent);
+  outline-offset: 2px;
+}
+
+/* .ui-tab-panel: holds content associated with the selected tab. */
+.ui-tab-panel {
+  min-height: 54px;
+  padding: var(--ui-space-3);
+  border-radius: var(--ui-radius-small);
+  background: transparent;
+}

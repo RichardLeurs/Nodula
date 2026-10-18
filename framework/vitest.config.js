@@ -19,6 +19,7 @@ const addonNames = [
   "dialog",
   "drawer",
   "form",
+  "island",
   "localstorage",
   "modal",
   "navigation-dropdown",
@@ -31,8 +32,10 @@ const addonNames = [
   "store",
   "resource",
   "suspense",
+  "props",
   "sortable",
   "filedrop",
+  "web-components",
 ];
 
 export default defineConfig({

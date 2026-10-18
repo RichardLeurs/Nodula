@@ -16,7 +16,7 @@ Template examples require the Nodula Vite compiler. JavaScript DOM-helper exampl
 ## Quick start
 
 ```html
-<script setup>
+<script>
 import { signal } from 'nodula-framework';
 
 const [count, setCount] = signal(0);
@@ -94,7 +94,7 @@ Event listeners are installed when the element is created, not re-registered on 
 ### Prevent a form's default navigation
 
 ```html
-<script setup>
+<script>
 async function submit(event) {
   event.preventDefault();
   await saveForm();
@@ -114,7 +114,7 @@ Nodula does not implicitly call `preventDefault()` or stop propagation. Use nati
 
 ```html
 <!-- Parent.page -->
-<script setup>
+<script>
 import SaveButton from './SaveButton.comp';
 
 function save() {

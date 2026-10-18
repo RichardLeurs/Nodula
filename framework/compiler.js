@@ -142,7 +142,7 @@ function scopeStyles(css, attribute) {
 /**
  * Split a component file into its `<script>`, `<template>` and `<style>` blocks.
  *
- * Only those three top-level elements are allowed.
+ * Only those three top-level elements are allowed, with HTML comments, `//` line comments and blank lines between them.
  *
  * @param {string} source Component file source.
  * @param {string} componentName Basename, used in error messages.
@@ -154,7 +154,8 @@ function collectBlocks(source, componentName) {
   const blocks = { scripts: [], templates: [], styles: [] };
 
   for (const node of document.childNodes) {
-    if (node.nodeName === "#text" && !node.value.trim()) continue;
+    // Blank lines and `//` line comments are allowed between the blocks, for example a copyright notice.
+    if (node.nodeName === "#text" && !node.value.replace(/^[ \t]*\/\/.*$/gm, "").trim()) continue;
     // HTML comments are allowed above the blocks, for example a copyright notice.
     if (node.nodeName === "#comment") continue;
     const name = node.tagName;
@@ -399,6 +400,8 @@ function compileText(text, componentName, loopVariables) {
  */
 function compileAttribute(attribute, componentName, loopVariables) {
   const { name, value } = attribute;
+  // @attrs marks the element that receives the caller's attributes; it is not an event listener.
+  if (name === "@attrs") return null;
   if (name === "@show") {
     return `"show": () => (${bindLoopVariables(parseExpression(value, componentName, name), loopVariables)})`;
   }
@@ -479,6 +482,8 @@ let usesSlot = false;
 let usesOutlet = false;
 let currentScopeAttribute = null;
 let importedComponents = new Map();
+// The element that receives caller attributes (@attrs, or the root of a component with a prop schema).
+let attrsTarget = null;
 
 /**
  * Capture the per-compile state so a nested compile can restore it.
@@ -486,7 +491,7 @@ let importedComponents = new Map();
  * @returns {object}
  */
 function snapshotCompileState() {
-  return { loopIndex, usesWhen, usesFragment, usesSlot, usesOutlet, currentScopeAttribute, importedComponents };
+  return { loopIndex, usesWhen, usesFragment, usesSlot, usesOutlet, currentScopeAttribute, importedComponents, attrsTarget };
 }
 
 /**
@@ -495,7 +500,7 @@ function snapshotCompileState() {
  * @param {object} state
  */
 function restoreCompileState(state) {
-  ({ loopIndex, usesWhen, usesFragment, usesSlot, usesOutlet, currentScopeAttribute, importedComponents } = state);
+  ({ loopIndex, usesWhen, usesFragment, usesSlot, usesOutlet, currentScopeAttribute, importedComponents, attrsTarget } = state);
 }
 
 /**
@@ -511,7 +516,7 @@ function componentNameForTag(tagName) {
 /**
  * Compile one attribute of an imported component tag into a prop or callback prop.
  *
- * Directives that belong to the element (`@if`, `@else`) produce nothing.
+ * Directives that belong to the element (`@if`, `@else`) produce nothing. `@show` and `@ref` are element-only and throw.
  *
  * @param {{ name: string, value: string }} attribute Parsed attribute.
  * @param {string} componentName Basename, used in error messages.
@@ -520,13 +525,19 @@ function componentNameForTag(tagName) {
  */
 function compileComponentAttribute(attribute, componentName, loopVariables) {
   const { name, value } = attribute;
-  if (["@if", "@else"].includes(name)) return null;
+  if (["@if", "@else", "@attrs"].includes(name)) return null;
   if (name.startsWith(":")) {
     const propName = name.slice(1);
     if (!/^[a-zA-Z_$][\w$-]*$/.test(propName)) {
       throw new Error(`${componentName}: invalid component prop name "${propName}".`);
     }
     return `${JSON.stringify(propName)}: (${bindLoopVariables(parseExpression(value, componentName, name), loopVariables)})`;
+  }
+  // Without this check, @show and @ref would fall through to callback props and silently do nothing.
+  if (name === "@show" || name === "@ref") {
+    throw new Error(
+      `${componentName}: ${name} is not supported on component tags; wrap the component in an element with ${name}, or ${name === "@show" ? "pass the condition as a prop" : "use a ref inside the component"}.`,
+    );
   }
   if (name.startsWith("@") || name.startsWith("on:")) {
     if (name === "@on")
@@ -574,6 +585,8 @@ function compileComponentNode(node, importedName, componentName, loopVariables) 
     .filter((attribute) => !["each", "@for", "key", ":key"].includes(attribute.name))
     .map((attribute) => compileComponentAttribute(attribute, componentName, loopVariables))
     .filter(Boolean);
+  // Caller attributes go first, so the tag's own props override them.
+  if (node === attrsTarget) props.unshift("...attrs");
   const slots = new Map();
   const defaultChildren = [];
 
@@ -840,7 +853,9 @@ function compileNode(node, componentName, loopVariables = new Map(), pairedElse 
       );
     }
     const children = compileChildren(node.childNodes, componentName, childLoopVariables);
-    element = `h(${JSON.stringify(node.tagName)}, { ${props.join(", ")} }${children.length ? `, ${children.join(", ")}` : ""})`;
+    const ownProps = `{ ${props.join(", ")} }`;
+    const elementProps = node === attrsTarget ? `mergeAttrs(attrs, ${ownProps})` : ownProps;
+    element = `h(${JSON.stringify(node.tagName)}, ${elementProps}${children.length ? `, ${children.join(", ")}` : ""})`;
   }
 
   if (eachAttribute) {
@@ -894,6 +909,128 @@ function extractImports(script) {
 }
 
 /**
+ * Return the index of the `}` that closes the object literal opened at `open`.
+ *
+ * Strings, template literals and comments are skipped, so braces inside them do not end the literal early.
+ * Regex literals with unbalanced brackets or quotes are not supported.
+ *
+ * @param {string} text Script source.
+ * @param {number} open Index of the opening `{`.
+ * @returns {number} Index of the closing `}`, or -1 when the literal is not closed.
+ */
+function findObjectEnd(text, open) {
+  let depth = 0;
+  let index = open;
+  while (index < text.length) {
+    const character = text[index];
+    if (character === "'" || character === '"' || character === "`") {
+      index = skipQuoted(text, index);
+      continue;
+    }
+    if (character === "/" && text[index + 1] === "/") {
+      const newline = text.indexOf("\n", index);
+      index = newline === -1 ? text.length : newline;
+      continue;
+    }
+    if (character === "/" && text[index + 1] === "*") {
+      const commentEnd = text.indexOf("*/", index + 2);
+      index = commentEnd === -1 ? text.length : commentEnd + 2;
+      continue;
+    }
+    if (character === "{") depth += 1;
+    else if (character === "}" && --depth === 0) return index;
+    index += 1;
+  }
+  return -1;
+}
+
+/**
+ * Cut the `export const propSchema = {…}` statement out of a component script.
+ *
+ * The statement is moved to module scope by the caller, so the schema is created once rather than on every render.
+ * Other top-level exports are rejected, since they would be invalid inside the component function.
+ *
+ * @param {string} body Script source without its imports.
+ * @param {string} componentName Basename, used in error messages.
+ * @returns {{ schema: string | null, body: string }} The object literal source, or null, and the script without the statement.
+ * @throws {Error} For a schema in a .page, a schema that is not an object literal, or any other top-level export.
+ */
+function hoistPropSchema(body, componentName) {
+  const isPage = componentName.endsWith(".page");
+  const declaration = /^[ \t]*export\s+(?:const|let|var)\s+propSchema\b/m;
+  const match = /^[ \t]*export\s+const\s+propSchema\s*=\s*\{/m.exec(body);
+  let schema = null;
+  let rest = body;
+  if (declaration.test(body)) {
+    if (isPage) throw new Error(`${componentName}: propSchema is only supported in .comp files.`);
+    if (!match)
+      throw new Error(`${componentName}: export const propSchema must be an object literal.`);
+    const open = match.index + match[0].length - 1;
+    const close = findObjectEnd(body, open);
+    if (close === -1) throw new Error(`${componentName}: propSchema object is not closed.`);
+    const end = close + 1 + (/^[ \t]*;?/.exec(body.slice(close + 1))[0].length);
+    schema = body.slice(open, close + 1);
+    rest = body.slice(0, match.index) + body.slice(end);
+  }
+  if (/^[ \t]*export\b/m.test(rest))
+    throw new Error(
+      `${componentName}: only export const propSchema is supported in <script>; other exports are not allowed.`,
+    );
+  return { schema, body: rest };
+}
+
+/**
+ * Find the element that receives the caller's attributes: the one marked `@attrs`, or else the root when the
+ * component declares a prop schema.
+ *
+ * @param {object[]} rootNodes Top-level template nodes, without empty text.
+ * @param {string} componentName Basename, used in error messages.
+ * @param {boolean} hasSchema Whether the script declares propSchema.
+ * @returns {object | null} The receiving node, or null when the component has no schema.
+ * @throws {Error} For @attrs with a value, without a schema, on a slot, template or outlet, inside a loop, or repeated; and
+ *   for a schema whose root is text or an outlet, which cannot receive attributes.
+ */
+function findAttrsTarget(rootNodes, componentName, hasSchema) {
+  const marked = [];
+  /**
+   * Collect the @attrs elements under `nodes`, rejecting placements the compiler cannot honour.
+   *
+   * @param {object[]} nodes
+   * @param {boolean} insideLoop Whether an ancestor is a loop.
+   */
+  const visit = (nodes, insideLoop) => {
+    for (const node of nodes) {
+      const loop = node.attrs?.some((attribute) => ["each", "@for"].includes(attribute.name)) ?? false;
+      const attribute = node.attrs?.find((item) => item.name === "@attrs");
+      if (attribute) {
+        if (attribute.value.trim())
+          throw new Error(`${componentName}: @attrs does not take a value.`);
+        if (!hasSchema)
+          throw new Error(`${componentName}: @attrs requires export const propSchema in <script>.`);
+        if (["slot", "template", "outlet"].includes(node.tagName))
+          throw new Error(`${componentName}: @attrs is not supported on <${node.tagName}>.`);
+        if (insideLoop || loop)
+          throw new Error(`${componentName}: @attrs cannot be used inside a loop.`);
+        marked.push(node);
+      }
+      visit(node.content?.childNodes ?? node.childNodes ?? [], insideLoop || loop);
+    }
+  };
+  visit(rootNodes, false);
+  if (marked.length > 1)
+    throw new Error(`${componentName}: only one element can have @attrs; found ${marked.length}.`);
+  if (marked.length) return marked[0];
+  if (!hasSchema) return null;
+
+  const root = rootNodes.find((node) => node.nodeName !== "#comment");
+  if (!root || root.nodeName === "#text" || root.tagName === "outlet")
+    throw new Error(
+      `${componentName}: a component with propSchema needs an element or component root, or an @attrs element.`,
+    );
+  return root;
+}
+
+/**
  * Compile a `.page` or `.comp` file into a JavaScript module.
  *
  * The compile state is saved and restored, so a nested compile does not disturb its caller.
@@ -930,7 +1067,8 @@ function compileComponent(source, id) {
   const styleBlock = blocks.styles[0];
   currentScopeAttribute = styleBlock?.scoped ? scopeAttributeFor(id) : null;
   const script = blocks.scripts[0] ?? "";
-  const { imports, body, components, importsNodula } = extractImports(script);
+  const { imports, body: scriptBody, components, importsNodula } = extractImports(script);
+  const { schema, body } = hoistPropSchema(scriptBody, componentName);
   importedComponents = components;
   const template = blocks.templates[0];
   const rootNodes = (template.content?.childNodes ?? template.childNodes).filter(
@@ -948,6 +1086,7 @@ function compileComponent(source, id) {
       `${componentName}: @if, @else, and @for must be inside the single root element.`,
     );
   }
+  attrsTarget = findAttrsTarget(rootNodes, componentName, schema !== null);
   const roots = compileChildren(rootNodes, componentName, new Map()).filter(
     (node) => node !== '""',
   );
@@ -962,7 +1101,6 @@ function compileComponent(source, id) {
   const usesNodulaCss = /\bNodula\s*\.\s*css\s*\(/.test(script);
   const runtimeExports = [
     "h",
-    ...(usesNodulaCss && !importsNodula ? ["Nodula"] : []),
     ...(components.size ? ["component"] : []),
     ...(/\s(?:each|@for)\s*=/.test(source) ? ["each"] : []),
     ...(usesWhen ? ["when"] : []),
@@ -970,7 +1108,14 @@ function compileComponent(source, id) {
     ...(usesSlot ? ["slot"] : []),
     ...(usesOutlet ? ["outlet"] : []),
   ].join(", ");
-  const generatedImports = [`import { ${runtimeExports} } from "nodula-framework";`, ...imports];
+  const generatedImports = [
+    `import { ${runtimeExports} } from "nodula-framework";`,
+    ...(usesNodulaCss && !importsNodula
+      ? [`import { Nodula } from "nodula-framework/web-components";`]
+      : []),
+    ...(schema === null ? [] : [`import { withProps, mergeAttrs } from "nodula-framework/props";`]),
+    ...imports,
+  ];
   const styleImport =
     styleBlock && (styleBlock.module || styleBlock.content.trim())
       ? styleBlock.module
@@ -978,7 +1123,11 @@ function compileComponent(source, id) {
         : `\nimport ${JSON.stringify(`${id}?nodula-style${styleBlock.scoped ? "-scoped" : ""}`)};`
       : "";
 
-  return `${generatedImports.join("\n")}${styleImport}\nexport function ${component}({ params = {}, children, slots = {}, props = {} } = {}) {\n${body}\nreturn ${roots[0]};\n}\nexport default ${component};`;
+  if (schema === null)
+    return `${generatedImports.join("\n")}${styleImport}\nexport function ${component}({ params = {}, children, slots = {}, props = {} } = {}) {\n${body}\nreturn ${roots[0]};\n}\nexport default ${component};`;
+
+  // The render function keeps the component's name, which withProps uses in warnings.
+  return `${generatedImports.join("\n")}${styleImport}\nexport const propSchema = ${schema};\nfunction ${component}({ params = {}, children, slots = {}, props = {}, attrs = {} } = {}) {\n${body}\nreturn ${roots[0]};\n}\nconst __nodulaComponent = withProps(propSchema, ${component});\nexport { __nodulaComponent as ${component} };\nexport default __nodulaComponent;`;
 }
 
 /**

@@ -1,0 +1,63 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* -- 04-reset ----------------------------------------------------------------------------------*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body,
+h1,
+h2,
+h3,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+img,
+picture,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* -- 05-base ---------------------------------------------------------------------------------- */
+
+/* .ui-app: defines full-height application shell and themed page background. */
+.ui-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: clip;
+  overflow-y: visible;
+  background-image: linear-gradient(135deg, var(--page-bg), var(--page-gradient));
+  background-repeat: no-repeat, no-repeat;
+  /* background-position: top right, center; */
+  /* background-size: min(100%, 1049px) auto, 100% 100%; */
+  /* background-color: var(--page-bg); */
+  /* var(--page-bg); */
+  /* background-blend-mode: var(--app-background-blend),normal ; */
+  /* var(--app-background-blend),normal; */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

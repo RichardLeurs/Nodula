@@ -1,3 +1,5 @@
+// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+
 <script>
 import { effect, onCleanup, onMount } from "nodula-framework";
 import { createRouter } from "nodula-framework/router";

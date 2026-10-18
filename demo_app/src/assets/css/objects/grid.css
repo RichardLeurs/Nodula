@@ -1,0 +1,22 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-grid: creates a token-spaced CSS grid. */
+.ui-grid {
+  display: grid;
+  gap: var(--ui-space-4);
+}
+
+/* .ui-grid--2: sets a two-column grid. */
+.ui-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* .ui-grid--3: sets a three-column grid. */
+.ui-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* .ui-grid--auto: fits as many minimum-width columns as available space allows. */
+.ui-grid--auto {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+}

@@ -2,8 +2,8 @@
 
 /* Provide native modal dialogs with DOM/ID content and custom-header support. */
 import { onCleanup } from "nodula-framework";
-import { injectAddonStyles } from "./inject-styles.js";
-import { prepareContent } from "./prepare-content.js";
+import { injectAddonStyles } from "./utils/inject-styles.js";
+import { prepareContent } from "./utils/prepare-content.js";
 import modalStyles from "../assets/css/nodula-modal.css?inline";
 
 let nextModalId = 0;

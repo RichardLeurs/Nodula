@@ -1,0 +1,141 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* -- 02-tokens ---------------------------------------------------------------------------------- */
+
+:root {
+  font-family: var(--ui-font-family-sans);
+  font-size: 100%;
+  color: var(--ui-color-text);
+  background: var(--page-bg);
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+
+  /* --page-bg: #0a1424;
+  --app-background-overlay: rgba(10, 20, 36, 0.97); */
+  --page-bg: hsl(217, 57%, 20%);
+  --page-gradient: hsl(217, 57%, 0%);
+
+  --app-background-overlay: #01050c;
+
+  --app-background-blend: darken;
+  --brand-name-color: #eee;
+  --muted-footer: #eee;
+  --logo-filter: invert(1);
+  /* --ui-color-background: #0a1424; */
+  --ui-color-background: #0a1424;
+
+  --ui-color-surface: #101f33;
+  --ui-color-surface-raised: #152944;
+  --ui-color-surface-sunken: #081322;
+  --ui-color-surface-muted: hsl(217, 57%, 12%);
+  --ui-color-skeleton: #354b65;
+  --ui-color-skeleton-highlight: #526b89;
+
+  --ui-color-border: rgba(196, 216, 240, 0.16);
+  --ui-color-border-strong: rgba(196, 216, 240, 0.3);
+
+  --ui-color-text: #edf2eb;
+  --ui-color-text-muted: #b4c5d5;
+  --ui-color-text-subtle: #a2afba;
+  --ui-color-text-inverse: #102332;
+  --ui-color-primary: #68b9e8;
+  --ui-color-primary-hover: #91d0f3;
+  --ui-tooltip-background: #eee;
+  --ui-tooltip-text-color: #333;
+
+  --ui-color-success: #75b798;
+  --ui-color-warning: #ffc107;
+  --ui-color-danger: #ea868f;
+  --ui-color-info: #6ea8fe;
+
+  /* --message-red: #dc3545;
+  --message-green: #198754;
+  --message-blue: #0d6efd;
+  --message-yellow: #ffc107;
+  --message-orange: #ff7107; */
+
+  --ui-color-focus: #68b9e8;
+  --ui-color-disabled: #8a9b95;
+
+  --ui-syntax-keyword: #d58de8;
+  --ui-syntax-string: #91d0f3;
+  --ui-syntax-tag: #82c7ed;
+  --ui-syntax-attribute: #efd99d;
+  --ui-syntax-comment: #869491;
+  --ui-syntax-literal: #79d1c3;
+  --ui-syntax-default: #d9e7d8;
+  --ui-syntax-function: #82c7ed;
+
+  --ui-shadow-raised: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* --page-bg: #e9f4f8f5;
+  --app-background-overlay: #edf4f7f5; */
+  --page-bg: hsla(196, 52%, 97%);
+  --page-gradient: hsla(196, 52%, 89%);
+
+  --app-background-overlay: #edf4f7f5;
+  --app-background-blend: lighten;
+  --brand-name-color: #000;
+  --muted-footer: #526760;
+  --logo-filter: none;
+
+  /* --ui-color-background: hsl(132, 24%, 96%); */
+  /* --ui-color-background: hsl(132, 24%, 96%); */
+  --ui-color-background: hsl(196, 52%, 97%);
+  --ui-color-surface: hsl(0, 0%, 98%);
+  --ui-color-surface-raised: #ffffff;
+  /* --ui-color-surface-sunken: #e0f0f5; */
+  --ui-color-surface-sunken: hsl(132, 24%, 97%);
+  --ui-color-surface-muted: hsla(196, 52%, 91%);
+  --ui-color-skeleton: #8b9aa8;
+  --ui-color-skeleton-highlight: #a7b4bf;
+
+  --ui-color-border: rgba(32, 51, 47, 0.16);
+  --ui-color-border-strong: rgba(32, 51, 47, 0.3);
+
+  --ui-color-text: #20332f;
+  --ui-color-text-muted: #526760;
+  --ui-color-text-subtle: #5b6a62;
+  --ui-color-text-inverse: #ffffff;
+  --ui-color-primary: #38633b;
+  --ui-color-primary-hover: #2c5031;
+
+  --ui-tooltip-background: #20332f;
+  --ui-tooltip-text-color: #edf2eb;
+
+  --ui-color-success: #146c43;
+  --ui-color-warning: #ffc107;
+  --ui-color-danger: #dc3545;
+  --ui-color-info: #0d6efd;
+
+  --ui-color-focus: #38633b;
+  --ui-color-disabled: #7b8980;
+
+  --ui-syntax-keyword: #80469a;
+  --ui-syntax-string: #315f39;
+  --ui-syntax-tag: #286486;
+  --ui-syntax-attribute: #805b13;
+  --ui-syntax-comment: #66766e;
+  --ui-syntax-literal: #28685e;
+  --ui-syntax-default: #455c54;
+  --ui-syntax-function: #286486;
+
+  --ui-shadow-raised: 0 12px 30px rgba(32, 51, 47, 0.09);
+}
+
+/* Local density scopes also work on app shell regions and isolated panels. */
+[data-density="compact"] {
+  --ui-density-control-height: var(--ui-size-control-small);
+  --ui-density-input-height: 2.25rem;
+  --ui-density-control-padding-inline: var(--ui-space-3);
+  --ui-density-panel-padding: var(--ui-space-4);
+  --ui-density-panel-header-padding: var(--ui-space-4);
+  --ui-density-form-gap: var(--ui-space-4);
+  --ui-density-field-gap: var(--ui-space-1);
+}

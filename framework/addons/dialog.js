@@ -2,7 +2,7 @@
 
 /* Provide accessible native confirmation dialogs with boolean results. */
 import { onCleanup } from "nodula-framework";
-import { injectAddonStyles } from "./inject-styles.js";
+import { injectAddonStyles } from "./utils/inject-styles.js";
 import dialogStyles from "../assets/css/nodula-dialog.css?inline";
 
 let nextDialogId = 0;

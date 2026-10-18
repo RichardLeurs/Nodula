@@ -1,0 +1,42 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .ui-field: stacks a control with its label, help, and validation feedback. */
+.ui-field {
+  display: grid;
+  gap: var(--ui-density-field-gap);
+}
+
+/* .ui-field__label: identifies the associated form control. */
+.ui-field__label {
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+/* .ui-field__required: marks required fields with the danger color. */
+.ui-field__required {
+  color: var(--ui-color-danger);
+}
+
+/* .ui-field__description: provides supplementary guidance for a field. */
+/* .ui-field__error: explains why a field value is invalid. */
+.ui-field__description,
+.ui-field__error {
+  margin: 0;
+  font-size: var(--ui-font-size-xs);
+  line-height: var(--ui-line-height-body);
+}
+
+.ui-field__description {
+  color: var(--ui-color-text-subtle);
+}
+
+/* .ui-field__error: emphasizes validation feedback as an error. */
+.ui-field__error {
+  color: var(--ui-color-danger);
+}
+
+/* .ui-field--invalid: marks the field input when validation fails. */
+.ui-field--invalid .ui-input {
+  border-color: var(--ui-color-danger);
+}
