@@ -17,6 +17,7 @@ const routeComponents = {
   "/login": { load: () => import("./routes/login.page") },
   "/modal": { load: () => import("./routes/modal.page") },
   "/web-components": { load: () => import("./routes/web-components.page") },
+  "/playground": { load: () => import("./routes/playground.page") },
 };
 
 export const routes = {

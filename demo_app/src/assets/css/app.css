@@ -49,6 +49,7 @@
 @import "./components/table.css";
 @import "./components/tooltip.css";
 @import "./components/highlight.css";
+@import "./components/playground.css";
 
 /* Add-on overrides: copies of framework/assets/css/nodula-*.css. The add-ons inject
    their own styles in @layer nodula-addons, so uncomment an import only to override them. */

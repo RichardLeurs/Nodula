@@ -1,0 +1,132 @@
+/* Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 */
+
+/* .playground: the Playground page's editor, result frame, and status line. Colors come from the theme tokens. */
+.playground {
+  display: grid;
+  gap: var(--ui-space-2);
+  min-width: 0;
+}
+
+.playground-app {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  height: min(70vh, 640px);
+  min-height: 360px;
+  overflow: hidden;
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-small);
+  background: var(--ui-color-surface-sunken);
+}
+
+.playground-editor {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid var(--ui-color-border);
+}
+
+/* The highlighted copy and the text area share one box, font, and padding, so their text lines up. */
+.playground-highlight,
+.playground-input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: var(--ui-space-3);
+  overflow: auto;
+  font: var(--ui-font-size-caption)/1.6 var(--ui-font-family-mono);
+  tab-size: 2;
+  white-space: pre;
+}
+
+.playground-highlight {
+  overflow: hidden;
+  color: var(--ui-syntax-default);
+  pointer-events: none;
+}
+
+/* The text area is transparent, so only the highlighted copy shows the text; the caret stays visible. */
+.playground-input {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--ui-color-text);
+  resize: none;
+}
+
+.playground-input::selection {
+  background: color-mix(in srgb, var(--ui-color-primary) 35%, transparent);
+}
+
+.playground-highlight .tok-comment {
+  color: var(--ui-syntax-comment);
+  font-style: italic;
+}
+
+.playground-highlight .tok-string {
+  color: var(--ui-syntax-string);
+}
+
+.playground-highlight .tok-tag {
+  color: var(--ui-syntax-tag);
+}
+
+.playground-highlight .tok-property {
+  color: var(--ui-syntax-attribute);
+}
+
+.playground-result {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background: var(--ui-color-surface-raised);
+}
+
+.playground-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+}
+
+/* A compile error is shown over the last working result. */
+.playground-error {
+  position: absolute;
+  right: var(--ui-space-2);
+  bottom: var(--ui-space-2);
+  left: var(--ui-space-2);
+  max-height: 45%;
+  margin: 0;
+  padding: var(--ui-space-3);
+  overflow: auto;
+  border: 1px solid var(--ui-color-danger);
+  border-radius: var(--ui-radius-small);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-danger);
+  font: var(--ui-font-size-caption)/1.5 var(--ui-font-family-mono);
+  white-space: pre-wrap;
+}
+
+.playground-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  color: var(--ui-color-text-subtle);
+  font-size: var(--ui-font-size-caption);
+}
+
+@media (max-width: 720px) {
+  .playground-app {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .playground-editor {
+    border-right: 0;
+    border-bottom: 1px solid var(--ui-color-border);
+  }
+}

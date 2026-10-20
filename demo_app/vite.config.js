@@ -6,6 +6,7 @@ import { defineConfig } from "vite";
 import { nodulaPlugin } from "../framework/vite-plugin.js";
 import { nodulaPWA } from "../framework/addons/pwa.js";
 import { nodulaSEO } from "../framework/addons/seo-vite.js";
+import { nodulaRuntimePlugin } from "./build/runtime-plugin.js";
 
 const demoRoot = fileURLToPath(new URL(".", import.meta.url));
 const appOutputDirectory = fileURLToPath(new URL("../dist/app", import.meta.url));
@@ -40,6 +41,7 @@ const addonOutputs = [
   ["web-components", "nodula-web-components.js"],
 ];
 const runtimeEntry = fileURLToPath(new URL("../dist/nodula/nodula-core.js", import.meta.url));
+const cryptoShim = fileURLToPath(new URL("./build/crypto-shim.js", import.meta.url));
 
 /**
  * Build configuration for the demo app: framework bundles are aliased to their built files, kept external, and copied into the app output.
@@ -69,6 +71,8 @@ function appBuildConfig() {
       find: `nodula-framework/${name}`,
       replacement: fileURLToPath(new URL(`../dist/nodula/${output}`, import.meta.url)),
     })),
+    // The Playground runs the framework compiler in the browser, which needs this (see build/crypto-shim.js).
+    { find: /^node:crypto$/, replacement: cryptoShim },
   ];
   /**
    * Choose the output path for a bundled asset: CSS and images go to their own folders, other files to `assets/`.
@@ -102,7 +106,14 @@ function appBuildConfig() {
     },
     plugins: [
       nodulaPlugin(),
-      ...nodulaPWA(),
+      nodulaRuntimePlugin(),
+      ...nodulaPWA({
+        workbox: {
+          // The Playground's compiler is large and only needed on that page, so its chunk is fetched when the page opens
+          // instead of being downloaded when the service worker is installed. Its name is `playground-<hash>.js` (from the route file).
+          globIgnores: ["assets/playground-*.js"],
+        },
+      }),
       nodulaSEO({
         siteUrl: "https://nodula.richardleurs.nl",
         robots: "User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /login",
@@ -118,6 +129,7 @@ function appBuildConfig() {
           "/forms",
           "/modal",
           "/web-components",
+          "/playground",
         ],
       }),
       {

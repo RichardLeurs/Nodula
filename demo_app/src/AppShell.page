@@ -165,6 +165,7 @@ function setNavigationElement(element) {
     const items = [
       { label: "Home", href: "/" },
       { label: "Add-ons", href: "/addons" },
+      { label: "Playground", href: "/playground" },
       { label: "Data", href: "/data" },
       { label: "Form", href: "/forms" },
       { label: "Dialog", href: "/modal" },

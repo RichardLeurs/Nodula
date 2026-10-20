@@ -1,0 +1,176 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
+
+<script>
+import { onCleanup, signal } from "nodula-framework";
+import runtime from "virtual:nodula-runtime";
+import { highlightSource } from "../playground/highlight.js";
+import {
+  buildPlaygroundDocument,
+  compilePlayground,
+  PlaygroundError,
+  STARTER,
+} from "../playground/playground.js";
+
+// After a change, the component runs again once typing has paused for this long (ms).
+const RUN_DELAY = 600;
+const [error, setError] = signal("");
+const [state, setState] = signal("");
+let editor;
+let code;
+let frame;
+let timer;
+let started = false;
+
+/**
+ * Shows the starter once the editor, the highlighted copy, and the result frame all exist. The template's refs call this in
+ * whatever order they are made. Route pages cannot use onMount, so this is where the page starts.
+ */
+function start() {
+  if (started || !editor || !code || !frame) return;
+  started = true;
+  editor.value = STARTER;
+  highlight();
+  run();
+}
+
+/**
+ * Stores the text area from the template.
+ *
+ * @param {HTMLTextAreaElement} element
+ */
+function setEditor(element) {
+  editor = element;
+  start();
+}
+
+/**
+ * Stores the highlighted copy from the template.
+ *
+ * @param {HTMLElement} element
+ */
+function setCode(element) {
+  code = element;
+  start();
+}
+
+/**
+ * Stores the result frame from the template.
+ *
+ * @param {HTMLIFrameElement} element
+ */
+function setFrame(element) {
+  frame = element;
+  start();
+}
+
+/** Redraws the highlighted copy from the text area's text. */
+function highlight() {
+  // The extra newline keeps an empty last line visible, so the copy lines up with the text area.
+  code.innerHTML = `${highlightSource(editor.value)}\n`;
+}
+
+/** Keeps the highlighted copy in line with the text area while it scrolls. */
+function syncScroll() {
+  code.parentElement.scrollTop = editor.scrollTop;
+  code.parentElement.scrollLeft = editor.scrollLeft;
+}
+
+/**
+ * Compiles the text and shows the result in the frame. A compile error is shown, and the last working result stays.
+ */
+function run() {
+  clearTimeout(timer);
+  try {
+    frame.srcdoc = buildPlaygroundDocument(compilePlayground(editor.value), {
+      runtime,
+      origin: window.location.origin,
+    });
+    setError("");
+    setState("Running");
+  } catch (reason) {
+    if (!(reason instanceof PlaygroundError)) throw reason;
+    setError(reason.message);
+    setState("Not running");
+  }
+}
+
+/** Typing updates the highlighting at once and runs the component after a pause. */
+function onInput() {
+  highlight();
+  clearTimeout(timer);
+  timer = setTimeout(run, RUN_DELAY);
+}
+
+/**
+ * Mod+Enter runs the component at once.
+ *
+ * @param {KeyboardEvent} event
+ */
+function onKeydown(event) {
+  if (event.key !== "Enter" || !(event.metaKey || event.ctrlKey)) return;
+  event.preventDefault();
+  run();
+}
+
+/**
+ * Shows errors that the result frame reports while the component runs. The frame has an opaque origin, so its messages come from "null".
+ *
+ * @param {MessageEvent} event
+ */
+function onMessage(event) {
+  if (event.source !== frame?.contentWindow || event.origin !== "null" || event.data?.nodula !== "error") return;
+  setError(`Error while running: ${String(event.data.message).slice(0, 500)}`);
+}
+
+window.addEventListener("message", onMessage);
+onCleanup(() => {
+  clearTimeout(timer);
+  window.removeEventListener("message", onMessage);
+});
+</script>
+
+<template>
+  <main class="ui-page page">
+    <header class="ui-page__header">
+      <p class="ui-page__eyebrow">Try NodulaJS in the browser</p>
+      <h1 class="ui-page__title">Playground</h1>
+      <p class="ui-page__description">
+        Edit a component and it runs in a sandboxed frame once you stop typing. Press Run, or Ctrl
+        or Cmd with Enter, to run it at once. A component can only import from nodula-framework.
+        It runs in a frame with no permissions, and its content security policy blocks loading or
+        sending data with fetch and similar APIs.
+      </p>
+    </header>
+
+    <section class="ui-section" aria-label="Component playground">
+      <div class="playground">
+        <div class="playground-app">
+          <div class="playground-editor">
+            <pre class="playground-highlight" aria-hidden="true"><code @ref="setCode"></code></pre>
+            <textarea
+              class="playground-input"
+              aria-label="Component source"
+              spellcheck="false"
+              autocapitalize="off"
+              wrap="off"
+              @ref="setEditor"
+              @input="onInput()"
+              @keydown="onKeydown($event)"
+              @scroll="syncScroll()"
+            ></textarea>
+          </div>
+          <div class="playground-result">
+            <iframe class="playground-frame" sandbox="allow-scripts" title="Result" @ref="setFrame"></iframe>
+            <pre class="playground-error" role="alert" @if="error()">{{ error() }}</pre>
+          </div>
+        </div>
+        <div class="playground-status">
+          <span>{{ state() }}</span>
+          <button type="button" class="ui-button ui-button--small ui-button--primary" @click="run()">
+            Run
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+</template>

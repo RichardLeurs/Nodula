@@ -3,6 +3,7 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 import { nodulaPlugin } from '../framework/vite-plugin.js';
+import { nodulaRuntimePlugin } from './build/runtime-plugin.js';
 
 const demoRoot = fileURLToPath(new URL('.', import.meta.url));
 /**
@@ -36,7 +37,7 @@ const addonNames = [
 
 export default defineConfig({
   root: demoRoot,
-  plugins: [nodulaPlugin()],
+  plugins: [nodulaPlugin(), nodulaRuntimePlugin()],
   resolve: {
     alias: [
       { find: /^nodula-framework$/, replacement: frameworkSource('../framework/index.js') },
