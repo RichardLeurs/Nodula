@@ -56,6 +56,7 @@ Vite is the supported build and development integration for single-file componen
 
 - `signal(initialValue)` returns `[read, write]`. Reading inside a running effect tracks a dependency. `write` accepts a value or an updater; values equal under `Object.is` do not notify.
 - `effect(fn)` runs immediately, then reruns when a dependency read in its previous run changes. Dependencies are refreshed on each run, so conditional reads change what triggers it. It returns a stop function.
+- `watch(source, callback)` tracks only `source` and calls `callback(value, oldValue)` when its value changes under `Object.is`. It is lazy, runs the callback untracked, returns a stop function, and stops with its owner like `effect`. A non-function `source` or `callback` throws `TypeError`.
 - `computed(fn)` returns a read-only, effect-backed accessor. It exposes no separate disposer; create it inside an owner.
 - `batch(fn)` delays notification flushing until the callback completes. `untrack(fn)` reads signals without tracking them.
 - Effects are synchronous, except notifications deferred by `batch()`.
@@ -70,6 +71,7 @@ Vite is the supported build and development integration for single-file componen
 
 - No asynchronous scheduler; updates are not batched across microtasks.
 - `computed()` cannot be disposed independently.
+- `watch()` has no `immediate`, `deep`, or flush options.
 - Core signals do not proxy nested object properties; use the store add-on.
 
 ### 2.2 Ownership and cleanup

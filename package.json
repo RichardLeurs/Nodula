@@ -188,6 +188,8 @@
     "benchmark:render": "node framework/mjs/render-benchmark.mjs",
     "test:framework": "vitest run --config framework/vitest.config.js",
     "test:framework:watch": "vitest --config framework/vitest.config.js",
+    "test:mcp": "vitest run --config mcp/vitest.config.js",
+    "pack:mcp": "mkdir -p dist/mcp && cd mcp && npm pack --pack-destination ../dist/mcp",
     "test:demo": "npm --prefix demo_app run test",
     "test:a11y": "playwright test --config playwright.config.js",
     "typecheck": "npm run build:framework && tsc -p tsconfig.types.json",

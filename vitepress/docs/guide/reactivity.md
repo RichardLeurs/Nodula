@@ -93,6 +93,25 @@ Only the dependent text and `title` bindings update. `mount()` returns a dispose
 
 A function child that returns text, as in this example, is a text binding. A function child that returns an element, fragment or array is different: when a value read while building that node changes, the whole function child re-runs and its components and effects are recreated. Keep the reactive reads in leaves such as `() => count()`, and see [Function children that return nodes](/guide/performance#function-children-that-return-nodes) for the rebuild contract.
 
+## Watchers
+
+Use `watch(source, callback)` when a side effect needs the previous value, or should run only when one value changes. It tracks only `source`, does not run `callback` when created, and calls `callback(value, oldValue)` after each change:
+
+```js
+import { signal, watch } from 'nodula-framework';
+
+const [count, setCount] = signal(0);
+
+const stop = watch(count, (value, oldValue) => {
+  console.log(`count: ${oldValue} -> ${value}`);
+});
+
+setCount(1); // logs: count: 0 -> 1
+stop();
+```
+
+Use `effect()` when the work reads several values and should rerun when any of them change. Use `computed()` for a derived value that other code reads. `watch` and `effect` both return a stop function. See [Watchers and Effects](/guide/watchers) for cleanup, the choice between the three, and limitations.
+
 ## Ownership and cleanup
 
 Effects created inside a root are stopped when that root is disposed. `onCleanup()` registers work with the active root or current effect run; effect cleanup runs before the effect reruns and when it stops. Root cleanup runs when the root is disposed.
@@ -153,6 +172,7 @@ Signals suit individual values and derived state. For deeply reactive plain obje
 ## Related guides
 
 - [Framework Core](/guide/framework-core) — core API reference.
+- [Watchers and Effects](/guide/watchers) — `watch`, `effect`, and cleanup.
 - [State Management](/guide/state-management) — choosing and scoping application state.
 - [Stores](/guide/stores) — nested object and array reactivity.
 - [Single-File Components](/guide/templates) — reactive templates and DOM bindings.

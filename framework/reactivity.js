@@ -321,6 +321,35 @@ export function effect(fn) {
 }
 
 /**
+ * Call `callback(value, oldValue)` whenever the value returned by `source` changes.
+ *
+ * Lazy: the initial value is only recorded. Only `source` is tracked; `callback` runs untracked.
+ * Calls are skipped when the new value is `Object.is`-equal to the previous one.
+ *
+ * @template T
+ * @param {() => T} source
+ * @param {(value: T, oldValue: T) => void} callback
+ * @returns {() => void} A stop function. A watcher created inside an owner also stops with that owner.
+ * @throws {TypeError} When `source` or `callback` is not a function.
+ */
+export function watch(source, callback) {
+  if (typeof source !== "function") throw new TypeError("watch source must be a function.");
+  if (typeof callback !== "function") throw new TypeError("watch callback must be a function.");
+  let initial = true;
+  let oldValue;
+  return effect(() => {
+    const value = source();
+    const previous = oldValue;
+    oldValue = value;
+    if (initial) {
+      initial = false;
+      return;
+    }
+    if (!Object.is(value, previous)) untrack(() => callback(value, previous));
+  });
+}
+
+/**
  * Create a read-only value derived from `fn`.
  *
  * It is effect-backed, so create it inside an owner.

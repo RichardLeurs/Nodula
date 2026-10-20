@@ -99,6 +99,8 @@ export function signal<T = undefined>(): Signal<T | undefined>;
 export function computed<T>(fn: Accessor<T>): Accessor<T>;
 /** Run immediately and again when tracked signal or store properties change. */
 export function effect(fn: Effect): Dispose;
+/** Call `callback` with the new and previous value whenever `source` changes. Lazy: not called for the initial value. */
+export function watch<T>(source: () => T, callback: (value: T, oldValue: T) => void): Dispose;
 /** Create an ownership scope and return its result and disposer. */
 export function createRoot<T>(fn: () => T, options?: RootOptions): [value: T, dispose: Dispose];
 /** Register cleanup with the current root or effect execution. */

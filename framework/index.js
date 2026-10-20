@@ -4,6 +4,7 @@ export {
   signal,
   computed,
   effect,
+  watch,
   createRoot,
   onCleanup,
   onMount,
