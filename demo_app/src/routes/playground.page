@@ -118,7 +118,12 @@ function onKeydown(event) {
  * @param {MessageEvent} event
  */
 function onMessage(event) {
-  if (event.source !== frame?.contentWindow || event.origin !== "null" || event.data?.nodula !== "error") return;
+  if (
+    event.source !== frame?.contentWindow ||
+    event.origin !== "null" ||
+    event.data?.nodula !== "error"
+  )
+    return;
   setError(`Error while running: ${String(event.data.message).slice(0, 500)}`);
 }
 
@@ -136,8 +141,8 @@ onCleanup(() => {
       <h1 class="ui-page__title">Playground</h1>
       <p class="ui-page__description">
         Edit a component and it runs in a sandboxed frame once you stop typing. Press Run, or Ctrl
-        or Cmd with Enter, to run it at once. A component can only import from nodula-framework.
-        It runs in a frame with no permissions, and its content security policy blocks loading or
+        or Cmd with Enter, to run it at once. A component can only import from nodula-framework. It
+        runs in a frame with no permissions, and its content security policy blocks loading or
         sending data with fetch and similar APIs.
       </p>
     </header>
@@ -160,13 +165,22 @@ onCleanup(() => {
             ></textarea>
           </div>
           <div class="playground-result">
-            <iframe class="playground-frame" sandbox="allow-scripts" title="Result" @ref="setFrame"></iframe>
+            <iframe
+              class="playground-frame"
+              sandbox="allow-scripts"
+              title="Result"
+              @ref="setFrame"
+            ></iframe>
             <pre class="playground-error" role="alert" @if="error()">{{ error() }}</pre>
           </div>
         </div>
         <div class="playground-status">
           <span>{{ state() }}</span>
-          <button type="button" class="ui-button ui-button--small ui-button--primary" @click="run()">
+          <button
+            type="button"
+            class="ui-button ui-button--small ui-button--primary"
+            @click="run()"
+          >
             Run
           </button>
         </div>

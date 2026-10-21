@@ -55,13 +55,14 @@ const coreImports = [
 /**
  * An add-on bundle that reads the core runtime. `imports` lists other add-on bundles it uses,
  * as [specifier, output file] pairs; each specifier is kept external and rewritten to that file.
+ * `file` is the source path under `framework/addons/` (without extension) when it differs from `name`.
  */
-function coreAddon(name, { imports = [] } = {}) {
+function coreAddon(name, { imports = [], file = name } = {}) {
   const pairs = [...coreImports, ...imports];
   return {
-    entry: `framework/addons/${name}.js`,
+    entry: `framework/addons/${file}.js`,
     output: `nodula-${name}.js`,
-    types: `${name}.d.ts`,
+    types: `${file}.d.ts`,
     externals: pairs.map(([specifier]) => specifier),
     paths: pairs,
   };
@@ -106,6 +107,18 @@ const addonBuilds = {
   props: coreAddon("props"),
   localstorage: coreAddon("localstorage"),
   data: coreAddon("data"),
+  "data-pocketbase": coreAddon("data-pocketbase", {
+    file: "data-adapters/pocketbase",
+    imports: [["nodula-framework/data", "./nodula-data.js"]],
+  }),
+  "data-supabase": coreAddon("data-supabase", {
+    file: "data-adapters/supabase",
+    imports: [["nodula-framework/data", "./nodula-data.js"]],
+  }),
+  "data-rest": coreAddon("data-rest", {
+    file: "data-adapters/rest",
+    imports: [["nodula-framework/data", "./nodula-data.js"]],
+  }),
   pwa: {
     entry: "framework/addons/pwa.js",
     output: "nodula-pwa.js",

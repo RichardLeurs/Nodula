@@ -24,7 +24,7 @@ import filedropImage from "../assets/images/filedrop.webp";
 import fileuploadImage from "../assets/images/fileupload.webp";
 import sortableImage from "../assets/images/sortable.webp";
 import resourceImage from "../assets/images/resource.webp";
-import suspenseImage from '../assets/images/suspense.webp';
+import suspenseImage from "../assets/images/suspense.webp";
 import heroImage from "../assets/images/nodula-hero2.webp";
 
 // Scoped CSS does not rewrite url(), so the bundled hero URL is passed in as a custom property.

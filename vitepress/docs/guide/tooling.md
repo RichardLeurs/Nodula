@@ -15,12 +15,13 @@ The root development script builds Nodula core and add-on bundles before startin
 
 | Command                   | Purpose                                                                                                  |
 | ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `npm run nodula`          | Open the interactive menu of these scripts, or run one entry with `npm run nodula -- <number or key>`.   |
 | `npm run dev`             | Build framework packages, then start demo Vite server.                                                   |
 | `npm run build:framework` | Build core, compiler package entry, and add-on bundles.                                                  |
 | `npm run build:app`       | Build demo app only; framework bundles must already exist.                                               |
 | `npm run build:docs`      | Build VitePress documentation.                                                                           |
 | `npm test`                | Run type checks and framework/demo tests through repository scripts.                                     |
-| `npm run build`           | Run framework builds, type checks, demo build, and docs build.                                           |
+| `npm run build`           | Run framework builds, type checks, demo build, web component build, and docs build.                      |
 | `npm run lint`            | Run Oxlint across repository JavaScript/TypeScript.                                                      |
 | `npm run format`          | Format supported source, Vite config, guide, and package files with Oxfmt.                               |
 | `npm run format:check`    | Check those files without writing changes.                                                               |
@@ -29,6 +30,37 @@ The root development script builds Nodula core and add-on bundles before startin
 
 
 Builds clear their destination before writing fresh output: framework builds clear `dist/nodula/` once before the sequence of core and add-on builds, demo builds clear `dist/app/`, and docs builds clear `dist/vitepress/`. This prevents files left by earlier builds from being included in the next output.
+
+### Menu
+
+`npm run nodula` prints the Nodula logo and a numbered menu of the scripts above, grouped as All, Framework, Demo app, Documentation and NPM. Type an entry's number and press Enter to run it, or `q` to quit. The menu runs one entry with the terminal attached, then exits with that script's exit code.
+
+The menu only forwards to existing npm scripts and does not replace them. CI and other tools keep calling `npm run build` and the other commands directly.
+
+To run one entry without the prompt, pass its number or key after `--`:
+
+```sh
+npm run nodula -- docs
+```
+
+| Key              | Menu entry                              | Runs                               |
+| ---------------- | --------------------------------------- | ---------------------------------- |
+| `all`            | Build everything                        | `npm run build`                    |
+| `test`           | Run all tests                           | `npm test`                         |
+| `lint`           | Lint                                    | `npm run lint`                     |
+| `format`         | Check formatting                        | `npm run format:check`             |
+| `framework`      | Build the framework                     | `npm run build:framework`          |
+| `test-framework` | Run the framework tests                 | `npm run test:framework`           |
+| `webcomponents`  | Build the web components                | `npm run build:webcomponents`      |
+| `dev`            | Start the dev server                    | `npm run dev`                      |
+| `app`            | Build the demo_app                      | `npm run build:app`                |
+| `test-demo`      | Run the demo_app tests                  | `npm run test:demo`                |
+| `docs-dev`       | Start the VitePress dev server          | `npm run docs:dev` in `vitepress/` |
+| `docs`           | Build the VitePress docs                | `npm run build:docs`               |
+| `npm`            | Package the framework as an npm tarball | `npm run package:framework`        |
+| `install`        | npm install (root)                      | `npm install`                      |
+
+Output is green on a real terminal. It is plain text when stdout is piped or when the `NO_COLOR` environment variable is set. An unknown number or key prints an error and exits with code 1. Pressing Enter without an answer quits.
 
 ## Use Nodula's Vite plugin
 

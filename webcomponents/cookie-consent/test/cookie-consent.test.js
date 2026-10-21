@@ -720,6 +720,12 @@ describe("setupGoogleAnalytics", () => {
 });
 
 describe("build output", () => {
+  let version;
+
+  beforeAll(async () => {
+    ({ version } = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8")));
+  });
+
   /**
    * Read a built file from dist.
    *
@@ -728,7 +734,7 @@ describe("build output", () => {
    */
   const readDist = (file) =>
     readFile(
-      new URL(`../../../dist/webcomponents/cookie-consent/${file}`, import.meta.url),
+      new URL(`../../../dist/webcomponents/cookie-consent/${version}/${file}`, import.meta.url),
       "utf8",
     );
 

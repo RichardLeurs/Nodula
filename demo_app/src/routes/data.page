@@ -5,11 +5,16 @@ import { createDataClient, DataError } from "nodula-framework/data";
 import dataImage from "../assets/images/data.webp";
 import DataTable from "../components/DataTable.comp";
 import IdeasCard from "../components/IdeasCard.comp";
-import ServerIdeasCard from "../components/ServerIdeasCard.comp";
+import PocketbaseIdeasCard from "../components/PocketbaseIdeasCard.comp";
+import SQLiteIdeasCard from "../components/SQLiteIdeasCard.comp";
+import SupabaseIdeasCard from "../components/SupabaseIdeasCard.comp";
 
 const sampleUrl = "https://jsonplaceholder.typicode.com/posts/1";
-const pocketbaseApiBase = import.meta.env.VITE_POCKETBASE_API_BASE || "/api/pocketbase";
-const sqliteApiBase = "/api/sqlite";
+const pocketbaseApiBase = import.meta.env.VITE_POCKETBASE_API_BASE;
+const pocketbaseCollection = "ideas";
+const sqliteApiBase = import.meta.env.VITE_SQLITE_API_BASE;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const dataClient = createDataClient();
 const [endpoint, setEndpoint] = signal(sampleUrl);
 const [activeDataTab, setActiveDataTab] = signal("indexeddb");
@@ -18,6 +23,7 @@ const [loading, setLoading] = signal(false);
 const [errorMessage, setErrorMessage] = signal("");
 const [sqliteJson, setSqliteJson] = signal("[]");
 const [pocketbaseJson, setPocketbaseJson] = signal("[]");
+const [supabaseJson, setSupabaseJson] = signal("[]");
 let activeRequest;
 
 /**
@@ -72,8 +78,8 @@ onCleanup(() => activeRequest?.abort());
         />
       </div>
       <p class="ui-page__description">
-        Explore browser IndexedDB storage, PHP-backed SQLite and remote JSON
-        requests with <code>nodula-framework/data</code>.
+        Explore browser IndexedDB storage, PHP-backed SQLite, Pocketbase embedded SQLite, Supabase Postgres and remote JSON requests with
+        <code>nodula-framework/data</code> and data-adapters.
       </p>
     </header>
 
@@ -103,7 +109,7 @@ onCleanup(() => activeRequest?.abort());
         >
           SQLite
         </button>
-        <!-- <button
+        <button
           class="ui-tab"
           type="button"
           role="tab"
@@ -114,7 +120,19 @@ onCleanup(() => activeRequest?.abort());
           @click="setActiveDataTab('pocketbase')"
         >
           PocketBase
-        </button> -->
+        </button>
+        <button
+          class="ui-tab"
+          type="button"
+          role="tab"
+          id="data-tab-supabase"
+          aria-controls="data-panel-supabase"
+          :aria-selected="activeDataTab() === 'supabase' ? 'true' : 'false'"
+          :tabindex="activeDataTab() === 'supabase' ? 0 : -1"
+          @click="setActiveDataTab('supabase')"
+        >
+          Supabase
+        </button>
         <button
           class="ui-tab"
           type="button"
@@ -167,36 +185,37 @@ setIdeas((current) => [...current, { text: 'Plant a garden', done: false }]);</c
         <h2 id="sqlite-ideas-title" class="ui-section__title">Data from PHP + SQLite</h2>
         <p class="ui-section__description">
           Add, complete, and remove ideas. Your data is saved in a
-          <code>ideas.sqlite3</code> database at <code>/api/sqlite</code> on the server. Do not
-          enter private information.
+          <code>ideas.sqlite3</code> database on the server. Do
+          not enter private information.
         </p>
-        <ServerIdeasCard
+        <SQLiteIdeasCard
           :api-base="sqliteApiBase"
           :store-name="'SQLite ideas'"
           @on:data="setSqliteJson($event)"
-        ></ServerIdeasCard>
+        ></SQLiteIdeasCard>
         <h3 class="ui-card__title">How to use the PHP API</h3>
         <p class="ui-section__description">
           PHP reads database configuration on the server, then uses PDO prepared statements with
-          SQLite.
+          SQLite. The adapter opts into paging with <code>paging: {}</code>, so the list loads one
+          page at a time with <code>listPage</code>.
         </p>
 
         <!-- https://sqlite.org/index.html -->
 
         <pre
           class="ui-code-block"
-        ><code data-highlight>import { createDataClient } from 'nodula-framework/data';
+        ><code data-highlight>import { createRestAdapter } from 'nodula-framework/data-rest';
 
-const api = createDataClient({ baseURL: '/api/sqlite' });
-const ideas = await api.get('/ideas');
-const created = await api.post('/ideas', { text: 'Plant a garden' });
-await api.patch(`/ideas/${created.id}`, { done: true });
-await api.delete(`/ideas/${created.id}`);</code></pre>
+const ideas = createRestAdapter({ baseURL: 'base-url', resource: 'ideas', paging: {} });
+const { items, page, totalPages } = await ideas.listPage({ page: 1, perPage: 5 });
+const created = await ideas.create({ text: 'Plant a garden' });
+await ideas.update(created.id, { done: true });
+await ideas.delete(created.id);</code></pre>
         <h3 class="ui-card__title">SQLite rows rendered from JSON</h3>
         <DataTable :json="sqliteJson()"></DataTable>
       </section>
 
-      <!-- <section
+      <section
         class="ui-tab-panel"
         role="tabpanel"
         id="data-panel-pocketbase"
@@ -205,18 +224,71 @@ await api.delete(`/ideas/${created.id}`);</code></pre>
       >
         <h2 class="ui-section__title">Data from PocketBase</h2>
         <p class="ui-section__description">
-          Add, complete, and remove ideas. Your data is saved in a PocketBase database via
-          /api/pocketbase on the server. Do not enter private information.
+         Add, complete, and remove ideas. Your data is saved in a Pocketbase embedded SQLite table through its REST API on a self-hosted server. Do not enter private information.
         </p>
 
-        <ServerIdeasCard
+        <PocketbaseIdeasCard
           :api-base="pocketbaseApiBase"
+          :collection="pocketbaseCollection"
           :store-name="'PocketBase ideas'"
           @on:data="setPocketbaseJson($event)"
-        ></ServerIdeasCard>
+        ></PocketbaseIdeasCard>
+        <h3 class="ui-card__title">How to use the PocketBase API</h3>
+        <p class="ui-section__description">
+          Create an adapter for one collection, then list, create, update, and delete its records.
+        </p>
+        <pre
+          class="ui-code-block"
+        ><code data-highlight>import { createPocketBaseAdapter } from 'nodula-framework/data-pocketbase';
+
+const ideas = createPocketBaseAdapter({ baseURL: 'base-url', collection: 'ideas' });
+const { items, page, totalPages } = await ideas.listPage({ page: 1, perPage: 5 });
+const created = await ideas.create({ text: 'Plant a garden' });
+await ideas.update(created.id, { done: true });
+await ideas.delete(created.id);</code></pre>
         <h3 class="ui-card__title">PocketBase rows rendered from JSON</h3>
         <DataTable :json="pocketbaseJson()"></DataTable>
-      </section> -->
+      </section>
+
+      <section
+        class="ui-tab-panel"
+        role="tabpanel"
+        id="data-panel-supabase"
+        aria-labelledby="data-tab-supabase"
+        @if="activeDataTab() === 'supabase'"
+      >
+        <h2 class="ui-section__title">Data from Supabase</h2>
+        <p class="ui-section__description">
+          Add, complete, and remove ideas. Your data is saved in a Supabase Postgres table through
+          its REST API on a self-hosted server. Do not enter private information.
+        </p>
+        <SupabaseIdeasCard
+          :api-base="supabaseUrl"
+          :api-key="supabaseAnonKey"
+          :store-name="'Supabase ideas'"
+          @on:data="setSupabaseJson($event)"
+        ></SupabaseIdeasCard>
+        <h3 class="ui-card__title">How to use the Supabase REST API</h3>
+        <p class="ui-section__description">
+          Create an adapter for the <code>ideas</code> table. It sends the anon key as both
+          <code>apikey</code> and a bearer token, and selects one row with <code>id</code>.
+        </p>
+        <pre
+          class="ui-code-block"
+        ><code data-highlight>import { createSupabaseAdapter } from 'nodula-framework/data-supabase';
+
+const ideas = createSupabaseAdapter({ baseURL: 'base-url', apiKey: anonKey, table: 'ideas' });
+const { items, page, totalPages } = await ideas.listPage({
+  page: 1,
+  perPage: 5,
+  params: { order: 'id.asc' },
+});
+const created = await ideas.create({ text: 'Plant a garden' });
+await ideas.update(created.id, { done: true });
+await ideas.delete(created.id);</code></pre>
+        <h3 class="ui-card__title">Supabase rows rendered from JSON</h3>
+        <DataTable :json="supabaseJson()"></DataTable>
+      </section>
 
       <section
         class="ui-tab-panel"

@@ -54,6 +54,10 @@ async function bundleConsumer(entry) {
             find: `nodula-framework/${name}`,
             replacement: path.join(projectRoot, `framework/addons/${name}.js`),
           })),
+          ...['pocketbase', 'supabase', 'rest'].map((name) => ({
+            find: `nodula-framework/data-${name}`,
+            replacement: path.join(projectRoot, `framework/addons/data-adapters/${name}.js`),
+          })),
         ],
       },
       build: {
@@ -201,6 +205,21 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   assert.match(data, /treeShakingResult/);
   assert.match(data, /Data request failed with HTTP/);
   assert.doesNotMatch(data, /createStore expects a plain object or array/);
+
+  const pocketbase = await bundleConsumer('data-pocketbase.js');
+  assert.match(pocketbase, /treeShakingResult/);
+  assert.match(pocketbase, /createPocketBaseAdapter expects collection/);
+  assert.doesNotMatch(pocketbase, /createSupabaseAdapter|createRestAdapter/);
+
+  const supabase = await bundleConsumer('data-supabase.js');
+  assert.match(supabase, /treeShakingResult/);
+  assert.match(supabase, /createSupabaseAdapter expects table/);
+  assert.doesNotMatch(supabase, /createPocketBaseAdapter|createRestAdapter/);
+
+  const rest = await bundleConsumer('data-rest.js');
+  assert.match(rest, /treeShakingResult/);
+  assert.match(rest, /createRestAdapter expects resource/);
+  assert.doesNotMatch(rest, /createPocketBaseAdapter|createSupabaseAdapter/);
 
   const dragdrop = await bundleConsumer('dragdrop.js');
   assert.match(dragdrop, /treeShakingResult/);

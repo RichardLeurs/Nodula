@@ -1,14 +1,19 @@
 // Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
 
+import { readFileSync } from "node:fs";
 import { mkdir, rm, writeFile, readFile, copyFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 
 const projectRoot = fileURLToPath(new URL("../..", import.meta.url));
-const outputDirectory = fileURLToPath(
-  new URL("../../dist/webcomponents/cookie-consent", import.meta.url),
+const { version } = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8"));
+
+/** Versioned output folder, so earlier releases in dist/ are never overwritten. */
+export const cookieConsentOutputDirectory = fileURLToPath(
+  new URL(`../../dist/webcomponents/cookie-consent/${version}`, import.meta.url),
 );
+const outputDirectory = cookieConsentOutputDirectory;
 
 /**
  * Build configuration for one output format. No externals: the bundle is self-contained.

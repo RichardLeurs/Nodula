@@ -93,5 +93,6 @@ The add-on does not authenticate users or authorize operations. Validate input a
 
 ## Examples and related resources
 
-- The demo app’s [`/data` page](https://nodula.richardleurs.nl/data) shows browser storage, PHP-backed SQLite and PocketBase endpoints, and remote JSON requests. Its IndexedDB-backed local ideas list is a separate example using `createIndexedDB` from `nodula-framework/localstorage`; see [Local Storage](/guide/local-storage).
-- Data client behavior is covered by `framework/vitest/data.test.js`, and the demo integrations by `demo_app/vitest/data-page.test.js`, `demo_app/vitest/sqlite-ideas.test.js`, and `demo_app/vitest/pocketbase-api.test.js`.
+- For PocketBase collections and Supabase tables, the SDK-free [Data Adapters](/guide/data-adapters) (`nodula-framework/data-pocketbase` and `nodula-framework/data-supabase`) build `list`, `get`, `create`, `update` and `delete` on this client.
+- The demo app’s [`/data` page](https://nodula.richardleurs.nl/data) shows browser storage, PHP-backed SQLite and Supabase endpoints, and remote JSON requests. Its IndexedDB-backed local ideas list is a separate example using `createIndexedDB` from `nodula-framework/localstorage`; see [Local Storage](/guide/local-storage).
+- Data client behavior is covered by `framework/vitest/data.test.js`, and the demo integrations by `demo_app/vitest/data-page.test.js`, `demo_app/vitest/sqlite-ideas.test.js`, `demo_app/vitest/supabase-ideas.test.js`, and `demo_app/vitest/pocketbase-api.test.js`.

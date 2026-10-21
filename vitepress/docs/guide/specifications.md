@@ -24,6 +24,7 @@ Applications import public package entries, never internal source files. Add-ons
 | `nodula-framework/suspense` | A fallback while resources load for the first time. | [Suspense](/guide/suspense) |
 | `nodula-framework/props` | `withProps` prop schema (types, defaults, validators, warnings) and `mergeAttrs` for opt-in attribute fallthrough. | [Props](/guide/props), [Fallthrough Attributes](/guide/fallthrough-attributes) |
 | `nodula-framework/data` | Fetch-based request client and HTTP errors. | [Data](/guide/data) |
+| `nodula-framework/data-pocketbase`, `data-supabase`, `data-rest` | SDK-free REST adapters for one PocketBase collection, one Supabase table, or one resource of a conventional REST API (`data-rest`), built on the data add-on: `list`, `get`, `create`, `update`, `delete`. PocketBase and Supabase also have `listPage`; `data-rest` has `listPage` only when its optional `paging` option is given. | [Data Adapters](/guide/data-adapters) |
 | `nodula-framework/localstorage` | localStorage and IndexedDB signals; browser-readable cookie helpers. | [Local Storage](/guide/local-storage) |
 | `nodula-framework/dragdrop` | Native drag sources and accepted drop targets. | [Drag and Drop](/guide/drag-and-drop) |
 | `nodula-framework/sortable` | Vertical list reordering with native drag and drop, Move Up/Down controls, announcements. | [Sortable Lists](/guide/sortable-lists) |
@@ -186,7 +187,7 @@ Nodula has no runtime plugin registry and no `app.use()`. Integrations use expli
 4. **Build plugins** integrate at build time. `nodulaPlugin()` compiles SFCs; `nodulaPWA()` configures the PWA plugin. Neither runs in the browser.
 5. **Lifecycle cleanup** belongs to the owner that created the integration, or to an explicit dispose function.
 
-**Limits:** no general plugin manager. New integrations stay optional, vendor-neutral at the framework boundary, and tested against their adapter contract. Vendor SDK setup belongs in application code or a separate adapter package.
+**Limits:** no general plugin manager. New integrations stay optional, vendor-neutral at the framework boundary, and tested against their adapter contract. Optional SDK-free REST adapters may ship as their own entries built on an existing add-on (`data-pocketbase` and `data-supabase`, section 2.7). Vendor SDK setup still belongs in application code.
 
 ### 2.7 Add-ons
 
@@ -255,11 +256,11 @@ Add-ons are opt-in package entries. Option-level detail lives in each entry's gu
 
 #### Data
 
-**Contract:** Fetch-based methods, query parameters, JSON handling, configurable headers, base URL and transport. Failed responses throw `DataError` with the HTTP status and the parsed body, or the raw text when the body is not valid JSON.
+**Contract:** Fetch-based methods, query parameters, JSON handling, configurable headers, base URL and transport. Failed responses throw `DataError` with the HTTP status and the parsed body, or the raw text when the body is not valid JSON. `createPocketBaseAdapter` (`nodula-framework/data-pocketbase`) and `createSupabaseAdapter` (`nodula-framework/data-supabase`) build `list`, `listPage` (one page with `totalItems` and `totalPages`), `get`, `create`, `update` and `delete` on this client for one PocketBase collection or Supabase table, with no vendor SDK. `createRestAdapter` (`nodula-framework/data-rest`) builds `list`, `get`, `create`, `update` and `delete` for one resource of a conventional REST API: `GET /{resource}` returns a plain array, `GET`, `PATCH` and `DELETE` act on `/{resource}/{id}`, and `POST /{resource}` creates. `delete` resolves to `undefined`. The optional `paging` option adds `listPage({ page, perPage })`: page style (`page` and `perPage` query parameters) by default, or offset style when `paging.offsetParam` is set. Its body must be a plain array and the total comes from a response header (`X-Total-Count` by default, or `paging.totalHeader`). Without `paging` there is no `listPage`. Invalid configuration throws `TypeError`.
 
-**Guarantees** (`data.test.js`): a malformed error body keeps the status; a malformed success body throws `SyntaxError`.
+**Guarantees** (`data.test.js`, `data-adapters.test.js`): a malformed error body keeps the status; a malformed success body throws `SyntaxError`. Adapter requests use the documented methods, URLs and headers; Supabase single-row requests return HTTP 406 for a missing row, which rejects as `DataError`. The REST adapter sends the documented method and URL for each call, encodes the resource and id, ignores a trailing slash in `baseURL`, and rejects a non-string or blank `baseURL` or `resource` with the exact `TypeError` messages.
 
-**Limits:** no retry, authentication, authorization or proxy by default.
+**Limits:** no retry, token refresh, authorization or proxy. Adapter authentication is limited to the optional `getToken` hook (PocketBase and Supabase), which sends a token the application supplies on every request; the adapters add no sign-in. The REST adapter has no `getToken`: it takes credentials through `headers` or a `fetcher`. The adapters add no realtime, query builder, automatic all-page fetching, cursor paging, paging envelopes or upload support. `listPage` fetches one page per call.
 
 #### Local storage
 
@@ -406,6 +407,7 @@ Nodula renders standard DOM and does not make an interface accessible by itself.
 - Browser requests come from the visitor's browser. Cross-origin requests need an appropriate CORS policy. Server secrets do not belong in browser code or headers.
 - Use text insertion for untrusted content. `onSubmit` receives HTML-escaped values by default (`escapeHtml: true`); `escapeHtml: false` passes raw values, which must then be encoded for their output context. Escaping is HTML-context encoding only. It is not a replacement for server validation or for context-appropriate output encoding. Values that are persisted (to a database or API) should be submitted with `escapeHtml: false`, because escaped text would be stored with its entities.
 - Browser cookie helpers cannot set `HttpOnly`; session-cookie policy belongs on the server.
+- The browser-side data adapters send only the key or token the application gives them. A publishable or anon Supabase key is protected only by row-level security, and PocketBase records only by their API rules. Never put a service-role or other secret key in browser code or a `VITE_` variable.
 - Consent is a browser preference, not proof that third-party code is blocked. Load optional integrations only after permission is granted.
 - The repository's example Python API has no authentication or per-user authorization and must not be exposed publicly.
 
@@ -441,7 +443,7 @@ Errors and messages that reach end users carry a stable `code` with the `nodula-
 | Router and navigation | `router.test.js`, `navigation.test.js`, `navigation-dropdown.test.js` |
 | Form, resource, suspense | `form-fields.test.js`, `form-submit-escaping.test.js`, `form-async-validation.test.js`, `form-a11y.test.js`, `resource.test.js`, `suspense.test.js` |
 | Props, prop schema, attribute fallthrough | `props.test.js`, `compiler.test.js` |
-| Storage, data, auth | `localstorage.test.js`, `data.test.js`, `auth.test.js` |
+| Storage, data, auth | `localstorage.test.js`, `data.test.js`, `data-adapters.test.js`, `auth.test.js` |
 | Browser UI add-ons | `dialog.test.js`, `modal.test.js`, `drawer.test.js`, `notifications.test.js`, `animation.test.js`, `dragdrop.test.js`, `sortable.test.js`, `filedrop.test.js`, `fileupload.test.js` |
 | Consent, SEO, PWA | `cookieconsent.test.js`, `seo.test.js`, `pwa.test.js` |
 | Error codes | `error-codes.test.js` |
@@ -484,7 +486,7 @@ These are the boundaries Nodula does not cross. Read them before choosing it for
 - **Error codes:** user-facing errors carry a `nodula-` code; the router's status texts "Checking route…" and "Navigation blocked." do not. Router and island text can be replaced through `labels` and `errorText`; the framework does not translate.
 - **Storage:** no cross-tab `sync`. A blocked IndexedDB open stays memory-only until it completes. When another tab upgrades the database, this tab releases its connection and continues in memory. Cookie helpers cannot set or read `HttpOnly` cookies.
 - **Routing:** guards are client-side navigation controls, not authorization. History mode needs a host fallback for direct visits and refreshes. The `base` option is History-only, and no base path is inferred.
-- **Data:** no retry, authentication, authorization or proxy by default.
+- **Data:** no retry, authentication, authorization or proxy by default. Data adapters have no realtime, sign-in, query builder, automatic all-page fetching, cursor paging or upload support.
 - **Drag and drop:** does not change your data, sanitize payloads, or provide keyboard or touch alternatives.
 - **File drop and upload:** type checks do not inspect file contents. Server validation, storage and preview policy are yours.
 - **Auth:** role and permission checks affect the UI only. Your server must enforce access.

@@ -1,4 +1,4 @@
-// Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3
+// Nodula javascript framework, see https://nodula.richardleurs.nl/ | Copyright © Richard Leurs 2026 | GNU General Public License v3
 
 <script>
 import { effect, onCleanup, onMount } from "nodula-framework";
@@ -9,8 +9,15 @@ import { createNavigationDropdown } from "nodula-framework/navigation-dropdown";
 import { enableLifecycleTransitions } from "nodula-framework/animation";
 import { createLocalStorage } from "nodula-framework/localstorage";
 import { createCookieConsent, setupGoogleAnalytics } from "nodula-framework/cookieconsent";
-import  cookieConsentImage from "./assets/images/cookie.webp";
-import { demoAuth,initializeDemoAuth,navigateDemoRoute,protectDemoAdminRoute,setDemoRouter,signOutDemoAdmin} from "./demo-auth.js";
+import cookieConsentImage from "./assets/images/cookie.webp";
+import {
+  demoAuth,
+  initializeDemoAuth,
+  navigateDemoRoute,
+  protectDemoAdminRoute,
+  setDemoRouter,
+  signOutDemoAdmin,
+} from "./demo-auth.js";
 import { notFound, routes } from "./routes.js";
 
 // Filerouter based on pages in /routes

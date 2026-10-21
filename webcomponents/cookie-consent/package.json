@@ -1,0 +1,25 @@
+{
+  "name": "nodula-cookie-consent",
+  "version": "1.0.0",
+  "description": "Standalone cookie consent web component from the Nodula framework.",
+  "license": "GPL-3.0-or-later",
+  "files": [
+    "nodula-cookie-consent.js",
+    "nodula-cookie-consent.js.gz",
+    "nodula-cookie-consent.iife.js",
+    "nodula-cookie-consent.iife.js.gz",
+    "nodula-cookie-consent.d.ts"
+  ],
+  "type": "module",
+  "sideEffects": true,
+  "main": "./nodula-cookie-consent.js",
+  "module": "./nodula-cookie-consent.js",
+  "types": "./nodula-cookie-consent.d.ts",
+  "exports": {
+    ".": {
+      "types": "./nodula-cookie-consent.d.ts",
+      "import": "./nodula-cookie-consent.js"
+    },
+    "./iife": "./nodula-cookie-consent.iife.js"
+  }
+}

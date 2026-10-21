@@ -1,14 +1,26 @@
 <!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
 import { onCleanup, signal } from "nodula-framework";
-import { createDataClient, DataError } from "nodula-framework/data";
+import { DataError } from "nodula-framework/data";
+import { createRestAdapter } from "nodula-framework/data-rest";
 
-const api = createDataClient({ baseURL: props["api-base"] ?? "/api/sqlite" });
+// The browser talks to the PHP API, which keeps the SQLite file on the server.
+const baseURL = props["api-base"] ?? "";
+const configured = Boolean(baseURL.trim());
+const notConfiguredMessage = "The PHP API is not configured for this build.";
+const api = configured ? createRestAdapter({ baseURL, resource: "ideas", paging: {} }) : undefined;
 const [ideas, setIdeas] = signal([]);
 const [draft, setDraft] = signal("");
-const [loading, setLoading] = signal(true);
+const [loading, setLoading] = signal(configured);
 const [busy, setBusy] = signal(false);
-const [status, setStatus] = signal(`Loading ideas from ${props["store-name"] ?? "SQLite"}…`);
+const [status, setStatus] = signal(
+  configured ? `Loading ideas from ${props["store-name"] ?? "SQLite"}…` : notConfiguredMessage,
+);
+// Ideas per page; small so the pager shows up with the demo's few rows.
+const perPage = 5;
+const [page, setPage] = signal(1);
+const [totalPages, setTotalPages] = signal(1);
+const [totalItems, setTotalItems] = signal(0);
 let activeRequest;
 
 /**
@@ -26,21 +38,28 @@ function describeError(error) {
 }
 
 /**
- * Load the ideas from the server. A newer load cancels an older one.
+ * Load the current page of ideas from the server. A newer load cancels an older one.
  *
  * @returns {Promise<void>}
  */
 async function loadIdeas() {
+  if (!configured) return;
   activeRequest?.abort();
   const controller = new AbortController();
   activeRequest = controller;
   setLoading(true);
   try {
-    const result = await api.get("/ideas", { signal: controller.signal });
-    if (!Array.isArray(result)) throw new Error("PHP API returned an invalid ideas list.");
-    setIdeas(result);
-    props.onData?.(JSON.stringify(result));
-    setStatus(`Connected to ${props["store-name"] ?? "server-side SQLite"}.`);
+    const result = await api.listPage({ page: page(), perPage, signal: controller.signal });
+    const list = result.items;
+    // Rows are keyed by their slot on the page, not by record id, so changing page updates the rows in
+    // place. Keyed by id, every old row would play its leave animation while the new ones fade in.
+    setIdeas(list.map((idea, slot) => ({ ...idea, slot })));
+    setTotalPages(result.totalPages);
+    setTotalItems(result.totalItems);
+    props.onData?.(JSON.stringify(list));
+    setStatus(
+      `Connected to ${props["store-name"] ?? "server-side SQLite"}. ${totalItems()} in total.`,
+    );
   } catch (error) {
     if (error?.name !== "AbortError") setStatus(describeError(error));
   } finally {
@@ -63,7 +82,7 @@ async function addIdea(event) {
   if (!text || busy()) return;
   setBusy(true);
   try {
-    await api.post("/ideas", { text });
+    await api.create({ text });
     setDraft("");
     await loadIdeas();
   } catch (error) {
@@ -84,7 +103,7 @@ async function toggleIdea(id, done) {
   if (busy()) return;
   setBusy(true);
   try {
-    await api.patch(`/ideas/${id}`, { done });
+    await api.update(id, { done });
     await loadIdeas();
   } catch (error) {
     setStatus(describeError(error));
@@ -103,7 +122,9 @@ async function removeIdea(id) {
   if (busy()) return;
   setBusy(true);
   try {
-    await api.delete(`/ideas/${id}`);
+    await api.delete(id);
+    // Removing the last idea of the last page would leave an empty page, so step back one page.
+    if (ideas().length === 1 && page() > 1) setPage(page() - 1);
     await loadIdeas();
   } catch (error) {
     setStatus(describeError(error));
@@ -112,12 +133,23 @@ async function removeIdea(id) {
   }
 }
 
+/**
+ * Show another page of ideas and load it.
+ *
+ * @param {number} next 1-based page number.
+ * @returns {void}
+ */
+function goToPage(next) {
+  setPage(next);
+  void loadIdeas();
+}
+
 void loadIdeas();
 onCleanup(() => activeRequest?.abort());
 </script>
 
 <template>
-  <article class="ui-panel ui-panel--raised ui-ideas-card ui-server-ideas-card">
+  <article class="ui-panel ui-panel--raised ui-ideas-card ui-sqlite-ideas-card">
     <div class="ui-ideas-card__heading">
       <h3 class="ui-card__title">{{ props["store-name"] ?? "Shared server ideas" }}</h3>
       <span class="ui-badge ui-badge--success"
@@ -129,7 +161,7 @@ onCleanup(() => activeRequest?.abort());
       <li
         class="ui-ideas-list__item"
         @for="idea of ideas()"
-        :key="idea.id"
+        :key="idea.slot"
         :class="
           idea().done ? 'ui-ideas-list__item ui-ideas-list__item--done' : 'ui-ideas-list__item'
         "
@@ -155,6 +187,27 @@ onCleanup(() => activeRequest?.abort());
         </button>
       </li>
     </ul>
+    <div class="ui-cluster ui-ideas-card__pager" @if="totalPages() > 1">
+      <button
+        class="ui-button ui-button--secondary ui-button--small"
+        type="button"
+        aria-label="Previous page"
+        :disabled="loading() || busy() || page() <= 1"
+        @click="goToPage(page() - 1)"
+      >
+        Previous
+      </button>
+      <span class="ui-ideas-card__page">Page {{ page() }} of {{ totalPages() }}</span>
+      <button
+        class="ui-button ui-button--secondary ui-button--small"
+        type="button"
+        aria-label="Next page"
+        :disabled="loading() || busy() || page() >= totalPages()"
+        @click="goToPage(page() + 1)"
+      >
+        Next
+      </button>
+    </div>
     <form class="ui-cluster ui-ideas-card__add" @submit="addIdea($event)">
       <input
         class="ui-input"
@@ -164,13 +217,13 @@ onCleanup(() => activeRequest?.abort());
         :value="draft()"
         @input="setDraft($event.currentTarget.value)"
         aria-label="New server idea"
-        :disabled="loading() || busy()"
+        :disabled="loading() || busy() || !configured"
       />
       <button
         class="ui-button ui-button--primary ui-ideas-card__add-button"
         type="submit"
         aria-label="Add server idea"
-        :disabled="loading() || busy()"
+        :disabled="loading() || busy() || !configured"
       >
         +
       </button>
@@ -207,9 +260,9 @@ onCleanup(() => activeRequest?.abort());
   font-size: var(--ui-font-size-sm);
 }
 
-/* .ui-ideas-list: resets list markers and reserves room for list items. */
+/* .ui-ideas-list: resets list markers and reserves room for a full page of items, so the pager does not jump. */
 .ui-ideas-list {
-  min-height: 77px;
+  min-height: calc(5 * 36px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -270,11 +323,22 @@ onCleanup(() => activeRequest?.abort());
   background: color-mix(in srgb, var(--ui-color-danger) 10%, transparent);
 }
 
-/* .ui-ideas-card__add: separates new-item controls from existing ideas. */
+/* .ui-ideas-card__pager: spreads the previous and next actions around the page label. */
+.ui-ideas-card__pager {
+  justify-content: space-between;
+  padding-top: var(--ui-space-2);
+}
+
+/* .ui-ideas-card__page: labels the current page in muted small text. */
+.ui-ideas-card__page {
+  color: var(--ui-color-text-subtle);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-ideas-card__add: spaces new-item controls from the ideas above. */
 .ui-ideas-card__add {
   column-gap: var(--ui-space-3);
   padding-top: var(--ui-space-3);
-  border-top: 1px solid var(--ui-color-border);
 }
 
 .ui-ideas-card__add .ui-input {

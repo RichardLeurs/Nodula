@@ -45,6 +45,19 @@ export default defineConfig({
         find: `nodula-framework/${name}`,
         replacement: frameworkSource(`../framework/addons/${name}.js`),
       })),
+      // The adapters live in their own folder, so they cannot follow the `${name}.js` pattern above.
+      {
+        find: 'nodula-framework/data-pocketbase',
+        replacement: frameworkSource('../framework/addons/data-adapters/pocketbase.js'),
+      },
+      {
+        find: 'nodula-framework/data-supabase',
+        replacement: frameworkSource('../framework/addons/data-adapters/supabase.js'),
+      },
+      {
+        find: 'nodula-framework/data-rest',
+        replacement: frameworkSource('../framework/addons/data-adapters/rest.js'),
+      },
     ],
   },
   test: {

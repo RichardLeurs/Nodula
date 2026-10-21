@@ -4,14 +4,16 @@ This guide describes building and hosting Nodula's repository demo. A separately
 
 ## Build the repository demo
 
-From the repository root, build the framework package and demo app:
+From the repository root, install dependencies and open the menu:
 
 ```sh
 npm install
-npm run build
+npm run nodula
 ```
 
-The root `npm run build` runs framework tests, packages the framework, checks generated declarations, runs demo tests, builds the app, then builds the docs. For an app-only rebuild after framework outputs already exist:
+Choose **Build everything** to build the framework package, demo app, web components and docs. `npm run build` runs the same steps directly, so CI can keep calling it.
+
+The root `npm run build` packages the framework, checks generated declarations, builds the app, builds the web components, then builds the docs. It does not run the test suites; run `npm test` (menu entry **Run all tests**) before deploying. For an app-only rebuild after framework outputs already exist:
 
 ```sh
 npm run build:app

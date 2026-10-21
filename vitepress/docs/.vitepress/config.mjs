@@ -109,6 +109,7 @@ export default defineConfig({
           { text: "Routing", link: "/guide/routing" },
           { text: "Local storage", link: "/guide/local-storage" },
           { text: "Data", link: "/guide/data" },
+          { text: "Data adapters", link: "/guide/data-adapters" },
           { text: "Store", link: "/guide/stores" },
           { text: "Animation", link: "/guide/animations" },
           { text: "Form", link: "/guide/forms" },

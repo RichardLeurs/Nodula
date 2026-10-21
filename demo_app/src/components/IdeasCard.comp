@@ -176,11 +176,10 @@ function addIdea(event) {
   background: color-mix(in srgb, var(--ui-color-danger) 10%, transparent);
 }
 
-/* .ui-ideas-card__add: separates new-item controls from existing ideas. */
+/* .ui-ideas-card__add: spaces new-item controls from the ideas above. */
 .ui-ideas-card__add {
   column-gap: var(--ui-space-3);
   padding-top: var(--ui-space-3);
-  border-top: 1px solid var(--ui-color-border);
 }
 
 .ui-ideas-card__add .ui-input {

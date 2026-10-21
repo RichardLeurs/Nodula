@@ -64,11 +64,15 @@ To install this repository's dependencies and run the demo locally:
 
 ```sh
 npm install
-npm run dev
+npm run nodula
 ```
+`npm run nodula` shows a menu with all options for testing, running and building the framework and demo.
+
+Choose Start the dev server in the menu to run the demo. That entry runs`npm run dev`.
 
 For a production build, run `npm run build`. This will build the framework to `dist/nodula/` and the demo app to `dist/app/`.
 It also builds the npm package to the `/dist/npm` directory. The demo app loads that file as the framework package.
+
 
 ## VS Code language extension
 

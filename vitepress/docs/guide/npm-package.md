@@ -10,7 +10,7 @@ The repository can build Nodula into a local npm tarball (`.tgz`) without publis
 
 ## Build and pack
 
-Build and package only the framework:
+Build and package only the framework. Choose **Package the framework as an npm tarball** in `npm run nodula` (`npm run nodula -- npm`), or run the script directly:
 
 ```sh
 npm run package:framework
@@ -24,7 +24,7 @@ If bundles are already built, create the tarball without rebuilding:
 npm run pack:framework
 ```
 
-For a full checkout verification—including framework tests/builds, bundle declaration checks, demo tests/build, and docs build—run:
+For a full checkout build—framework packaging, bundle declaration checks, the demo build, web components, and the docs build—run `npm run build`, or choose **Build everything** in `npm run nodula`. The root build does not run the test suites; run `npm test` (menu entry **Run all tests**) for those.
 
 ```sh
 npm run build

@@ -87,7 +87,8 @@ function refreshBeds() {
 
       <p class="ui-page__description">
         createResource runs a fetcher with a signal, tracks its state, and keeps the last good value
-        while a refresh runs. Choosing another greenhouse aborts the request that is still in flight.
+        while a refresh runs. Choosing another greenhouse aborts the request that is still in
+        flight.
       </p>
     </header>
 
@@ -151,7 +152,9 @@ function refreshBeds() {
 
     <section class="ui-section" aria-labelledby="resource-code-title">
       <h2 id="resource-code-title" class="ui-section__title">Create a resource</h2>
-      <pre class="ui-code-block"><code data-highlight>const bedResource = createResource(fetchBeds, {
+      <pre
+        class="ui-code-block"
+      ><code data-highlight>const bedResource = createResource(fetchBeds, {
   source: selectedGreenhouseId,
 });
 
