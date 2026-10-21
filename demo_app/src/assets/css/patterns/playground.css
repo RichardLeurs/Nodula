@@ -44,6 +44,11 @@
   pointer-events: none;
 }
 
+/* The user agent gives code a generic monospace face (Courier on macOS), which differs from the shared mono font. */
+.playground-highlight code {
+  font: inherit;
+}
+
 /* The text area is transparent, so only the highlighted copy shows the text; the caret stays visible. */
 .playground-input {
   width: 100%;

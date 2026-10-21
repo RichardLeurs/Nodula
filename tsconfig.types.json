@@ -27,6 +27,7 @@
     "framework/addons/auth.d.ts",
     "framework/addons/seo.d.ts",
     "framework/addons/seo-vite.d.ts",
+    "webcomponents/cookie-consent/index.d.ts",
     "framework/vitest/types/framework.typecheck.ts"
   ]
 }

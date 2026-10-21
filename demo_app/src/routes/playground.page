@@ -132,7 +132,7 @@ onCleanup(() => {
 <template>
   <main class="ui-page page">
     <header class="ui-page__header">
-      <p class="ui-page__eyebrow">Try NodulaJS in the browser</p>
+      <p class="ui-page__eyebrow">Try Nodula in the browser</p>
       <h1 class="ui-page__title">Playground</h1>
       <p class="ui-page__description">
         Edit a component and it runs in a sandboxed frame once you stop typing. Press Run, or Ctrl

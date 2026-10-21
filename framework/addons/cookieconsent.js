@@ -204,7 +204,8 @@ export function createCookieConsent(options = {}) {
     version = "1.0",
     storageKey = "nodula-cookie-consent",
     storage,
-    siteName = typeof location === "undefined" ? "This website" : location.hostname,
+    // file:// and about:blank pages have an empty hostname, which would fail the check below.
+    siteName = (typeof location === "undefined" ? "" : location.hostname) || "This website",
     description = "We use cookies and similar technologies. Necessary storage keeps the website working; optional categories need your permission.",
     image,
     privacyPolicyUrl,
