@@ -1,0 +1,361 @@
+<!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
+<script>
+import { onCleanup, signal } from "nodula-framework";
+import { DataError } from "nodula-framework/data";
+import { createFirebaseAdapter } from "nodula-framework/data-firebase";
+import { createFirebaseAuth, getFirebaseToken } from "../firebase-auth.js";
+
+// The browser gets a short-lived token from the PHP endpoint, exchanges it for a Firebase ID token and sends that
+// token to Firestore. The service-account key stays on the server.
+const projectId = (props["project-id"] ?? "").trim();
+const tokenUrl = (props["api-token-url"] ?? "").trim();
+const apiKey = (props["api-key"] ?? "").trim();
+const configured = Boolean(projectId && tokenUrl && apiKey);
+const notConfiguredMessage = "Firebase is not configured for this build.";
+const storeName = props["store-name"] ?? "Firebase ideas";
+const auth = configured ? createFirebaseAuth({ tokenUrl, apiKey }) : undefined;
+const api = configured
+  ? createFirebaseAdapter({
+      projectId,
+      collection: props.collection ?? "ideas",
+      getToken: () => getFirebaseToken(auth),
+    })
+  : undefined;
+const [ideas, setIdeas] = signal([]);
+const [draft, setDraft] = signal("");
+const [loading, setLoading] = signal(configured);
+const [busy, setBusy] = signal(false);
+const [status, setStatus] = signal(
+  configured ? `Loading ideas from ${storeName}…` : notConfiguredMessage,
+);
+// Ideas per page; small so the pager shows up with the demo's few rows.
+const perPage = 5;
+const [page, setPage] = signal(1);
+const [totalPages, setTotalPages] = signal(1);
+const [totalItems, setTotalItems] = signal(0);
+let activeRequest;
+
+/**
+ * A short message for a failed request: the server’s details when it sent them, otherwise the error message.
+ *
+ * @param {unknown} error
+ * @returns {string}
+ */
+function describeError(error) {
+  if (error instanceof DataError) {
+    const detail = error.data?.error?.message ?? error.data?.message ?? error.message;
+    return `Request failed with HTTP ${error.status}: ${detail}`;
+  }
+  return error?.message || "Could not connect to Firebase.";
+}
+
+/**
+ * Load the current page of ideas from Firestore. A newer load cancels an older one.
+ *
+ * @returns {Promise<void>}
+ */
+async function loadIdeas() {
+  if (!configured) return;
+  activeRequest?.abort();
+  const controller = new AbortController();
+  activeRequest = controller;
+  setLoading(true);
+  try {
+    const result = await api.listPage({ page: page(), perPage, signal: controller.signal });
+    // Firestore returns the fields as stored; keep only the ones the card shows.
+    const list = result.items.map(({ id, text, done }) => ({ id, text, done: Boolean(done) }));
+    // Rows are keyed by their slot on the page, not by record id, so changing page updates the rows in
+    // place. Keyed by id, every old row would play its leave animation while the new ones fade in.
+    setIdeas(list.map((idea, slot) => ({ ...idea, slot })));
+    setTotalPages(result.totalPages);
+    setTotalItems(result.totalItems);
+    props.onData?.(JSON.stringify(list));
+    setStatus(`Connected to ${storeName}. ${totalItems()} in total.`);
+  } catch (error) {
+    if (error?.name !== "AbortError") setStatus(describeError(error));
+  } finally {
+    if (activeRequest === controller) {
+      activeRequest = undefined;
+      setLoading(false);
+    }
+  }
+}
+
+/**
+ * Create an idea from the draft in Firestore, then reload the list.
+ *
+ * @param {SubmitEvent} event
+ * @returns {Promise<void>}
+ */
+async function addIdea(event) {
+  event.preventDefault();
+  const text = draft().trim();
+  if (!text || busy()) return;
+  setBusy(true);
+  try {
+    await api.create({ text, done: false });
+    setDraft("");
+    await loadIdeas();
+  } catch (error) {
+    setStatus(describeError(error));
+  } finally {
+    setBusy(false);
+  }
+}
+
+/**
+ * Set an idea done or not done in Firestore, then reload the list.
+ *
+ * @param {string} id Firestore document id.
+ * @param {boolean} done
+ * @returns {Promise<void>}
+ */
+async function toggleIdea(id, done) {
+  if (busy()) return;
+  setBusy(true);
+  try {
+    await api.update(id, { done });
+    await loadIdeas();
+  } catch (error) {
+    setStatus(describeError(error));
+  } finally {
+    setBusy(false);
+  }
+}
+
+/**
+ * Delete an idea in Firestore, then reload the list.
+ *
+ * @param {string} id Firestore document id.
+ * @returns {Promise<void>}
+ */
+async function removeIdea(id) {
+  if (busy()) return;
+  setBusy(true);
+  try {
+    await api.delete(id);
+    // Removing the last idea of the last page would leave an empty page, so step back one page.
+    if (ideas().length === 1 && page() > 1) setPage(page() - 1);
+    await loadIdeas();
+  } catch (error) {
+    setStatus(describeError(error));
+  } finally {
+    setBusy(false);
+  }
+}
+
+/**
+ * Show another page of ideas and load it.
+ *
+ * @param {number} next 1-based page number.
+ * @returns {void}
+ */
+function goToPage(next) {
+  setPage(next);
+  void loadIdeas();
+}
+
+void loadIdeas();
+onCleanup(() => activeRequest?.abort());
+</script>
+
+<template>
+  <article class="ui-panel ui-panel--raised ui-ideas-card ui-firebase-ideas-card">
+    <div class="ui-ideas-card__heading">
+      <h3 class="ui-card__title">{{ storeName }}</h3>
+      <span class="ui-badge ui-badge--success"
+        >{{ ideas().filter((idea) => idea.done).length }} / {{ ideas().length }} done</span
+      >
+    </div>
+    <p class="ui-ideas-card__status" role="status" aria-live="polite">{{ status() }}</p>
+    <ul class="ui-ideas-list">
+      <li
+        class="ui-ideas-list__item"
+        @for="idea of ideas()"
+        :key="idea.slot"
+        :class="
+          idea().done ? 'ui-ideas-list__item ui-ideas-list__item--done' : 'ui-ideas-list__item'
+        "
+      >
+        <label class="ui-checkbox ui-ideas-list__label">
+          <input
+            class="ui-checkbox__control"
+            type="checkbox"
+            :checked="idea().done"
+            :disabled="busy()"
+            @change="toggleIdea(idea().id, $event.currentTarget.checked)"
+          />
+          <span>{{ idea().text }}</span>
+        </label>
+        <button
+          class="ui-ideas-list__remove"
+          type="button"
+          :aria-label="'Remove ' + idea().text"
+          :disabled="busy()"
+          @click="removeIdea(idea().id)"
+        >
+          ×
+        </button>
+      </li>
+    </ul>
+    <div class="ui-cluster ui-ideas-card__pager" @if="totalPages() > 1">
+      <button
+        class="ui-button ui-button--secondary ui-button--small"
+        type="button"
+        aria-label="Previous page"
+        :disabled="loading() || busy() || page() <= 1"
+        @click="goToPage(page() - 1)"
+      >
+        Previous
+      </button>
+      <span class="ui-ideas-card__page">Page {{ page() }} of {{ totalPages() }}</span>
+      <button
+        class="ui-button ui-button--secondary ui-button--small"
+        type="button"
+        aria-label="Next page"
+        :disabled="loading() || busy() || page() >= totalPages()"
+        @click="goToPage(page() + 1)"
+      >
+        Next
+      </button>
+    </div>
+    <form class="ui-cluster ui-ideas-card__add" @submit="addIdea($event)">
+      <input
+        class="ui-input"
+        type="text"
+        maxlength="200"
+        placeholder="Add a Firebase idea…"
+        :value="draft()"
+        @input="setDraft($event.currentTarget.value)"
+        aria-label="New Firebase idea"
+        :disabled="loading() || busy() || !configured"
+      />
+      <button
+        class="ui-button ui-button--primary ui-ideas-card__add-button"
+        type="submit"
+        aria-label="Add Firebase idea"
+        :disabled="loading() || busy() || !configured"
+      >
+        +
+      </button>
+    </form>
+  </article>
+</template>
+
+<style scoped>
+/* Ideas card title follows its card-specific heading layout. */
+.ui-ideas-card .ui-card__title {
+  margin-top: 0;
+}
+
+/* .ui-ideas-card: contains the interactive ideas-list demonstration. */
+.ui-ideas-card {
+  width: 100%;
+  min-height: 220px;
+  padding: var(--ui-space-6);
+}
+
+/* .ui-ideas-card__heading: aligns title and list status, wrapping if needed. */
+.ui-ideas-card__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--ui-space-2);
+}
+
+/* .ui-ideas-card__status: reports list completion or item count. */
+.ui-ideas-card__status {
+  margin: 0;
+  color: var(--ui-color-text-subtle);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-ideas-list: resets list markers and reserves room for a full page of items, so the pager does not jump. */
+.ui-ideas-list {
+  min-height: calc(5 * 36px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* .ui-ideas-list__item: aligns idea text with its controls. */
+.ui-ideas-list__item {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-ideas-list__label: allows long idea text to shrink within the row. */
+.ui-ideas-list__label {
+  min-width: 0;
+}
+
+/* Idea text wraps at long unbroken strings. */
+.ui-ideas-list__label span {
+  overflow-wrap: anywhere;
+}
+
+/* .ui-ideas-list__item--done: mutes and strikes through completed idea text. */
+.ui-ideas-list__item--done .ui-ideas-list__label span {
+  color: var(--ui-color-disabled);
+  text-decoration: line-through;
+}
+
+/* .ui-ideas-list__remove: provides a compact action to remove an idea. */
+.ui-ideas-list__remove {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border: 0;
+  border-radius: var(--ui-radius-small);
+  color: var(--ui-color-text-subtle);
+  background: transparent;
+  font-family: inherit;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Remove action signals its destructive effect on hover. */
+.ui-ideas-list__remove:hover {
+  color: var(--ui-color-danger);
+  background: color-mix(in srgb, var(--ui-color-danger) 10%, transparent);
+}
+
+/* .ui-ideas-card__pager: spreads the previous and next actions around the page label. */
+.ui-ideas-card__pager {
+  justify-content: space-between;
+  padding-top: var(--ui-space-2);
+}
+
+/* .ui-ideas-card__page: labels the current page in muted small text. */
+.ui-ideas-card__page {
+  color: var(--ui-color-text-subtle);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* .ui-ideas-card__add: spaces new-item controls from the ideas above. */
+.ui-ideas-card__add {
+  column-gap: var(--ui-space-3);
+  padding-top: var(--ui-space-3);
+}
+
+.ui-ideas-card__add .ui-input {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+/* .ui-ideas-card__add-button: sizes the compact add-item action. */
+.ui-ideas-card__add-button {
+  width: 42px;
+  padding: 0;
+  font-size: var(--ui-font-size-lg);
+}
+</style>

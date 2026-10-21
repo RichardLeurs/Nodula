@@ -1,62 +1,171 @@
 <!-- Nodula javascript framework, see https://nodula.richardleurs.nl/  | Copyright © Richard Leurs 2026 | GNU General Public License v3 -->
 <script>
-import { signal } from 'nodula-framework';
-import { createIndexedDB } from 'nodula-framework/localstorage';
+import { onCleanup, signal } from "nodula-framework";
+import { createIndexedDBAdapter } from "nodula-framework/data-indexeddb";
 
-const initialIdeas = [
-  { id: 1, text: 'Sketch out a weekend garden', done: false },
-  { id: 2, text: 'Make a tiny thing that feels good', done: true },
-  { id: 3, text: 'Share an idea with a friend', done: false },
+// Saved on the first load only when the store is empty. Later, removing every idea must not bring them back.
+const starterIdeas = [
+  { text: 'Sketch out a weekend garden', done: false },
+  { text: 'Make a tiny thing that feels good', done: true },
+  { text: 'Share an idea with a friend', done: false },
 ];
 
-const storedIdeas = createIndexedDB('nodula-ideas', initialIdeas);
-const [ideas, setIdeas] = storedIdeas;
+const api = createIndexedDBAdapter({ store: 'ideas' });
+// Set when the card is removed. A load still in flight then must not reopen the connection that was just closed.
+let disposed = false;
+const [ideas, setIdeas] = signal([]);
 const [draft, setDraft] = signal('');
-const [ready, setReady] = signal(false);
+const [loading, setLoading] = signal(true);
+const [busy, setBusy] = signal(false);
 const [status, setStatus] = signal('Loading saved ideas…');
+// Ideas per page; small so the pager shows up with the demo's few rows.
+const perPage = 5;
+const [page, setPage] = signal(1);
+const [totalPages, setTotalPages] = signal(1);
+
 /**
  * The number of ideas marked done.
  */
 const doneCount = () => ideas().filter((idea) => idea.done).length;
 
-void storedIdeas.ready.then(() => {
-  setReady(true);
-  setStatus(storedIdeas.available ? 'IndexedDB available.' : 'IndexedDB not available.');
-});
-
 /**
- * Mark one idea done or not done.
+ * A short message for a failed IndexedDB request.
  *
- * @param {number} id
- * @param {boolean} checked
+ * @param {unknown} error
+ * @returns {string}
  */
-function toggleIdea(id, checked) {
-  setIdeas((current) => current.map((idea) => idea.id === id ? { ...idea, done: checked } : idea));
+function describeError(error) {
+  return error?.message || 'Could not open IndexedDB.';
 }
 
 /**
- * Remove one idea.
+ * Load the current page of ideas from IndexedDB and report the rows to `onData`.
  *
- * @param {number} id
+ * @returns {Promise<void>}
  */
-function removeIdea(id) {
-  setIdeas((current) => current.filter((idea) => idea.id !== id));
+async function loadIdeas() {
+  if (disposed) return;
+  setLoading(true);
+  try {
+    const result = await api.listPage({ page: page(), perPage });
+    if (disposed) return;
+    const list = result.items.map(({ id, text, done }) => ({ id, text, done: Boolean(done) }));
+    // Rows are keyed by their slot on the page, not by record id, so changing page updates the rows in
+    // place instead of replaying every leave animation.
+    setIdeas(list.map((idea, slot) => ({ ...idea, slot })));
+    setTotalPages(result.totalPages);
+    props.onData?.(JSON.stringify(list));
+    setStatus(`IndexedDB available. ${result.totalItems} in total.`);
+  } catch (error) {
+    setStatus(describeError(error));
+  } finally {
+    setLoading(false);
+    // The card was removed during this call; close the connection it may have used.
+    if (disposed) void api.close();
+  }
 }
 
 /**
- * Add the draft as a new idea. Ignored while the saved ideas are still loading or the draft is empty.
+ * Save the starter ideas when the store is empty, then load the first page.
+ *
+ * @returns {Promise<void>}
+ */
+async function startIdeas() {
+  try {
+    const { totalItems } = await api.listPage({ perPage });
+    if (totalItems === 0) {
+      for (const idea of starterIdeas) {
+        if (disposed) return;
+        await api.create(idea);
+      }
+    }
+  } catch (error) {
+    setStatus(describeError(error));
+    return;
+  }
+  await loadIdeas();
+}
+
+/**
+ * Create an idea from the draft, then reload the list.
  *
  * @param {SubmitEvent} event
+ * @returns {Promise<void>}
  */
-function addIdea(event) {
+async function addIdea(event) {
   event.preventDefault();
   const text = draft().trim();
-  if (!text || !ready()) return;
-
-  const id = ideas().reduce((largest, idea) => Math.max(largest, Number(idea.id) || 0), 0) + 1;
-  setIdeas((current) => [...current, { id, text, done: false }]);
-  setDraft('');
+  if (!text || busy()) return;
+  setBusy(true);
+  try {
+    await api.create({ text, done: false });
+    setDraft('');
+    await loadIdeas();
+  } catch (error) {
+    setStatus(describeError(error));
+  } finally {
+    setBusy(false);
+  }
 }
+
+/**
+ * Set an idea done or not done, then reload the list.
+ *
+ * @param {number} id
+ * @param {boolean} done
+ * @returns {Promise<void>}
+ */
+async function toggleIdea(id, done) {
+  if (busy()) return;
+  setBusy(true);
+  try {
+    await api.update(id, { done });
+    await loadIdeas();
+  } catch (error) {
+    setStatus(describeError(error));
+  } finally {
+    setBusy(false);
+  }
+}
+
+/**
+ * Delete an idea, then reload the list.
+ *
+ * @param {number} id
+ * @returns {Promise<void>}
+ */
+async function removeIdea(id) {
+  if (busy()) return;
+  setBusy(true);
+  try {
+    await api.delete(id);
+    // Removing the last idea of the last page would leave an empty page, so step back one page.
+    if (ideas().length === 1 && page() > 1) setPage(page() - 1);
+    await loadIdeas();
+  } catch (error) {
+    setStatus(describeError(error));
+  } finally {
+    setBusy(false);
+  }
+}
+
+/**
+ * Show another page of ideas and load it.
+ *
+ * @param {number} next 1-based page number.
+ * @returns {void}
+ */
+function goToPage(next) {
+  setPage(next);
+  void loadIdeas();
+}
+
+void startIdeas();
+// Closes the IndexedDB connection so the page does not keep the database open after it is removed.
+onCleanup(() => {
+  disposed = true;
+  void api.close();
+});
 </script>
 
 <template>
@@ -69,17 +178,57 @@ function addIdea(event) {
     <p class="ui-ideas-card__status" role="status">{{ status() }}</p>
     </BR>
     <ul class="ui-ideas-list">
-      <li class="ui-ideas-list__item" @for="idea of ideas()" :key="idea.id" :class="idea().done ? 'ui-ideas-list__item ui-ideas-list__item--done' : 'ui-ideas-list__item'">
+      <li
+        class="ui-ideas-list__item"
+        @for="idea of ideas()"
+        :key="idea.slot"
+        :class="idea().done ? 'ui-ideas-list__item ui-ideas-list__item--done' : 'ui-ideas-list__item'"
+      >
         <label class="ui-checkbox ui-ideas-list__label">
-          <input class="ui-checkbox__control" type="checkbox" :checked="idea().done" @change="toggleIdea(idea().id, $event.currentTarget.checked)" />
+          <input
+            class="ui-checkbox__control"
+            type="checkbox"
+            :checked="idea().done"
+            :disabled="loading() || busy()"
+            @change="toggleIdea(idea().id, $event.currentTarget.checked)"
+          />
           <span>{{ idea().text }}</span>
         </label>
-        <button class="ui-ideas-list__remove" type="button" :aria-label="'Remove ' + idea().text" @click="removeIdea(idea().id)">×</button>
+        <button
+          class="ui-ideas-list__remove"
+          type="button"
+          :aria-label="'Remove ' + idea().text"
+          :disabled="loading() || busy()"
+          @click="removeIdea(idea().id)"
+        >
+          ×
+        </button>
       </li>
     </ul>
+    <div class="ui-cluster ui-ideas-card__pager" @if="totalPages() > 1">
+      <button
+        class="ui-button ui-button--secondary ui-button--small"
+        type="button"
+        aria-label="Previous page"
+        :disabled="loading() || busy() || page() <= 1"
+        @click="goToPage(page() - 1)"
+      >
+        Previous
+      </button>
+      <span class="ui-ideas-card__page">Page {{ page() }} of {{ totalPages() }}</span>
+      <button
+        class="ui-button ui-button--secondary ui-button--small"
+        type="button"
+        aria-label="Next page"
+        :disabled="loading() || busy() || page() >= totalPages()"
+        @click="goToPage(page() + 1)"
+      >
+        Next
+      </button>
+    </div>
     <form class="ui-cluster ui-ideas-card__add" @submit="addIdea($event)">
-      <input class="ui-input" type="text" placeholder="Add a small idea…" @bind:value="draft, setDraft" aria-label="New idea" :disabled="!ready()" />
-      <button class="ui-button ui-button--primary ui-ideas-card__add-button" type="submit" aria-label="Add idea" :disabled="!ready()">+</button>
+      <input class="ui-input" type="text" maxlength="200" placeholder="Add a small idea…" @bind:value="draft, setDraft" aria-label="New idea" :disabled="loading() || busy()" />
+      <button class="ui-button ui-button--primary ui-ideas-card__add-button" type="submit" aria-label="Add idea" :disabled="loading() || busy()">+</button>
     </form>
   </article>
 </template>
@@ -113,9 +262,9 @@ function addIdea(event) {
   font-size: var(--ui-font-size-sm);
 }
 
-/* .ui-ideas-list: resets list markers and reserves room for list items. */
+/* .ui-ideas-list: resets list markers and reserves room for a full page of items, so the pager does not jump. */
 .ui-ideas-list {
-  min-height: 77px;
+  min-height: calc(5 * 36px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -174,6 +323,18 @@ function addIdea(event) {
 .ui-ideas-list__remove:hover {
   color: var(--ui-color-danger);
   background: color-mix(in srgb, var(--ui-color-danger) 10%, transparent);
+}
+
+/* .ui-ideas-card__pager: spreads the previous and next actions around the page label. */
+.ui-ideas-card__pager {
+  justify-content: space-between;
+  padding-top: var(--ui-space-2);
+}
+
+/* .ui-ideas-card__page: labels the current page in muted small text. */
+.ui-ideas-card__page {
+  color: var(--ui-color-text-subtle);
+  font-size: var(--ui-font-size-sm);
 }
 
 /* .ui-ideas-card__add: spaces new-item controls from the ideas above. */

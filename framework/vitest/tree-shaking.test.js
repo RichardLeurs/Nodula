@@ -54,7 +54,7 @@ async function bundleConsumer(entry) {
             find: `nodula-framework/${name}`,
             replacement: path.join(projectRoot, `framework/addons/${name}.js`),
           })),
-          ...['pocketbase', 'supabase', 'rest'].map((name) => ({
+          ...['pocketbase', 'supabase', 'indexeddb', 'firebase', 'rest'].map((name) => ({
             find: `nodula-framework/data-${name}`,
             replacement: path.join(projectRoot, `framework/addons/data-adapters/${name}.js`),
           })),
@@ -215,6 +215,16 @@ it('tree-shakes unused exports from each public package entry in a Vite producti
   assert.match(supabase, /treeShakingResult/);
   assert.match(supabase, /createSupabaseAdapter expects table/);
   assert.doesNotMatch(supabase, /createPocketBaseAdapter|createRestAdapter/);
+
+  const indexeddb = await bundleConsumer('data-indexeddb.js');
+  assert.match(indexeddb, /treeShakingResult/);
+  assert.match(indexeddb, /createIndexedDBAdapter expects store/);
+  assert.doesNotMatch(indexeddb, /createPocketBaseAdapter|createSupabaseAdapter|createRestAdapter/);
+
+  const firebase = await bundleConsumer('data-firebase.js');
+  assert.match(firebase, /treeShakingResult/);
+  assert.match(firebase, /createFirebaseAdapter expects projectId/);
+  assert.doesNotMatch(firebase, /createPocketBaseAdapter|createSupabaseAdapter|createRestAdapter/);
 
   const rest = await bundleConsumer('data-rest.js');
   assert.match(rest, /treeShakingResult/);

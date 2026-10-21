@@ -18,6 +18,8 @@ const addonOutputs = [
   ["data", "nodula-data.js"],
   ["data-pocketbase", "nodula-data-pocketbase.js"],
   ["data-supabase", "nodula-data-supabase.js"],
+  ["data-indexeddb", "nodula-data-indexeddb.js"],
+  ["data-firebase", "nodula-data-firebase.js"],
   ["data-rest", "nodula-data-rest.js"],
   ["dragdrop", "nodula-dragdrop.js"],
   ["sortable", "nodula-sortable.js"],

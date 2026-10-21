@@ -115,6 +115,13 @@ const addonBuilds = {
     file: "data-adapters/supabase",
     imports: [["nodula-framework/data", "./nodula-data.js"]],
   }),
+  "data-indexeddb": coreAddon("data-indexeddb", {
+    file: "data-adapters/indexeddb",
+  }),
+  "data-firebase": coreAddon("data-firebase", {
+    file: "data-adapters/firebase",
+    imports: [["nodula-framework/data", "./nodula-data.js"]],
+  }),
   "data-rest": coreAddon("data-rest", {
     file: "data-adapters/rest",
     imports: [["nodula-framework/data", "./nodula-data.js"]],

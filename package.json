@@ -111,6 +111,14 @@
       "types": "./dist/nodula/nodula-data-supabase.d.ts",
       "import": "./dist/nodula/nodula-data-supabase.js"
     },
+    "./data-indexeddb": {
+      "types": "./dist/nodula/nodula-data-indexeddb.d.ts",
+      "import": "./dist/nodula/nodula-data-indexeddb.js"
+    },
+    "./data-firebase": {
+      "types": "./dist/nodula/nodula-data-firebase.d.ts",
+      "import": "./dist/nodula/nodula-data-firebase.js"
+    },
     "./data-rest": {
       "types": "./dist/nodula/nodula-data-rest.d.ts",
       "import": "./dist/nodula/nodula-data-rest.js"
@@ -175,6 +183,8 @@
     "build:data": "vite build --config framework/vite.config.js --mode addon-data",
     "build:data-pocketbase": "vite build --config framework/vite.config.js --mode addon-data-pocketbase",
     "build:data-supabase": "vite build --config framework/vite.config.js --mode addon-data-supabase",
+    "build:data-indexeddb": "vite build --config framework/vite.config.js --mode addon-data-indexeddb",
+    "build:data-firebase": "vite build --config framework/vite.config.js --mode addon-data-firebase",
     "build:data-rest": "vite build --config framework/vite.config.js --mode addon-data-rest",
     "build:resource": "vite build --config framework/vite.config.js --mode addon-resource",
     "build:suspense": "vite build --config framework/vite.config.js --mode addon-suspense",
@@ -195,7 +205,7 @@
     "clean:framework": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/nodula', { recursive: true, force: true });\"",
     "build:core": "vite build --config framework/vite.config.js --mode framework",
     "gzip:framework": "node framework/mjs/gzip-framework.mjs",
-    "build:framework": "node framework/mjs/run-steps.mjs clean:framework build:core build:compiler build:store build:form build:router build:animation build:dialog build:notification build:cookieconsent build:modal build:drawer build:navigation build:navigation-dropdown build:dragdrop build:sortable build:filedrop build:fileupload build:localstorage build:data build:data-pocketbase build:data-supabase build:data-rest build:resource build:suspense build:props build:pwa build:auth build:seo build:seo-vite build:island build:web-components gzip:framework",
+    "build:framework": "node framework/mjs/run-steps.mjs clean:framework build:core build:compiler build:store build:form build:router build:animation build:dialog build:notification build:cookieconsent build:modal build:drawer build:navigation build:navigation-dropdown build:dragdrop build:sortable build:filedrop build:fileupload build:localstorage build:data build:data-pocketbase build:data-supabase build:data-indexeddb build:data-firebase build:data-rest build:resource build:suspense build:props build:pwa build:auth build:seo build:seo-vite build:island build:web-components gzip:framework",
     "package:framework": "npm run build:framework && npm run pack:framework",
     "pack:framework": "node framework/mjs/run-steps.mjs clean:npm pack:npm",
     "clean:npm": "node --input-type=module -e \"import { rm } from 'node:fs/promises'; await rm('dist/npm', { recursive: true, force: true });\"",

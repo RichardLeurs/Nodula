@@ -24,6 +24,8 @@
     "framework/addons/data.d.ts",
     "framework/addons/data-adapters/pocketbase.d.ts",
     "framework/addons/data-adapters/supabase.d.ts",
+    "framework/addons/data-adapters/indexeddb.d.ts",
+    "framework/addons/data-adapters/firebase.d.ts",
     "framework/addons/data-adapters/rest.d.ts",
     "framework/addons/store.d.ts",
     "framework/addons/pwa.d.ts",

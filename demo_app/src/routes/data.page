@@ -4,6 +4,7 @@ import { onCleanup, signal } from "nodula-framework";
 import { createDataClient, DataError } from "nodula-framework/data";
 import dataImage from "../assets/images/data.webp";
 import DataTable from "../components/DataTable.comp";
+import FirebaseIdeasCard from "../components/FirebaseIdeasCard.comp";
 import IdeasCard from "../components/IdeasCard.comp";
 import PocketbaseIdeasCard from "../components/PocketbaseIdeasCard.comp";
 import SQLiteIdeasCard from "../components/SQLiteIdeasCard.comp";
@@ -15,15 +16,21 @@ const pocketbaseCollection = "ideas";
 const sqliteApiBase = import.meta.env.VITE_SQLITE_API_BASE;
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const firebaseProjectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+const firebaseApiKey = import.meta.env.VITE_FIREBASE_API_KEY;
+const firebaseTokenUrl = import.meta.env.VITE_FIREBASE_TOKEN_URL;
+const firebaseCollection = "ideas";
 const dataClient = createDataClient();
 const [endpoint, setEndpoint] = signal(sampleUrl);
 const [activeDataTab, setActiveDataTab] = signal("indexeddb");
 const [record, setRecord] = signal(null);
 const [loading, setLoading] = signal(false);
 const [errorMessage, setErrorMessage] = signal("");
+const [indexeddbJson, setIndexeddbJson] = signal("[]");
 const [sqliteJson, setSqliteJson] = signal("[]");
 const [pocketbaseJson, setPocketbaseJson] = signal("[]");
 const [supabaseJson, setSupabaseJson] = signal("[]");
+const [firebaseJson, setFirebaseJson] = signal("[]");
 let activeRequest;
 
 /**
@@ -78,7 +85,7 @@ onCleanup(() => activeRequest?.abort());
         />
       </div>
       <p class="ui-page__description">
-        Explore browser IndexedDB storage, PHP-backed SQLite, Pocketbase embedded SQLite, Supabase Postgres and remote JSON requests with
+        Explore browser IndexedDB storage, PHP-backed SQLite, Pocketbase embedded SQLite, Supabase Postgres, Firebase Firestore and remote JSON requests with
         <code>nodula-framework/data</code> and data-adapters.
       </p>
     </header>
@@ -137,6 +144,18 @@ onCleanup(() => activeRequest?.abort());
           class="ui-tab"
           type="button"
           role="tab"
+          id="data-tab-firebase"
+          aria-controls="data-panel-firebase"
+          :aria-selected="activeDataTab() === 'firebase' ? 'true' : 'false'"
+          :tabindex="activeDataTab() === 'firebase' ? 0 : -1"
+          @click="setActiveDataTab('firebase')"
+        >
+          Firebase
+        </button>
+        <button
+          class="ui-tab"
+          type="button"
+          role="tab"
           id="data-tab-json"
           aria-controls="data-panel-json"
           :aria-selected="activeDataTab() === 'json' ? 'true' : 'false'"
@@ -159,20 +178,26 @@ onCleanup(() => activeRequest?.abort());
           Add, complete, and remove ideas. Your data is saved in this browser's IndexedDB when
           available.
         </p>
-        <IdeasCard></IdeasCard>
+        <IdeasCard @on:data="setIndexeddbJson($event)"></IdeasCard>
         <h3 id="indexeddb-example-title" class="ui-card__title">How to use IndexedDB</h3>
         <p class="ui-section__description">
-          Create a reactive signal backed by IndexedDB, then update it with the signal setter.
+          Create an adapter for one object store, then list, page, create, update, and delete its
+          records. Records get a numeric <code>id</code>. Call <code>close</code> when you are done
+          with the adapter.
         </p>
         <pre
           class="ui-code-block"
-        ><code data-highlight>import { createIndexedDB } from 'nodula-framework/localstorage';
+        ><code data-highlight>import { createIndexedDBAdapter } from 'nodula-framework/data-indexeddb';
 
-const savedIdeas = createIndexedDB('saved-ideas', []);
-const [ideas, setIdeas] = savedIdeas;
-
-await savedIdeas.ready;
-setIdeas((current) => [...current, { text: 'Plant a garden', done: false }]);</code></pre>
+const ideas = createIndexedDBAdapter({ store: 'ideas' });
+const all = await ideas.list();
+const { items, page, totalPages } = await ideas.listPage({ page: 1, perPage: 5 });
+const created = await ideas.create({ text: 'Plant a garden', done: false });
+await ideas.update(created.id, { done: true });
+await ideas.delete(created.id);
+await ideas.close();</code></pre>
+        <h3 class="ui-card__title">IndexedDB rows rendered from JSON</h3>
+        <DataTable :json="indexeddbJson()"></DataTable>
       </section>
 
       <section
@@ -288,6 +313,60 @@ await ideas.update(created.id, { done: true });
 await ideas.delete(created.id);</code></pre>
         <h3 class="ui-card__title">Supabase rows rendered from JSON</h3>
         <DataTable :json="supabaseJson()"></DataTable>
+      </section>
+
+      <section
+        class="ui-tab-panel"
+        role="tabpanel"
+        id="data-panel-firebase"
+        aria-labelledby="data-tab-firebase"
+        @if="activeDataTab() === 'firebase'"
+      >
+        <h2 class="ui-section__title">Data from Firebase</h2>
+        <p class="ui-section__description">
+          Add, complete, and remove ideas. Your data is saved in a Cloud Firestore collection. The
+          browser holds only a short-lived token, and the service-account key stays on the server.
+          Do not enter private information.
+        </p>
+        <FirebaseIdeasCard
+          :project-id="firebaseProjectId"
+          :api-token-url="firebaseTokenUrl"
+          :api-key="firebaseApiKey"
+          :collection="firebaseCollection"
+          :store-name="'Firebase ideas'"
+          @on:data="setFirebaseJson($event)"
+        ></FirebaseIdeasCard>
+        <h3 class="ui-card__title">How the Firebase token flow works</h3>
+        <p class="ui-section__description">
+          PHP holds the service-account key and returns a short-lived custom token for one fixed demo
+          user. The browser exchanges that token with Firebase Auth for an ID token, which lasts about
+          an hour. The adapter's <code>getToken</code> supplies the ID token as a bearer token, and
+          <code>getFirebaseToken</code> refreshes it shortly before it expires. The token is kept in
+          memory only, never in localStorage.
+        </p>
+        <p class="ui-section__description">
+          Firestore security rules decide what the token may do. The demo rules let only that user
+          read, create, update, and delete ideas, and they check the type and length of each field.
+          Never hand the browser a service-account OAuth access token: it carries admin rights and
+          bypasses the rules.
+        </p>
+        <pre
+          class="ui-code-block"
+        ><code data-highlight>import { createFirebaseAdapter } from 'nodula-framework/data-firebase';
+import { createFirebaseAuth, getFirebaseToken } from './firebase-auth.js';
+
+const auth = createFirebaseAuth({ tokenUrl: 'token-url', apiKey: webApiKey });
+const ideas = createFirebaseAdapter({
+  projectId: 'project-id',
+  collection: 'ideas',
+  getToken: () => getFirebaseToken(auth),
+});
+const { items, page, totalPages } = await ideas.listPage({ page: 1, perPage: 5 });
+const created = await ideas.create({ text: 'Plant a garden', done: false });
+await ideas.update(created.id, { done: true });
+await ideas.delete(created.id);</code></pre>
+        <h3 class="ui-card__title">Firebase rows rendered from JSON</h3>
+        <DataTable :json="firebaseJson()"></DataTable>
       </section>
 
       <section

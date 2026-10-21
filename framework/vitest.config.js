@@ -50,6 +50,8 @@ export default defineConfig({
       })),
       { find: "nodula-framework/data-pocketbase", replacement: source("./addons/data-adapters/pocketbase.js") },
       { find: "nodula-framework/data-supabase", replacement: source("./addons/data-adapters/supabase.js") },
+      { find: "nodula-framework/data-indexeddb", replacement: source("./addons/data-adapters/indexeddb.js") },
+      { find: "nodula-framework/data-firebase", replacement: source("./addons/data-adapters/firebase.js") },
       { find: "nodula-framework/data-rest", replacement: source("./addons/data-adapters/rest.js") },
     ],
   },

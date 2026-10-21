@@ -55,6 +55,14 @@ export default defineConfig({
         replacement: frameworkSource('../framework/addons/data-adapters/supabase.js'),
       },
       {
+        find: 'nodula-framework/data-indexeddb',
+        replacement: frameworkSource('../framework/addons/data-adapters/indexeddb.js'),
+      },
+      {
+        find: 'nodula-framework/data-firebase',
+        replacement: frameworkSource('../framework/addons/data-adapters/firebase.js'),
+      },
+      {
         find: 'nodula-framework/data-rest',
         replacement: frameworkSource('../framework/addons/data-adapters/rest.js'),
       },
