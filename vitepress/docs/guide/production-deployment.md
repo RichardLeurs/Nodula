@@ -61,7 +61,7 @@ Publish releases atomically: upload new assets first, then publish matching HTML
 
 ## API, authentication, and secrets
 
-The demo Vite config proxies `/api` to a local development server at `http://localhost:8787`. That proxy is development tooling; it is not included as a production reverse proxy. A deployed app that needs an API must configure its own production API origin/routing, HTTPS, authentication and authorization, persistence, CORS/CSRF protections where applicable, and operational monitoring.
+The demo Vite config proxies `/api` to a local development server at `http://localhost:8787` (the PHP API, or the Node port started with `npm run dev:api-node`). That proxy is development tooling; it is not included as a production reverse proxy. A deployed app that needs an API must configure its own production API origin/routing, HTTPS, authentication and authorization, persistence, CORS/CSRF protections where applicable, and operational monitoring.
 
 The repository's example Python `http.server` API has no authentication or per-user authorization and is local/demo-only. **Do not expose it publicly or use it as production infrastructure.** Client-side route guards, hidden UI, and browser-side auth checks are not access control; authorize every protected request on the server. Never embed server credentials or secrets in browser bundles. See [Security](/guide/security) and [Authentication](/guide/auth).
 

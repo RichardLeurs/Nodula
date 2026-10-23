@@ -4,17 +4,19 @@ import { createFileUploadZone } from "nodula-framework/fileupload";
 import { signal } from "nodula-framework";
 import fileuploadImage from "../assets/images/fileupload.webp";
 
+// The upload endpoint; set VITE_UPLOAD_URL to point the demo at another server.
+const uploadUrl = import.meta.env.VITE_UPLOAD_URL || "/api/upload/";
 const [uploadMessage, setUploadMessage] = signal("Choose or drop files to upload.");
 
 /**
- * Create the demo upload zone. Accepted files are uploaded to `/api/upload/`.
+ * Create the demo upload zone. Accepted files are uploaded to `VITE_UPLOAD_URL`, or `/api/upload/` when it is empty.
  *
  * @param {HTMLElement | null} element
  */
 function setupFileUpload(element) {
   if (!element) return;
   createFileUploadZone(element, {
-    url: "/api/upload/",
+    url: uploadUrl,
     label: "Upload greenhouse photos",
     description: "Drop image files here, or choose files from your device.",
     buttonLabel: "Choose photos",

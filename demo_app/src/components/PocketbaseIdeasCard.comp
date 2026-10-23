@@ -3,13 +3,21 @@
 import { onCleanup, signal } from "nodula-framework";
 import { DataError } from "nodula-framework/data";
 import { createPocketBaseAdapter } from "nodula-framework/data-pocketbase";
+import { createPocketBaseTokenSource } from "../pocketbase-auth.js";
 
-// The browser talks straight to PocketBase's built-in records REST API; there is no PHP in between.
+// The browser talks straight to PocketBase's built-in records REST API. With api-token-url, it first gets a
+// short-lived token from the PHP endpoint and sends it as the Authorization header; without it, requests are anonymous.
 const baseURL = props["api-base"] ?? "";
 const configured = Boolean(baseURL.trim());
 const notConfiguredMessage = "PocketBase is not configured for this build.";
+const tokenUrl = (props["api-token-url"] ?? "").trim();
+const tokenSource = tokenUrl ? createPocketBaseTokenSource({ tokenUrl }) : undefined;
 const api = configured
-  ? createPocketBaseAdapter({ baseURL, collection: props.collection ?? "ideas" })
+  ? createPocketBaseAdapter({
+      baseURL,
+      collection: props.collection ?? "ideas",
+      getToken: tokenSource?.getToken,
+    })
   : undefined;
 const [ideas, setIdeas] = signal([]);
 const [draft, setDraft] = signal("");
@@ -33,7 +41,11 @@ let activeRequest;
  */
 function describeError(error) {
   if (error instanceof DataError) {
-    const detail = error.data?.message ?? error.message;
+    // PocketBase and its PHP proxy send `message`; the token endpoint sends `error` as a string.
+    const detail =
+      error.data?.message ??
+      (typeof error.data?.error === "string" ? error.data.error : undefined) ??
+      error.message;
     return `API returned HTTP ${error.status}: ${detail}`;
   }
   return error?.message || "Could not connect to PocketBase.";

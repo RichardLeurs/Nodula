@@ -11,11 +11,13 @@ import SQLiteIdeasCard from "../components/SQLiteIdeasCard.comp";
 import SupabaseIdeasCard from "../components/SupabaseIdeasCard.comp";
 
 const sampleUrl = "https://jsonplaceholder.typicode.com/posts/1";
-const pocketbaseApiBase = import.meta.env.VITE_POCKETBASE_API_BASE;
+const pocketbaseUrl = import.meta.env.VITE_POCKETBASE_URL;
+const pocketbaseTokenUrl = import.meta.env.VITE_POCKETBASE_TOKEN_URL;
 const pocketbaseCollection = "ideas";
-const sqliteApiBase = import.meta.env.VITE_SQLITE_API_BASE;
+const sqliteUrl = import.meta.env.VITE_SQLITE_URL;
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseTokenUrl = import.meta.env.VITE_SUPABASE_TOKEN_URL;
 const firebaseProjectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
 const firebaseApiKey = import.meta.env.VITE_FIREBASE_API_KEY;
 const firebaseTokenUrl = import.meta.env.VITE_FIREBASE_TOKEN_URL;
@@ -214,11 +216,11 @@ await ideas.close();</code></pre>
           not enter private information.
         </p>
         <SQLiteIdeasCard
-          :api-base="sqliteApiBase"
+          :api-base="sqliteUrl"
           :store-name="'SQLite ideas'"
           @on:data="setSqliteJson($event)"
         ></SQLiteIdeasCard>
-        <h3 class="ui-card__title">How to use the PHP API</h3>
+        <h3 class="ui-card__title">How to use the PHP REST API</h3>
         <p class="ui-section__description">
           PHP reads database configuration on the server, then uses PDO prepared statements with
           SQLite. The adapter opts into paging with <code>paging: {}</code>, so the list loads one
@@ -249,24 +251,38 @@ await ideas.delete(created.id);</code></pre>
       >
         <h2 class="ui-section__title">Data from PocketBase</h2>
         <p class="ui-section__description">
-         Add, complete, and remove ideas. Your data is saved in a Pocketbase embedded SQLite table through its REST API on a self-hosted server. Do not enter private information.
+          Add, complete, and remove ideas. Your data is saved in a Pocketbase embedded SQLite table
+          through its REST API on a self-hosted server. When a token endpoint is configured, the
+          browser sends a short-lived token from the server with each request. Do not enter private
+          information.
         </p>
 
         <PocketbaseIdeasCard
-          :api-base="pocketbaseApiBase"
+          :api-base="pocketbaseUrl"
+          :api-token-url="pocketbaseTokenUrl"
           :collection="pocketbaseCollection"
           :store-name="'PocketBase ideas'"
           @on:data="setPocketbaseJson($event)"
         ></PocketbaseIdeasCard>
-        <h3 class="ui-card__title">How to use the PocketBase API</h3>
+        <h3 class="ui-card__title">How to use the PocketBase REST API</h3>
         <p class="ui-section__description">
           Create an adapter for one collection, then list, create, update, and delete its records.
+          The adapter's <code>getToken</code> supplies the token as the raw
+          <code>Authorization</code> header. <code>createPocketBaseTokenSource</code> fetches the
+          token from the PHP endpoint, keeps it in memory only, and fetches a new one shortly before
+          it expires.
         </p>
         <pre
           class="ui-code-block"
         ><code data-highlight>import { createPocketBaseAdapter } from 'nodula-framework/data-pocketbase';
+import { createPocketBaseTokenSource } from './pocketbase-auth.js';
 
-const ideas = createPocketBaseAdapter({ baseURL: 'base-url', collection: 'ideas' });
+const tokens = createPocketBaseTokenSource({ tokenUrl: 'token-url' });
+const ideas = createPocketBaseAdapter({
+  baseURL: 'base-url',
+  collection: 'ideas',
+  getToken: tokens.getToken,
+});
 const { items, page, totalPages } = await ideas.listPage({ page: 1, perPage: 5 });
 const created = await ideas.create({ text: 'Plant a garden' });
 await ideas.update(created.id, { done: true });
@@ -290,19 +306,31 @@ await ideas.delete(created.id);</code></pre>
         <SupabaseIdeasCard
           :api-base="supabaseUrl"
           :api-key="supabaseAnonKey"
+          :token-url="supabaseTokenUrl"
           :store-name="'Supabase ideas'"
           @on:data="setSupabaseJson($event)"
         ></SupabaseIdeasCard>
         <h3 class="ui-card__title">How to use the Supabase REST API</h3>
         <p class="ui-section__description">
-          Create an adapter for the <code>ideas</code> table. It sends the anon key as both
-          <code>apikey</code> and a bearer token, and selects one row with <code>id</code>.
+          Create an adapter for the <code>ideas</code> table. It always sends the anon key as
+          <code>apikey</code>. Its <code>getToken</code> supplies the bearer token: without one, the
+          anon key is the bearer token. <code>createSupabaseTokenSource</code> fetches a short-lived
+          token from the PHP endpoint when a token endpoint is configured, keeps it in memory only, and
+          fetches a new one shortly before it expires. The adapter selects one row with
+          <code>id</code>.
         </p>
         <pre
           class="ui-code-block"
         ><code data-highlight>import { createSupabaseAdapter } from 'nodula-framework/data-supabase';
+import { createSupabaseTokenSource } from './supabase-auth.js';
 
-const ideas = createSupabaseAdapter({ baseURL: 'base-url', apiKey: anonKey, table: 'ideas' });
+const tokens = createSupabaseTokenSource({ tokenUrl: 'token-url' });
+const ideas = createSupabaseAdapter({
+  baseURL: 'base-url',
+  apiKey: anonKey,
+  table: 'ideas',
+  getToken: tokens.getToken,
+});
 const { items, page, totalPages } = await ideas.listPage({
   page: 1,
   perPage: 5,
@@ -336,7 +364,7 @@ await ideas.delete(created.id);</code></pre>
           :store-name="'Firebase ideas'"
           @on:data="setFirebaseJson($event)"
         ></FirebaseIdeasCard>
-        <h3 class="ui-card__title">How the Firebase token flow works</h3>
+        <h3 class="ui-card__title">How to use the Firebase Firestore API</h3>
         <p class="ui-section__description">
           PHP holds the service-account key and returns a short-lived custom token for one fixed demo
           user. The browser exchanges that token with Firebase Auth for an ID token, which lasts about

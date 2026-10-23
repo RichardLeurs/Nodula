@@ -155,8 +155,10 @@
   "scripts": {
     "nodula": "node framework/mjs/nodula-menu.mjs",
     "dev": "npm run install:framework && npm --prefix demo_app run dev",
-    "dev:api": "php -S localhost:8787 -t . api/database/index.php",
-    "dev:upload": "php -S localhost:8787 -t . api/upload/index.php",
+    "dev:api": "php -S localhost:8787 -t . api-php/database/index.php",
+    "dev:upload": "php -S localhost:8787 -t . api-php/upload/index.php",
+    "dev:api-node": "node api-node/server.js",
+    "test:api-node": "node --test \"api-node/test/*.test.js\"",
     "build": "node framework/mjs/build-banner.mjs start && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run build:app && npm run build:webcomponents && npm run build:docs && node framework/mjs/build-banner.mjs done",
     "build_test": "node framework/mjs/build-banner.mjs start && npm run test:framework && npm run package:framework && npm run install:framework:package && npm run typecheck:bundle && npm run test:demo && npm run test:webcomponents && npm run build:app && npm run build:docs && node framework/mjs/build-banner.mjs done",
     "build:app": "npm --prefix demo_app run build",

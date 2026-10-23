@@ -43,7 +43,12 @@ let activeRequest;
  */
 function describeError(error) {
   if (error instanceof DataError) {
-    const detail = error.data?.error?.message ?? error.data?.message ?? error.message;
+    // Google sends `error.message`; the PHP token endpoint sends `error` as a string.
+    const serverError = error.data?.error;
+    const detail =
+      (typeof serverError === "string" ? serverError : serverError?.message) ??
+      error.data?.message ??
+      error.message;
     return `Request failed with HTTP ${error.status}: ${detail}`;
   }
   return error?.message || "Could not connect to Firebase.";

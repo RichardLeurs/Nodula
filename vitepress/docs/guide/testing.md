@@ -1,6 +1,6 @@
 # Vitest
 
-Nodula repository tests use Vitest for framework and demo-app behavior, plus TypeScript checks for source and generated declarations. The two Vitest suites run separately so framework behavior can be tested independently from the demo integration. API endpoint tests are part of the demo Vitest suite; there is no separate `test:api` npm script.
+Nodula repository tests use Vitest for framework and demo-app behavior, plus TypeScript checks for source and generated declarations. The two Vitest suites run separately so framework behavior can be tested independently from the demo integration. API endpoint tests are part of the demo Vitest suite; there is no separate `test:api` npm script. The Node API port has its own `npm run test:api-node`, which is not part of `npm test`.
 
 ## Prerequisites
 
@@ -26,6 +26,7 @@ npm test
 |---|---|
 | `npm run test:framework` | Vitest files in `framework/vitest/**/*.test.js`. |
 | `npm run test:demo` | Demo Vitest suite in `demo_app/vitest/**/*.test.js`. |
+| `npm run test:api-node` | Node API port tests in `api-node/test/*.test.js`, run with `node --test`. Requires Node 24.5 or newer. Not part of `npm test`. |
 | `npm test` | Source declaration type-check, then framework and demo Vitest suites. |
 | `npm run typecheck` | Builds framework entries and type-checks source declarations. |
 | `npm run typecheck:bundle` | Type-checks declarations emitted beside generated package bundles; generated build output must exist. |

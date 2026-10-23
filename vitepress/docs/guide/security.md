@@ -45,7 +45,7 @@ Service workers and browser caches can persist responses beyond one page view. D
 
 ## Demo API warning
 
-The repository demo's PHP API is local/demo-only and has no authentication or per-user authorization. The Vite `/api` proxy is development tooling, not a production reverse proxy. **Do not expose the demo API publicly.** A hosted app needs a production-grade server/API, server-side authorization, HTTPS, appropriate persistence, monitoring, and deployment configuration.
+The repository demo's PHP API and its Node port in `api-node/` are local/demo-only and have no authentication or per-user authorization. The Vite `/api` proxy is development tooling, not a production reverse proxy. **Do not expose the demo API publicly.** A hosted app needs a production-grade server/API, server-side authorization, HTTPS, appropriate persistence, monitoring, and deployment configuration.
 
 ## Security review checklist
 
